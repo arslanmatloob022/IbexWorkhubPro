@@ -1,0 +1,2070 @@
+<script setup lang="ts">
+import { useI18n } from "vue-i18n";
+import { useDarkmode } from "/@src/stores/darkmode";
+import { usePanels } from "/@src/stores/panels";
+import type { SideblockTheme } from "/@src/components/navigation/desktop/Sideblock.vue";
+import { useViewWrapper } from "/@src/stores/viewWrapper";
+import { useCompany } from "/@src/stores/company";
+import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
+import { useApi } from "../composable/useAPI";
+import { useUserSession } from "/@src/stores/userSession";
+
+const mostVisitedPages = ref([
+  {
+    id: 0,
+    page: "",
+    count: 0,
+    user: 0,
+  },
+]);
+const userSession = useUserSession();
+const layoutSwitcher = useLayoutSwitcher();
+const router = useRouter();
+const route = useRoute();
+const api = useApi();
+const addJobModalOpen = ref(false);
+const invitationModal = ref(false);
+const viewWrapper = useViewWrapper();
+const panels = usePanels();
+const openSideblockLinks = ref("");
+const isMobileSideblockOpen = ref(false);
+const isDesktopSideblockOpen = ref(true);
+const activeMobileSubsidebar = ref(props.defaultSideblock);
+const company = useCompany();
+const darkmode = useDarkmode();
+const { locale } = useI18n();
+
+const props = withDefaults(
+  defineProps<{
+    theme?: SideblockTheme;
+    defaultSideblock?: string;
+    closeOnChange?: boolean;
+    openOnMounted?: boolean;
+    nowrap?: boolean;
+  }>(),
+  {
+    defaultSideblock: "dashboard",
+    theme: "default",
+  }
+);
+
+const workersCount = ref({
+  all: 0,
+  archived: 0,
+  industries: <any>[],
+});
+
+const partnersCount = ref({
+  all: 0,
+  archived: 0,
+  industries: <any>[],
+});
+
+const getIndustryWorkerCount = (id: any) => {
+  const industry = workersCount.value.industries.find(
+    (item: any) => item.id === id
+  );
+  return industry ? industry.count : 0;
+};
+
+const getIndustryPartnerCount = (id: any) => {
+  const industry = partnersCount.value.industries.find(
+    (item: any) => item.id === id
+  );
+  return industry ? industry.count : 0;
+};
+
+const getIndustryWorkersCount = async () => {
+  try {
+    const resp = await api.get(
+      `/v3/api/company/${company.loggedCompany.id}/get_company_industry_workers_count/`
+    );
+    workersCount.value = resp.data;
+    console.log("counts", resp.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getIndustryPartnersCount = async () => {
+  try {
+    const resp = await api.get(
+      `/v3/api/supplier/${company.loggedCompany.id}/industry_partners_count/`
+    );
+    partnersCount.value = resp.data;
+    console.log("part counts", resp.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const localFlagSrc = computed(() => {
+  switch (locale.value) {
+    case "fr":
+      return "/images/icons/flags/france.svg";
+    case "es":
+      return "/images/icons/flags/spain.svg";
+    case "es-MX":
+      return "/images/icons/flags/mexico.svg";
+    case "de":
+      return "/images/icons/flags/germany.svg";
+    case "zh-CN":
+      return "/images/icons/flags/china.svg";
+    case "ar":
+      return "/images/icons/flags/saudi-arabia.svg";
+    case "en":
+    default:
+      return "/images/icons/flags/united-states-of-america.svg";
+  }
+});
+
+const routePaths = {
+  jobs: `/sidebar/company/jobs`,
+  dashboard: `/sidebar/company`,
+  clients: `/sidebar/company/business`,
+  contracts: `/sidebar/company/contracts`,
+  placements: `/sidebar/company/placement`,
+  partners: `/sidebar/company/supplier`,
+  workers: `/sidebar/company/workers`,
+  workers_anomalies: `/sidebar/company/anomalies`,
+  partner_anomalies: `/sidebar/company/partner-anomalies`,
+  rota: `/sidebar/company/rota`,
+  settings: `/sidebar/company/settings`,
+};
+
+const getPagesColors = (index: any) => {
+  switch (index) {
+    case 0:
+      return "var(--info)";
+    case 1:
+      return "var(--danger)";
+    case 2:
+      return "var(--primary)";
+    case 3:
+      return "var(--warning)";
+  }
+};
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value) || false;
+}
+
+const visitedPageHandler = async (currentPage: any) => {
+  try {
+    const response = await api.post("/v3/api/visited-page/", {
+      page: currentPage,
+    });
+    console.log(response.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getMostVisitedPages = async () => {
+  try {
+    const response = await api.get("/v3/api/visited-page/top-visited-pages/");
+    mostVisitedPages.value = response.data;
+    console.log("visited pages", mostVisitedPages.value);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const gotoVisitedPage = (page: any) => {
+  router.push(routePaths[page]);
+};
+
+watch(
+  () => router.currentRoute.value.path,
+  (newPath, oldPath) => {
+    if (newPath) {
+      getMostVisitedPages();
+      const routeName = getKeyByValue(routePaths, newPath);
+      if (routeName) {
+        console.log("Current route:", routeName);
+        visitedPageHandler(routeName);
+      }
+    }
+  }
+);
+
+watchPostEffect(() => {
+  viewWrapper.setPushedBlock(isDesktopSideblockOpen.value ?? false);
+});
+
+watchPostEffect(() => {
+  layoutSwitcher.setDynamicLayoutId(
+    darkmode.isDark ? "sideblock-default" : "sideblock-color"
+  );
+});
+
+const shouldShowButton = computed(() => {
+  return route.path !== "/sidebar/company";
+});
+
+watch(
+  () => route.fullPath,
+  (newFullPath, oldFullPath) => {
+    isMobileSideblockOpen.value = false;
+    if (props.closeOnChange && isDesktopSideblockOpen.value) {
+      const shouldCloseSidebar = false;
+      if (shouldCloseSidebar) {
+        isDesktopSideblockOpen.value = false;
+      }
+    }
+  }
+);
+
+onMounted(() => {
+  getIndustryWorkersCount();
+  if (userSession.user.role != "partner") {
+    getIndustryPartnersCount();
+  }
+  viewWrapper.setPushed(false);
+});
+</script>
+
+<template>
+  <div class="sidebar-layout">
+    <df-messenger
+      class="df-messenger"
+      project-id="earnflex-frontier"
+      agent-id="66271cd5-26e9-4a25-9c2b-6bc2329eef22"
+      language-code="en"
+      max-query-length="-1"
+    >
+      <df-messenger-chat-bubble chat-title="Arez FAQ&#x27;s">
+      </df-messenger-chat-bubble>
+    </df-messenger>
+    <!-- Mobile navigation -->
+    <MobileNavbar
+      :is-open="isMobileSideblockOpen"
+      @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
+    >
+      <template #brand>
+        <RouterLink to="/" class="navbar-item is-brand">
+          <AnimatedLogo width="38px" height="38px" style="cursor: pointer" />
+        </RouterLink>
+
+        <div class="brand-end">
+          <NotificationsMobileDropdown />
+          <UserProfileDropdown />
+        </div>
+      </template>
+    </MobileNavbar>
+
+    <MobileSidebar
+      :is-open="isMobileSideblockOpen"
+      @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
+    >
+      <template #links>
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
+            aria-label="Display dashboard content"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="activeMobileSubsidebar = 'dashboard'"
+            @click="activeMobileSubsidebar = 'dashboard'"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:activity"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            aria-label="Display layout content"
+            :class="[activeMobileSubsidebar === 'layout' && 'is-active']"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="activeMobileSubsidebar = 'layout'"
+            @click="activeMobileSubsidebar = 'layout'"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:grid" />
+          </a>
+        </li>
+        <li>
+          <a
+            aria-label="Display element content"
+            :class="[activeMobileSubsidebar === 'elements' && 'is-active']"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="activeMobileSubsidebar = 'elements'"
+            @click="activeMobileSubsidebar = 'elements'"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:box" />
+          </a>
+        </li>
+        <li>
+          <a
+            aria-label="Display components content"
+            :class="[activeMobileSubsidebar === 'components' && 'is-active']"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="activeMobileSubsidebar = 'components'"
+            @click="activeMobileSubsidebar = 'components'"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:cpu" />
+          </a>
+        </li>
+        <li>
+          <RouterLink to="/messaging-v1">
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:message-circle"
+            />
+          </RouterLink>
+        </li>
+      </template>
+
+      <template #bottom-links>
+        <li>
+          <a
+            aria-label="Display search panel"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="panels.setActive('search')"
+            @click="panels.setActive('search')"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:search" />
+          </a>
+        </li>
+        <li>
+          <a aria-label="View settings" href="#">
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:settings"
+            />
+          </a>
+        </li>
+      </template>
+    </MobileSidebar>
+
+    <!-- Mobile subsidebar links -->
+    <Transition name="slide-x">
+      <LayoutsMobileSubsidebar
+        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
+      />
+      <DashboardsMobileSubsidebar
+        v-else-if="
+          isMobileSideblockOpen && activeMobileSubsidebar === 'dashboard'
+        "
+      />
+      <ComponentsMobileSubsidebar
+        v-else-if="
+          isMobileSideblockOpen && activeMobileSubsidebar === 'components'
+        "
+      />
+      <ElementsMobileSubsidebar
+        v-else-if="
+          isMobileSideblockOpen && activeMobileSubsidebar === 'elements'
+        "
+      />
+    </Transition>
+
+    <!-- Desktop navigation -->
+    <CircularMenu />
+
+    <Transition name="slide-x">
+      <!-- open menu -->
+      <Sideblock v-if="isDesktopSideblockOpen" :theme="props.theme">
+        <template #header>
+          <div
+            @click="router.push('/sidebar/company')"
+            style="
+              width: 280px;
+              margin-top: 20px;
+              margin-left: 20px;
+              height: 100%;
+              overflow: hidden;
+            "
+          >
+            <img
+              style="
+                width: auto;
+                height: 100%;
+                display: block;
+                margin: 0;
+                border-radius: 12px;
+                cursor: pointer;
+              "
+              @click="router.push('/sidebar/networks/dashboard')"
+              :src="
+                company.loggedCompany.compnayLogo
+                  ? company.loggedCompany.compnayLogo
+                  : darkmode.isDark
+                  ? '/images/logos/newArezLogo.svg'
+                  : '/images/logos/smallarezdarkversion.svg'
+              "
+            />
+          </div>
+
+          <div
+            @keydown.space.prevent="
+              isDesktopSideblockOpen = !isDesktopSideblockOpen
+            "
+            @click="isDesktopSideblockOpen = !isDesktopSideblockOpen"
+            style="width:100%; display:flex, align-items:right;"
+          >
+            <span v-if="isDesktopSideblockOpen">
+              <img
+                style="height: 26px; width: 24px; cursor: pointer; float: right"
+                src="/images/icons/sidebarclose.png"
+              />
+            </span>
+          </div>
+        </template>
+
+        <template #links>
+          <!-- Dashboard -->
+          <li>
+            <RouterLink to="/sidebar/company" class="single-link">
+              <span class="icon">
+                <i class="iconify" data-icon="feather:grid" />
+              </span>
+              Dashboard
+            </RouterLink>
+          </li>
+
+          <!-- customers / comopanies -->
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="reporter"
+          >
+            <template #header>
+              <div
+                class="icon"
+                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
+              >
+                <i
+                  style="color: #fff"
+                  class="iconify"
+                  data-icon="feather:trello"
+                  aria-hidden="true"
+                ></i>
+              </div>
+              <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
+                >Clients</span
+              >
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/business"
+              :class="{
+                'cus-active-link-icon':
+                  route.path == '/sidebar/company/business',
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                align-items: center;
+                background-color: transparent !important;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i
+                style="color: #fff"
+                class="iconify"
+                data-icon="feather:trello"
+                aria-hidden="true"
+              ></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Clients</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/contracts"
+              :class="{
+                'cus-active-link-icon':
+                  route.path == '/sidebar/company/contracts',
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i
+                style="color: #fff"
+                class="iconify"
+                data-icon="feather:file"
+                aria-hidden="true"
+              ></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+              >
+                Contracts / Sites</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/placement"
+              :class="{
+                'cus-active-link-icon':
+                  route.path == '/sidebar/company/placement',
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i
+                style="color: #fff"
+                class="iconify"
+                data-icon="feather:briefcase"
+                aria-hidden="true"
+              ></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Job Placements</span
+              >
+            </RouterLink>
+          </VCollapseLinks>
+
+          <li>
+            <RouterLink to="/sidebar/company/jobs" class="single-link">
+              <span class="icon">
+                <i
+                  class="iconify"
+                  data-icon="feather:clipboard"
+                  aria-hidden="true"
+                ></i
+              ></span>
+              Job's Board
+            </RouterLink>
+          </li>
+          <!-- Service partners -->
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="contractors"
+          >
+            <template #header>
+              <div
+                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
+                class="icon"
+              >
+                <i class="iconify" data-icon="feather:user" />
+              </div>
+              <span :style="{ color: darkmode.isDark ? '#585858' : '' }">
+                Service Partners
+              </span>
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+            <RouterLink
+              to="/sidebar/company/supplier"
+              :class="{ 'cus-active-link': 'All' === route.query.type }"
+              style="
+                display: flex;
+                gap: 10px;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+                font-weight: 400;
+              "
+            >
+              <img
+                src="/images/photo/multiUsers.png"
+                style="
+                  border-radius: 8px;
+                  padding: 1px;
+                  height: 25px;
+                  width: 25px;
+                  background-color: #f8f8f8;
+                "
+              />
+
+              <span
+                class="icon-iconify"
+                style="
+                  display: flex;
+                  font-weight: 400;
+                  font-family: var(--font);
+                  align-items: center;
+                  background-color: transparent !important;
+                  font-size: 0.9rem;
+                "
+                :style="{ color: darkmode.isDark ? '#585858' : '#f1f1f1' }"
+                >All
+                <span
+                  style="
+                    font-size: 10px;
+                    background-color: transparent !important;
+                  "
+                  class="ml-2"
+                >
+                  ({{ partnersCount.all }})</span
+                >
+              </span>
+            </RouterLink>
+
+            <RouterLink
+              v-for="(item, index) in company.loggedCompany.industry"
+              :key="index"
+              :to="`/sidebar/company/supplier?type=${item.name}`"
+              :class="{ 'cus-active-link': item.name === route.query.type }"
+              style="
+                display: flex;
+                font-family: var(--font);
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                background-color: transparent !important;
+                font-size: 0.9rem;
+                font-weight: 400;
+              "
+            >
+              <img
+                :src="item.industryLogo"
+                style="
+                  height: 25px;
+                  width: 25px;
+                  border-radius: 8px;
+                  background-color: #f8f8f8;
+                  margin-inline-end: 10px;
+                "
+              />
+              <span
+                style="background-color: transparent !important"
+                :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+                >{{ item.name }}
+                <span
+                  style="
+                    font-size: 10px;
+                    background-color: transparent !important;
+                  "
+                  class="ml-2"
+                >
+                  ({{ getIndustryPartnerCount(item.id) }})
+                </span></span
+              >
+            </RouterLink>
+          </VCollapseLinks>
+
+          <!-- Workers  -->
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="reports"
+          >
+            <template #header>
+              <div
+                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
+                class="icon"
+              >
+                <i class="iconify" data-icon="feather:users" />
+              </div>
+              <span :style="{ color: darkmode.isDark ? '#585858' : '' }">
+                Workers
+              </span>
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+            <RouterLink
+              to="/sidebar/company/workers?type=All"
+              :class="{ 'cus-active-link': 'All' === route.query.type }"
+              style="
+                display: flex;
+                gap: 10px;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+                font-weight: 400;
+              "
+            >
+              <img
+                src="/images/photo/multiUsers.png"
+                style="
+                  border-radius: 8px;
+                  padding: 1px;
+                  height: 25px;
+                  width: 25px;
+                  background-color: #f8f8f8;
+                "
+              />
+
+              <span
+                class="icon-iconify"
+                style="
+                  display: flex;
+                  font-weight: 400;
+                  font-family: var(--font);
+                  align-items: center;
+                  background-color: transparent !important;
+                  font-size: 0.9rem;
+                "
+                :style="{ color: darkmode.isDark ? '#585858' : '#f1f1f1' }"
+                >All
+                <span
+                  style="
+                    font-size: 10px;
+                    background-color: transparent !important;
+                  "
+                  class="ml-2"
+                >
+                  ({{ workersCount.all }})</span
+                >
+              </span>
+            </RouterLink>
+
+            <RouterLink
+              v-for="(item, index) in company.loggedCompany.industry"
+              :key="index"
+              :to="`/sidebar/company/workers?type=${item.name}`"
+              :class="{ 'cus-active-link': item.name === route.query.type }"
+              style="
+                display: flex;
+                font-family: var(--font);
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                background-color: transparent !important;
+                font-size: 0.9rem;
+                font-weight: 400;
+              "
+            >
+              <img
+                :src="item.industryLogo"
+                style="
+                  height: 25px;
+                  width: 25px;
+                  border-radius: 8px;
+                  background-color: #f8f8f8;
+                  margin-inline-end: 10px;
+                "
+              />
+              <span
+                style="background-color: transparent !important"
+                :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+                >{{ item.name }}
+                <span
+                  style="
+                    font-size: 10px;
+                    background-color: transparent !important;
+                  "
+                  class="ml-2"
+                >
+                  ({{ getIndustryWorkerCount(item.id) }})
+                </span></span
+              >
+            </RouterLink>
+            <RouterLink
+              to="/sidebar/company/workers?archive=true"
+              :class="{ 'cus-active-link': 'true' === route.query.archive }"
+              style="
+                display: flex;
+                gap: 10px;
+                font-family: var(--font);
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                background-color: transparent !important;
+                font-size: 0.9rem;
+                font-weight: 400;
+              "
+            >
+              <img
+                src="/images/photo/archiveUser.png"
+                style="
+                  border-radius: 8px;
+                  padding: 1px;
+                  height: 25px;
+                  width: 25px;
+                  background-color: #f8f8f8;
+                "
+              />
+
+              <span
+                style="
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                  background-color: transparent !important;
+                "
+                :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+                >Archived
+                <span
+                  style="
+                    font-size: 10px;
+                    background-color: transparent !important;
+                  "
+                  class="ml-2"
+                  >({{ workersCount.archived }})</span
+                ></span
+              >
+            </RouterLink>
+          </VCollapseLinks>
+
+          <div class="sleakDivider"></div>
+
+          <!-- compliance anomalies -->
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="anomalies"
+          >
+            <template #header>
+              <div
+                class="icon"
+                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
+              >
+                <i
+                  class="iconify"
+                  data-icon="feather:search"
+                  aria-hidden="true"
+                ></i>
+              </div>
+              <span
+                style="white-space: nowrap"
+                :style="{ color: darkmode.isDark ? '#585858' : '' }"
+                >Compliance Anomalies</span
+              >
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/anomalies"
+              :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                align-items: center;
+                background-color: transparent !important;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-search" />
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Worker Anomalies</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/partner-anomalies"
+              :class="{ 'cus-active-link-icon': 'docs' === route.query.tab }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Partner Anomalies</span
+              >
+            </RouterLink>
+          </VCollapseLinks>
+
+          <div class="sleakDivider"></div>
+
+          <!-- Rota -->
+          <VCollapseLinks v-model:open="openSideblockLinks" collapse-id="rota">
+            <template #header>
+              <div
+                class="icon"
+                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
+              >
+                <i
+                  class="iconify"
+                  data-icon="feather:book-open"
+                  aria-hidden="true"
+                ></i>
+              </div>
+              <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
+                >Rota Scheduling</span
+              >
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/rota?tab=complete-rota"
+              :class="{
+                'cus-active-link-icon': 'complete-rota' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                align-items: center;
+                background-color: transparent !important;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-calender-alt-4" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Rota / Scheduling</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/rota?tab=rota-analytics"
+              :class="{
+                'cus-active-link-icon': 'rota-analytics' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-graph-alt-3" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Jobs Analytics</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/rota?tab=worker-calendar"
+              :class="{
+                'cus-active-link-icon': 'worker-calendar' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-calender-alt-1" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Worker Calendar</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/rota?tab=site-calendar"
+              :class="{
+                'cus-active-link-icon': 'site-calendar' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-calender-alt-3" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Site Calendar</span
+              >
+            </RouterLink>
+          </VCollapseLinks>
+
+          <!-- Placements -->
+          <!-- <li>
+            <RouterLink to="/sidebar/company/placement" class="single-link">
+              <span class="icon">
+                <i
+                  class="iconify"
+                  data-icon="feather:briefcase"
+                  aria-hidden="true"
+                ></i>
+              </span>
+              Job Placements
+            </RouterLink>
+          </li> -->
+
+          <div class="sleakDivider"></div>
+
+          <!-- Settings -->
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="report"
+          >
+            <template #header>
+              <div
+                class="icon"
+                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
+              >
+                <i
+                  class="iconify"
+                  data-icon="feather:settings"
+                  aria-hidden="true"
+                ></i>
+              </div>
+              <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
+                >Settings</span
+              >
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/settings?tab=about"
+              :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                align-items: center;
+                background-color: transparent !important;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-home" />
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Home</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/settings?tab=docs"
+              :class="{ 'cus-active-link-icon': 'docs' === route.query.tab }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Worker Compliance</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/settings?tab=partner-doc"
+              :class="{
+                'cus-active-link-icon': 'partner-doc' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Service Partners Compliance</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/settings?tab=team-members"
+              :class="{
+                'cus-active-link-icon': 'team-members' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-users" />
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Controllers</span
+              >
+            </RouterLink>
+          </VCollapseLinks>
+        </template>
+
+        <template #bottom-links>
+          <!-- <UserProfileDropdown up /> -->
+          <div class="pb-3 arez-version">
+            <p style="font-weight: 500">Powered by EarnFlex</p>
+            <p style="font-weight: 500; font-size: 10px">Version 1.04</p>
+          </div>
+        </template>
+      </Sideblock>
+      <!-- collapsed menu -->
+      <Sideblock style="width: 100px" :theme="props.theme" v-else>
+        <template #header>
+          <div
+            style="
+              width: 100%;
+              height: 100%;
+              margin-top: 60px;
+              display: flex;
+              gap: 12px;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            <div
+              style="
+                width: 100%;
+                height: auto;
+                display: flex;
+                justify-content: center;
+                border-radius: 16px;
+                align-items: center;
+              "
+            >
+              <img
+                style="
+                  width: 120px;
+                  height: 100%;
+                  background-color: transparent;
+                  border-radius: 12px;
+                  display: block;
+                "
+                :src="
+                  company.loggedCompany.compnayLogo
+                    ? company.loggedCompany.compnayLogo
+                    : '/images/logos/smallicon.svg'
+                "
+              />
+            </div>
+
+            <div
+              @keydown.space.prevent="
+                isDesktopSideblockOpen = !isDesktopSideblockOpen
+              "
+              @click="isDesktopSideblockOpen = !isDesktopSideblockOpen"
+              style="margin-top:16px; display:flex, justify-content:center; align-items:center; "
+            >
+              <span class="menu-toggle has-chevron">
+                <img
+                  style="height: 22px; width: 20px; cursor: pointer"
+                  src="/images/icons/sidebarOpen.png"
+                />
+              </span>
+            </div>
+          </div>
+        </template>
+
+        <template #links>
+          <!-- dashboard -->
+          <li>
+            <RouterLink
+              id="cus-routerLinks"
+              to="/sidebar/company"
+              class="single-link"
+            >
+              <span class="icon" id="cus-spanLink">
+                <i class="iconify" data-icon="feather:grid" />
+              </span>
+            </RouterLink>
+          </li>
+
+          <!-- Customer / Companies -->
+          <li>
+            <RouterLink to="/sidebar/company/business" class="single-link">
+              <span class="icon" id="cus-spanLink">
+                <i
+                  class="iconify"
+                  data-icon="feather:trello"
+                  aria-hidden="true"
+                ></i>
+              </span>
+            </RouterLink>
+          </li>
+
+          <!-- Contracts / Sites -->
+          <li>
+            <RouterLink to="/sidebar/company/contracts" class="single-link">
+              <span class="icon" id="cus-spanLink">
+                <i
+                  class="iconify"
+                  data-icon="feather:file"
+                  aria-hidden="true"
+                ></i>
+              </span>
+            </RouterLink>
+          </li>
+
+          <!-- service Partners -->
+          <li>
+            <VCollapseLinks
+              v-model:open="openSideblockLinks"
+              collapse-id="contractors"
+            >
+              <template #header>
+                <span class="icon" id="cus-spanLink">
+                  <i
+                    class="iconify"
+                    style="margin: 0; margin-right: 4px"
+                    :style="{
+                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
+                    }"
+                    data-icon="feather:user"
+                  ></i>
+                </span>
+              </template>
+              <RouterLink
+                to="/sidebar/company/supplier"
+                :class="{ 'cus-active-link': 'All' === route.query.type }"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  justify-content: center;
+                  background-color: transparent !important;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <img
+                  src="/images/photo/multiUsers.png"
+                  style="
+                    border-radius: 8px;
+                    height: 25px;
+                    width: 25px;
+                    background-color: #f8f8f8;
+                    padding: 1px;
+                  "
+                />
+              </RouterLink>
+
+              <RouterLink
+                v-for="(item, index) in company.loggedCompany.industry"
+                :key="index"
+                :to="`/sidebar/company/supplier?type=${item.name}`"
+                :class="{ 'cus-active-link': item.name === route.query.type }"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  background-color: transparent !important;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <img
+                  :src="item.industryLogo"
+                  style="
+                    border-radius: 8px;
+                    height: 25px;
+                    width: 25px;
+                    background-color: #f8f8f8;
+                    padding: 1px;
+                  "
+                />
+              </RouterLink>
+            </VCollapseLinks>
+          </li>
+
+          <!-- workers -->
+          <li>
+            <VCollapseLinks
+              v-model:open="openSideblockLinks"
+              collapse-id="reports"
+            >
+              <template #header>
+                <span class="icon" id="cus-spanLink">
+                  <i
+                    class="iconify"
+                    style="margin: 0; margin-right: 4px"
+                    :style="{
+                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
+                    }"
+                    data-icon="feather:users"
+                  ></i>
+                </span>
+              </template>
+              <RouterLink
+                to="/sidebar/company/workers?type=All"
+                :class="{ 'cus-active-link': 'All' === route.query.type }"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  justify-content: center;
+                  background-color: transparent !important;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <img
+                  src="/images/photo/multiUsers.png"
+                  style="
+                    border-radius: 8px;
+                    height: 25px;
+                    width: 25px;
+                    background-color: #f8f8f8;
+                    padding: 1px;
+                  "
+                />
+              </RouterLink>
+
+              <RouterLink
+                v-for="(item, index) in company.loggedCompany.industry"
+                :key="index"
+                :to="`/sidebar/company/workers?type=${item.name}`"
+                :class="{ 'cus-active-link': item.name === route.query.type }"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  background-color: transparent !important;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <img
+                  :src="item.industryLogo"
+                  style="
+                    border-radius: 8px;
+                    height: 25px;
+                    width: 25px;
+                    background-color: #f8f8f8;
+                    padding: 1px;
+                  "
+                />
+              </RouterLink>
+
+              <!-- archive link -->
+              <RouterLink
+                to="/sidebar/company/workers?archive=true"
+                :class="{ 'cus-active-link': 'true' === route.query.archive }"
+                style="
+                  padding: 0;
+                  background-color: transparent !important;
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  align-items: center;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <img
+                  src="/images/photo/archiveUser.png"
+                  style="
+                    border-radius: 8px;
+                    padding: 1px;
+                    height: 25px;
+                    width: 25px;
+                    background-color: #f8f8f8;
+                  "
+                />
+              </RouterLink>
+            </VCollapseLinks>
+          </li>
+
+          <!-- Compliance Anomalies-->
+          <li>
+            <VCollapseLinks
+              v-model:open="openSideblockLinks"
+              collapse-id="anoamlies"
+            >
+              <template #header>
+                <span class="icon" id="cus-spanLink">
+                  <i
+                    class="iconify"
+                    data-icon="feather:search"
+                    style="margin: 0; margin-right: 4px"
+                    :style="{
+                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
+                    }"
+                    aria-hidden="true"
+                  ></i>
+                </span>
+              </template>
+
+              <!-- workeras anomalies -->
+              <RouterLink
+                to="/sidebar/company/anomalies?page=1"
+                :class="{ 'cus-active-link': 'about' === route.query.tab }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  color: #575757;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i
+                  :style="{ color: darkmode.isDark ? '' : 'white' }"
+                  class="lnil lnil-users"
+                />
+              </RouterLink>
+
+              <!-- partner anomalies -->
+              <RouterLink
+                to="/sidebar/company/partner-anomalies?page=1"
+                :class="{ 'cus-active-link': 'docs' === route.query.tab }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  color: #575757;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i class="lnir lnir-user" aria-hidden="true"></i>
+              </RouterLink>
+            </VCollapseLinks>
+          </li>
+
+          <!-- Rota / jobs scheduling-->
+          <li>
+            <VCollapseLinks
+              v-model:open="openSideblockLinks"
+              collapse-id="rota"
+            >
+              <template #header>
+                <span class="icon" id="cus-spanLink">
+                  <i
+                    class="iconify"
+                    data-icon="feather:book-open"
+                    style="margin: 0; margin-right: 4px"
+                    :style="{
+                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
+                    }"
+                    aria-hidden="true"
+                  ></i>
+                </span>
+              </template>
+
+              <!-- complete rota -->
+              <RouterLink
+                to="/sidebar/company/rota?tab=complete-rota"
+                :class="{ 'cus-active-link': 'about' === route.query.tab }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  color: #575757;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i
+                  :style="{ color: darkmode.isDark ? '' : 'white' }"
+                  class="lnil lnil-calender-alt-4"
+                />
+              </RouterLink>
+
+              <!-- rota analytics -->
+              <RouterLink
+                to="/sidebar/company/rota?tab=rota-analytics"
+                :class="{ 'cus-active-link': 'docs' === route.query.tab }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  color: #575757;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i class="lnil lnil-graph-alt-3" aria-hidden="true"></i>
+              </RouterLink>
+
+              <!-- worker calendar -->
+              <RouterLink
+                to="/sidebar/company/rota?tab=worker-calendar"
+                :class="{
+                  'cus-active-link': 'partner-doc' === route.query.tab,
+                }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  color: #575757;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i class="lnil lnil-calender-alt-1" aria-hidden="true"></i>
+              </RouterLink>
+
+              <!-- site calendar -->
+              <RouterLink
+                to="/sidebar/company/rota?tab=site-calendar"
+                :class="{
+                  'cus-active-link': 'team-members' === route.query.tab,
+                }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  background-color: transparent !important;
+                  align-items: center;
+                  color: #575757;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <i style="color: #f1f1f1" class="lnil lnil-calender-alt-3" />
+              </RouterLink>
+            </VCollapseLinks>
+          </li>
+
+          <!-- placements -->
+          <li>
+            <RouterLink to="/sidebar/company/placement" class="single-link">
+              <span class="icon" id="cus-spanLink">
+                <i
+                  class="iconify"
+                  data-icon="feather:briefcase"
+                  aria-hidden="true"
+                ></i>
+              </span>
+            </RouterLink>
+          </li>
+
+          <!-- Company settings -->
+          <li>
+            <VCollapseLinks
+              v-model:open="openSideblockLinks"
+              collapse-id="report"
+            >
+              <template #header>
+                <span class="icon" id="cus-spanLink">
+                  <i
+                    class="iconify"
+                    data-icon="feather:settings"
+                    style="margin: 0; margin-right: 4px"
+                    :style="{
+                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
+                    }"
+                    aria-hidden="true"
+                  ></i>
+                </span>
+              </template>
+
+              <RouterLink
+                to="/sidebar/company/settings?tab=about"
+                :class="{ 'cus-active-link': 'about' === route.query.tab }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  color: #575757;
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i
+                  :style="{ color: darkmode.isDark ? '' : 'white' }"
+                  class="lnil lnil-user"
+                />
+              </RouterLink>
+
+              <RouterLink
+                to="/sidebar/company/settings?tab=docs"
+                :class="{ 'cus-active-link': 'docs' === route.query.tab }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  color: #575757;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              </RouterLink>
+
+              <RouterLink
+                to="/sidebar/company/settings?tab=partner-doc"
+                :class="{
+                  'cus-active-link': 'partner-doc' === route.query.tab,
+                }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  color: #575757;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  align-items: center;
+                  font-size: 0.9rem;
+                  background-color: transparent !important;
+                  font-weight: 400;
+                "
+              >
+                <i class="lnil lnil-folder-alt-1" aria-hidden="true"></i>
+              </RouterLink>
+
+              <RouterLink
+                to="/sidebar/company/settings?tab=team-members"
+                :class="{
+                  'cus-active-link': 'team-members' === route.query.tab,
+                }"
+                style="
+                  padding: 0;
+                  display: flex;
+                  flex-direction: column;
+                  font-family: var(--font);
+                  background-color: transparent !important;
+                  align-items: center;
+                  color: #575757;
+                  font-size: 0.9rem;
+                  font-weight: 400;
+                "
+              >
+                <i style="color: #f1f1f1" class="lnil lnil-users" />
+              </RouterLink>
+            </VCollapseLinks>
+          </li>
+        </template>
+
+        <!-- user profile -->
+        <template #bottom-links>
+          <!-- <UserProfileDropdown up /> -->
+        </template>
+      </Sideblock>
+    </Transition>
+
+    <LanguagesPanel />
+    <ActivityPanel />
+    <SearchPanel />
+    <TaskPanel />
+
+    <VViewWrapper class="mt-2" :full="isDesktopSideblockOpen">
+      <VPageContentWrapper>
+        <template v-if="props.nowrap">
+          <slot />
+        </template>
+        <VPageContent v-else class="is-relative">
+          <div class="page-title has-text-centered">
+            <!-- Sidebar Trigger -->
+            <div
+              class="vuero-hamburger nav-trigger push-resize"
+              tabindex="0"
+              role="button"
+            >
+              <span
+                v-if="shouldShowButton"
+                @click="
+                  () => {
+                    router.go(-1);
+                  }
+                "
+                class="menu-toggle has-chevron"
+              >
+                <span>
+                  <i
+                    style="color: var(--primary); background-color: transparent"
+                    class="lnir lnir-chevron-left"
+                    aria-hidden="true"
+                  ></i>
+                </span>
+              </span>
+            </div>
+
+            <div class="title-wrap is-flex cu-align-center">
+              <h1 class="title is-4 mr-2">
+                {{ viewWrapper.pageTitle }}
+              </h1>
+
+              <span
+                class="ml-2 is-md-bold cu-pointer"
+                :style="{ color: getPagesColors(index) }"
+                v-for="(item, index) in mostVisitedPages"
+                :key="index"
+                @click="gotoVisitedPage(item.page)"
+              >
+                {{ `#${item.page}` }}
+              </span>
+            </div>
+
+            <!-- toolbar -->
+            <div class="toolbar">
+              <VButton
+                class="mr-4"
+                color="info"
+                rounded
+                light
+                raised
+                @click="addJobModalOpen = true"
+                circle
+                icon="fas fa-plus"
+                v-tooltip.bottom.left.rounded.info="'Create new job'"
+                label="Rounded"
+                >Create Job</VButton
+              >
+              <SearchWorkerInput />
+
+              <VIconButton
+                color="info"
+                light
+                raised
+                @click="invitationModal = true"
+                circle
+                icon="fas fa-link"
+                v-tooltip.bottom.left.rounded.info="'Invitation link'"
+                label="Rounded"
+              />
+              <ToolbarNotification />
+
+              <a
+                class="toolbar-link right-panel-trigger"
+                aria-label="View activity panel"
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="panels.setActive('activity')"
+                @click="panels.setActive('activity')"
+              >
+                <i
+                  aria-hidden="true"
+                  class="iconify"
+                  data-icon="feather:grid"
+                />
+              </a>
+              <!-- darkmode -->
+              <div class="toolbar-link">
+                <label
+                  tabindex="0"
+                  class="dark-mode"
+                  role="button"
+                  @keydown.space.prevent="
+                    (e) => (e.target as HTMLLabelElement).click()
+                  "
+                >
+                  <input
+                    data-cy="dark-mode-toggle"
+                    type="checkbox"
+                    :checked="!darkmode.isDark"
+                    @change="darkmode.onChange"
+                  />
+                  <span />
+                </label>
+              </div>
+
+              <!-- User Profile -->
+              <UserProfileDropdown />
+            </div>
+          </div>
+
+          <slot />
+        </VPageContent>
+      </VPageContentWrapper>
+    </VViewWrapper>
+  </div>
+
+  <AddJobsModal
+    v-if="addJobModalOpen"
+    :AddJobModalOpen="addJobModalOpen"
+    @update:modalHandler="addJobModalOpen = false"
+  />
+
+  <InvitationLink
+    v-if="invitationModal"
+    :invitationModal="invitationModal"
+    @update:modalHandler="(value: boolean) => (invitationModal = value)"
+  />
+</template>
+<style lang="scss">
+.sleakDivider {
+  margin-top: 6px;
+  width: 24px;
+  border-radius: 20%;
+  height: 4px;
+  background-color: #e2e2e28c;
+  margin-left: 15%;
+}
+.df-messenger {
+  position: fixed !important;
+  bottom: 10px;
+  right: 10px;
+  z-index: 99;
+}
+</style>
+<style lang="scss" scoped>
+.arez-version {
+  p {
+    color: var(--white);
+  }
+}
+
+.is-dark {
+  .arez-version {
+    p {
+      color: black;
+    }
+  }
+}
+
+.icon-iconify {
+  &:hover {
+    color: var(--white);
+  }
+}
+
+.icon-iconify:hover {
+  color: var(--white);
+}
+
+#cus-spanLink {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center;
+  margin: 0;
+}
+
+#cus-routerLinks {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.cus-active-link {
+  transition: all 0.3s ease-in-out;
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+  transform: translate(1.2);
+
+  img {
+    border: 2px solid var(--success);
+    border-radius: 8px;
+  }
+
+  i {
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #dbdbdb;
+  }
+}
+
+.cus-active-link-icon {
+  color: var(--primary) !important;
+  font-weight: 500 !important;
+
+  img {
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+  }
+
+  i {
+    font-weight: 600;
+  }
+}
+
+.cus-dropdown-head {
+  display: flex !important;
+}
+
+.indutryOptions {
+  margin-top: 20px;
+  display: flex;
+  gap: 0px;
+
+  .options {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    color: aliceblue;
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 60px;
+      height: 60px;
+    }
+
+    p {
+      font-weight: 500;
+    }
+  }
+
+  .cus-selected {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 60px;
+      height: 60px;
+      border-color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 16px;
+    }
+
+    p {
+      font-weight: 600;
+      color: var(--primary);
+    }
+  }
+}
+</style>

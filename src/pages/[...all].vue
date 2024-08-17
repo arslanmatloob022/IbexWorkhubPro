@@ -1,8 +1,24 @@
 <script setup lang="ts">
-import { useSSRContext } from 'vue'
+/**
+ * This is a Vue Component that will be
+ * automatically mapped to a catch all path on vue-router (404).
+ *
+ * You will be able to access this page  at http://localhost:3000/non-existing-page
+ *
+ * Read more about routing:
+ * @see /vite.config.ts
+ * @see /src/router.ts
+ */
+
+import { useI18n } from 'vue-i18n'
+import { useDarkmode } from '/@src/stores/darkmode'
+
+const darkmode = useDarkmode()
+
+const { t } = useI18n()
 
 useHead({
-  title: `Page not found`,
+  title: `${t('page-title')} - Arez`,
   meta: [
     {
       name: 'robots',
@@ -16,7 +32,20 @@ useHead({
   <MinimalLayout>
     <div class="error-container">
       <div class="error-nav">
-        <VDarkmodeToggle />
+        <label
+          class="dark-mode"
+          tabindex="0"
+          role="button"
+          @keydown.space.prevent="(e) => (e.target as HTMLLabelElement).click()"
+        >
+          <input
+            data-cy="dark-mode-toggle"
+            type="checkbox"
+            :checked="!darkmode.isDark"
+            @change="darkmode.onChange"
+          >
+          <span />
+        </label>
       </div>
 
       <div class="error-wrapper">
@@ -24,20 +53,19 @@ useHead({
           <div class="bg-number">
             404
           </div>
+          <SVGErrorPlaceholder />
 
-          <div class="p-t-100">
-            <h3 class="p-t-50">We couldn't find that page</h3>
-            <p>
-              Looks like we couldn't find that page. Please try again or contact an administrator if the problem persists.
-            </p>
-          </div>
+          <h3>{{ t('pages.not-found.page-heading') }}</h3>
+          <p>
+            {{ t('pages.not-found.page-body') }}
+          </p>
           <div class="button-wrap">
             <VButton
               color="primary"
               elevated
               to="/"
             >
-              Take me Back
+              {{ t('pages.not-found.back-button') }}
             </VButton>
           </div>
         </div>
@@ -94,7 +122,7 @@ useHead({
       }
 
       img,
-      .iconify {
+      svg {
         display: block;
         max-width: 100%;
         margin: 0 auto;
@@ -152,7 +180,7 @@ useHead({
         }
 
         img,
-        .iconify {
+        svg {
           max-width: 345px;
         }
       }

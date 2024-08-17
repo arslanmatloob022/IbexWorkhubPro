@@ -1,7 +1,9 @@
 import {
   createRouter as createClientRouter,
   createWebHistory,
-} from 'vue-router/auto'
+  createMemoryHistory,
+  setupDataFetchingGuard,
+} from "vue-router/auto";
 
 /*
  * By default, this plugins checks the folder at src/pages for any .vue files
@@ -25,17 +27,17 @@ import {
  * /users/:id: -> renders the users/[id].vue component. id becomes a route param.
  *
  * View more examples:
- * @see https://uvr.esm.is/guide/file-based-routing.html
+ * @see https://github.com/posva/unplugin-vue-router#routes-folder-structure
  */
 export function createRouter() {
-  return createClientRouter({
+  const router = createClientRouter({
     /**
      * If you need to serve vuero under a subdirectory,
      * you have to set the name of the directory in createWebHistory here
      * and update "base" config in vite.config.ts
      */
     // history: createWebHistory('my-subdirectory'),
-    history: createWebHistory(),
+    history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
 
     /**
      * You can extend existing routes:
@@ -54,42 +56,51 @@ export function createRouter() {
     scrollBehavior: (to, from, savedPosition) => {
       // Scroll to heading on click
       if (to.hash) {
-        if (to.hash === '#') {
+        if (to.hash === "#") {
           return {
             top: 0,
-            behavior: 'smooth',
-          }
+            behavior: "smooth",
+          };
         }
 
-        const el = document.querySelector(to.hash)
+        const el = document.querySelector(to.hash);
 
         // vue-router does not incorporate scroll-margin-top on its own.
         if (el) {
-          const top = parseFloat(getComputedStyle(el).scrollMarginTop)
+          const top = parseFloat(getComputedStyle(el).scrollMarginTop);
           if (el instanceof HTMLElement) {
-            el.focus()
+            el.focus();
           }
 
           return {
             el: to.hash,
-            behavior: 'smooth',
+            behavior: "smooth",
             top,
-          }
+          };
         }
 
         return {
           el: to.hash,
-          behavior: 'smooth',
-        }
+          behavior: "smooth",
+        };
       }
 
       // Scroll to top of window
       if (savedPosition) {
-        return savedPosition
-      }
-      else if (to.path !== from.path) {
-        return { top: 0 }
+        return savedPosition;
+      } else if (to.path !== from.path) {
+        return { top: 0 };
       }
     },
-  })
+  });
+
+  /**
+   * Data Fetching is an experimental feature from vue & vue-router
+   *
+   * @see https://github.com/vuejs/rfcs/discussions/460
+   * @see https://github.com/posva/unplugin-vue-router/tree/main/src/data-fetching
+   */
+  setupDataFetchingGuard(router);
+
+  return router;
 }

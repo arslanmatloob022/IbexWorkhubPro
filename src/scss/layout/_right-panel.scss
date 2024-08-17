@@ -1,4 +1,4 @@
-/*! _right-panel.scss | Vuero | Css ninja 2020-2024 */
+/*! _right-panel.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. Right Panel Base
@@ -92,14 +92,16 @@
         &:hover {
           background: var(--fade-grey);
 
-          .iconify {
+          svg {
             color: var(--primary);
           }
         }
 
-        .iconify {
+        svg {
           color: var(--light-text);
-          font-size: 22px;
+          height: 22px;
+          width: 22px;
+          transition: stroke 0.3s;
         }
       }
     }
@@ -128,9 +130,9 @@
 
         .close-panel {
           &:hover {
-            background: color-mix(in oklab, var(--dark-sidebar), white 6%);
+            background: var(--dark-sidebar-light-6);
 
-            .iconify {
+            svg {
               color: var(--primary);
             }
           }

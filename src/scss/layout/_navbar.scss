@@ -1,4 +1,4 @@
-/*! _navbar.scss | Vuero | Css ninja 2020-2024 */
+/*! _navbar.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. Webapp Subnavbar
@@ -17,30 +17,22 @@
   opacity: 0;
   pointer-events: none;
   z-index: 99;
-  border: 1px solid color-mix(in oklab, var(--fade-grey), black 3%);
+  transform: translateY(10px);
+  border: 1px solid var(--fade-grey-dark-3);
   box-shadow: var(--light-box-shadow);
-  transition-property: height, opacity;
-  transition-duration: 0.1s, 0.2s;
-  top: 64px;
+  transition: all 0.3s; // transition-all test
+  max-width: 800px;
+  top: 85px;
   inset-inline-start: 0;
   inset-inline-end: 0;
   margin: 0 auto;
+  border-radius: var(--radius-large);
 
   &.is-active {
-    height: calc(100% - 64px);
+    height: 320px;
     opacity: 1;
     pointer-events: all;
-  }
-
-  &.is-dropdown {
-    position: absolute;
-    top: 100%;
-    min-width: 400px;
-    max-width: 800px;
-    width: max-content;
-    padding: 1rem;
-    height: auto;
-    border-radius: var(--radius-large);
+    transform: translateY(0);
   }
 
   .navbar-subnavbar-inner {
@@ -81,7 +73,7 @@
               font-weight: 600;
               color: var(--primary);
               background: var(--white);
-              border-color: color-mix(in oklab, var(--fade-grey), black 3%);
+              border-color: var(--fade-grey-dark-3);
               box-shadow: var(--light-box-shadow);
             }
 
@@ -94,7 +86,7 @@
 
           &:hover {
             a {
-              background: color-mix(in oklab, var(--fade-grey), white 4%);
+              background: var(--fade-grey-light-4);
             }
           }
 
@@ -134,7 +126,7 @@
 
           .column {
             &:not(:last-child) {
-              border-inline-end: 1px solid color-mix(in oklab, var(--fade-grey), black 3%);
+              border-inline-end: 1px solid var(--fade-grey-dark-3);
             }
           }
 
@@ -202,9 +194,9 @@
                 border-radius: 0;
 
                 a {
-                  color: color-mix(in oklab, var(--primary), black 14%);
+                  color: var(--primary-dark-14);
 
-                  .iconify {
+                  svg {
                     opacity: 1;
                     fill: var(--primary);
                   }
@@ -212,9 +204,9 @@
               }
 
               .router-link-exact-active {
-                color: color-mix(in oklab, var(--primary), black 14%);
+                color: var(--primary-dark-14);
 
-                .iconify {
+                svg {
                   opacity: 1;
                   fill: var(--primary);
                 }
@@ -223,7 +215,7 @@
               a {
                 display: flex;
                 align-items: center;
-                color: color-mix(in oklab, var(--light-text), white 5%);
+                color: var(--light-text-light-5);
 
                 span {
                   font-family: var(--font);
@@ -246,7 +238,7 @@
                   margin-inline-start: 0.25rem;
                 }
 
-                .iconify {
+                svg {
                   opacity: 0;
                   position: relative;
                   top: 0;
@@ -277,16 +269,13 @@
 
 .is-dark {
   .navbar-subnavbar {
-    background: color-mix(in oklab, var(--dark-sidebar), white 2%);
-    border-color: color-mix(in oklab, var(--dark-sidebar), white 4%);
-
     .navbar-subnavbar-inner {
       .tab-content {
         .tab-content-inner {
           .center {
             .column {
               &:not(:last-child) {
-                border-inline-end: 1px solid color-mix(in oklab, var(--dark-sidebar), white 12%) !important;
+                border-inline-end: 1px solid var(--dark-sidebar-light-12) !important;
               }
             }
 

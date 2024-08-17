@@ -1,4 +1,4 @@
-/*! _responsive.scss | Vuero | Css ninja 2020-2024 */
+/*! _responsive.scss | Vuero | Css ninja 2020-2023 */
 
 /* ==========================================================================
 Responsive styles
@@ -124,6 +124,13 @@ Responsive styles
           overflow-x: hidden;
         }
       }
+
+      .profile-dropdown {
+        .dropdown-trigger img {
+          height: 42px !important;
+          width: 42px !important;
+        }
+      }
     }
   }
 
@@ -199,6 +206,11 @@ Responsive styles
 
     .brand-start {
       width: 90px;
+
+      .navbar-burger {
+        height: 60px;
+        width: 60px;
+      }
     }
 
     .is-brand {
@@ -339,6 +351,11 @@ Responsive styles
 
     .brand-start {
       width: 90px;
+
+      .navbar-burger {
+        height: 60px;
+        width: 60px;
+      }
     }
 
     .is-brand {
@@ -400,7 +417,7 @@ Responsive styles
       height: 60px !important;
       background: #fafafa;
 
-      .iconify {
+      svg {
         color: var(--muted-grey);
       }
     }
@@ -592,6 +609,10 @@ Responsive styles
       height: 60px;
       width: 100%;
       margin-inline-start: 0 !important;
+
+      .navbar-burger {
+        display: flex !important;
+      }
     }
   }
 }

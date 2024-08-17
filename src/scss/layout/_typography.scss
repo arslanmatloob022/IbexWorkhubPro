@@ -1,17 +1,10 @@
-/*! _typography.scss | Vuero | Css ninja 2020-2024 */
+/*! _typography.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. Titles
     2. Titles Dark mode
     3. Typography Helpers
 */
-
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-synthesis: none;
-  text-rendering: optimizelegibility;
-}
 
 /* ==========================================================================
 1. Titles
@@ -100,12 +93,6 @@ code {
   font-family: var(--font-monospace);
 }
 
-
-.font-mono {
-  white-space: pre;
-  font-family: var(--font-monospace);
-}
-
 pre {
   border-radius: 0.75rem;
 
@@ -181,6 +168,10 @@ button,
 
   code {
     color: var(--primary);
+  }
+
+  strong {
+    color: var(--white);
   }
 }
 

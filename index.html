@@ -1,11 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>My App</title>
-
     <!-- 
       preloading fonts vendors
     -->
@@ -21,7 +16,7 @@
       onload="this.rel='stylesheet'"
       href="/vendors/line-icons-pro.css"
     />
-
+    <link rel="icon" href="/public/favicon.svg" type="image/x-icon" />
     <!-- 
       this enables dark mode before the app is loaded when the user 
       has dark mode enabled in their OS but only if the user 
@@ -29,18 +24,33 @@
 
       @see /src/stores/darkmode.ts
     -->
+    <link
+      rel="stylesheet"
+      href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css"
+    />
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
     <script>
-      ;(function () {
+      (function () {
         const prefersDark =
-          window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        const setting = localStorage.getItem('color-schema') || 'auto'
-        if (setting === 'dark' || (prefersDark && setting !== 'light'))
-          document.documentElement.classList.toggle('is-dark', true)
-      })()
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const setting = localStorage.getItem("color-schema") || "auto";
+        if (setting === "dark" || (prefersDark && setting !== "light"))
+          document.documentElement.classList.toggle("is-dark", true);
+      })();
     </script>
   </head>
   <body>
+    <!-- 
+      this is a placeholder for Teleport's vue feature
+
+      @see /src/pages/navbar/dashboards/influencer.vue
+      @see /src/pages/sidebar/dashboards/influencer.vue
+    -->
+    <div data-teleport-bg></div>
+
     <div id="app" class="app-wrapper"></div>
     <script type="module" src="/src/entry-client.ts"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEe0zhZY_KmL0-0fa_eqJ5j2zlwaJvw00&v=weekly&libraries=visualization,drawing&loading=async"></script>
   </body>
 </html>

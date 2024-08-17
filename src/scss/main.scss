@@ -1,41 +1,603 @@
-/*! main.scss | Vuero | Css ninja 2020-2024 */
+@charset "UTF-8";
+
+/*! main.scss | Vuero | Css ninja 2020-2023 */
 
 /* ==========================================================================
 SCSS Imports
 ========================================================================== */
 
-@import './bulma-generated/generated-vars.sass';
-@import './abstracts/all';
-@import './css-variables/all';
+@import "./bulma-generated/generated-vars.sass";
+@import "./css-variables/all";
+@import "./abstracts/ltr";
+@import "./abstracts/all";
 
 // Here we import bulma-css-vars instead of bulma
 // because we want to use the variables defined in the file
-@import '../../node_modules/@cssninja/bulma-css-vars/bulma-cv-lib.sass';
-@import './layout/all';
-@import './components/cards';
-@import './components/content';
-@import './components/forms-general';
-@import './components/forms-checkboxes';
-@import './components/forms-slider';
-@import './components/forms-multiselect';
-@import './components/steps';
-@import './components/links';
-@import './components/lists';
-@import './components/nprogress';
-@import './components/datepicker';
-@import './components/divider';
-@import './components/charts';
-@import './components/toggles';
-@import './components/placeload';
-@import './components/popovers';
-@import './components/shiki';
-@import './components/stay-focus';
-@import './components/theme-switch';
-@import './components/table';
-@import './components/toasts';
-@import './components/toolbar';
-@import './components/tooltips';
-@import './components/ckeditor';
-@import './components/color-picker';
-@import './components/credit-card';
-@import './components/widgets';
+@import "../../node_modules/@cssninja/bulma-css-vars/bulma-cv-lib.sass";
+@import "./layout/all";
+@import "./components/cards";
+@import "./components/content";
+@import "./components/forms-general";
+@import "./components/forms-checkboxes";
+@import "./components/forms-slider";
+@import "./components/forms-multiselect";
+@import "./components/steps";
+@import "./components/links";
+@import "./components/lists";
+@import "./components/nprogress";
+@import "./components/datepicker";
+@import "./components/divider";
+@import "./components/editors";
+@import "./components/charts";
+@import "./components/toggles";
+@import "./components/placeload";
+@import "./components/popovers";
+@import "./components/stay-focus";
+@import "./components/theme-switch";
+@import "./components/tabs";
+@import "./components/table";
+@import "./components/toasts";
+@import "./components/toolbar";
+@import "./components/tooltips";
+@import "./components/ckeditor";
+@import "./components/color-picker";
+@import "./components/credit-card";
+@import "./components/widgets";
+@import "./components/layout-selector";
+
+.small-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+}
+.cus-card {
+  padding-bottom: 16px;
+  border-radius: 14px;
+  box-shadow: 0 0 12px #69696945;
+}
+
+.cus-box-shadow {
+  box-shadow: 0 0 16px 1px #69696925;
+}
+
+.cus-main-heading {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.cu-text-muted {
+  color: #999 !important;
+}
+
+.cu-text-primary {
+  color: #999 !important;
+}
+
+.cu-pointer {
+  cursor: pointer;
+}
+.ckeditor h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+.ckeditor h2 {
+  font-size: 2.3rem;
+  font-weight: 600;
+}
+.ckeditor h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.ckeditor h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.ckeditor blockquote {
+  padding: 0.6rem 0.4rem;
+  background: #eee;
+  border-left: 2px solid #2aac8e;
+  color: #222;
+}
+.bg-grey {
+  background-color: #f5f5f5;
+}
+
+.border-bottom-light {
+  border-bottom: 1px solid #69696930;
+}
+.ckeditor ol {
+  margin-left: 1rem;
+}
+
+.is-bold {
+  font-weight: 500;
+}
+.is-md-bold {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.cu-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cus-sub-title {
+  font-size: 14px;
+  color: var(--light-text);
+  font-weight: 400;
+}
+
+.address-list {
+  position: absolute;
+  max-width: 400px;
+  z-index: 2;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #cccccc86;
+  border-radius: 5px;
+  padding: 5px;
+  list-style: none;
+  cursor: pointer;
+  scrollbar-width: thin;
+  scrollbar-color: #2aac8e #32a7768f;
+
+  &.address-list::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 8px;
+  }
+
+  &.address-list::-webkit-scrollbar-thumb {
+    background-color: #2aac8e;
+    border-radius: 8px;
+  }
+
+  &.address-list li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #ecececd8;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+  }
+
+  &.address-list li:hover {
+    background-color: #e0e0e0;
+  }
+}
+
+.cus-dark-color {
+  color: #5d5d5d;
+}
+
+.cus-light-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: #7a7a7a;
+}
+
+.cus-align-center {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.cu-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.is-small-bold {
+  font-size: 12px;
+  font-weight: 500;
+  color: #858585;
+}
+
+.is-underline {
+  text-decoration: underline;
+}
+
+.light-dark {
+  color: #333;
+}
+
+.light-weight {
+  font-weight: 400;
+}
+
+.rounded {
+  border-radius: 16px;
+}
+
+.md-padding {
+  padding: 22px 36px;
+}
+
+.cus-warning-block {
+  padding: 8px;
+  z-index: 99999;
+  bottom: -72px;
+  left: 0;
+  border-radius: 18px;
+  border: solid 1px #fdb201;
+  background-color: rgba(253, 178, 1, 0.62);
+  color: black;
+}
+.cus-black-heading {
+  font-size: 16px;
+  font-weight: 400;
+}
+.weighted {
+  font-weight: 500;
+}
+
+.font-md {
+  font-size: 18px;
+}
+
+.flex-columns {
+  display: flex;
+  flex-direction: column;
+}
+
+.justify-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  align-items: center;
+}
+
+.cus-justify-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cus-light-border {
+  border: 1px solid #87778915;
+  border-radius: 12px;
+}
+
+.text-align-center {
+  text-align: center;
+}
+.cus-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.space-around {
+  display: flex;
+  justify-content: space-around;
+}
+
+.cus-scrollbar {
+  overflow-y: hidden;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scroll-snap-type: proximity;
+  scroll-behavior: smooth;
+
+  scrollbar-color: #2aac8e #e4e4e4e7;
+  border-radius: 12px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #2aac8e;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #d7faeb8f;
+  }
+}
+
+.cus-scrollbary {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #2aac8e #32a7768f;
+
+  &.cus-scrollbary::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    border-radius: 8px;
+  }
+
+  &.cus-scrollbary::-webkit-scrollbar-thumb {
+    background-color: #2aac8e;
+    border-radius: 8px;
+  }
+}
+
+.cus-small-industry {
+  width: 40px;
+  height: 40px;
+}
+
+.cus-stat-heading {
+  color: var(--light-text);
+  font-weight: 500;
+}
+
+.cus-dark-text {
+  color: #696969;
+  font-weight: 500;
+}
+.cus-stat-data {
+  color: var(--primary);
+}
+.cus-onhover {
+  color: var(--secondry);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.28);
+    color: var(--success);
+  }
+}
+
+.lengthy-smart-search-dropdown {
+  .placement-wrapper {
+    width: 100%;
+    height: 4rem;
+    background: #f3f1f1;
+    border-radius: 0.8rem;
+    display: flex;
+    align-items: start;
+    padding: 0.5rem 0.5rem;
+    flex-direction: column;
+    gap: 0rem;
+    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  .first-span {
+    margin-left: 1rem;
+    // font-weight: 500;
+    font-size: 1.1rem;
+    color: #444;
+    transform: translateY(0.5rem);
+  }
+  .multi-select {
+    height: 55px;
+    border-radius: 1rem;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+  .value-image {
+    width: 30px;
+    border-radius: 0.5rem;
+  }
+  .options-div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .option-cdiv {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .option-image {
+    width: 40px;
+    border-radius: 0.5rem;
+  }
+  .option-ddiv {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .option-span {
+    color: #444;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  .mail-span {
+    color: #666;
+    font-size: 1rem;
+    .email-span {
+      color: #444;
+    }
+  }
+  .placement-wrapper:hover {
+    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2);
+  }
+  .sitejob-space {
+    margin-top: -1rem;
+  }
+  .lg-multiselect {
+    .multiselect-dropdown {
+      max-height: 200px !important;
+    }
+  }
+
+  .placement-wrapper
+    > .multiselect
+    > .multiselect-wrapper
+    > .multiselect-search {
+    background: transparent;
+    outline: none;
+  }
+
+  .placement-wrapper > .multiselect > .multiselect-dropdown {
+    border-radius: 0.8rem;
+    margin-bottom: -1.5rem;
+    box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
+    min-height: 320px !important;
+  }
+  .multiselect .multiselect-caret {
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    background: #666;
+  }
+}
+
+.smart-search-dropdown {
+  .placement-wrapper {
+    width: 100%;
+    height: 4rem;
+    background: #f3f1f1;
+    border-radius: 0.8rem;
+    display: flex;
+    align-items: start;
+    padding: 0.5rem 0.5rem;
+    flex-direction: column;
+    gap: 0rem;
+    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  .first-span {
+    margin-left: 1rem;
+    // font-weight: 500;
+    font-size: 1.1rem;
+    color: #444;
+    transform: translateY(0.5rem);
+  }
+  .multi-select {
+    height: 55px;
+    border-radius: 1rem;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+  .value-image {
+    width: 30px;
+    border-radius: 0.5rem;
+  }
+  .options-div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .option-cdiv {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .option-image {
+    width: 40px;
+    border-radius: 0.5rem;
+  }
+  .option-ddiv {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .option-span {
+    color: #444;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  .mail-span {
+    color: #666;
+    font-size: 1rem;
+    .email-span {
+      color: #444;
+    }
+  }
+  .placement-wrapper:hover {
+    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2);
+  }
+  .sitejob-space {
+    margin-top: -1rem;
+  }
+  .lg-multiselect {
+    .multiselect-dropdown {
+      max-height: 300px !important;
+    }
+  }
+
+  .placement-wrapper
+    > .multiselect
+    > .multiselect-wrapper
+    > .multiselect-search {
+    background: transparent;
+    outline: none;
+  }
+
+  .placement-wrapper > .multiselect > .multiselect-dropdown {
+    border-radius: 0.8rem;
+    margin-bottom: -1.5rem;
+    box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
+    min-height: 160px !important;
+  }
+  .multiselect .multiselect-caret {
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    background: #666;
+  }
+}
+
+// apply on alll input fields =================================================
+.cu-all-input {
+  input {
+    border-radius: 15px !important;
+    background-color: #f5f5f5;
+    border: none !important;
+    padding-left: 24px !important;
+  }
+  textarea {
+    border-radius: 15px !important;
+    background-color: #f5f5f5 !important;
+    border: none !important;
+    padding: 16px 20px !important;
+  }
+  select {
+    border-radius: 15px !important;
+    background-color: #f5f5f5;
+    border: none !important;
+    height: 45px;
+    padding-left: 36px !important;
+    padding-right: 20px !important;
+  }
+  .control {
+    .has-icon {
+      input {
+        padding: 23px 20px !important;
+        padding-inline-start: 38px !important;
+      }
+    }
+    input {
+      padding: 23px 20px !important;
+      padding-inline-start: 18px !important;
+    }
+    .form-icon {
+      height: 47px !important;
+    }
+  }
+}
+
+.is-dark {
+  .cu-all-input {
+    input {
+      background-color: var(--dark-sidebar-light-2) !important;
+    }
+    select {
+      background-color: var(--dark-sidebar-light-2) !important;
+    }
+  }
+}
+
+.cus-tag-button {
+}
+// =====================================================================================
+// ==================================================================================

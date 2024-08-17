@@ -1,4 +1,4 @@
-/*! _popovers.scss | Vuero | Css ninja 2020-2024 */
+/*! _popovers.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. Web UI Popover
@@ -134,7 +134,7 @@
       }
 
       label {
-        color: color-mix(in oklab, var(--dark-text), white 35%);
+        color: var(--dark-text-light-35);
         text-transform: uppercase;
         font-size: 70%;
       }
@@ -152,7 +152,7 @@
       justify-content: center;
       align-items: center;
 
-      .iconify {
+      svg {
         height: 18px;
         width: 18px;
         color: var(--dark-text);
@@ -174,7 +174,7 @@
 .is-dark {
   .v-popover {
     background: var(--dark-sidebar) !important;
-    border-color: color-mix(in oklab, var(--dark-sidebar), white 6%);
+    border-color: var(--dark-sidebar-light-6);
 
     &.top {
       .webui-arrow {
@@ -238,7 +238,7 @@
     }
 
     .title {
-      color: color-mix(in oklab, var(--primary-grey), black 5%) !important;
+      color: var(--primary-grey-dark-5) !important;
     }
 
     .country img,
@@ -252,12 +252,12 @@
       }
 
       span {
-        color: color-mix(in oklab, var(--primary-grey), black 10%) !important;
+        color: var(--primary-grey-dark-10) !important;
       }
     }
 
     .media + .media {
-      border-top-color: color-mix(in oklab, var(--dark-sidebar), white 10%) !important;
+      border-top-color: var(--dark-sidebar-light-10) !important;
     }
 
     .loader-overlay {
@@ -313,14 +313,14 @@
       }
 
       .popover-fake-avatar {
-        background: color-mix(in oklab, var(--fade-grey), white 3%);
+        background: var(--fade-grey-light-3);
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: var(--radius-rounded);
 
         &.is-primary {
-          background: color-mix(in oklab, var(--primary), white 42%);
+          background: var(--primary-light-42);
 
           span {
             color: var(--primary);
@@ -328,7 +328,7 @@
         }
 
         &.is-accent {
-          background: color-mix(in oklab, var(--primary), white 36%);
+          background: var(--primary-light-36);
 
           span {
             color: var(--primary);
@@ -336,7 +336,7 @@
         }
 
         &.is-success {
-          background: color-mix(in oklab, var(--success), white 45%);
+          background: var(--success-light-45);
 
           span {
             color: var(--success);
@@ -344,7 +344,7 @@
         }
 
         &.is-info {
-          background: color-mix(in oklab, var(--info), white 45%);
+          background: var(--info-light-45);
 
           span {
             color: var(--info);
@@ -352,7 +352,7 @@
         }
 
         &.is-warning {
-          background: color-mix(in oklab, var(--warning), white 32%);
+          background: var(--warning-light-32);
 
           span {
             color: var(--warning);
@@ -360,7 +360,7 @@
         }
 
         &.is-danger {
-          background: color-mix(in oklab, var(--danger), white 36%);
+          background: var(--danger-light-36);
 
           span {
             color: var(--danger);
@@ -368,7 +368,7 @@
         }
 
         &.is-h-purple {
-          background: color-mix(in oklab, var(--purple), white 36%);
+          background: var(--purple-light-36);
 
           span {
             color: var(--purple);
@@ -376,7 +376,7 @@
         }
 
         &.is-h-orange {
-          background: color-mix(in oklab, var(--orange), white 18%);
+          background: var(--orange-light-18);
 
           span {
             color: var(--orange);
@@ -384,7 +384,7 @@
         }
 
         &.is-h-blue {
-          background: color-mix(in oklab, var(--blue), white 32%);
+          background: var(--blue-light-32);
 
           span {
             color: var(--blue);
@@ -392,7 +392,7 @@
         }
 
         &.is-h-red {
-          background: color-mix(in oklab, var(--red), white 38%);
+          background: var(--red-light-38);
 
           span {
             color: var(--red);
@@ -400,7 +400,7 @@
         }
 
         &.is-h-green {
-          background: color-mix(in oklab, var(--green), white 22%);
+          background: var(--green-light-22);
 
           span {
             color: var(--green);
@@ -408,10 +408,10 @@
         }
 
         &.is-h-yellow {
-          background: color-mix(in oklab, var(--yellow), white 22%);
+          background: var(--yellow-light-22);
 
           span {
-            color: color-mix(in oklab, var(--yellow), black 8%);
+            color: var(--yellow-dark-8);
           }
         }
 
@@ -493,14 +493,14 @@
 
         &:hover,
         &:focus {
-          background: color-mix(in oklab, var(--fade-grey), white 3%);
+          background: var(--fade-grey-light-3);
 
-          .iconify {
+          svg {
             color: var(--light-text);
           }
         }
 
-        .iconify {
+        svg {
           width: 16px;
           height: 16px;
           color: var(--light-text);
@@ -551,7 +551,7 @@
 .is-dark {
   .tippy-box {
     background: var(--dark-sidebar) !important;
-    border-color: color-mix(in oklab, var(--dark-sidebar), white 6%);
+    border-color: var(--dark-sidebar-light-6);
   }
 
   .tippy-box[data-theme~='light'][data-placement^='top'] > .tippy-arrow::before {
@@ -572,7 +572,7 @@
 
   .tippy-profile {
     background: var(--dark-sidebar) !important;
-    border-color: color-mix(in oklab, var(--dark-sidebar), white 6%);
+    border-color: var(--dark-sidebar-light-6);
   }
 
   .v-popover-profile {
@@ -587,7 +587,7 @@
       .skill-meta {
         .username,
         .skill-name {
-          color: color-mix(in oklab, var(--primary-grey), black 5%);
+          color: var(--primary-grey-dark-5);
         }
       }
 
@@ -597,9 +597,9 @@
       }
 
       .popover-actions .popover-icon:hover {
-        background: color-mix(in oklab, var(--dark-sidebar), white 6%) !important;
+        background: var(--dark-sidebar-light-6) !important;
 
-        .iconify {
+        svg {
           color: var(--primary);
         }
       }

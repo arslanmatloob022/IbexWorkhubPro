@@ -13,7 +13,6 @@
  * @see /plugins/*.ts
  */
 import { createApp } from './app'
-import 'iconify-icon'
 
 /**
  * We create our app and mount it when it is ready
@@ -21,6 +20,13 @@ import 'iconify-icon'
  * @see /@src/app.ts for more detailed informations
  */
 createApp().then(async (vuero) => {
+  // @ts-ignore
+  const initialState = window.__vuero__
+  // restore pinia state from SSR if any
+  if (typeof initialState?.pinia === 'object') {
+    vuero.pinia.state.value = { ...initialState.pinia }
+  }
+
   // wait for the app to be ready
   await vuero.router.isReady()
 

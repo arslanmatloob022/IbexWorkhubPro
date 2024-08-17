@@ -1,0 +1,39 @@
+<script setup lang="ts">
+import { useUserSession } from "/@src/stores/userSession";
+import { useViewWrapper } from "/@src/stores/viewWrapper";
+const route = useRoute();
+
+const userSession = useUserSession();
+const viewWrapper = useViewWrapper();
+let title = "Workers";
+
+// watch(
+//   () => route.fullPath,
+//   async (newFullPath, oldFullPath) => {
+//     title = "Workers"; // Reset title
+//     if (route.query.type) {
+//       title = `Workers (${route.query.type})`;
+//     } else if (route.query.archive) {
+//       title = "Workers (Archived)";
+//     }
+//     viewWrapper.setPageTitle(title);
+//   }
+// );
+
+// Initial title setting
+if (route.query.type) {
+  title = `Workers (${route.query.type})`;
+} else if (route.query.archive) {
+  title = "Workers (Archived)";
+}
+viewWrapper.setPageTitle(title);
+useHead({
+  title: "Workers - Arez",
+});
+</script>
+
+<template>
+  <div class="page-content-inner">
+    <WorkersNetwork :partnerID="route.params.id" />
+  </div>
+</template>

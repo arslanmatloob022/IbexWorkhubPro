@@ -1,705 +1,493 @@
 <script setup lang="ts">
-import Layout from "/@src/layouts/landing.vue";
+import packageJson from '../../package.json'
+
+type TabId = 'elements' | 'components' | 'forms' | 'plugins'
+const activeTab = ref<TabId>('elements')
 
 useHead({
-  title: "App Landing Page",
-});
+  title: 'AREZ - Workforce Management Software',
+})
+
 </script>
 
 <template>
-  <Layout>
-    <div class="hero marketing-hero is-centered is-fullheight">
-      <div class="hero-body">
+  <div>
+  <MinimalLayout theme="light">
+    <div class="landing-page-wrapper">
+      <!-- Hero and Navbar -->
+      <div
+        id="vuero-landing "
+        class="hero is-fullheight is-active"
+      >
+        <!-- Navbar partial -->
+        <LandingNavigation />
+        
+        <div class="hero-body has-text-centered">
+          <div class="container" id="home">
+            <h1 class="title is-1 is-bold dark-white is-leading">
+              <span>AREZ</span>
+              Improve visibility and control over your security staff.
+              
+            </h1>
+            <h3 class="subtitle is-4">
+              Reduce risk and increase profitability by effectively managing and tracking your security crew in real-time and integrating time and labour with invoicing and payroll in one security workforce management software package.
+     
+            </h3>
+
+            <div class="buttons mb-2">
+              <VButton
+                href="#"
+                color="primary"
+                rounded
+              >
+                Book a Demo
+              </VButton>
+            </div>
+
+            <div class="trusted-by mb-4">
+              <span>Trusted by <span>2000+ customers</span></span>
+              <div class="rating">
+                <i
+                  class="iconify"
+                  data-icon="uiw:star-on"
+                />
+                <i
+                  class="iconify"
+                  data-icon="uiw:star-on"
+                />
+                <i
+                  class="iconify"
+                  data-icon="uiw:star-on"
+                />
+                <i
+                  class="iconify"
+                  data-icon="uiw:star-on"
+                />
+                <i
+                  class="iconify"
+                  data-icon="uiw:star-on"
+                />
+              </div>
+            </div>
+            <div class="hero-mockup-wrap">
+              <div class="hero-mockup" style="background-color: transparent;">
+                <img
+                  class="light-image-block-l"
+                  src="https://arez.io/images/banner/single-welcome.webp"
+                  alt=""
+                >
+                <img
+                  class="dark-image-block-l"
+                  src="https://arez.io/images/banner/single-welcome.webp"
+                  alt=""
+                >
+              </div>
+              <div class="hero-mockup-gradient" />
+            </div>
+ 
+          </div>
+        </div>
+
+
+      </div>
+
+      <!--Stacks Section-->
+      <div
+        id="arez-features"
+        class="section"
+      >
         <div class="container">
-          <div class="columns is-vcentered has-text-centered">
-            <div class="column">
-              <h1 class="title is-1 is-bold">
-                Easier development. Beautiful projects
-              </h1>
-              <h3 class="subtitle is-4 pt-2 light-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Isto
-                modo ne improbos quidem.
-              </h3>
-              <div class="buttons is-centered">
-                <VButton color="primary" bold rounded raised>
-                  Get Started
-                </VButton>
-                <VButton color="primary" outlined bold rounded raised>
-                  14-day Trial
-                </VButton>
-              </div>
-              <div class="hero-mockup">
-                <img
-                  class="light-image-block"
-                  src="https://media.cssninja.io/content/products/screenshots/vuero/11.png"
-                  alt=""
+       
+
+          <!--Title-->
+          <div class="section-title has-text-centered">
+            <h2 class="title is-2">
+              Amazing Features
+            </h2>
+            <h4>Front Line Efficiency Integrated with Back Office Intelligence.</h4>
+          </div>
+
+          <!--Boxed Features-->
+          <div class="boxed-features">
+            <div class="flex-card light-bordered hover-inset">
+              <div class="flex-cell is-bordered">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-toolbox"
                 />
-                <img
-                  class="dark-image-block"
-                  src="https://media.cssninja.io/content/products/screenshots/vuero/12.png"
-                  alt=""
-                />
+                <h3>Verification of SIA license</h3>
+                <p>Verify SIA license and checks SIA validity directly with the SIA database.</p>
               </div>
+              <div class="flex-cell is-bordered">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-display-alt"
+                />
+                <h3>BS7858 employment checks</h3>
+                <p>Verify employment checks and securely manage employees documents.</p>
+              </div>
+              <div class="flex-cell is-bordered">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-moon"
+                />
+                <h3>Register new employees</h3>
+                <p>Register unlimited new employees into your team and collaborate as much as you need.</p>
+              </div>
+              <div class="flex-cell is-bordered no-border-edge">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-rocket"
+                />
+                <h3>Active Support</h3>
+                <p>Our support helps you solve any issues you have</p>
+              </div>
+              <div class="flex-cell">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-code"
+                />
+                <h3>Employee reports</h3>
+                <p>Download realtime employees reports with multiple filters.</p>
+              </div>
+              <div class="flex-cell">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-plug"
+                />
+                <h3>Complete & incomplete profiles</h3>
+                <p>Display completed and incomplete employees profiles with employees documents.</p>
+              </div>
+              <div class="flex-cell">
+                <i
+                  class="lnil lnil-switch"
+                  aria-hidden="true"
+                />
+                <h3>RTL Support</h3>
+                <p>Vuero supports RTL layouts. Configure it in less than a minute.</p>
+              </div>
+              <div class="flex-cell no-border-edge">
+                <i
+                  aria-hidden="true"
+                  class="lnil lnil-file-name"
+                />
+                <h3>Reminder expired SIA license</h3>
+                <p>Determine in advance if employee SIA is about to expiry in next 2 weeks.</p>
+              </div>
+            </div>
+          </div>
+
+          <!--CTA-->
+          <div class="cta-block" style="flex-direction: column; align-items: flex-start; gap: 30px;">
+            <div class="head-text ">
+              <h3>Register of Certificate Holders</h3>
+              <p>Once a certificate has been issued, details about the certificate holder are recorded in a register and made available to the public. Establishing and maintaining a record is required under Section 12 of the Private Security Industry Act. You will be able to search the register on the date of the birth field if it is known to you, but this information will not be made available from any obtained result. When a result is obtained by entering the date of birth, it can be taken as confirmation that the date entered is correct. The address of an individual will not be made public.</p>
+            </div>
+            <div class="head-action">
+              <div class="buttons">
+                <a
+                  href="http://go.cssninja.io/buy-vuero"
+                  class="button v-button is-primary is-rounded is-elevated action-button"
+                >
+                  Find by certificate
+                </a>
+                <a
+                  target="_blank"
+                  href="https://go.cssninja.io/discord"
+                  class="button chat-button"
+                >
+                  Chat with us
+                </a>
+              </div>
+            </div>
+          </div>
+
+       
+
+          
+        </div>
+      </div>
+
+
+
+ 
+
+      <div
+        id="arez-services"
+        class="section"
+      >
+        <div class="container">
+          <div class="columns is-vcentered">
+            <div class="column is-6 is-offset-3 has-text-centered">
+              <!--Title-->
+              <div class="section-title has-text-centered p-b-40">
+                <h2 class="title is-3">
+                  AREZ Services
+                </h2>
+                <h4>Every annual contract is designed to support unlimited collaboration for everyone on your project — with fixed, predictable pricing from day one.</h4>
+              </div>
+            </div>
+          </div>
+          <div class="columns is-vcentered component-features is-flex-tablet-p">
+            <div class="column is-4">
+              <!-- Side icon box -->
+              <div class="media-flex">
+                <div class="left-icon">
+                  <i
+                    aria-hidden="true"
+                    class="lnil lnil-construction"
+                  />
+                </div>
+                <div class="flex-meta">
+                  <h4>Unlimited users</h4>
+                  <p>
+                    Grow your team and collaborate as much as you need. We'll never charge you for adding more users to AREZ.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="column is-4">
+              <!-- Side icon box -->
+              <div class="media-flex">
+                <div class="left-icon">
+                  <i
+                    aria-hidden="true"
+                    class="lnil lnil-code"
+                  />
+                </div>
+                <div class="flex-meta">
+                  <h4>Unlimited data</h4>
+                  <p>
+                    Never run out of sheets, data or document storage with plans designed to support even the most complex projects.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="column is-4">
+              <!-- Side icon box -->
+              <div class="media-flex">
+                <div class="left-icon">
+                  <i
+                    aria-hidden="true"
+                    class="lnil lnil-color-palette"
+                  />
+                </div>
+                <div class="flex-meta">
+                  <h4>24/7 Support</h4>
+                  <p>
+                    Say goodbye to downtime with a free, direct line to live technical support for everyone on your project.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="columns is-vcentered component-features is-flex-tablet-p">
+              <div class="column is-4">
+                <!-- Side icon box -->
+                <div class="media-flex">
+                  <div class="left-icon">
+                    <i
+                      aria-hidden="true"
+                      class="lnil lnil-color-palette"
+                    />
+                  </div>
+                  <div class="flex-meta">
+                    <h4>Enterprise-grade security</h4>
+                    <p>
+                      Exceeds global requirements for data safety, security and privacy without sacrificing performance and ease of use.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="column is-4">
+                <!-- Side icon box -->
+                <div class="media-flex">
+                  <div class="left-icon">
+                    <i
+                      aria-hidden="true"
+                      class="lnil lnil-color-palette"
+                    />
+                  </div>
+                  <div class="flex-meta">
+                    <h4>100% Customer satisfaction</h4>
+                    <p>
+                      Get help from real, in-house Customer Success experts whose only metric of success is your success.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="column is-4">
+                <!-- Side icon box -->
+                <div class="media-flex">
+                  <div class="left-icon">
+                    <i
+                      aria-hidden="true"
+                      class="lnil lnil-color-palette"
+                    />
+                  </div>
+                  <div class="flex-meta">
+                    <h4>Cloud-based platform</h4>
+                    <p>
+                      Ditch on-premise servers. AREZ's cloud-based infrastructure will help you grow wherever you go.
+                    </p>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <!--CTA-->
+          <!-- <p class="p-t-40 p-b-40 has-text-centered">
+            <a
+              href="http://go.cssninja.io/buy-vuero"
+              class="button v-button is-rounded is-primary is-elevated is-bold is-huge"
+            >
+              Buy Now
+            </a>
+          </p> -->
+
+      
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="container">
+          <!--Title-->
+          <div class="section-title has-text-centered pt-40">
+            <h2 class="title is-3">
+              
+              Benefits of AREZ
+            </h2>
+            <h4>Improve Security Workforce Operations with AREZ.</h4>
+          </div>
+
+          <div class="customers-choice p-t-40 p-b-40">
+            <!-- Feature -->
+            <div class="columns is-vcentered side-feature">
+              <div class="column is-5 is-offset-1 has-text-centered">
+                <img
+                  class="light-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-4.svg"
+                  alt=""
+                >
+                <img
+                  class="dark-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-4-dark.svg"
+                  alt=""
+                >
+              </div>
+              <div class="column is-5">
+                <h2 class="title m-b-10 is-centered-tablet-portrait">
+                  
+                  SIA validity checks
+                </h2>
+                <p class="section-feature-description is-centered-tablet-portrait">
+                  Live SIA validity checks directly with the SIA database, with the AREZ AI system identifying anomalies in profiles. e.g. the Arez will determine in advance if an officer's SIA is about to expire within two weeks.
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature -->
+            <div class="columns is-vcentered side-feature">
+              <div
+                class="column is-5 has-text-centered h-hidden-desktop h-hidden-tablet-p"
+              >
+                <img
+                  class="light-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-5.svg"
+                  alt=""
+                >
+                <img
+                  class="dark-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-5-dark.svg"
+                  alt=""
+                >
+              </div>
+              <div class="column is-5 is-offset-1">
+                <h2 class="title m-b-10 is-centered-tablet-portrait">
+                  Right to work
+                </h2>
+                <p class="section-feature-description is-centered-tablet-portrait">
+                  Arez.io is software that simplifies security screening checks, reducing the time, effort and cost of vetting officers by up to 10X. In addition, Arez's simple workflow automates the verification of SIA licenses, identity checks, documentation checks and storage in the cloud, employment history, and reference checks, which is flexible enough to meet your company's requirements.
+                </p>
+              </div>
+              <div class="column is-5 has-text-centered h-hidden-mobile">
+                <img
+                  class="light-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-5.svg"
+                  alt=""
+                >
+                <img
+                  class="dark-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-5-dark.svg"
+                  alt=""
+                >
+              </div>
+            </div>
+
+            <!-- Feature -->
+            <div class="columns is-vcentered side-feature">
+              <div class="column is-5 is-offset-1 has-text-centered">
+                <img
+                  class="light-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-6.svg"
+                  alt=""
+                >
+                <img
+                  class="dark-image-l featured-image"
+                  src="/@src/assets/illustrations/landing/feature-6-dark.svg"
+                  alt=""
+                >
+              </div>
+              <div class="column is-5">
+                <h2 class="title m-b-10 is-centered-tablet-portrait">
+                  Proof of identity
+                </h2>
+                <p class="section-feature-description is-centered-tablet-portrait">
+                  The Arez.io AI system allows you to continually maintain the quality of your staff and help with the audit processes, where companies are regularly audited against BS7858 requirements to become approved and maintain approval.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-wrapper">
+            <div class="cta-title">
+              <h3>Subscribe To Newsletter</h3>
+              <a
+                href="http://go.cssninja.io/buy-vuero"
+                class="custom-button"
+              >
+                <img
+                  src="/images/icons/logos/envato.svg"
+                  alt=""
+                >
+                <span>Subscribe</span>
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- -->
-  </Layout>
+      <!-- Footer -->
+      <LandingFooter />
+
+      <!-- Back To Top Button -->
+      <div id="backtotop">
+        <a
+          href="#"
+          aria-label="back to top"
+        >
+          <i
+            aria-hidden="true"
+            class="fas fa-angle-up"
+          />
+        </a>
+      </div>
+    </div>
+  </MinimalLayout>
+</div>
 </template>
 
 <style lang="scss">
-.marketing-hero {
-  position: relative;
-
-  &.is-centered {
-    .hero-body {
-      .columns {
-        padding-top: 6rem;
-      }
-
-      .title {
-        margin-top: 0;
-      }
-
-      .title,
-      .subtitle {
-        margin-inline-start: auto;
-        margin-inline-end: auto;
-      }
-
-      h1 {
-        max-width: 880px;
-      }
-
-      h3 {
-        max-width: 520px;
-      }
-
-      .hero-mockup {
-        max-width: 640px;
-        margin: 0 auto;
-      }
-    }
-  }
-
-  .hero-body {
-    .buttons {
-      .button {
-        min-height: 44px;
-        min-width: 140px;
-      }
-    }
-
-    .hero-mockup {
-      box-shadow: var(--light-box-shadow);
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      width: 100%;
-      max-width: 840px !important;
-    }
-  }
-}
-
-.is-dark {
-  .marketing-hero {
-    &.is-left,
-    &.is-right,
-    &.is-centered {
-      background: color-mix(in oklab, var(--landing-xxx), black 2%);
-
-      .hero-body {
-        .hero-mockup {
-          border-color: color-mix(in oklab, var(--landing-xxx), white 8%);
-        }
-
-        .buttons {
-          .button {
-            &:not(.is-outlined) {
-              background: var(--primary) !important;
-              border-color: var(--primary) !important;
-
-              &:hover,
-              &:focus {
-                box-shadow: var(--primary-box-shadow) !important;
-              }
-            }
-
-            &.is-outlined {
-              color: var(--primary) !important;
-              border-color: var(--primary) !important;
-
-              &:hover,
-              &:focus {
-                background: var(--primary) !important;
-                color: var(--white) !important;
-                box-shadow: var(--primary-box-shadow) !important;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-.is-dark {
-  .video-section {
-    .title {
-      color: var(--white) !important;
-    }
-
-    .video-player-container {
-      &.reversed-play {
-        .plyr--full-ui.plyr--video .plyr__control--overlaid {
-          border-color: var(--primary) !important;
-          color: var(--primary) !important;
-
-          &:hover,
-          &:focus {
-            background: var(--primary) !important;
-
-            .iconify {
-              stroke: var(--white) !important;
-              fill: var(--white) !important;
-            }
-          }
-
-          .iconify {
-            stroke: var(--primary) !important;
-          }
-        }
-      }
-    }
-  }
-}
-
-.pricing-wrapper {
-  font-family: var(--font);
-  font-weight: 400;
-  color: #9f9f9f;
-  font-size: 15px;
-  display: flex;
-  justify-content: center;
-  max-width: 1040px;
-  margin: 0 auto;
-
-  .pricing-plan {
-    width: calc(33.3% - 1.5rem);
-    height: auto;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 0.65rem;
-    display: inline-block;
-    padding: 24px;
-    text-align: center;
-    position: relative;
-    margin: 0 0.75rem;
-    overflow: hidden;
-    transition: box-shadow 0.3s;
-
-    &:hover,
-    &:focus {
-      box-shadow: var(--light-box-shadow);
-    }
-
-    &.is-featured {
-      border-color: var(--primary);
-
-      &::before {
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 64px 64px 0 0;
-        border-color: var(--primary) transparent transparent transparent;
-        position: absolute;
-        inset-inline-start: 0;
-        top: 0;
-        content: "";
-      }
-
-      &::after {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: "\f00c";
-        color: var(--white);
-        position: absolute;
-        inset-inline-start: 11px;
-        top: 11px;
-        text-shadow: 0 0 2px var(--primary);
-        font-size: 1rem;
-      }
-    }
-
-    .name {
-      color: var(--dark-text);
-      font-weight: 300;
-      font-size: 2rem;
-      margin-top: -5px;
-    }
-
-    img {
-      max-width: 55px;
-      margin: 0 auto;
-    }
-
-    .price {
-      font-size: 1.8rem;
-      margin: 0.75rem 0 1.5rem;
-      font-weight: bold;
-
-      &::after {
-        content: " /per month";
-        font-size: 1rem;
-        font-weight: normal;
-        color: var(--light-text);
-      }
-    }
-
-    hr {
-      background-color: var(--border);
-      border: none;
-      height: 1px;
-    }
-
-    .trial {
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 2px 21px;
-      color: var(--primary);
-      border: 1px solid var(--border);
-      display: inline-block;
-      border-radius: 15px;
-      background-color: var(--white);
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      text-align: inset-inline-start;
-      margin-top: 29px;
-    }
-
-    li {
-      margin-bottom: 15px;
-
-      &::before {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: "\f00c";
-        font-size: 0.9rem;
-        color: var(--success);
-        margin-inline-end: 6px;
-      }
-    }
-  }
-}
-
-.is-dark {
-  .pricing-wrapper {
-    .pricing-plan {
-      border-color: color-mix(in oklab, var(--landing-xxx), white 12%);
-      background: color-mix(in oklab, var(--landing-xxx), white 6%);
-
-      &.is-featured {
-        border-color: var(--primary);
-
-        &::before {
-          border-color: var(--primary) transparent transparent transparent;
-        }
-      }
-
-      .name {
-        color: var(--dark-dark-text);
-      }
-
-      .price {
-        color: var(--white);
-      }
-
-      .trial {
-        color: var(--primary);
-        border-color: color-mix(in oklab, var(--landing-xxx), white 12%);
-        background: color-mix(in oklab, var(--landing-xxx), white 2%);
-      }
-
-      hr {
-        background: color-mix(in oklab, var(--landing-xxx), white 12%);
-      }
-
-      li {
-        color: var(--light-text);
-
-        strong {
-          color: var(--white);
-        }
-      }
-    }
-  }
-}
-
-.card-icon-box {
-  border: 1px solid var(--border);
-  border-radius: 0.65rem;
-  box-shadow: none;
-  transition: box-shadow 0.3s;
-
-  &:hover,
-  &:focus {
-    box-shadow: var(--light-box-shadow);
-  }
-
-  .v-icon {
-    margin-bottom: 0.75rem;
-  }
-}
-
-.is-dark {
-  .card-icon-box {
-    border-color: color-mix(in oklab, var(--landing-xxx), white 12%);
-    background: color-mix(in oklab, var(--landing-xxx), white 4%);
-
-    .v-icon {
-      background: transparent;
-      border: 2px solid color-mix(in oklab, var(--landing-xxx), white 12%);
-    }
-
-    .title {
-      color: var(--white);
-    }
-  }
-}
-
-.has-bg-dots {
-  background-image: radial-gradient(circle, #f0f4ff 10%, transparent 15%),
-    radial-gradient(circle, #f0f4ff 10%, transparent 15%);
-  background-size: 50px 50px;
-  background-position: 0 0, 0 0;
-}
-
-.is-dark {
-  .has-bg-dots {
-    background-image: radial-gradient(
-        circle,
-        color-mix(in oklab, var(--landing-xxx), white 4%) 10%,
-        transparent 15%
-      ),
-      radial-gradient(
-        circle,
-        color-mix(in oklab, var(--landing-xxx), white 4%) 10%,
-        transparent 15%
-      );
-    background-size: 50px 50px;
-    background-position: 0 0, 0 0;
-  }
-}
-
-.boxed-cta {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 430px;
-  max-width: 1040px;
-  margin: 0 auto;
-  background: var(--primary);
-  border-radius: 1rem;
-  padding: 3rem;
-  box-shadow: var(--primary-box-shadow);
-  overflow: hidden;
-  margin-bottom: 5rem;
-
-  .v-avatar {
-    position: absolute;
-
-    &.v-avatar-1 {
-      top: -7%;
-      inset-inline-start: 4%;
-    }
-
-    &.v-avatar-2 {
-      top: 5%;
-      inset-inline-end: 5%;
-    }
-
-    &.v-avatar-3 {
-      bottom: -9%;
-      inset-inline-start: 5%;
-    }
-
-    &.v-avatar-4 {
-      bottom: -9%;
-      inset-inline-end: 5%;
-    }
-
-    &.v-avatar-5 {
-      top: -7%;
-      inset-inline-start: 50%;
-    }
-
-    &.v-avatar-6 {
-      top: 40%;
-      inset-inline-end: -3%;
-    }
-
-    &.v-avatar-7 {
-      top: 30%;
-      inset-inline-end: 12%;
-    }
-
-    &.v-avatar-8 {
-      bottom: 30%;
-      inset-inline-end: 16%;
-    }
-
-    &.v-avatar-9 {
-      top: 9%;
-      inset-inline-end: 21%;
-    }
-
-    &.v-avatar-10 {
-      top: 40%;
-      inset-inline-start: -3%;
-    }
-
-    &.v-avatar-11 {
-      top: 30%;
-      inset-inline-start: 12%;
-    }
-
-    &.v-avatar-12 {
-      bottom: 17%;
-      inset-inline-start: 16%;
-    }
-
-    &.v-avatar-13 {
-      top: 9%;
-      inset-inline-start: 21%;
-    }
-
-    &.v-avatar-14 {
-      bottom: 20%;
-      inset-inline-start: 1%;
-    }
-
-    &.v-avatar-15 {
-      bottom: -7%;
-      inset-inline-start: 39%;
-    }
-
-    &.v-avatar-16 {
-      bottom: 12%;
-      inset-inline-end: 30%;
-    }
-
-    .avatar {
-      border: 4px solid color-mix(in oklab, var(--primary), white 8%);
-    }
-  }
-
-  .boxed-cta-content {
-    max-width: 440px;
-
-    .title,
-    .subtitle {
-      color: var(--white) !important;
-    }
-
-    .subtitle {
-      opacity: 0.8;
-    }
-
-    .v-button {
-      min-height: 44px;
-      min-width: 190px;
-      font-weight: 600;
-      color: var(--primary) !important;
-      background-color: var(--white) !important;
-      border-color: var(--primary) !important;
-    }
-  }
-}
-
-.is-dark {
-  .boxed-cta {
-    background: var(--primary);
-    box-shadow: var(--primary-box-shadow);
-
-    .v-avatar {
-      .avatar {
-        border-color: color-mix(in oklab, var(--primary), white 8%);
-      }
-    }
-
-    .boxed-cta-content {
-      .v-button {
-        color: var(--primary);
-      }
-    }
-  }
-}
-
-@media (width <= 767px) {
-  .marketing-hero {
-    &.is-left,
-    &.is-right,
-    &.is-centered {
-      text-align: center;
-    }
-
-    .hero-body {
-      .title,
-      .subtitle {
-        margin-inline-start: auto;
-        margin-inline-end: auto;
-      }
-
-      .title {
-        font-size: 2.5rem;
-      }
-
-      .buttons {
-        justify-content: center;
-        margin-bottom: 2rem;
-      }
-
-      .switch-wrapper {
-        margin: 0 auto;
-      }
-
-      .hero-mockup {
-        max-width: 100% !important;
-        margin: 0 auto;
-      }
-    }
-  }
-
-  .pricing-wrapper {
-    flex-wrap: wrap;
-
-    .pricing-plan {
-      width: calc(100% - 1.5rem);
-
-      &:not(:last-child) {
-        margin-bottom: 1.5rem;
-      }
-    }
-  }
-
-  .boxed-cta {
-    .v-avatar {
-      &.v-avatar-12,
-      &.v-avatar-9,
-      &.v-avatar-8,
-      &.v-avatar-11,
-      &.v-avatar-4,
-      &.v-avatar-6,
-      &.v-avatar-1 {
-        display: none;
-      }
-
-      &.v-avatar-7 {
-        inset-inline-end: -6%;
-      }
-
-      &.v-avatar-13 {
-        top: 3%;
-        inset-inline-start: -4%;
-      }
-
-      &.v-avatar-14 {
-        inset-inline-start: -13%;
-      }
-
-      &.v-avatar-15 {
-        bottom: -4%;
-        inset-inline-start: 48%;
-      }
-
-      &.v-avatar-16 {
-        inset-inline-end: -7%;
-      }
-    }
-
-    .boxed-cta-content {
-      .title {
-        font-size: 2.5rem;
-      }
-    }
-  }
-}
-
-@media only screen and (width >= 768px) and (width <= 1024px) and (orientation: portrait) {
-  .marketing-hero {
-    &.is-centered {
-      text-align: center;
-    }
-
-    &.is-left {
-      text-align: center;
-    }
-
-    &.is-right {
-      text-align: center;
-    }
-
-    .hero-body {
-      .title,
-      .subtitle {
-        margin-inline-start: auto;
-        margin-inline-end: auto;
-      }
-
-      .buttons {
-        justify-content: center;
-        margin-bottom: 2rem;
-      }
-
-      .switch-wrapper {
-        margin: 0 auto;
-      }
-
-      .hero-mockup {
-        max-width: 640px;
-        margin: 0 auto;
-      }
-    }
-  }
-
-  .card-icon-boxes {
-    display: flex;
-
-    .column {
-      min-width: 50%;
-      width: 50%;
-    }
-  }
-
-  .video-section {
-    .columns .columns {
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 480px;
-      margin: 0 auto;
-
-      .column {
-        min-width: 50%;
-        width: 50%;
-      }
-    }
-  }
-
-  .boxed-cta {
-    .v-avatar {
-      &.v-avatar-12,
-      &.v-avatar-9,
-      &.v-avatar-8,
-      &.v-avatar-11 {
-        display: none;
-      }
-    }
-  }
-}
+@import '/@src/scss/abstracts/all';
+@import '/@src/scss/_demo/landing';
 </style>

@@ -1,4 +1,4 @@
-/*! _toggles.scss | Vuero | Css ninja 2020-2024 */
+/*! _toggles.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. Sliding Switch
@@ -66,7 +66,7 @@
         rotate(calc(var(--transform-direction) * 0));
       transition: all 0.3s ease;
 
-      .iconify {
+      svg {
         color: var(--white) !important;
         height: 14px !important;
         width: 14px !important;
@@ -87,7 +87,7 @@
       opacity: 0;
       z-index: 0;
 
-      .iconify {
+      svg {
         color: var(--white) !important;
       }
     }

@@ -1,4 +1,4 @@
-/*! _lists.scss | Vuero | Css ninja 2020-2024 */
+/*! _lists.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. User List
@@ -73,13 +73,13 @@
       height: 32px;
       width: 32px;
       border-radius: var(--radius-rounded);
-      color: color-mix(in oklab, var(--light-text), white 15%);
+      color: var(--light-text-light-15);
       font-size: 0.9rem;
       transition: all 0.3s; // transition-all test
 
       &:hover {
         color: var(--light-text);
-        background: color-mix(in oklab, var(--fade-grey), white 3%);
+        background: var(--fade-grey-light-3);
       }
     }
   }
@@ -93,7 +93,7 @@
   .user-list {
     .user-list-icons {
       a:hover {
-        background: color-mix(in oklab, var(--dark-sidebar), white 10%);
+        background: var(--dark-sidebar-light-10);
       }
     }
   }

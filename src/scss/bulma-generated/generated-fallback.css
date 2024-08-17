@@ -10,7 +10,7 @@ html {
 }
 
 a {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .box {
@@ -22,12 +22,12 @@ a {
 }
 
 .button.is-ghost {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-ghost:hover,
 .button.is-ghost.is-hovered {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-white {
@@ -144,496 +144,496 @@ fieldset[disabled] .button.is-black.is-inverted.is-outlined {
 }
 
 .button.is-dark {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-dark:hover,
 .button.is-dark.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-dark:focus,
 .button.is-dark.is-focused {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-dark:active,
 .button.is-dark.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-dark[disabled],
 fieldset[disabled] .button.is-dark {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(40, 50, 82);
+  border-color: rgb(40, 50, 82);
 }
 
 .button.is-dark.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .button.is-dark.is-inverted:hover,
 .button.is-dark.is-inverted.is-hovered {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(255, 255, 255);
 }
 
 .button.is-dark.is-inverted[disabled],
 fieldset[disabled] .button.is-dark.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .button.is-dark.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
+  color: rgb(40, 50, 82);
 }
 
 .button.is-dark.is-outlined:hover,
 .button.is-dark.is-outlined.is-hovered,
 .button.is-dark.is-outlined:focus,
 .button.is-dark.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  border-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-dark.is-outlined[disabled],
 fieldset[disabled] .button.is-dark.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
+  color: rgb(40, 50, 82);
 }
 
 .button.is-dark.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-dark.is-inverted.is-outlined:hover,
 .button.is-dark.is-inverted.is-outlined.is-hovered,
 .button.is-dark.is-inverted.is-outlined:focus,
 .button.is-dark.is-inverted.is-outlined.is-focused {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .button.is-dark.is-inverted.is-outlined[disabled],
 fieldset[disabled] .button.is-dark.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary:hover,
 .button.is-primary.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary:focus,
 .button.is-primary.is-focused {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary:active,
 .button.is-primary.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary[disabled],
 fieldset[disabled] .button.is-primary {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
 .button.is-primary.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .button.is-primary.is-inverted:hover,
 .button.is-primary.is-inverted.is-hovered {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(255, 255, 255);
 }
 
 .button.is-primary.is-inverted[disabled],
 fieldset[disabled] .button.is-primary.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .button.is-primary.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
+  color: rgb(42, 172, 142);
 }
 
 .button.is-primary.is-outlined:hover,
 .button.is-primary.is-outlined.is-hovered,
 .button.is-primary.is-outlined:focus,
 .button.is-primary.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary.is-outlined[disabled],
 fieldset[disabled] .button.is-primary.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
+  color: rgb(42, 172, 142);
 }
 
 .button.is-primary.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary.is-inverted.is-outlined:hover,
 .button.is-primary.is-inverted.is-outlined.is-hovered,
 .button.is-primary.is-inverted.is-outlined:focus,
 .button.is-primary.is-inverted.is-outlined.is-focused {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .button.is-primary.is-inverted.is-outlined[disabled],
 fieldset[disabled] .button.is-primary.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-primary.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 251, 248);
+  color: rgb(37, 152, 125);
 }
 
 .button.is-primary.is-light:hover,
 .button.is-primary.is-light.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 251, 248);
+  color: rgb(37, 152, 125);
 }
 
 .button.is-primary.is-light:active,
 .button.is-primary.is-light.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 251, 248);
+  color: rgb(37, 152, 125);
 }
 
 .button.is-link {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link:hover,
 .button.is-link.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link:focus,
 .button.is-link.is-focused {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link:active,
 .button.is-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link[disabled],
 fieldset[disabled] .button.is-link {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(72, 95, 199);
+  border-color: rgb(72, 95, 199);
 }
 
 .button.is-link.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-link.is-inverted:hover,
 .button.is-link.is-inverted.is-hovered {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(255, 255, 255);
 }
 
 .button.is-link.is-inverted[disabled],
 fieldset[disabled] .button.is-link.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-link.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-link.is-outlined:hover,
 .button.is-link.is-outlined.is-hovered,
 .button.is-link.is-outlined:focus,
 .button.is-link.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  border-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link.is-outlined[disabled],
 fieldset[disabled] .button.is-link.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-link.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link.is-inverted.is-outlined:hover,
 .button.is-link.is-inverted.is-outlined.is-hovered,
 .button.is-link.is-inverted.is-outlined:focus,
 .button.is-link.is-inverted.is-outlined.is-focused {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .button.is-link.is-inverted.is-outlined[disabled],
 fieldset[disabled] .button.is-link.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-link.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 241, 250);
+  color: rgb(56, 79, 184);
 }
 
 .button.is-link.is-light:hover,
 .button.is-link.is-light.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 241, 250);
+  color: rgb(56, 79, 184);
 }
 
 .button.is-link.is-light:active,
 .button.is-link.is-light.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 241, 250);
+  color: rgb(56, 79, 184);
 }
 
 .button.is-info {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info:hover,
 .button.is-info.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info:focus,
 .button.is-info.is-focused {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info:active,
 .button.is-info.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info[disabled],
 fieldset[disabled] .button.is-info {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(3, 152, 226);
+  border-color: rgb(3, 152, 226);
 }
 
 .button.is-info.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .button.is-info.is-inverted:hover,
 .button.is-info.is-inverted.is-hovered {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(255, 255, 255);
 }
 
 .button.is-info.is-inverted[disabled],
 fieldset[disabled] .button.is-info.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .button.is-info.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
+  color: rgb(3, 152, 226);
 }
 
 .button.is-info.is-outlined:hover,
 .button.is-info.is-outlined.is-hovered,
 .button.is-info.is-outlined:focus,
 .button.is-info.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  border-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info.is-outlined[disabled],
 fieldset[disabled] .button.is-info.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
+  color: rgb(3, 152, 226);
 }
 
 .button.is-info.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info.is-inverted.is-outlined:hover,
 .button.is-info.is-inverted.is-outlined.is-hovered,
 .button.is-info.is-inverted.is-outlined:focus,
 .button.is-info.is-inverted.is-outlined.is-focused {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .button.is-info.is-inverted.is-outlined[disabled],
 fieldset[disabled] .button.is-info.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-info.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 248, 255);
+  color: rgb(3, 135, 201);
 }
 
 .button.is-info.is-light:hover,
 .button.is-info.is-light.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 248, 255);
+  color: rgb(3, 135, 201);
 }
 
 .button.is-info.is-light:active,
 .button.is-info.is-light.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 248, 255);
+  color: rgb(3, 135, 201);
 }
 
 .button.is-success {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success:hover,
 .button.is-success.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success:focus,
 .button.is-success.is-focused {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success:active,
 .button.is-success.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success[disabled],
 fieldset[disabled] .button.is-success {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(6, 214, 158);
+  border-color: rgb(6, 214, 158);
 }
 
 .button.is-success.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .button.is-success.is-inverted:hover,
 .button.is-success.is-inverted.is-hovered {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(255, 255, 255);
 }
 
 .button.is-success.is-inverted[disabled],
 fieldset[disabled] .button.is-success.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .button.is-success.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
+  color: rgb(6, 214, 158);
 }
 
 .button.is-success.is-outlined:hover,
 .button.is-success.is-outlined.is-hovered,
 .button.is-success.is-outlined:focus,
 .button.is-success.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  border-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success.is-outlined[disabled],
 fieldset[disabled] .button.is-success.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
+  color: rgb(6, 214, 158);
 }
 
 .button.is-success.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success.is-inverted.is-outlined:hover,
 .button.is-success.is-inverted.is-outlined.is-hovered,
 .button.is-success.is-inverted.is-outlined:focus,
 .button.is-success.is-inverted.is-outlined.is-focused {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .button.is-success.is-inverted.is-outlined[disabled],
 fieldset[disabled] .button.is-success.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-success.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 254, 249);
+  color: rgb(4, 144, 106);
 }
 
 .button.is-success.is-light:hover,
 .button.is-success.is-light.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 254, 249);
+  color: rgb(4, 144, 106);
 }
 
 .button.is-success.is-light:active,
 .button.is-success.is-light.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 254, 249);
+  color: rgb(4, 144, 106);
 }
 
 .button.is-warning {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .button.is-warning:hover,
 .button.is-warning.is-hovered {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
@@ -644,19 +644,19 @@ fieldset[disabled] .button.is-success.is-inverted.is-outlined {
 
 .button.is-warning:active,
 .button.is-warning.is-active {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .button.is-warning[disabled],
 fieldset[disabled] .button.is-warning {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
+  border-color: rgb(250, 173, 66);
 }
 
 .button.is-warning.is-inverted {
   background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .button.is-warning.is-inverted:hover,
@@ -667,27 +667,27 @@ fieldset[disabled] .button.is-warning {
 .button.is-warning.is-inverted[disabled],
 fieldset[disabled] .button.is-warning.is-inverted {
   background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .button.is-warning.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
+  color: rgb(250, 173, 66);
 }
 
 .button.is-warning.is-outlined:hover,
 .button.is-warning.is-outlined.is-hovered,
 .button.is-warning.is-outlined:focus,
 .button.is-warning.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
+  border-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .button.is-warning.is-outlined[disabled],
 fieldset[disabled] .button.is-warning.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
+  color: rgb(250, 173, 66);
 }
 
 .button.is-warning.is-inverted.is-outlined {
@@ -700,7 +700,7 @@ fieldset[disabled] .button.is-warning.is-outlined {
 .button.is-warning.is-inverted.is-outlined:focus,
 .button.is-warning.is-inverted.is-outlined.is-focused {
   background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .button.is-warning.is-inverted.is-outlined[disabled],
@@ -710,120 +710,120 @@ fieldset[disabled] .button.is-warning.is-inverted.is-outlined {
 }
 
 .button.is-warning.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(255, 246, 235);
+  color: rgb(144, 85, 4);
 }
 
 .button.is-warning.is-light:hover,
 .button.is-warning.is-light.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(255, 246, 235);
+  color: rgb(144, 85, 4);
 }
 
 .button.is-warning.is-light:active,
 .button.is-warning.is-light.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(255, 246, 235);
+  color: rgb(144, 85, 4);
 }
 
 .button.is-danger {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger:hover,
 .button.is-danger.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger:focus,
 .button.is-danger.is-focused {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger:active,
 .button.is-danger.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger[disabled],
 fieldset[disabled] .button.is-danger {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(230, 41, 100);
+  border-color: rgb(230, 41, 100);
 }
 
 .button.is-danger.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .button.is-danger.is-inverted:hover,
 .button.is-danger.is-inverted.is-hovered {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(255, 255, 255);
 }
 
 .button.is-danger.is-inverted[disabled],
 fieldset[disabled] .button.is-danger.is-inverted {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .button.is-danger.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
+  color: rgb(230, 41, 100);
 }
 
 .button.is-danger.is-outlined:hover,
 .button.is-danger.is-outlined.is-hovered,
 .button.is-danger.is-outlined:focus,
 .button.is-danger.is-outlined.is-focused {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  border-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger.is-outlined[disabled],
 fieldset[disabled] .button.is-danger.is-outlined {
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
+  color: rgb(230, 41, 100);
 }
 
 .button.is-danger.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger.is-inverted.is-outlined:hover,
 .button.is-danger.is-inverted.is-outlined.is-hovered,
 .button.is-danger.is-inverted.is-outlined:focus,
 .button.is-danger.is-inverted.is-outlined.is-focused {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .button.is-danger.is-inverted.is-outlined[disabled],
 fieldset[disabled] .button.is-danger.is-inverted.is-outlined {
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .button.is-danger.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(253, 237, 242);
+  color: rgb(210, 25, 83);
 }
 
 .button.is-danger.is-light:hover,
 .button.is-danger.is-light.is-hovered {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(253, 237, 242);
+  color: rgb(210, 25, 83);
 }
 
 .button.is-danger.is-light:active,
 .button.is-danger.is-light.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(253, 237, 242);
+  color: rgb(210, 25, 83);
 }
 
 .button[disabled],
@@ -845,68 +845,68 @@ fieldset[disabled] .button {
 }
 
 .notification.is-dark {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .notification.is-primary {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .notification.is-primary.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 251, 248);
+  color: rgb(37, 152, 125);
 }
 
 .notification.is-link {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .notification.is-link.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 241, 250);
+  color: rgb(56, 79, 184);
 }
 
 .notification.is-info {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .notification.is-info.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 248, 255);
+  color: rgb(3, 135, 201);
 }
 
 .notification.is-success {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .notification.is-success.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 254, 249);
+  color: rgb(4, 144, 106);
 }
 
 .notification.is-warning {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .notification.is-warning.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(255, 246, 235);
+  color: rgb(144, 85, 4);
 }
 
 .notification.is-danger {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .notification.is-danger.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(253, 237, 242);
+  color: rgb(210, 25, 83);
 }
 
 .progress.is-white::-webkit-progress-value {
@@ -922,87 +922,87 @@ fieldset[disabled] .button {
 }
 
 .progress.is-dark::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(40, 50, 82);
 }
 
 .progress.is-dark::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(40, 50, 82);
 }
 
 .progress.is-dark::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(40, 50, 82);
 }
 
 .progress.is-primary::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .progress.is-primary::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .progress.is-primary::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .progress.is-link::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(72, 95, 199);
 }
 
 .progress.is-link::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(72, 95, 199);
 }
 
 .progress.is-link::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(72, 95, 199);
 }
 
 .progress.is-info::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(3, 152, 226);
 }
 
 .progress.is-info::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(3, 152, 226);
 }
 
 .progress.is-info::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(3, 152, 226);
 }
 
 .progress.is-success::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(6, 214, 158);
 }
 
 .progress.is-success::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(6, 214, 158);
 }
 
 .progress.is-success::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(6, 214, 158);
 }
 
 .progress.is-warning::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
 }
 
 .progress.is-warning::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
 }
 
 .progress.is-warning::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
 }
 
 .progress.is-danger::-webkit-progress-value {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(230, 41, 100);
 }
 
 .progress.is-danger::-moz-progress-bar {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(230, 41, 100);
 }
 
 .progress.is-danger::-ms-fill {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(230, 41, 100);
 }
 
 .table {
@@ -1022,67 +1022,67 @@ fieldset[disabled] .button {
 
 .table td.is-dark,
 .table th.is-dark {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  border-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .table td.is-primary,
 .table th.is-primary {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .table td.is-link,
 .table th.is-link {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  border-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .table td.is-info,
 .table th.is-info {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  border-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .table td.is-success,
 .table th.is-success {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  border-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .table td.is-warning,
 .table th.is-warning {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
+  border-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .table td.is-danger,
 .table th.is-danger {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  border-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .table td.is-selected,
 .table th.is-selected {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .table tr.is-selected {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .table tr.is-selected td,
 .table tr.is-selected th {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-white {
@@ -1094,68 +1094,68 @@ fieldset[disabled] .button {
 }
 
 .tag:not(body).is-dark {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-primary {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-primary.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 251, 248);
+  color: rgb(37, 152, 125);
 }
 
 .tag:not(body).is-link {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-link.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(239, 241, 250);
+  color: rgb(56, 79, 184);
 }
 
 .tag:not(body).is-info {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-info.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 248, 255);
+  color: rgb(3, 135, 201);
 }
 
 .tag:not(body).is-success {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-success.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(235, 254, 249);
+  color: rgb(4, 144, 106);
 }
 
 .tag:not(body).is-warning {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .tag:not(body).is-warning.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(255, 246, 235);
+  color: rgb(144, 85, 4);
 }
 
 .tag:not(body).is-danger {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .tag:not(body).is-danger.is-light {
-  background-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  background-color: rgb(253, 237, 242);
+  color: rgb(210, 25, 83);
 }
 
 .select select,
@@ -1176,7 +1176,7 @@ fieldset[disabled] .button {
 .select select.is-active,
 .is-active.textarea,
 .is-active.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 .is-white.textarea,
@@ -1186,41 +1186,41 @@ fieldset[disabled] .button {
 
 .is-dark.textarea,
 .is-dark.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
 }
 
 .is-primary.textarea,
 .is-primary.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .is-link.textarea,
 .is-link.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 .is-info.textarea,
 .is-info.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
 }
 
 .is-success.textarea,
 .is-success.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
 }
 
 .is-warning.textarea,
 .is-warning.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
 }
 
 .is-danger.textarea,
 .is-danger.input {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
 }
 
 .select:not(.is-multiple):not(.is-loading)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 .select.is-white:not(:hover)::after {
@@ -1237,94 +1237,94 @@ fieldset[disabled] .button {
 }
 
 .select.is-dark:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
 }
 
 .select.is-dark select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
 }
 
 .select.is-dark select:hover,
 .select.is-dark select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
 }
 
 .select.is-primary:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .select.is-primary select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .select.is-primary select:hover,
 .select.is-primary select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .select.is-link:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 .select.is-link select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 .select.is-link select:hover,
 .select.is-link select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 .select.is-info:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
 }
 
 .select.is-info select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
 }
 
 .select.is-info select:hover,
 .select.is-info select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
 }
 
 .select.is-success:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
 }
 
 .select.is-success select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
 }
 
 .select.is-success select:hover,
 .select.is-success select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
 }
 
 .select.is-warning:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
 }
 
 .select.is-warning select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
 }
 
 .select.is-warning select:hover,
 .select.is-warning select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
 }
 
 .select.is-danger:not(:hover)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
 }
 
 .select.is-danger select {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
 }
 
 .select.is-danger select:hover,
 .select.is-danger select.is-hovered {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
 }
 
 .file.is-white .file-cta {
@@ -1361,123 +1361,123 @@ fieldset[disabled] .button {
 }
 
 .file.is-dark .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-dark:hover .file-cta,
 .file.is-dark.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-dark:focus .file-cta,
 .file.is-dark.is-focused .file-cta {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-dark:active .file-cta,
 .file.is-dark.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-primary .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-primary:hover .file-cta,
 .file.is-primary.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-primary:focus .file-cta,
 .file.is-primary.is-focused .file-cta {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-primary:active .file-cta,
 .file.is-primary.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-link .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-link:hover .file-cta,
 .file.is-link.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-link:focus .file-cta,
 .file.is-link.is-focused .file-cta {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-link:active .file-cta,
 .file.is-link.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-info .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-info:hover .file-cta,
 .file.is-info.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-info:focus .file-cta,
 .file.is-info.is-focused .file-cta {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-info:active .file-cta,
 .file.is-info.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-success .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-success:hover .file-cta,
 .file.is-success.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-success:focus .file-cta,
 .file.is-success.is-focused .file-cta {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-success:active .file-cta,
 .file.is-success.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-warning .file-cta {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .file.is-warning:hover .file-cta,
 .file.is-warning.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
@@ -1488,30 +1488,30 @@ fieldset[disabled] .button {
 
 .file.is-warning:active .file-cta,
 .file.is-warning.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .file.is-danger .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-danger:hover .file-cta,
 .file.is-danger.is-hovered .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-danger:focus .file-cta,
 .file.is-danger.is-focused .file-cta {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .file.is-danger:active .file-cta,
 .file.is-danger.is-active .file-cta {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .help.is-white {
@@ -1519,35 +1519,35 @@ fieldset[disabled] .button {
 }
 
 .help.is-dark {
-  color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .help.is-primary {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .help.is-link {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .help.is-info {
-  color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .help.is-success {
-  color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .help.is-warning {
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .help.is-danger {
-  color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .breadcrumb a {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .card {
@@ -1560,13 +1560,13 @@ fieldset[disabled] .button {
 
 a.dropdown-item.is-active,
 button.dropdown-item.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .menu-list a.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-white {
@@ -1586,100 +1586,100 @@ button.dropdown-item.is-active {
 }
 
 .message.is-dark {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(53, 67, 109);
 }
 
 .message.is-dark .message-header {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-dark .message-body {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(40, 50, 82);
 }
 
 .message.is-primary {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(239, 251, 248);
 }
 
 .message.is-primary .message-header {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-primary .message-body {
-  border-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  border-color: rgb(42, 172, 142);
+  color: rgb(37, 152, 125);
 }
 
 .message.is-link {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(239, 241, 250);
 }
 
 .message.is-link .message-header {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-link .message-body {
-  border-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  border-color: rgb(72, 95, 199);
+  color: rgb(56, 79, 184);
 }
 
 .message.is-info {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(235, 248, 255);
 }
 
 .message.is-info .message-header {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-info .message-body {
-  border-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  border-color: rgb(3, 152, 226);
+  color: rgb(3, 135, 201);
 }
 
 .message.is-success {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(235, 254, 249);
 }
 
 .message.is-success .message-header {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-success .message-body {
-  border-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  border-color: rgb(6, 214, 158);
+  color: rgb(4, 144, 106);
 }
 
 .message.is-warning {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(255, 246, 235);
 }
 
 .message.is-warning .message-header {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .message.is-warning .message-body {
-  border-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  border-color: rgb(250, 173, 66);
+  color: rgb(144, 85, 4);
 }
 
 .message.is-danger {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(253, 237, 242);
 }
 
 .message.is-danger .message-header {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .message.is-danger .message-body {
-  border-color: rgb(255, 255, 255);
-  color: rgb(74, 74, 74);
+  border-color: rgb(230, 41, 100);
+  color: rgb(210, 25, 83);
 }
 
 .message-body code,
@@ -1801,13 +1801,13 @@ button.dropdown-item.is-active {
 }
 
 .navbar.is-dark {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-dark .navbar-brand > .navbar-item,
 .navbar.is-dark .navbar-brand .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-dark .navbar-brand > a.navbar-item:focus,
@@ -1816,16 +1816,16 @@ button.dropdown-item.is-active {
 .navbar.is-dark .navbar-brand .navbar-link:focus,
 .navbar.is-dark .navbar-brand .navbar-link:hover,
 .navbar.is-dark .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-dark .navbar-brand .navbar-link::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .navbar.is-dark .navbar-burger {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (min-width: 1024px) {
@@ -1833,7 +1833,7 @@ button.dropdown-item.is-active {
   .navbar.is-dark .navbar-start .navbar-link,
   .navbar.is-dark .navbar-end > .navbar-item,
   .navbar.is-dark .navbar-end .navbar-link {
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-dark .navbar-start > a.navbar-item:focus,
@@ -1848,36 +1848,36 @@ button.dropdown-item.is-active {
   .navbar.is-dark .navbar-end .navbar-link:focus,
   .navbar.is-dark .navbar-end .navbar-link:hover,
   .navbar.is-dark .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(40, 50, 82);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-dark .navbar-start .navbar-link::after,
   .navbar.is-dark .navbar-end .navbar-link::after {
-    border-color: rgba(0, 0, 0, 0.7);
+    border-color: rgb(255, 255, 255);
   }
 
   .navbar.is-dark .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-dark .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-dark .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(40, 50, 82);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-dark .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(40, 50, 82);
+    color: rgb(255, 255, 255);
   }
 }
 
 .navbar.is-primary {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-primary .navbar-brand > .navbar-item,
 .navbar.is-primary .navbar-brand .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-primary .navbar-brand > a.navbar-item:focus,
@@ -1886,16 +1886,16 @@ button.dropdown-item.is-active {
 .navbar.is-primary .navbar-brand .navbar-link:focus,
 .navbar.is-primary .navbar-brand .navbar-link:hover,
 .navbar.is-primary .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-primary .navbar-brand .navbar-link::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .navbar.is-primary .navbar-burger {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (min-width: 1024px) {
@@ -1903,7 +1903,7 @@ button.dropdown-item.is-active {
   .navbar.is-primary .navbar-start .navbar-link,
   .navbar.is-primary .navbar-end > .navbar-item,
   .navbar.is-primary .navbar-end .navbar-link {
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-primary .navbar-start > a.navbar-item:focus,
@@ -1918,36 +1918,36 @@ button.dropdown-item.is-active {
   .navbar.is-primary .navbar-end .navbar-link:focus,
   .navbar.is-primary .navbar-end .navbar-link:hover,
   .navbar.is-primary .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(42, 172, 142);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-primary .navbar-start .navbar-link::after,
   .navbar.is-primary .navbar-end .navbar-link::after {
-    border-color: rgba(0, 0, 0, 0.7);
+    border-color: rgb(255, 255, 255);
   }
 
   .navbar.is-primary .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-primary .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-primary .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(42, 172, 142);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-primary .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(42, 172, 142);
+    color: rgb(255, 255, 255);
   }
 }
 
 .navbar.is-link {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-link .navbar-brand > .navbar-item,
 .navbar.is-link .navbar-brand .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-link .navbar-brand > a.navbar-item:focus,
@@ -1956,16 +1956,16 @@ button.dropdown-item.is-active {
 .navbar.is-link .navbar-brand .navbar-link:focus,
 .navbar.is-link .navbar-brand .navbar-link:hover,
 .navbar.is-link .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-link .navbar-brand .navbar-link::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .navbar.is-link .navbar-burger {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (min-width: 1024px) {
@@ -1973,7 +1973,7 @@ button.dropdown-item.is-active {
   .navbar.is-link .navbar-start .navbar-link,
   .navbar.is-link .navbar-end > .navbar-item,
   .navbar.is-link .navbar-end .navbar-link {
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-link .navbar-start > a.navbar-item:focus,
@@ -1988,36 +1988,36 @@ button.dropdown-item.is-active {
   .navbar.is-link .navbar-end .navbar-link:focus,
   .navbar.is-link .navbar-end .navbar-link:hover,
   .navbar.is-link .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(72, 95, 199);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-link .navbar-start .navbar-link::after,
   .navbar.is-link .navbar-end .navbar-link::after {
-    border-color: rgba(0, 0, 0, 0.7);
+    border-color: rgb(255, 255, 255);
   }
 
   .navbar.is-link .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-link .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-link .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(72, 95, 199);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-link .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(72, 95, 199);
+    color: rgb(255, 255, 255);
   }
 }
 
 .navbar.is-info {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-info .navbar-brand > .navbar-item,
 .navbar.is-info .navbar-brand .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-info .navbar-brand > a.navbar-item:focus,
@@ -2026,16 +2026,16 @@ button.dropdown-item.is-active {
 .navbar.is-info .navbar-brand .navbar-link:focus,
 .navbar.is-info .navbar-brand .navbar-link:hover,
 .navbar.is-info .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-info .navbar-brand .navbar-link::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .navbar.is-info .navbar-burger {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (min-width: 1024px) {
@@ -2043,7 +2043,7 @@ button.dropdown-item.is-active {
   .navbar.is-info .navbar-start .navbar-link,
   .navbar.is-info .navbar-end > .navbar-item,
   .navbar.is-info .navbar-end .navbar-link {
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-info .navbar-start > a.navbar-item:focus,
@@ -2058,36 +2058,36 @@ button.dropdown-item.is-active {
   .navbar.is-info .navbar-end .navbar-link:focus,
   .navbar.is-info .navbar-end .navbar-link:hover,
   .navbar.is-info .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(3, 152, 226);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-info .navbar-start .navbar-link::after,
   .navbar.is-info .navbar-end .navbar-link::after {
-    border-color: rgba(0, 0, 0, 0.7);
+    border-color: rgb(255, 255, 255);
   }
 
   .navbar.is-info .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-info .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-info .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(3, 152, 226);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-info .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(3, 152, 226);
+    color: rgb(255, 255, 255);
   }
 }
 
 .navbar.is-success {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-success .navbar-brand > .navbar-item,
 .navbar.is-success .navbar-brand .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-success .navbar-brand > a.navbar-item:focus,
@@ -2096,16 +2096,16 @@ button.dropdown-item.is-active {
 .navbar.is-success .navbar-brand .navbar-link:focus,
 .navbar.is-success .navbar-brand .navbar-link:hover,
 .navbar.is-success .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-success .navbar-brand .navbar-link::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .navbar.is-success .navbar-burger {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (min-width: 1024px) {
@@ -2113,7 +2113,7 @@ button.dropdown-item.is-active {
   .navbar.is-success .navbar-start .navbar-link,
   .navbar.is-success .navbar-end > .navbar-item,
   .navbar.is-success .navbar-end .navbar-link {
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-success .navbar-start > a.navbar-item:focus,
@@ -2128,30 +2128,30 @@ button.dropdown-item.is-active {
   .navbar.is-success .navbar-end .navbar-link:focus,
   .navbar.is-success .navbar-end .navbar-link:hover,
   .navbar.is-success .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(6, 214, 158);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-success .navbar-start .navbar-link::after,
   .navbar.is-success .navbar-end .navbar-link::after {
-    border-color: rgba(0, 0, 0, 0.7);
+    border-color: rgb(255, 255, 255);
   }
 
   .navbar.is-success .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-success .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-success .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(6, 214, 158);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-success .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(6, 214, 158);
+    color: rgb(255, 255, 255);
   }
 }
 
 .navbar.is-warning {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
@@ -2166,7 +2166,7 @@ button.dropdown-item.is-active {
 .navbar.is-warning .navbar-brand .navbar-link:focus,
 .navbar.is-warning .navbar-brand .navbar-link:hover,
 .navbar.is-warning .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
@@ -2198,7 +2198,7 @@ button.dropdown-item.is-active {
   .navbar.is-warning .navbar-end .navbar-link:focus,
   .navbar.is-warning .navbar-end .navbar-link:hover,
   .navbar.is-warning .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(250, 173, 66);
     color: rgba(0, 0, 0, 0.7);
   }
 
@@ -2210,24 +2210,24 @@ button.dropdown-item.is-active {
   .navbar.is-warning .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-warning .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-warning .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(250, 173, 66);
     color: rgba(0, 0, 0, 0.7);
   }
 
   .navbar.is-warning .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(250, 173, 66);
     color: rgba(0, 0, 0, 0.7);
   }
 }
 
 .navbar.is-danger {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-danger .navbar-brand > .navbar-item,
 .navbar.is-danger .navbar-brand .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-danger .navbar-brand > a.navbar-item:focus,
@@ -2236,16 +2236,16 @@ button.dropdown-item.is-active {
 .navbar.is-danger .navbar-brand .navbar-link:focus,
 .navbar.is-danger .navbar-brand .navbar-link:hover,
 .navbar.is-danger .navbar-brand .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .navbar.is-danger .navbar-brand .navbar-link::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgb(255, 255, 255);
 }
 
 .navbar.is-danger .navbar-burger {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (min-width: 1024px) {
@@ -2253,7 +2253,7 @@ button.dropdown-item.is-active {
   .navbar.is-danger .navbar-start .navbar-link,
   .navbar.is-danger .navbar-end > .navbar-item,
   .navbar.is-danger .navbar-end .navbar-link {
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-danger .navbar-start > a.navbar-item:focus,
@@ -2268,25 +2268,25 @@ button.dropdown-item.is-active {
   .navbar.is-danger .navbar-end .navbar-link:focus,
   .navbar.is-danger .navbar-end .navbar-link:hover,
   .navbar.is-danger .navbar-end .navbar-link.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(230, 41, 100);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-danger .navbar-start .navbar-link::after,
   .navbar.is-danger .navbar-end .navbar-link::after {
-    border-color: rgba(0, 0, 0, 0.7);
+    border-color: rgb(255, 255, 255);
   }
 
   .navbar.is-danger .navbar-item.has-dropdown:focus .navbar-link,
   .navbar.is-danger .navbar-item.has-dropdown:hover .navbar-link,
   .navbar.is-danger .navbar-item.has-dropdown.is-active .navbar-link {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(230, 41, 100);
+    color: rgb(255, 255, 255);
   }
 
   .navbar.is-danger .navbar-dropdown a.navbar-item.is-active {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(230, 41, 100);
+    color: rgb(255, 255, 255);
   }
 }
 
@@ -2298,21 +2298,21 @@ a.navbar-item.is-active,
 .navbar-link:focus-within,
 .navbar-link:hover,
 .navbar-link.is-active {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .navbar-item.is-tab:focus,
 .navbar-item.is-tab:hover {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(72, 95, 199);
 }
 
 .navbar-item.is-tab.is-active {
-  border-bottom-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-bottom-color: rgb(72, 95, 199);
+  color: rgb(72, 95, 199);
 }
 
 .navbar-link:not(.is-arrowless)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(72, 95, 199);
 }
 
 @media screen and (max-width: 1023px) {
@@ -2323,7 +2323,7 @@ a.navbar-item.is-active,
 
 @media screen and (min-width: 1024px) {
   .navbar.is-transparent .navbar-dropdown a.navbar-item.is-active {
-    color: rgb(255, 255, 255);
+    color: rgb(72, 95, 199);
   }
 
   .navbar-dropdown {
@@ -2331,14 +2331,14 @@ a.navbar-item.is-active,
   }
 
   .navbar-dropdown a.navbar-item.is-active {
-    color: rgb(255, 255, 255);
+    color: rgb(72, 95, 199);
   }
 }
 
 .pagination-link.is-current {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  border-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .panel.is-white .panel-heading {
@@ -2358,111 +2358,111 @@ a.navbar-item.is-active,
 }
 
 .panel.is-dark .panel-heading {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .panel.is-dark .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(40, 50, 82);
 }
 
 .panel.is-dark .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .panel.is-primary .panel-heading {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .panel.is-primary .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .panel.is-primary .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .panel.is-link .panel-heading {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .panel.is-link .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(72, 95, 199);
 }
 
 .panel.is-link .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .panel.is-info .panel-heading {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .panel.is-info .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(3, 152, 226);
 }
 
 .panel.is-info .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .panel.is-success .panel-heading {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
-}
-
-.panel.is-success .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
-}
-
-.panel.is-success .panel-block.is-active .panel-icon {
+  background-color: rgb(6, 214, 158);
   color: rgb(255, 255, 255);
 }
 
+.panel.is-success .panel-tabs a.is-active {
+  border-bottom-color: rgb(6, 214, 158);
+}
+
+.panel.is-success .panel-block.is-active .panel-icon {
+  color: rgb(6, 214, 158);
+}
+
 .panel.is-warning .panel-heading {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
 .panel.is-warning .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(250, 173, 66);
 }
 
 .panel.is-warning .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .panel.is-danger .panel-heading {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .panel.is-danger .panel-tabs a.is-active {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(230, 41, 100);
 }
 
 .panel.is-danger .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .panel-list a:hover {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .panel-block.is-active {
-  border-left-color: rgb(255, 255, 255);
+  border-left-color: rgb(72, 95, 199);
 }
 
 .panel-block.is-active .panel-icon {
-  color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .tabs li.is-active a {
-  border-bottom-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-bottom-color: rgb(72, 95, 199);
+  color: rgb(72, 95, 199);
 }
 
 .tabs.is-boxed li.is-active a {
@@ -2470,9 +2470,9 @@ a.navbar-item.is-active,
 }
 
 .tabs.is-toggle li.is-active a {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  border-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-white {
@@ -2546,282 +2546,282 @@ a.navbar-item.is-active,
 }
 
 .hero.is-dark {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark .title {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark .subtitle a:not(.button),
 .hero.is-dark .subtitle strong {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1023px) {
   .hero.is-dark .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(40, 50, 82);
   }
 }
 
 .hero.is-dark .navbar-item,
 .hero.is-dark .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark a.navbar-item:hover,
 .hero.is-dark a.navbar-item.is-active,
 .hero.is-dark .navbar-link:hover,
 .hero.is-dark .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(40, 50, 82);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark .tabs a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark .tabs.is-boxed a,
 .hero.is-dark .tabs.is-toggle a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-dark .tabs.is-boxed li.is-active a,
 .hero.is-dark .tabs.is-boxed li.is-active a:hover,
 .hero.is-dark .tabs.is-toggle li.is-active a,
 .hero.is-dark .tabs.is-toggle li.is-active a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .hero.is-primary {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary .title {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary .subtitle a:not(.button),
 .hero.is-primary .subtitle strong {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1023px) {
   .hero.is-primary .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(42, 172, 142);
   }
 }
 
 .hero.is-primary .navbar-item,
 .hero.is-primary .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary a.navbar-item:hover,
 .hero.is-primary a.navbar-item.is-active,
 .hero.is-primary .navbar-link:hover,
 .hero.is-primary .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary .tabs a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary .tabs.is-boxed a,
 .hero.is-primary .tabs.is-toggle a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-primary .tabs.is-boxed li.is-active a,
 .hero.is-primary .tabs.is-boxed li.is-active a:hover,
 .hero.is-primary .tabs.is-toggle li.is-active a,
 .hero.is-primary .tabs.is-toggle li.is-active a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .hero.is-link {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link .title {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link .subtitle a:not(.button),
 .hero.is-link .subtitle strong {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1023px) {
   .hero.is-link .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(72, 95, 199);
   }
 }
 
 .hero.is-link .navbar-item,
 .hero.is-link .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link a.navbar-item:hover,
 .hero.is-link a.navbar-item.is-active,
 .hero.is-link .navbar-link:hover,
 .hero.is-link .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(72, 95, 199);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link .tabs a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link .tabs.is-boxed a,
 .hero.is-link .tabs.is-toggle a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-link .tabs.is-boxed li.is-active a,
 .hero.is-link .tabs.is-boxed li.is-active a:hover,
 .hero.is-link .tabs.is-toggle li.is-active a,
 .hero.is-link .tabs.is-toggle li.is-active a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  color: rgb(72, 95, 199);
 }
 
 .hero.is-info {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info .title {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info .subtitle a:not(.button),
 .hero.is-info .subtitle strong {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1023px) {
   .hero.is-info .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(3, 152, 226);
   }
 }
 
 .hero.is-info .navbar-item,
 .hero.is-info .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info a.navbar-item:hover,
 .hero.is-info a.navbar-item.is-active,
 .hero.is-info .navbar-link:hover,
 .hero.is-info .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(3, 152, 226);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info .tabs a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info .tabs.is-boxed a,
 .hero.is-info .tabs.is-toggle a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-info .tabs.is-boxed li.is-active a,
 .hero.is-info .tabs.is-boxed li.is-active a:hover,
 .hero.is-info .tabs.is-toggle li.is-active a,
 .hero.is-info .tabs.is-toggle li.is-active a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .hero.is-success {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success .title {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success .subtitle a:not(.button),
 .hero.is-success .subtitle strong {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1023px) {
   .hero.is-success .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(6, 214, 158);
   }
 }
 
 .hero.is-success .navbar-item,
 .hero.is-success .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success a.navbar-item:hover,
 .hero.is-success a.navbar-item.is-active,
 .hero.is-success .navbar-link:hover,
 .hero.is-success .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(6, 214, 158);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success .tabs a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success .tabs.is-boxed a,
 .hero.is-success .tabs.is-toggle a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-success .tabs.is-boxed li.is-active a,
 .hero.is-success .tabs.is-boxed li.is-active a:hover,
 .hero.is-success .tabs.is-toggle li.is-active a,
 .hero.is-success .tabs.is-toggle li.is-active a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .hero.is-warning {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
@@ -2840,7 +2840,7 @@ a.navbar-item.is-active,
 
 @media screen and (max-width: 1023px) {
   .hero.is-warning .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(250, 173, 66);
   }
 }
 
@@ -2853,7 +2853,7 @@ a.navbar-item.is-active,
 .hero.is-warning a.navbar-item.is-active,
 .hero.is-warning .navbar-link:hover,
 .hero.is-warning .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
   color: rgba(0, 0, 0, 0.7);
 }
 
@@ -2872,67 +2872,67 @@ a.navbar-item.is-active,
 .hero.is-warning .tabs.is-toggle li.is-active a:hover {
   background-color: rgba(0, 0, 0, 0.7);
   border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .hero.is-danger {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger .title {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger .subtitle {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger .subtitle a:not(.button),
 .hero.is-danger .subtitle strong {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 @media screen and (max-width: 1023px) {
   .hero.is-danger .navbar-menu {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(230, 41, 100);
   }
 }
 
 .hero.is-danger .navbar-item,
 .hero.is-danger .navbar-link {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger a.navbar-item:hover,
 .hero.is-danger a.navbar-item.is-active,
 .hero.is-danger .navbar-link:hover,
 .hero.is-danger .navbar-link.is-active {
-  background-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(230, 41, 100);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger .tabs a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger .tabs.is-boxed a,
 .hero.is-danger .tabs.is-toggle a {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
 }
 
 .hero.is-danger .tabs.is-boxed li.is-active a,
 .hero.is-danger .tabs.is-boxed li.is-active a:hover,
 .hero.is-danger .tabs.is-toggle li.is-active a,
 .hero.is-danger .tabs.is-toggle li.is-active a:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(0, 0, 0, 0.7);
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
-.is-dark .menu-toggle .iconify {
-  background: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+.is-dark .menu-toggle i {
+  background: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 body.opened {
@@ -2944,7 +2944,7 @@ body.opened {
 }
 
 .toolbar .toolbar-notifications .dropdown .is-trigger .new-indicator {
-  background: rgb(255, 255, 255);
+  background: rgb(230, 41, 100);
 }
 
 .toolbar .toolbar-notifications .dropdown .dropdown-menu .dropdown-content {
@@ -2952,11 +2952,65 @@ body.opened {
 }
 
 .toolbar .toolbar-notifications .dropdown .dropdown-menu .dropdown-content .heading .heading-right .notification-link {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .toolbar .toolbar-link:hover {
   background: rgb(255, 255, 255);
+}
+
+.minimal-wrapper.light {
+  background: rgb(255, 255, 255);
+}
+
+.navbar-subnavbar {
+  background: rgb(255, 255, 255);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tabs ul li.is-active a {
+  color: rgb(42, 172, 142);
+  background: rgb(255, 255, 255);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tabs ul li.is-active:hover a {
+  background: rgb(255, 255, 255);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center .column-placeholder {
+  background-color: rgb(255, 255, 255);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center .column-placeholder.is-primary {
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center .column-placeholder:hover,
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center .column-placeholder:focus {
+  border-color: rgb(42, 172, 142);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center .column-placeholder:hover h3,
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center .column-placeholder:focus h3 {
+  color: rgb(42, 172, 142);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center ul li:hover a,
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center ul li:focus a {
+  color: rgb(42, 172, 142);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center ul li.is-active a svg {
+  fill: rgb(42, 172, 142);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center ul li .router-link-exact-active svg {
+  fill: rgb(42, 172, 142);
+}
+
+.navbar-subnavbar .navbar-subnavbar-inner .tab-content .tab-content-inner .center ul li a svg {
+  fill: rgb(42, 172, 142);
 }
 
 @media only screen and (width >= 768px) and (width <= 1024px) and (orientation: portrait) {
@@ -2975,12 +3029,12 @@ body.opened {
   background: rgb(255, 255, 255);
 }
 
-.right-panel-wrapper .right-panel .right-panel-head .close-panel:hover .iconify {
-  color: rgb(255, 255, 255);
+.right-panel-wrapper .right-panel .right-panel-head .close-panel:hover svg {
+  color: rgb(42, 172, 142);
 }
 
-.is-dark .right-panel-wrapper .right-panel .right-panel-head .close-panel:hover .iconify {
-  color: rgb(255, 255, 255);
+.is-dark .right-panel-wrapper .right-panel .right-panel-head .close-panel:hover svg {
+  color: rgb(42, 172, 142);
 }
 
 p.white-text {
@@ -2988,16 +3042,20 @@ p.white-text {
 }
 
 code {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .is-dark code {
+  color: rgb(42, 172, 142);
+}
+
+.is-dark strong {
   color: rgb(255, 255, 255);
 }
 
 .title.is-purple,
 .subtitle.is-purple {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .title.is-light,
@@ -3006,39 +3064,39 @@ code {
 }
 
 .is-green {
-  color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .is-purple {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .success-text {
-  color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .info-text {
-  color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .warning-text {
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .danger-text {
-  color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .menu-toggle .icon-line-center {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .menu-toggle .icon-line-top {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .menu-toggle .icon-line-bottom {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .text-tooltip .tooltip-content {
@@ -3046,21 +3104,26 @@ code {
 }
 
 .hopscotch-bubble .hopscotch-bubble-container .hopscotch-bubble-number {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .hopscotch-bubble .hopscotch-bubble-container .hopscotcv-actions .hopscotch-nav-button {
   background: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
 .hopscotch-bubble .hopscotch-bubble-container .hopscotcv-actions .hopscotch-nav-button:hover {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .demo-wrapper:hover {
   background: rgb(255, 255, 255);
+}
+
+#backtotop.visible a:hover {
+  background: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .r-card {
@@ -3068,9 +3131,9 @@ code {
 }
 
 .r-card.is-primary {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .s-card {
@@ -3078,9 +3141,9 @@ code {
 }
 
 .s-card.is-primary {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .l-card {
@@ -3088,9 +3151,9 @@ code {
 }
 
 .l-card.is-primary {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .r-card-advanced,
@@ -3100,80 +3163,80 @@ code {
 }
 
 .content blockquote.is-primary {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .content blockquote.is-success {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
 }
 
 .content blockquote.is-info {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(3, 152, 226);
 }
 
 .content blockquote.is-warning {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(250, 173, 66);
 }
 
 .content blockquote.is-danger {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(230, 41, 100);
 }
 
 .is-dark .content blockquote.is-primary {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .radio-list li label input:checked + .k-radio .radio-knob {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .radio-list li label .k-radio .radio-knob .knob-inner {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .select:not(.is-multiple):not(.is-loading)::after {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .field.has-textarea-addon .is-textarea-addon {
   background: rgb(255, 255, 255);
 }
 
-.control.has-icon .input:focus + .form-icon.iconify {
-  color: rgb(255, 255, 255);
+.control.has-icon .input:focus + .form-icon svg {
+  color: rgb(42, 172, 142);
 }
 
-.control.has-icon .input:focus + .form-icon.fas,
-.control.has-icon .input:focus + .form-icon.far,
-.control.has-icon .input:focus + .form-icon.fal,
-.control.has-icon .input:focus + .form-icon.fab {
-  color: rgb(255, 255, 255);
+.control.has-icon .input:focus + .form-icon .fas,
+.control.has-icon .input:focus + .form-icon .far,
+.control.has-icon .input:focus + .form-icon .fal,
+.control.has-icon .input:focus + .form-icon .fab {
+  color: rgb(42, 172, 142);
 }
 
-.control.has-icon .input:focus + .form-icon.lnil,
-.control.has-icon .input:focus + .form-icon.lnir {
-  color: rgb(255, 255, 255);
+.control.has-icon .input:focus + .form-icon .lnil,
+.control.has-icon .input:focus + .form-icon .lnir {
+  color: rgb(42, 172, 142);
 }
 
 .control .help-text span.error {
-  color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .control .search-results {
   background: rgb(255, 255, 255);
 }
 
-.is-dark .control.has-icon .input:focus ~ .form-icon.iconify {
-  color: rgb(255, 255, 255);
+.is-dark .control.has-icon .input:focus ~ .form-icon svg {
+  color: rgb(42, 172, 142);
 }
 
-.is-dark .control.has-icon .input:focus ~ .form-icon.fas,
-.is-dark .control.has-icon .input:focus ~ .form-icon.fal,
-.is-dark .control.has-icon .input:focus ~ .form-icon.far,
-.is-dark .control.has-icon .input:focus ~ .form-icon.fab,
-.is-dark .control.has-icon .input:focus ~ .form-icon.lnir,
-.is-dark .control.has-icon .input:focus ~ .form-icon.lnil {
-  color: rgb(255, 255, 255);
+.is-dark .control.has-icon .input:focus ~ .form-icon .fas,
+.is-dark .control.has-icon .input:focus ~ .form-icon .fal,
+.is-dark .control.has-icon .input:focus ~ .form-icon .far,
+.is-dark .control.has-icon .input:focus ~ .form-icon .fab,
+.is-dark .control.has-icon .input:focus ~ .form-icon .lnir,
+.is-dark .control.has-icon .input:focus ~ .form-icon .lnil {
+  color: rgb(42, 172, 142);
 }
 
 .file.is-default .file-cta {
@@ -3182,13 +3245,13 @@ code {
 
 .filepond-profile-wrap:hover .lnil,
 .filepond-square-wrap:hover .lnil {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .is-dark .filepond-uploader:hover .lnil,
 .is-dark .filepond-profile-wrap:hover .lnil,
 .is-dark .filepond-square-wrap:hover .lnil {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .h-toggle .toggler .active,
@@ -3196,10 +3259,15 @@ code {
   background: rgb(255, 255, 255);
 }
 
+.h-toggle .toggler .active i,
+.h-toggle .toggler .inactive i {
+  color: rgb(255, 255, 255);
+}
+
 .h-toggle .toggler .inactive {
   background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgb(255, 255, 255);
+  border-color: rgb(6, 214, 158);
+  color: rgb(6, 214, 158);
 }
 
 .h-toggle .toggler .active {
@@ -3207,43 +3275,43 @@ code {
 }
 
 .slider-target .slider-base .slider-connects .slider-connect {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .slider-target .slider-base .slider-tooltip {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .is-slider-info .slider-target .slider-base .slider-connects .slider-connect {
-  background: rgb(255, 255, 255);
+  background: rgb(3, 152, 226);
 }
 
 .is-slider-info .slider-target .slider-base .slider-tooltip {
-  background: rgb(255, 255, 255);
+  background: rgb(3, 152, 226);
 }
 
 .is-slider-success .slider-target .slider-base .slider-connects .slider-connect {
-  background: rgb(255, 255, 255);
+  background: rgb(6, 214, 158);
 }
 
 .is-slider-success .slider-target .slider-base .slider-tooltip {
-  background: rgb(255, 255, 255);
+  background: rgb(6, 214, 158);
 }
 
 .is-slider-warning .slider-target .slider-base .slider-connects .slider-connect {
-  background: rgb(255, 255, 255);
+  background: rgb(250, 173, 66);
 }
 
 .is-slider-warning .slider-target .slider-base .slider-tooltip {
-  background: rgb(255, 255, 255);
+  background: rgb(250, 173, 66);
 }
 
 .is-slider-danger .slider-target .slider-base .slider-connects .slider-connect {
-  background: rgb(255, 255, 255);
+  background: rgb(230, 41, 100);
 }
 
 .is-slider-danger .slider-target .slider-base .slider-tooltip {
-  background: rgb(255, 255, 255);
+  background: rgb(230, 41, 100);
 }
 
 .multiselect .multiselect-input {
@@ -3267,52 +3335,48 @@ code {
 }
 
 .steps-segment::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .steps:not(.is-hollow) .steps-marker:not(.is-hollow) {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .steps:not(.is-hollow) .steps-segment.is-active .steps-marker:not(.is-hollow) {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .steps.is-hollow .is-active .steps-marker,
 .steps .is-active .steps-marker.is-hollow {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .action-link {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .action-link:hover {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .is-dark .action-link {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .is-dark .action-link::after {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .user-list .user-list-status.is-online {
-  background: rgb(255, 255, 255);
+  background: rgb(6, 214, 158);
 }
 
 .user-list .user-list-status.is-busy {
-  background: rgb(255, 255, 255);
+  background: rgb(250, 173, 66);
 }
 
 #nprogress .bar {
-  background: rgb(255, 255, 255);
-}
-
-.vc-popover-content-wrapper .vc-nav-popover-container {
-  background: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
 }
 
 .vc-popover-content-wrapper .vc-nav-popover-container .vc-nav-container .vc-nav-header .vc-nav-title {
@@ -3323,13 +3387,12 @@ code {
   color: rgb(255, 255, 255);
 }
 
-.vc-popover-content-wrapper .vc-nav-popover-container .vc-nav-container .vc-nav-header .vc-nav-arrow .iconify {
+.vc-popover-content-wrapper .vc-nav-popover-container .vc-nav-container .vc-nav-header .vc-nav-arrow svg {
   stroke: rgb(255, 255, 255);
 }
 
 .vc-popover-content-wrapper .vc-nav-popover-container .vc-nav-container .vc-nav-items .vc-nav-item {
   color: rgb(255, 255, 255);
-  background: rgb(255, 255, 255);
 }
 
 .is-dark .vc-popover-content-wrapper .vc-nav-popover-container .vc-nav-container .vc-nav-items .vc-nav-item {
@@ -3345,22 +3408,31 @@ code {
   background: rgb(255, 255, 255);
 }
 
+.note-modal .note-modal-content .note-modal-footer .btn-primary {
+  background: rgb(42, 172, 142);
+}
+
+.note-modal .note-modal-content .note-modal-footer .btn-primary {
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+}
+
 .is-dark .apexcharts-subtitle-text {
-  fill: rgb(255, 255, 255);
+  fill: rgb(42, 172, 142);
 }
 
 .sliding-toggle input:checked ~ .toggler {
-  border-color: rgb(255, 255, 255);
+  border-color: rgb(42, 172, 142);
 }
 
 .sliding-toggle .toggler .light {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
 .sliding-toggle .toggler .dark {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
 .special-checkbox label {
@@ -3368,54 +3440,54 @@ code {
 }
 
 .special-checkbox input[type=checkbox]:checked + label {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
 .v-popover-content .popover-head h4 {
-  color: rgb(255, 255, 255);
+  color: rgb(40, 50, 82);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-primary span,
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-primary span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-primary span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-primary span {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-accent span,
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-accent span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-accent span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-accent span {
-  color: rgb(255, 255, 255);
+  color: rgb(42, 172, 142);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-success span,
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-success span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-success span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-success span {
-  color: rgb(255, 255, 255);
+  color: rgb(6, 214, 158);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-info span,
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-info span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-info span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-info span {
-  color: rgb(255, 255, 255);
+  color: rgb(3, 152, 226);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-warning span,
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-warning span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-warning span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-warning span {
-  color: rgb(255, 255, 255);
+  color: rgb(250, 173, 66);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-fake-avatar.is-danger span,
 .v-popover-profile .profile-popover-block .skill-popover-wrapper .popover-fake-avatar.is-danger span,
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-fake-avatar.is-danger span,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-fake-avatar.is-danger span {
-  color: rgb(255, 255, 255);
+  color: rgb(230, 41, 100);
 }
 
 .v-popover-profile .profile-popover-block .profile-popover-wrapper .popover-meta span.job-title,
@@ -3426,11 +3498,92 @@ code {
 .v-popover-profile .skill-popover-block .profile-popover-wrapper .popover-meta span.skill-type,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-meta span.job-title,
 .v-popover-profile .skill-popover-block .skill-popover-wrapper .popover-meta span.skill-type {
+  color: rgb(42, 172, 142);
+}
+
+.is-dark .v-popover-profile .profile-popover-block .popover-actions .popover-icon:hover svg {
+  color: rgb(42, 172, 142);
+}
+
+.tabs.is-toggle li.is-active a {
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+}
+
+.tabs.is-toggle li.is-active a:hover,
+.tabs.is-toggle li.is-active a:focus {
   color: rgb(255, 255, 255);
 }
 
-.is-dark .v-popover-profile .profile-popover-block .popover-actions .popover-icon:hover .iconify {
+.tabs li.is-active a {
+  border-bottom-color: rgb(42, 172, 142);
+  color: rgb(42, 172, 142);
+}
+
+.tabs li.is-active a:hover,
+.tabs li.is-active a:focus {
+  border-bottom-color: rgb(42, 172, 142);
+  color: rgb(42, 172, 142);
+}
+
+.is-dark .tabs.is-toggle li.is-active a,
+.is-dark .tabs.is-toggle li.is-active a:hover {
+  border-color: rgb(42, 172, 142);
   color: rgb(255, 255, 255);
+}
+
+.is-dark .tabs li.is-active a {
+  border-bottom-color: rgb(42, 172, 142);
+  color: rgb(42, 172, 142);
+}
+
+.tabs-wrapper.is-slider.is-inverted > .tabs-inner > .tabs,
+.tabs-wrapper-alt.is-slider.is-inverted > .tabs-inner > .tabs {
+  background: rgb(255, 255, 255);
+}
+
+.tabs-wrapper.is-slider > .tabs-inner > .tabs li.is-active a,
+.tabs-wrapper-alt.is-slider > .tabs-inner > .tabs li.is-active a {
+  color: rgb(255, 255, 255);
+}
+
+.tabs-wrapper.is-slider .tab-naver,
+.tabs-wrapper-alt.is-slider .tab-naver {
+  background: rgb(42, 172, 142);
+}
+
+.tabs-wrapper.is-triple-slider.is-inverted > .tabs-inner > .tabs,
+.tabs-wrapper-alt.is-triple-slider.is-inverted > .tabs-inner > .tabs {
+  background: rgb(255, 255, 255);
+}
+
+.tabs-wrapper.is-triple-slider > .tabs-inner > .tabs li.is-active a,
+.tabs-wrapper-alt.is-triple-slider > .tabs-inner > .tabs li.is-active a {
+  color: rgb(255, 255, 255);
+}
+
+.tabs-wrapper.is-triple-slider .tab-naver,
+.tabs-wrapper-alt.is-triple-slider .tab-naver {
+  background: rgb(42, 172, 142);
+}
+
+.is-dark .tabs-wrapper.is-slider > .tabs-inner > .tabs li.is-active a,
+.is-dark .tabs-wrapper.is-triple-slider > .tabs-inner > .tabs li.is-active a {
+  color: rgb(255, 255, 255);
+}
+
+@media only screen and (width <= 767px) {
+  .vertical-tabs-wrapper .tabs ul li.is-active a {
+    color: rgb(42, 172, 142);
+    border-bottom-color: rgb(42, 172, 142);
+  }
+}
+
+@media only screen and (width >= 768px) {
+  .vertical-tabs-wrapper .tabs ul li.is-active a {
+    color: rgb(42, 172, 142);
+    border-inline-end-color: rgb(42, 172, 142);
+  }
 }
 
 .flex-pagination .pagination-next,
@@ -3438,9 +3591,9 @@ code {
   background: rgb(255, 255, 255);
 }
 
-.flex-pagination .pagination-next.has-chevron .iconify,
-.flex-pagination .pagination-previous.has-chevron .iconify {
-  color: rgb(255, 255, 255);
+.flex-pagination .pagination-next.has-chevron svg,
+.flex-pagination .pagination-previous.has-chevron svg {
+  color: rgb(42, 172, 142);
 }
 
 .flex-pagination .pagination-list li .pagination-link {
@@ -3448,198 +3601,198 @@ code {
 }
 
 .flex-pagination .pagination-list li .pagination-link.is-current {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
-.is-dark .flex-pagination .pagination-next .iconify,
-.is-dark .flex-pagination .pagination-previous .iconify {
-  color: rgb(255, 255, 255);
+.is-dark .flex-pagination .pagination-next svg,
+.is-dark .flex-pagination .pagination-previous svg {
+  color: rgb(42, 172, 142);
 }
 
 .is-dark .flex-pagination .pagination-list li .pagination-link.is-current {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
 }
 
 .hint--primary::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--top-left::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--top-right::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--top::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--bottom-left::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--bottom-right::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--bottom::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--left::before {
-  border-inline-start-color: rgb(255, 255, 255);
+  border-inline-start-color: rgb(42, 172, 142);
 }
 
 .hint--primary.hint--right::before {
-  border-inline-end-color: rgb(255, 255, 255);
+  border-inline-end-color: rgb(42, 172, 142);
 }
 
 .hint--error::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--top-left::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--top-right::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--top::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--bottom-left::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--bottom-right::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--bottom::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--left::before {
-  border-inline-start-color: rgb(255, 255, 255);
+  border-inline-start-color: rgb(230, 41, 100);
 }
 
 .hint--error.hint--right::before {
-  border-inline-end-color: rgb(255, 255, 255);
+  border-inline-end-color: rgb(230, 41, 100);
 }
 
 .hint--warning::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--top-left::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--top-right::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--top::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--bottom-left::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--bottom-right::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--bottom::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--left::before {
-  border-inline-start-color: rgb(255, 255, 255);
+  border-inline-start-color: rgb(250, 173, 66);
 }
 
 .hint--warning.hint--right::before {
-  border-inline-end-color: rgb(255, 255, 255);
+  border-inline-end-color: rgb(250, 173, 66);
 }
 
 .hint--info::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--top-left::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--top-right::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--top::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--bottom-left::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--bottom-right::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--bottom::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--left::before {
-  border-inline-start-color: rgb(255, 255, 255);
+  border-inline-start-color: rgb(3, 152, 226);
 }
 
 .hint--info.hint--right::before {
-  border-inline-end-color: rgb(255, 255, 255);
+  border-inline-end-color: rgb(3, 152, 226);
 }
 
 .hint--success::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--top-left::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--top-right::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--top::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--bottom-left::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--bottom-right::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--bottom::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--left::before {
-  border-inline-start-color: rgb(255, 255, 255);
+  border-inline-start-color: rgb(6, 214, 158);
 }
 
 .hint--success.hint--right::before {
-  border-inline-end-color: rgb(255, 255, 255);
+  border-inline-end-color: rgb(6, 214, 158);
 }
 
 .hint--light::after {
@@ -3679,45 +3832,45 @@ code {
 }
 
 .is-dark .hint--primary::after {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--top-left::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--top-right::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--top::before {
-  border-top-color: rgb(255, 255, 255);
+  border-top-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--bottom-left::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--bottom-right::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--bottom::before {
-  border-bottom-color: rgb(255, 255, 255);
+  border-bottom-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--left::before {
-  border-inline-start-color: rgb(255, 255, 255);
+  border-inline-start-color: rgb(42, 172, 142);
 }
 
 .is-dark .hint--primary.hint--right::before {
-  border-inline-end-color: rgb(255, 255, 255);
+  border-inline-end-color: rgb(42, 172, 142);
 }
 
 .ck-editor {
-  --ck-color-base-active: rgb(255, 255, 255);
-  --ck-color-button-on-color: rgb(255, 255, 255);
-  --ck-color-focus-border: rgb(255, 255, 255);
+  --ck-color-base-active: rgb(42, 172, 142);
+  --ck-color-button-on-color: rgb(42, 172, 142);
+  --ck-color-focus-border: rgb(42, 172, 142);
 }
 
 .card-container .creditcard #cardfront .st2 {
@@ -3737,9 +3890,9 @@ code {
 }
 
 .stat-widget.is-primary {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
 }
 
 .stat-widget.is-straight {
@@ -3747,7 +3900,25 @@ code {
 }
 
 .stat-widget.is-straight.is-primary {
-  background: rgb(255, 255, 255);
-  border-color: rgb(255, 255, 255);
-  color: rgba(0, 0, 0, 0.7);
+  background: rgb(42, 172, 142);
+  border-color: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
+}
+
+.layout-selector .layout-item .indicator {
+  background: rgb(42, 172, 142);
+  color: rgb(255, 255, 255);
+}
+
+.layout-selector .layout-item .indicator svg,
+.layout-selector .layout-item .indicator .iconify {
+  color: rgb(255, 255, 255);
+}
+
+.cus-stat-data {
+  color: rgb(42, 172, 142);
+}
+
+.cus-onhover:hover {
+  color: rgb(6, 214, 158);
 }

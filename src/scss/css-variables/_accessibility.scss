@@ -1,13 +1,13 @@
-/*! accessibility.scss | Vuero | Css ninja 2020-2024 */
+/*! accessibility.scss | Vuero | Css ninja 2020-2023 */
 
 :root {
   --accessibility-focus-outline-style: dashed;
   --accessibility-focus-outline-offset: 3px;
   --accessibility-focus-outline-width: 1px;
-  --accessibility-focus-outline-color: color-mix(in oklab, var(--fade-grey), black 8%);
+  --accessibility-focus-outline-color: var(--fade-grey-dark-8);
 
   &.is-dark {
-    --accessibility-focus-outline-color: color-mix(in oklab, var(--dark-sidebar), white 25%);
+    --accessibility-focus-outline-color: var(--dark-sidebar-light-25);
 
     color-scheme: dark;
   }

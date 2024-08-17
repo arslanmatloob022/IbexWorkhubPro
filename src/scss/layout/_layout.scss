@@ -1,4 +1,4 @@
-/*! _layout.scss | Vuero | Css ninja 2020-2024 */
+/*! _layout.scss | Vuero | Css ninja 2020-2023 */
 
 /*
     1. App Layout
@@ -46,8 +46,8 @@ body {
   transition: opacity 0.3s;
 
   &.is-active {
-    opacity: 0.4;
-    z-index: 20;
+    opacity: 0.8;
+    z-index: 9999;
   }
 }
 
@@ -126,10 +126,6 @@ body {
         position: relative;
         height: 34px;
         width: 34px;
-        
-        .iconify {
-          font-size: 20px;
-        }
 
         .new-indicator {
           position: absolute;
@@ -202,7 +198,7 @@ body {
               }
 
               .user-content {
-                text-align: start;
+                text-align: inset-inline-start;
                 font-family: var(--font);
 
                 .user-info {
@@ -250,9 +246,12 @@ body {
       outline-color: var(--accessibility-focus-outline-color);
     }
 
-    .iconify {
-      font-size: 20px;
+    svg {
+      height: 18px;
+      width: 18px;
+      stroke-width: 1.6px;
       color: var(--light-text);
+      transition: stroke 0.3s;
     }
 
     img {
@@ -262,6 +261,34 @@ body {
       min-width: 24px;
       border-radius: var(--radius-rounded);
     }
+  }
+}
+
+/* ==========================================================================
+5. Minimal Wrapper
+========================================================================== */
+
+.minimal-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--lighter-grey);
+  transition: all 0.3s; // transition-all test
+
+  &.light {
+    background: var(--white);
+  }
+
+  &.lighter {
+    background: var(--smoke-white);
+  }
+
+  &.darker {
+    background: var(--background-grey);
+  }
+
+  .minimal-wrap {
+    min-height: calc(100vh - 60px);
   }
 }
 

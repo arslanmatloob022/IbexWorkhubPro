@@ -1,0 +1,1 @@
+import{e as s,L as a,o as e,v as n,x as o}from"./index-a3511ab8.js";const r=s({__name:"index",setup(s){const r=a();return e((()=>{r.push("/navbar/dashboards")})),(s,a)=>(n(),o("div"))}});export{r as default};
