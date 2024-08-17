@@ -1,80 +1,87 @@
 <script setup lang="ts">
-import { onceImageErrored } from '/@src/utils/via-placeholder'
-import { useUserSession } from '/@src/stores/userSession'
-import { useNotyf } from '/@src/composable/useNotyf'
-import {useApi} from '/@src/composable/useAPI'
-type TabId = 'overview' | 'content' | 'brands'
-const activeTab = ref<TabId>('overview')
-const userSession = useUserSession()
-const edit_mode = ref(false)
-const isUploading = ref(false)
-const api = useApi()
-const notyf = useNotyf()
-const user_action = ref('update')
-const FormData = ref({})
-const CustomUserData=ref({
-  id :'',
-  first_name:'',
-  last_name:'',
-  department:'',
-  profileImage: '', 
-  jobPosition:'',
-  mobileNo:'',
-  phoneNo:'',
-  email:''
-})
-CustomUserData.value = userSession.user
-console.log(userSession.user)
-const inputChangeHandler =(event:any)=>{
-  FormData.value = {...FormData.value, [event.target.name]:event.target.value}
-}
+import { onceImageErrored } from "/@src/utils/via-placeholder";
+import { useUserSession } from "/@src/stores/userSession";
+import { useNotyf } from "/@src/composable/useNotyf";
+import { useApi } from "/@src/composable/useAPI";
+type TabId = "overview" | "content" | "brands";
+const activeTab = ref<TabId>("overview");
+const userSession = useUserSession();
+const edit_mode = ref(false);
+const isUploading = ref(false);
+const api = useApi();
+const notyf = useNotyf();
+const user_action = ref("update");
+const FormData = ref({});
+const CustomUserData = ref({
+  id: "",
+  password: "",
+  last_login: "",
+  date_joined: "",
+  email: "",
+  role: "",
+  avatar: "",
+  is_active: "",
+  phoneNumber: "",
+  username: "",
+  is_sentMail: 0,
+});
+CustomUserData.value = userSession.user;
+console.log(userSession.user);
+const inputChangeHandler = (event: any) => {
+  FormData.value = {
+    ...FormData.value,
+    [event.target.name]: event.target.value,
+  };
+};
 
 const onAddFile = (error: any, fileInfo: any) => {
-  const _file = fileInfo.file as File
+  const _file = fileInfo.file as File;
   if (_file) {
     console.log(_file);
-    FormData.value = {...FormData.value, profileImage:_file}
+    FormData.value = { ...FormData.value, profileImage: _file };
   }
-}
+};
 
 const onRemoveFile = (error: any, fileInfo: any) => {
-  FormData.value = {...FormData.value, profileImage:null}
-
-}
-const updateProfile = async()=>{
-  try{
+  FormData.value = { ...FormData.value, profileImage: null };
+};
+const updateProfile = async () => {
+  try {
     const formDataAPI = new window.FormData();
     for (const key in FormData.value) {
-      formDataAPI.append(key, FormData.value[key])
+      formDataAPI.append(key, FormData.value[key]);
     }
-    const response = await api.patch(`/v3/api/account/user/${CustomUserData.value.id}/`,formDataAPI)
-    userSession.setUser(response.data)
-    edit_mode.value=false
-    notyf.dismissAll()
-    notyf.success('Profile updated successfully')
-  }catch(error:any) {
-    let errorObj=error.response.data??{}
-    Object.values(errorObj).forEach(values => {
-      values.forEach(value => {
+    const response = await api.patch(
+      `/v3/api/account/user/${CustomUserData.value.id}/`,
+      formDataAPI
+    );
+    userSession.setUser(response.data);
+    edit_mode.value = false;
+    notyf.dismissAll();
+    notyf.success("Profile updated successfully");
+  } catch (error: any) {
+    let errorObj = error.response.data ?? {};
+    Object.values(errorObj).forEach((values) => {
+      values.forEach((value) => {
         console.log(value);
-        notyf.error(` ${value}, Profile `)
+        notyf.error(` ${value}, Profile `);
       });
     });
-  }  
-}
+  }
+};
 </script>
 
 <template>
   <div class="lifestyle-dashboard lifestyle-dashboard-v1">
     <div class="dashboard-header-wrapper">
-    <div class="dashboard-header" v-if="!edit_mode">
-      <div class="avatar-container">
-        <img
-          :src="userSession.user.profileImage"
-          alt=""
-          @error.once="onceImageErrored(150)"
-        >
-        <!-- <button class="button is-circle">
+      <div class="dashboard-header" v-if="!edit_mode">
+        <div class="avatar-container">
+          <img
+            :src="userSession.user.avatar"
+            alt=""
+            @error.once="onceImageErrored(150)"
+          />
+          <!-- <button class="button is-circle">
           <span class="icon is-small">
             <i
               aria-hidden="true"
@@ -83,303 +90,245 @@ const updateProfile = async()=>{
             />
           </span>
         </button> -->
-      </div>
-      <div class="header-meta">
-        <div class="username-wrap">
-          <div class="username">
-            <h3>
-              <span>{{ CustomUserData.first_name }}  {{ CustomUserData.last_name }}</span>
-              <i
-                aria-hidden="true"
-                class="fas fa-star"
-              />
-            </h3>
-            <span>{{ CustomUserData.email }}</span>
-           
-            
-          </div>
-          <div class="badges">
-            <VTag
-              rounded
-              color="info"
-              :label="CustomUserData.jobPosition"
-            />
-            <VTag
-              rounded
-              color="primary"
-              :label="CustomUserData.department"
-            />
-          </div>
         </div>
-        <div class="meta-stats">
-          <div class="meta-stat">
-            <span>{{ CustomUserData.phoneNo }}</span>
-         
+        <div class="header-meta">
+          <div class="username-wrap">
+            <div class="username">
+              <h3>
+                <span>{{ CustomUserData.username }} </span>
+                <i aria-hidden="true" class="fas fa-star" />
+                <i aria-hidden="true" class="fas fa-star" />
+                <i aria-hidden="true" class="fas fa-star" />
+                <i aria-hidden="true" class="fas fa-star" />
+                <i aria-hidden="true" class="fas fa-star" />
+              </h3>
+              <span>{{ CustomUserData.email }}</span>
+            </div>
+            <div class="badges">
+              <VTag rounded color="info" :label="CustomUserData.role" />
+            </div>
           </div>
-          <div class="meta-stat">
-            <span>38.3K</span>
-            <span>Followers</span>
+          <div class="meta-stats">
+            <div class="meta-stat">
+              <span>{{ CustomUserData.phoneNumber }}</span>
+            </div>
+            <div class="meta-stat">
+              <span>38.3K</span>
+              <span>Followers</span>
+            </div>
+            <div class="meta-stat">
+              <span>329</span>
+              <span>Following</span>
+            </div>
           </div>
-          <div class="meta-stat">
-            <span>329</span>
-            <span>Following</span>
+          <div class="meta-description">
+            <p>
+              Artist, musician, songwriter, influencer, these are the many names
+              people give me. But for you Iam simply Clarissa. *Forever with all
+              my friends* // Latest video can be found here youtu.be/8Tcee5Cyz
+            </p>
           </div>
-        </div>
-        <div class="meta-description">
-          <p>
-            Artist, musician, songwriter, influencer, these are the many names people give
-            me. But for you Iam simply Clarissa. *Forever with all my friends* // Latest
-            video can be found here youtu.be/8Tcee5Cyz
-          </p>
-        </div>
-        <div class="meta-achievements">
-          <div>
-            <Tippy>
-              <div class="meta-achievement is-danger">
-                <i
-                  aria-hidden="true"
-                  class="fas fa-fire"
-                />
-              </div>
-              <template #content>
-                <div class="v-popover-content is-text">
-                  <div class="popover-head">
-                    <VIconBox
-                      size="small"
-                      color="danger"
-                    >
-                      <i
-                        aria-hidden="true"
-                        class="fas fa-fire"
-                      />
-                    </VIconBox>
-                    <h4 class="dark-inverted">
-                      On Fire
-                    </h4>
-                  </div>
-                  <div class="popover-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                  </div>
+          <div class="meta-achievements">
+            <div>
+              <Tippy>
+                <div class="meta-achievement is-danger">
+                  <i aria-hidden="true" class="fas fa-fire" />
                 </div>
-              </template>
-            </Tippy>
-          </div>
+                <template #content>
+                  <div class="v-popover-content is-text">
+                    <div class="popover-head">
+                      <VIconBox size="small" color="danger">
+                        <i aria-hidden="true" class="fas fa-fire" />
+                      </VIconBox>
+                      <h4 class="dark-inverted">On Fire</h4>
+                    </div>
+                    <div class="popover-body">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </Tippy>
+            </div>
 
-          <div>
-            <Tippy>
-              <div class="meta-achievement is-primary">
-                <i
-                  aria-hidden="true"
-                  class="fas fa-medal"
-                />
-              </div>
-              <template #content>
-                <div class="v-popover-content is-text">
-                  <div class="popover-head">
-                    <VIconBox
-                      size="small"
-                      color="primary"
-                    >
-                      <i
-                        aria-hidden="true"
-                        class="fas fa-medal"
-                      />
-                    </VIconBox>
-                    <h4 class="dark-inverted">
-                      Post Veteran
-                    </h4>
-                  </div>
-                  <div class="popover-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                  </div>
+            <div>
+              <Tippy>
+                <div class="meta-achievement is-primary">
+                  <i aria-hidden="true" class="fas fa-medal" />
                 </div>
-              </template>
-            </Tippy>
-          </div>
+                <template #content>
+                  <div class="v-popover-content is-text">
+                    <div class="popover-head">
+                      <VIconBox size="small" color="primary">
+                        <i aria-hidden="true" class="fas fa-medal" />
+                      </VIconBox>
+                      <h4 class="dark-inverted">Post Veteran</h4>
+                    </div>
+                    <div class="popover-body">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </Tippy>
+            </div>
 
-          <div>
-            <Tippy>
-              <div class="meta-achievement is-yellow">
-                <i
-                  aria-hidden="true"
-                  class="fas fa-trophy"
-                />
-              </div>
-              <template #content>
-                <div class="v-popover-content is-text">
-                  <div class="popover-head">
-                    <VIconBox
-                      size="small"
-                      color="yellow"
-                    >
-                      <i
-                        aria-hidden="true"
-                        class="fas fa-medal"
-                      />
-                    </VIconBox>
-                    <h4 class="dark-inverted">
-                      Social Champion
-                    </h4>
-                  </div>
-                  <div class="popover-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                  </div>
+            <div>
+              <Tippy>
+                <div class="meta-achievement is-yellow">
+                  <i aria-hidden="true" class="fas fa-trophy" />
                 </div>
-              </template>
-            </Tippy>
+                <template #content>
+                  <div class="v-popover-content is-text">
+                    <div class="popover-head">
+                      <VIconBox size="small" color="yellow">
+                        <i aria-hidden="true" class="fas fa-medal" />
+                      </VIconBox>
+                      <h4 class="dark-inverted">Social Champion</h4>
+                    </div>
+                    <div class="popover-body">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </Tippy>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="end">
-        <!--Dropdown-->
-        <VDropdown
+        <div class="end">
+          <!--Dropdown-->
+          <VDropdown
             icon="feather:more-vertical"
             class="end-action"
             spaced
             right
-        >
+          >
             <template #content>
-            <a
+              <a role="menuitem" href="#" class="dropdown-item is-media">
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-whiteboard-alt-2" />
+                </div>
+                <div class="meta">
+                  <span>Reports</span>
+                  <span>View detailed reports</span>
+                </div>
+              </a>
+
+              <a
+                @click="edit_mode = true"
                 role="menuitem"
                 href="#"
                 class="dropdown-item is-media"
-            >
+              >
                 <div class="icon">
-                <i
-                    aria-hidden="true"
-                    class="lnil lnil-whiteboard-alt-2"
-                />
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </div>
                 <div class="meta">
-                <span>Reports</span>
-                <span>View detailed reports</span>
+                  <span>Edit</span>
+                  <span>Edit this profile</span>
                 </div>
-            </a>
+              </a>
 
-            <a  @click="edit_mode=true"
-                role="menuitem"
-                href="#"
-                class="dropdown-item is-media"
-            >
+              <hr class="dropdown-divider" />
+
+              <a role="menuitem" href="#" class="dropdown-item is-media">
                 <div class="icon">
-                <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                />
+                  <i aria-hidden="true" class="lnil lnil-bubble" />
                 </div>
                 <div class="meta">
-                <span>Edit</span>
-                <span>Edit this profile</span>
+                  <span>Message</span>
+                  <span>Send a direct message</span>
                 </div>
-            </a>
+              </a>
 
-            <hr class="dropdown-divider">
-
-            <a
-                role="menuitem"
-                href="#"
-                class="dropdown-item is-media"
-            >
+              <a role="menuitem" href="#" class="dropdown-item is-media">
                 <div class="icon">
-                <i
-                    aria-hidden="true"
-                    class="lnil lnil-bubble"
-                />
+                  <i aria-hidden="true" class="lnil lnil-gift-alt-1" />
                 </div>
                 <div class="meta">
-                <span>Message</span>
-                <span>Send a direct message</span>
+                  <span>Gift</span>
+                  <span>send a gift</span>
                 </div>
-            </a>
+              </a>
 
-            <a
-                role="menuitem"
-                href="#"
-                class="dropdown-item is-media"
-            >
+              <hr class="dropdown-divider" />
+
+              <a role="menuitem" href="#" class="dropdown-item is-media">
                 <div class="icon">
-                <i
-                    aria-hidden="true"
-                    class="lnil lnil-gift-alt-1"
-                />
+                  <i aria-hidden="true" class="lnil lnil-cog" />
                 </div>
                 <div class="meta">
-                <span>Gift</span>
-                <span>send a gift</span>
+                  <span>Settings</span>
+                  <span>Configure settings</span>
                 </div>
-            </a>
-
-            <hr class="dropdown-divider">
-
-            <a
-                role="menuitem"
-                href="#"
-                class="dropdown-item is-media"
-            >
-                <div class="icon">
-                <i
-                    aria-hidden="true"
-                    class="lnil lnil-cog"
-                />
-                </div>
-                <div class="meta">
-                <span>Settings</span>
-                <span>Configure settings</span>
-                </div>
-            </a>
+              </a>
             </template>
-        </VDropdown>
+          </VDropdown>
+        </div>
       </div>
-    </div>
-    <div class="dashboard-header " v-if="edit_mode"  >
+      <div class="dashboard-header" v-if="edit_mode">
         <div class="header-meta">
-            <div class=" columns is-multiline mb-5">
+          <div class="columns is-multiline mb-5">
             <div class="field column is-12 mb-0 is-offset-10">
-                <div class="end">
+              <div class="end">
                 <!--Dropdown-->
                 <div class="buttons">
-                    <VButton
+                  <VButton
                     danger-outlined
                     rounded
                     color="danger"
-                    @click="()=>{edit_mode=false;}"
-                    >
+                    @click="
+                      () => {
+                        edit_mode = false;
+                      }
+                    "
+                  >
                     Cancel
-                    </VButton>
-                    <VButton
+                  </VButton>
+                  <VButton
                     dark-outlined
                     rounded
                     color="primary"
                     @click="updateProfile"
-                    >
+                  >
                     Save
-                    </VButton>
-                        
+                  </VButton>
                 </div>
-                </div>
+              </div>
             </div>
             <div class="field column is-2 mb-0">
-                <VField class="column is-12">
+              <VField class="column is-12">
                 <!-- <label>Profile Image:</label> -->
-                <VControl class="is-flex is-justify-content-center mt-3 ">
-                    <VAvatar size="xl" class="profile-v-avatar">
+                <VControl class="is-flex is-justify-content-center mt-3">
+                  <VAvatar size="xl" class="profile-v-avatar">
                     <template #avatar>
-                    <img
+                      <img
                         v-if="!isUploading"
                         class="avatar"
-                        :src="CustomUserData.profileImage == null ? '/images/avatars/placeholder.jpg' : CustomUserData.profileImage"
+                        :src="
+                          CustomUserData.profileImage == null
+                            ? '/images/avatars/placeholder.jpg'
+                            : CustomUserData.profileImage
+                        "
                         alt=""
-                    
-                    />
-                    
-                    <VFilePond
+                      />
+
+                      <VFilePond
                         v-else
                         class="profile-filepond"
                         name="profile_filepond"
                         :chunk-retry-delays="[500, 1000, 3000]"
                         label-idle="<i class='fas fa-cloud-upload-alt' style='font-size:27px'></i>"
-                        :accepted-file-types="['image/png', 'image/jpeg', 'image/gif']"
+                        :accepted-file-types="[
+                          'image/png',
+                          'image/jpeg',
+                          'image/gif',
+                        ]"
                         :image-preview-height="140"
                         :image-resize-target-width="140"
                         :image-resize-target-height="140"
@@ -391,81 +340,126 @@ const updateProfile = async()=>{
                         style-button-process-item-position="right bottom"
                         @addfile="onAddFile"
                         @removefile="onRemoveFile"
-                    />
-                    
-                    <span v-if="user_action == 'update'">
-                        <VIconButton style="position: absolute;top:30%;right:-3%"
-                        v-if="!isUploading"
-                        icon="feather:edit-2"
-                        class="edit-button is-edit"
-                        circle
-                        tabindex="0"
-                        @keydown.space.prevent="isUploading = true"
-                        @click="isUploading = true"
+                      />
+
+                      <span v-if="user_action == 'update'">
+                        <VIconButton
+                          style="position: absolute; top: 30%; right: -3%"
+                          v-if="!isUploading"
+                          icon="feather:edit-2"
+                          class="edit-button is-edit"
+                          circle
+                          tabindex="0"
+                          @keydown.space.prevent="isUploading = true"
+                          @click="isUploading = true"
                         />
 
-                        <VIconButton style="position: absolute;top:30%;right:-3%"
-                        v-else
-                        icon="feather:arrow-left"
-                        class="edit-button is-back"
-                        circle
-                        tabindex="0"
-                        @keydown.space.prevent="isUploading = false"
-                        @click="isUploading = false"
+                        <VIconButton
+                          style="position: absolute; top: 30%; right: -3%"
+                          v-else
+                          icon="feather:arrow-left"
+                          class="edit-button is-back"
+                          circle
+                          tabindex="0"
+                          @keydown.space.prevent="isUploading = false"
+                          @click="isUploading = false"
                         />
-                    </span>
-                    
+                      </span>
                     </template>
-                </VAvatar>
+                  </VAvatar>
                 </VControl>
-                </VField>
+              </VField>
             </div>
             <div class="field column is-10 mb-0">
-                <div class="columns is-multiline">
+              <div class="columns is-multiline">
                 <div class="field column is-4 mb-0">
-                <label>Fist name: *</label>
-                <div class="control">
-                <input type="text"  name="first_name" v-model="CustomUserData.first_name" @change="(e)=>inputChangeHandler(e)" required class="input " placeholder="first name" />
+                  <label>Fist name: *</label>
+                  <div class="control">
+                    <input
+                      type="text"
+                      name="first_name"
+                      v-model="CustomUserData.first_name"
+                      @change="(e) => inputChangeHandler(e)"
+                      required
+                      class="input"
+                      placeholder="first name"
+                    />
+                  </div>
                 </div>
-            </div>
-            <div class="field column is-4 mb-0">
-                <label>Last name: *</label>
-                <div class="control">
-                <input type="text" name="last_name" v-model="CustomUserData.last_name" @change="(e)=>inputChangeHandler(e)" required class="input " placeholder="last name" />
+                <div class="field column is-4 mb-0">
+                  <label>Last name: *</label>
+                  <div class="control">
+                    <input
+                      type="text"
+                      name="last_name"
+                      v-model="CustomUserData.last_name"
+                      @change="(e) => inputChangeHandler(e)"
+                      required
+                      class="input"
+                      placeholder="last name"
+                    />
+                  </div>
                 </div>
-            </div>
-        
-            <div class="field column is-4 mb-0">
-                <label>Job title: </label>
-                <div class="control">
-                <input type="text" name="jobPosition" v-model="CustomUserData.jobPosition" @change="(e)=>inputChangeHandler(e)"  class="input " placeholder="job title" />
-                </div>
-            </div>
-            <div class="field column is-4 mb-0">
-                <label>Department:</label>
-                <div class="control">
-                <input type="text"  name="department" v-model="CustomUserData.department" @change="(e)=>inputChangeHandler(e)"  class="input" required placeholder="Department" />
-                </div>
-            </div>
-            <div class="field column is-4 mb-0">
-                <label>Mobile no:</label>
-                <div class="control">
-                <input type="tel"  name="mobileNo" v-model="CustomUserData.mobileNo" @change="(e)=>inputChangeHandler(e)"  class="input " placeholder="Mobile no" />
-                </div>
-            </div>
-            <div class="field column is-4 mb-0">
-                <label>Phone no:</label>
-                <div class="control">
-                <input type="tel"  name="phoneNo" v-model="CustomUserData.phoneNo" @change="(e)=>inputChangeHandler(e)"  class="input " placeholder="Phone no" />
-                </div>
-            </div>
 
+                <div class="field column is-4 mb-0">
+                  <label>Job title: </label>
+                  <div class="control">
+                    <input
+                      type="text"
+                      name="jobPosition"
+                      v-model="CustomUserData.jobPosition"
+                      @change="(e) => inputChangeHandler(e)"
+                      class="input"
+                      placeholder="job title"
+                    />
+                  </div>
+                </div>
+                <div class="field column is-4 mb-0">
+                  <label>Department:</label>
+                  <div class="control">
+                    <input
+                      type="text"
+                      name="department"
+                      v-model="CustomUserData.department"
+                      @change="(e) => inputChangeHandler(e)"
+                      class="input"
+                      required
+                      placeholder="Department"
+                    />
+                  </div>
+                </div>
+                <div class="field column is-4 mb-0">
+                  <label>Mobile no:</label>
+                  <div class="control">
+                    <input
+                      type="tel"
+                      name="mobileNo"
+                      v-model="CustomUserData.mobileNo"
+                      @change="(e) => inputChangeHandler(e)"
+                      class="input"
+                      placeholder="Mobile no"
+                    />
+                  </div>
+                </div>
+                <div class="field column is-4 mb-0">
+                  <label>Phone no:</label>
+                  <div class="control">
+                    <input
+                      type="tel"
+                      name="phoneNo"
+                      v-model="CustomUserData.phoneNo"
+                      @change="(e) => inputChangeHandler(e)"
+                      class="input"
+                      placeholder="Phone no"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
-        </div>
+      </div>
     </div>
-  </div>
 
     <div class="tabs-wrapper">
       <div class="tabs-inner">
@@ -477,7 +471,8 @@ const updateProfile = async()=>{
                 role="button"
                 @keydown.space.prevent="activeTab = 'overview'"
                 @click="activeTab = 'overview'"
-              >Overview</a>
+                >Overview</a
+              >
             </li>
             <li :class="[activeTab === 'content' && 'is-active']">
               <a
@@ -485,7 +480,8 @@ const updateProfile = async()=>{
                 role="button"
                 @keydown.space.prevent="activeTab = 'content'"
                 @click="activeTab = 'content'"
-              >Content</a>
+                >Content</a
+              >
             </li>
             <li :class="[activeTab === 'brands' && 'is-active']">
               <a
@@ -493,7 +489,8 @@ const updateProfile = async()=>{
                 role="button"
                 @keydown.space.prevent="activeTab = 'brands'"
                 @click="activeTab = 'brands'"
-              >Brands</a>
+                >Brands</a
+              >
             </li>
           </ul>
         </div>
@@ -507,14 +504,11 @@ const updateProfile = async()=>{
 </template>
 
 <style lang="scss">
-
-
 .dropdown.is-spaced .dropdown-menu {
   position: absolute;
   right: 2.5rem;
-  top: -.5rem;
+  top: -0.5rem;
   z-index: 50;
-
 }
 
 .dashboard-header-wrapper {

@@ -7,44 +7,62 @@ const router = useRouter();
 const layoutSwitcher = useLayoutSwitcher();
 async function logout() {
   userSession.logoutUser();
-  await router.push({ path: '/' })
-  router.go(0)
+  await router.push({ path: "/" });
+  router.go(0);
 }
 </script>
 
 <template>
   <VDropdown right spaced class="user-dropdown profile-dropdown">
     <template #button="{ toggle }">
-      <a role="button" tabindex="0" class="is-trigger dropdown-trigger" aria-haspopup="true"
-        @keydown.space.prevent="toggle" @click="toggle">
-        <VAvatar :picture="userSession.user && userSession.user.profileImage
-          ? userSession.user.profileImage
-          : '/images/avatars/svg/vuero-1.svg'
-          " />
+      <a
+        role="button"
+        tabindex="0"
+        class="is-trigger dropdown-trigger"
+        aria-haspopup="true"
+        @keydown.space.prevent="toggle"
+        @click="toggle"
+      >
+        <VAvatar
+          :picture="
+            userSession.user && userSession.user.avatar
+              ? userSession.user.avatar
+              : '/images/avatars/svg/vuero-1.svg'
+          "
+        />
       </a>
     </template>
 
     <template #content>
       <div class="dropdown-head">
-        <VAvatar size="large" :picture="userSession.user && userSession.user.profileImage
-          ? userSession.user.profileImage
-          : '/images/avatars/svg/vuero-1.svg'
-          " />
+        <VAvatar
+          size="large"
+          :picture="
+            userSession.user && userSession.user.avatar
+              ? userSession.user.avatar
+              : '/images/avatars/svg/vuero-1.svg'
+          "
+        />
 
-        <div style="
-          display: flex !important;
-          flex-direction: column !important;
-          margin-left: 10px !important;
-          ">
-          <span>{{ userSession.user && userSession.user.first_name }}
-            {{ userSession.user && userSession.user.last_name }}</span>
+        <div
+          style="
+            display: flex !important;
+            flex-direction: column !important;
+            margin-left: 10px !important;
+          "
+        >
+          <span>{{ userSession.user && userSession.user.username }} </span>
           <span style="color: var(--light-text)">{{
-            userSession.user && userSession.user.jobPosition
+            userSession.user && userSession.user.role
           }}</span>
         </div>
       </div>
 
-      <RouterLink to="/sidebar/profile" role="menuitem" class="dropdown-item is-media">
+      <RouterLink
+        to="/sidebar/profile"
+        role="menuitem"
+        class="dropdown-item is-media"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-user-alt" />
         </div>
@@ -76,7 +94,15 @@ async function logout() {
 
       <hr class="dropdown-divider" />
 
-      <a role="menuitem" class="dropdown-item is-media" @click="()=>{$router.push('/sidebar/company/settings')}">
+      <a
+        role="menuitem"
+        class="dropdown-item is-media"
+        @click="
+          () => {
+            $router.push('/sidebar/company/settings');
+          }
+        "
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-cog" />
         </div>
@@ -89,8 +115,15 @@ async function logout() {
       <hr class="dropdown-divider" />
 
       <div class="dropdown-item is-button">
-        <VButton class="logout-button" icon="feather:log-out" color="primary" role="menuitem" raised fullwidth
-          @click="logout">
+        <VButton
+          class="logout-button"
+          icon="feather:log-out"
+          color="primary"
+          role="menuitem"
+          raised
+          fullwidth
+          @click="logout"
+        >
           Logout
         </VButton>
       </div>
@@ -103,4 +136,3 @@ async function logout() {
   flex-direction: column !important;
 }
 </style>
-

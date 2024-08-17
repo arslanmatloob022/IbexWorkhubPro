@@ -434,7 +434,7 @@ onMounted(() => {
           <!-- customers / comopanies -->
           <VCollapseLinks
             v-model:open="openSideblockLinks"
-            collapse-id="reporter"
+            collapse-id="Projects"
           >
             <template #header>
               <div
@@ -442,14 +442,13 @@ onMounted(() => {
                 :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
               >
                 <i
-                  style="color: #fff"
                   class="iconify"
-                  data-icon="feather:trello"
+                  data-icon="feather:settings"
                   aria-hidden="true"
                 ></i>
               </div>
               <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
-                >Clients</span
+                >Projects</span
               >
               <i
                 aria-hidden="true"
@@ -465,429 +464,7 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/business"
-              :class="{
-                'cus-active-link-icon':
-                  route.path == '/sidebar/company/business',
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                align-items: center;
-                background-color: transparent !important;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i
-                style="color: #fff"
-                class="iconify"
-                data-icon="feather:trello"
-                aria-hidden="true"
-              ></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Clients</span
-              >
-            </RouterLink>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/contracts"
-              :class="{
-                'cus-active-link-icon':
-                  route.path == '/sidebar/company/contracts',
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i
-                style="color: #fff"
-                class="iconify"
-                data-icon="feather:file"
-                aria-hidden="true"
-              ></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-              >
-                Contracts / Sites</span
-              >
-            </RouterLink>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/placement"
-              :class="{
-                'cus-active-link-icon':
-                  route.path == '/sidebar/company/placement',
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i
-                style="color: #fff"
-                class="iconify"
-                data-icon="feather:briefcase"
-                aria-hidden="true"
-              ></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Job Placements</span
-              >
-            </RouterLink>
-          </VCollapseLinks>
-
-          <li>
-            <RouterLink to="/sidebar/company/jobs" class="single-link">
-              <span class="icon">
-                <i
-                  class="iconify"
-                  data-icon="feather:clipboard"
-                  aria-hidden="true"
-                ></i
-              ></span>
-              Job's Board
-            </RouterLink>
-          </li>
-          <!-- Service partners -->
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="contractors"
-          >
-            <template #header>
-              <div
-                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
-                class="icon"
-              >
-                <i class="iconify" data-icon="feather:user" />
-              </div>
-              <span :style="{ color: darkmode.isDark ? '#585858' : '' }">
-                Service Partners
-              </span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-            <RouterLink
-              to="/sidebar/company/supplier"
-              :class="{ 'cus-active-link': 'All' === route.query.type }"
-              style="
-                display: flex;
-                gap: 10px;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-                font-weight: 400;
-              "
-            >
-              <img
-                src="/images/photo/multiUsers.png"
-                style="
-                  border-radius: 8px;
-                  padding: 1px;
-                  height: 25px;
-                  width: 25px;
-                  background-color: #f8f8f8;
-                "
-              />
-
-              <span
-                class="icon-iconify"
-                style="
-                  display: flex;
-                  font-weight: 400;
-                  font-family: var(--font);
-                  align-items: center;
-                  background-color: transparent !important;
-                  font-size: 0.9rem;
-                "
-                :style="{ color: darkmode.isDark ? '#585858' : '#f1f1f1' }"
-                >All
-                <span
-                  style="
-                    font-size: 10px;
-                    background-color: transparent !important;
-                  "
-                  class="ml-2"
-                >
-                  ({{ partnersCount.all }})</span
-                >
-              </span>
-            </RouterLink>
-
-            <RouterLink
-              v-for="(item, index) in company.loggedCompany.industry"
-              :key="index"
-              :to="`/sidebar/company/supplier?type=${item.name}`"
-              :class="{ 'cus-active-link': item.name === route.query.type }"
-              style="
-                display: flex;
-                font-family: var(--font);
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                background-color: transparent !important;
-                font-size: 0.9rem;
-                font-weight: 400;
-              "
-            >
-              <img
-                :src="item.industryLogo"
-                style="
-                  height: 25px;
-                  width: 25px;
-                  border-radius: 8px;
-                  background-color: #f8f8f8;
-                  margin-inline-end: 10px;
-                "
-              />
-              <span
-                style="background-color: transparent !important"
-                :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-                >{{ item.name }}
-                <span
-                  style="
-                    font-size: 10px;
-                    background-color: transparent !important;
-                  "
-                  class="ml-2"
-                >
-                  ({{ getIndustryPartnerCount(item.id) }})
-                </span></span
-              >
-            </RouterLink>
-          </VCollapseLinks>
-
-          <!-- Workers  -->
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="reports"
-          >
-            <template #header>
-              <div
-                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
-                class="icon"
-              >
-                <i class="iconify" data-icon="feather:users" />
-              </div>
-              <span :style="{ color: darkmode.isDark ? '#585858' : '' }">
-                Workers
-              </span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-            <RouterLink
-              to="/sidebar/company/workers?type=All"
-              :class="{ 'cus-active-link': 'All' === route.query.type }"
-              style="
-                display: flex;
-                gap: 10px;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-                font-weight: 400;
-              "
-            >
-              <img
-                src="/images/photo/multiUsers.png"
-                style="
-                  border-radius: 8px;
-                  padding: 1px;
-                  height: 25px;
-                  width: 25px;
-                  background-color: #f8f8f8;
-                "
-              />
-
-              <span
-                class="icon-iconify"
-                style="
-                  display: flex;
-                  font-weight: 400;
-                  font-family: var(--font);
-                  align-items: center;
-                  background-color: transparent !important;
-                  font-size: 0.9rem;
-                "
-                :style="{ color: darkmode.isDark ? '#585858' : '#f1f1f1' }"
-                >All
-                <span
-                  style="
-                    font-size: 10px;
-                    background-color: transparent !important;
-                  "
-                  class="ml-2"
-                >
-                  ({{ workersCount.all }})</span
-                >
-              </span>
-            </RouterLink>
-
-            <RouterLink
-              v-for="(item, index) in company.loggedCompany.industry"
-              :key="index"
-              :to="`/sidebar/company/workers?type=${item.name}`"
-              :class="{ 'cus-active-link': item.name === route.query.type }"
-              style="
-                display: flex;
-                font-family: var(--font);
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                background-color: transparent !important;
-                font-size: 0.9rem;
-                font-weight: 400;
-              "
-            >
-              <img
-                :src="item.industryLogo"
-                style="
-                  height: 25px;
-                  width: 25px;
-                  border-radius: 8px;
-                  background-color: #f8f8f8;
-                  margin-inline-end: 10px;
-                "
-              />
-              <span
-                style="background-color: transparent !important"
-                :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-                >{{ item.name }}
-                <span
-                  style="
-                    font-size: 10px;
-                    background-color: transparent !important;
-                  "
-                  class="ml-2"
-                >
-                  ({{ getIndustryWorkerCount(item.id) }})
-                </span></span
-              >
-            </RouterLink>
-            <RouterLink
-              to="/sidebar/company/workers?archive=true"
-              :class="{ 'cus-active-link': 'true' === route.query.archive }"
-              style="
-                display: flex;
-                gap: 10px;
-                font-family: var(--font);
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                background-color: transparent !important;
-                font-size: 0.9rem;
-                font-weight: 400;
-              "
-            >
-              <img
-                src="/images/photo/archiveUser.png"
-                style="
-                  border-radius: 8px;
-                  padding: 1px;
-                  height: 25px;
-                  width: 25px;
-                  background-color: #f8f8f8;
-                "
-              />
-
-              <span
-                style="
-                  font-size: 0.9rem;
-                  font-weight: 400;
-                  background-color: transparent !important;
-                "
-                :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-                >Archived
-                <span
-                  style="
-                    font-size: 10px;
-                    background-color: transparent !important;
-                  "
-                  class="ml-2"
-                  >({{ workersCount.archived }})</span
-                ></span
-              >
-            </RouterLink>
-          </VCollapseLinks>
-
-          <div class="sleakDivider"></div>
-
-          <!-- compliance anomalies -->
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="anomalies"
-          >
-            <template #header>
-              <div
-                class="icon"
-                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
-              >
-                <i
-                  class="iconify"
-                  data-icon="feather:search"
-                  aria-hidden="true"
-                ></i>
-              </div>
-              <span
-                style="white-space: nowrap"
-                :style="{ color: darkmode.isDark ? '#585858' : '' }"
-                >Compliance Anomalies</span
-              >
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/anomalies"
+              to="/sidebar/company/settings?tab=about"
               :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
               style="
                 display: flex;
@@ -899,19 +476,19 @@ onMounted(() => {
                 font-size: 0.9rem;
               "
             >
-              <i class="lnil lnil-search" />
+              <i class="lnil lnil-home" />
               <span
                 style="
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >Worker Anomalies</span
+                >All</span
               >
             </RouterLink>
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/partner-anomalies"
+              to="/sidebar/company/settings?tab=docs"
               :class="{ 'cus-active-link-icon': 'docs' === route.query.tab }"
               style="
                 display: flex;
@@ -929,161 +506,115 @@ onMounted(() => {
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >Partner Anomalies</span
+                >Active</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/settings?tab=partner-doc"
+              :class="{
+                'cus-active-link-icon': 'partner-doc' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Pre Construction</span
+              >
+            </RouterLink>
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/company/settings?tab=team-members"
+              :class="{
+                'cus-active-link-icon': 'team-members' === route.query.tab,
+              }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-users" />
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >Completed</span
               >
             </RouterLink>
           </VCollapseLinks>
 
-          <div class="sleakDivider"></div>
-
-          <!-- Rota -->
-          <VCollapseLinks v-model:open="openSideblockLinks" collapse-id="rota">
-            <template #header>
-              <div
-                class="icon"
-                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
-              >
-                <i
-                  class="iconify"
-                  data-icon="feather:book-open"
-                  aria-hidden="true"
-                ></i>
-              </div>
-              <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
-                >Rota Scheduling</span
-              >
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/rota?tab=complete-rota"
-              :class="{
-                'cus-active-link-icon': 'complete-rota' === route.query.tab,
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                align-items: center;
-                background-color: transparent !important;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i class="lnil lnil-calender-alt-4" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Rota / Scheduling</span
-              >
-            </RouterLink>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/rota?tab=rota-analytics"
-              :class="{
-                'cus-active-link-icon': 'rota-analytics' === route.query.tab,
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i class="lnil lnil-graph-alt-3" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Jobs Analytics</span
-              >
-            </RouterLink>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/rota?tab=worker-calendar"
-              :class="{
-                'cus-active-link-icon': 'worker-calendar' === route.query.tab,
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i class="lnil lnil-calender-alt-1" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Worker Calendar</span
-              >
-            </RouterLink>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/rota?tab=site-calendar"
-              :class="{
-                'cus-active-link-icon': 'site-calendar' === route.query.tab,
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i class="lnil lnil-calender-alt-3" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Site Calendar</span
-              >
-            </RouterLink>
-          </VCollapseLinks>
-
-          <!-- Placements -->
-          <!-- <li>
-            <RouterLink to="/sidebar/company/placement" class="single-link">
+          <li>
+            <RouterLink to="/sidebar/company/jobs" class="single-link">
               <span class="icon">
                 <i
                   class="iconify"
-                  data-icon="feather:briefcase"
+                  data-icon="feather:clipboard"
                   aria-hidden="true"
-                ></i>
-              </span>
-              Job Placements
+                ></i
+              ></span>
+              Managers
             </RouterLink>
-          </li> -->
-
+          </li>
           <div class="sleakDivider"></div>
+          <li>
+            <RouterLink to="/sidebar/company/jobs" class="single-link">
+              <span class="icon">
+                <i
+                  class="iconify"
+                  data-icon="feather:clipboard"
+                  aria-hidden="true"
+                ></i
+              ></span>
+              Contractors
+            </RouterLink>
+          </li>
+          <div class="sleakDivider"></div>
+
+          <li>
+            <RouterLink to="/sidebar/company/jobs" class="single-link">
+              <span class="icon">
+                <i
+                  class="iconify"
+                  data-icon="feather:clipboard"
+                  aria-hidden="true"
+                ></i
+              ></span>
+              Workers
+            </RouterLink>
+          </li>
+          <div class="sleakDivider"></div>
+          <li>
+            <RouterLink to="/sidebar/company/jobs" class="single-link">
+              <span class="icon">
+                <i
+                  class="iconify"
+                  data-icon="feather:clipboard"
+                  aria-hidden="true"
+                ></i
+              ></span>
+              Clients
+            </RouterLink>
+          </li>
 
           <!-- Settings -->
           <VCollapseLinks
@@ -1221,8 +752,8 @@ onMounted(() => {
         <template #bottom-links>
           <!-- <UserProfileDropdown up /> -->
           <div class="pb-3 arez-version">
-            <p style="font-weight: 500">Powered by EarnFlex</p>
-            <p style="font-weight: 500; font-size: 10px">Version 1.04</p>
+            <p style="font-weight: 500">Powered by CodeSphere Studios</p>
+            <p style="font-weight: 500; font-size: 10px">Version 3.04</p>
           </div>
         </template>
       </Sideblock>
@@ -1842,7 +1373,7 @@ onMounted(() => {
 
             <!-- toolbar -->
             <div class="toolbar">
-              <VButton
+              <!-- <VButton
                 class="mr-4"
                 color="info"
                 rounded
@@ -1854,9 +1385,9 @@ onMounted(() => {
                 v-tooltip.bottom.left.rounded.info="'Create new job'"
                 label="Rounded"
                 >Create Job</VButton
-              >
+              > -->
               <SearchWorkerInput />
-
+              <!-- 
               <VIconButton
                 color="info"
                 light
@@ -1866,7 +1397,7 @@ onMounted(() => {
                 icon="fas fa-link"
                 v-tooltip.bottom.left.rounded.info="'Invitation link'"
                 label="Rounded"
-              />
+              /> -->
               <ToolbarNotification />
 
               <a
