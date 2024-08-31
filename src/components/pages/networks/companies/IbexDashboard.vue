@@ -150,18 +150,18 @@ onMounted(() => {});
                 </div>
               </div>
 
-              <div class="people">
-                <div class="left">
-                  <span class="dark-inverted">Last Schedule sent at</span>
-                  <span>
-                    <a class="is-dark-primary">23 interviews</a> this
-                    month</span
-                  >
-                </div>
-                <div class="right">
-                  <VAvatarStack :avatars="userStack" :limit="3" />
-                </div>
-              </div>
+              <VBlock title="Last Schedule Sent" subtitle="02 July, 2024">
+                <template #icon>
+                  <VIconBox color="success" rounded>
+                    <VIcon icon="lucide:clock" />
+                  </VIconBox>
+                </template>
+                <template #action>
+                  <VButton color="warning" rounded elevated>
+                    Send Schedule
+                  </VButton>
+                </template>
+              </VBlock>
             </div>
           </div>
 

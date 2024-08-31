@@ -119,17 +119,17 @@ const localFlagSrc = computed(() => {
 });
 
 const routePaths = {
-  jobs: `/sidebar/company/jobs`,
+  jobs: `/sidebar/dashboard/jobs`,
   dashboard: `/sidebar/company`,
-  clients: `/sidebar/company/business`,
-  contracts: `/sidebar/company/contracts`,
-  placements: `/sidebar/company/placement`,
-  partners: `/sidebar/company/supplier`,
-  workers: `/sidebar/company/workers`,
-  workers_anomalies: `/sidebar/company/anomalies`,
-  partner_anomalies: `/sidebar/company/partner-anomalies`,
-  rota: `/sidebar/company/rota`,
-  settings: `/sidebar/company/settings`,
+  clients: `/sidebar/dashboard/business`,
+  contracts: `/sidebar/dashboard/contracts`,
+  placements: `/sidebar/dashboard/placement`,
+  partners: `/sidebar/dashboard/supplier`,
+  workers: `/sidebar/dashboard/workers`,
+  workers_anomalies: `/sidebar/dashboard/anomalies`,
+  partner_anomalies: `/sidebar/dashboard/partner-anomalies`,
+  rota: `/sidebar/dashboard/rota`,
+  settings: `/sidebar/dashboard/settings`,
 };
 
 const getPagesColors = (index: any) => {
@@ -423,7 +423,7 @@ onMounted(() => {
         <template #links>
           <!-- Dashboard -->
           <li>
-            <RouterLink to="/sidebar/company" class="single-link">
+            <RouterLink to="/sidebar/dashboard" class="single-link">
               <span class="icon">
                 <i class="iconify" data-icon="feather:grid" />
               </span>
@@ -462,9 +462,10 @@ onMounted(() => {
               />
             </template>
 
+            <!-- to="/sidebar/dashboard/settings?tab=about" -->
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=about"
+              to="/sidebar/dashboard/projects"
               :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
               style="
                 display: flex;
@@ -488,8 +489,8 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=docs"
-              :class="{ 'cus-active-link-icon': 'docs' === route.query.tab }"
+              to="/sidebar/dashboard/projects?status=active"
+              :class="{ 'cus-active-link-icon': 'active' === route.query.tab }"
               style="
                 display: flex;
                 font-weight: 400;
@@ -512,9 +513,9 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=partner-doc"
+              to="/sidebar/dashboard/projects?status=pre-construction"
               :class="{
-                'cus-active-link-icon': 'partner-doc' === route.query.tab,
+                'cus-active-link-icon': 'pre-construction' === route.query.tab,
               }"
               style="
                 display: flex;
@@ -538,9 +539,9 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=team-members"
+              to="/sidebar/dashboard/projects?status=complete"
               :class="{
-                'cus-active-link-icon': 'team-members' === route.query.tab,
+                'cus-active-link-icon': 'complete' === route.query.tab,
               }"
               style="
                 display: flex;
@@ -564,7 +565,7 @@ onMounted(() => {
           </VCollapseLinks>
 
           <li>
-            <RouterLink to="/sidebar/company/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
               <span class="icon">
                 <i
                   class="iconify"
@@ -577,7 +578,7 @@ onMounted(() => {
           </li>
           <div class="sleakDivider"></div>
           <li>
-            <RouterLink to="/sidebar/company/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
               <span class="icon">
                 <i
                   class="iconify"
@@ -591,7 +592,7 @@ onMounted(() => {
           <div class="sleakDivider"></div>
 
           <li>
-            <RouterLink to="/sidebar/company/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
               <span class="icon">
                 <i
                   class="iconify"
@@ -604,7 +605,7 @@ onMounted(() => {
           </li>
           <div class="sleakDivider"></div>
           <li>
-            <RouterLink to="/sidebar/company/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
               <span class="icon">
                 <i
                   class="iconify"
@@ -649,7 +650,7 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=about"
+              to="/sidebar/dashboard/settings?tab=about"
               :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
               style="
                 display: flex;
@@ -673,7 +674,7 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=docs"
+              to="/sidebar/dashboard/settings?tab=docs"
               :class="{ 'cus-active-link-icon': 'docs' === route.query.tab }"
               style="
                 display: flex;
@@ -697,7 +698,7 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=partner-doc"
+              to="/sidebar/dashboard/settings?tab=partner-doc"
               :class="{
                 'cus-active-link-icon': 'partner-doc' === route.query.tab,
               }"
@@ -723,7 +724,7 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/company/settings?tab=team-members"
+              to="/sidebar/dashboard/settings?tab=team-members"
               :class="{
                 'cus-active-link-icon': 'team-members' === route.query.tab,
               }"
@@ -831,7 +832,7 @@ onMounted(() => {
 
           <!-- Customer / Companies -->
           <li>
-            <RouterLink to="/sidebar/company/business" class="single-link">
+            <RouterLink to="/sidebar/dashboard/business" class="single-link">
               <span class="icon" id="cus-spanLink">
                 <i
                   class="iconify"
@@ -844,7 +845,7 @@ onMounted(() => {
 
           <!-- Contracts / Sites -->
           <li>
-            <RouterLink to="/sidebar/company/contracts" class="single-link">
+            <RouterLink to="/sidebar/dashboard/contracts" class="single-link">
               <span class="icon" id="cus-spanLink">
                 <i
                   class="iconify"
@@ -874,7 +875,7 @@ onMounted(() => {
                 </span>
               </template>
               <RouterLink
-                to="/sidebar/company/supplier"
+                to="/sidebar/dashboard/supplier"
                 :class="{ 'cus-active-link': 'All' === route.query.type }"
                 style="
                   display: flex;
@@ -902,7 +903,7 @@ onMounted(() => {
               <RouterLink
                 v-for="(item, index) in company.loggedCompany.industry"
                 :key="index"
-                :to="`/sidebar/company/supplier?type=${item.name}`"
+                :to="`/sidebar/dashboard/supplier?type=${item.name}`"
                 :class="{ 'cus-active-link': item.name === route.query.type }"
                 style="
                   display: flex;
@@ -947,7 +948,7 @@ onMounted(() => {
                 </span>
               </template>
               <RouterLink
-                to="/sidebar/company/workers?type=All"
+                to="/sidebar/dashboard/workers?type=All"
                 :class="{ 'cus-active-link': 'All' === route.query.type }"
                 style="
                   display: flex;
@@ -975,7 +976,7 @@ onMounted(() => {
               <RouterLink
                 v-for="(item, index) in company.loggedCompany.industry"
                 :key="index"
-                :to="`/sidebar/company/workers?type=${item.name}`"
+                :to="`/sidebar/dashboard/workers?type=${item.name}`"
                 :class="{ 'cus-active-link': item.name === route.query.type }"
                 style="
                   display: flex;
@@ -1001,7 +1002,7 @@ onMounted(() => {
 
               <!-- archive link -->
               <RouterLink
-                to="/sidebar/company/workers?archive=true"
+                to="/sidebar/dashboard/workers?archive=true"
                 :class="{ 'cus-active-link': 'true' === route.query.archive }"
                 style="
                   padding: 0;
@@ -1050,7 +1051,7 @@ onMounted(() => {
 
               <!-- workeras anomalies -->
               <RouterLink
-                to="/sidebar/company/anomalies?page=1"
+                to="/sidebar/dashboard/anomalies?page=1"
                 :class="{ 'cus-active-link': 'about' === route.query.tab }"
                 style="
                   padding: 0;
@@ -1072,7 +1073,7 @@ onMounted(() => {
 
               <!-- partner anomalies -->
               <RouterLink
-                to="/sidebar/company/partner-anomalies?page=1"
+                to="/sidebar/dashboard/partner-anomalies?page=1"
                 :class="{ 'cus-active-link': 'docs' === route.query.tab }"
                 style="
                   padding: 0;
@@ -1113,7 +1114,7 @@ onMounted(() => {
 
               <!-- complete rota -->
               <RouterLink
-                to="/sidebar/company/rota?tab=complete-rota"
+                to="/sidebar/dashboard/rota?tab=complete-rota"
                 :class="{ 'cus-active-link': 'about' === route.query.tab }"
                 style="
                   padding: 0;
@@ -1135,7 +1136,7 @@ onMounted(() => {
 
               <!-- rota analytics -->
               <RouterLink
-                to="/sidebar/company/rota?tab=rota-analytics"
+                to="/sidebar/dashboard/rota?tab=rota-analytics"
                 :class="{ 'cus-active-link': 'docs' === route.query.tab }"
                 style="
                   padding: 0;
@@ -1154,7 +1155,7 @@ onMounted(() => {
 
               <!-- worker calendar -->
               <RouterLink
-                to="/sidebar/company/rota?tab=worker-calendar"
+                to="/sidebar/dashboard/rota?tab=worker-calendar"
                 :class="{
                   'cus-active-link': 'partner-doc' === route.query.tab,
                 }"
@@ -1175,7 +1176,7 @@ onMounted(() => {
 
               <!-- site calendar -->
               <RouterLink
-                to="/sidebar/company/rota?tab=site-calendar"
+                to="/sidebar/dashboard/rota?tab=site-calendar"
                 :class="{
                   'cus-active-link': 'team-members' === route.query.tab,
                 }"
@@ -1198,7 +1199,7 @@ onMounted(() => {
 
           <!-- placements -->
           <li>
-            <RouterLink to="/sidebar/company/placement" class="single-link">
+            <RouterLink to="/sidebar/dashboard/placement" class="single-link">
               <span class="icon" id="cus-spanLink">
                 <i
                   class="iconify"
@@ -1230,7 +1231,7 @@ onMounted(() => {
               </template>
 
               <RouterLink
-                to="/sidebar/company/settings?tab=about"
+                to="/sidebar/dashboard/settings?tab=about"
                 :class="{ 'cus-active-link': 'about' === route.query.tab }"
                 style="
                   padding: 0;
@@ -1251,7 +1252,7 @@ onMounted(() => {
               </RouterLink>
 
               <RouterLink
-                to="/sidebar/company/settings?tab=docs"
+                to="/sidebar/dashboard/settings?tab=docs"
                 :class="{ 'cus-active-link': 'docs' === route.query.tab }"
                 style="
                   padding: 0;
@@ -1269,7 +1270,7 @@ onMounted(() => {
               </RouterLink>
 
               <RouterLink
-                to="/sidebar/company/settings?tab=partner-doc"
+                to="/sidebar/dashboard/settings?tab=partner-doc"
                 :class="{
                   'cus-active-link': 'partner-doc' === route.query.tab,
                 }"
@@ -1289,7 +1290,7 @@ onMounted(() => {
               </RouterLink>
 
               <RouterLink
-                to="/sidebar/company/settings?tab=team-members"
+                to="/sidebar/dashboard/settings?tab=team-members"
                 :class="{
                   'cus-active-link': 'team-members' === route.query.tab,
                 }"

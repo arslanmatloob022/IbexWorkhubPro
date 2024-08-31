@@ -2,10 +2,10 @@
 const router = useRouter();
 
 onMounted(() => {
-  router.push("/sidebar/company");
+  router.push("/sidebar/dashboard");
 });
 </script>
 
 <template>
-  <div />
+  <div></div>
 </template>
