@@ -1,12 +1,11 @@
 // import { useFetch } from '/@src/composable/useFetch'
-import { definePlugin } from '/@src/app'
-import { useUserSession } from '/@src/stores/userSession'
-import { useApi } from '../composable/useAPI'
-import { useLayoutSwitcher } from '/@src/stores/layoutSwitcher'
-import {useCompany} from '/@src/stores/company'
+import { definePlugin } from "/@src/app";
+import { useUserSession } from "/@src/stores/userSession";
+import { useApi } from "../composable/useAPI";
+import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
+import { useCompany } from "/@src/stores/company";
 
-
-const layoutSwitcher = useLayoutSwitcher()
+const layoutSwitcher = useLayoutSwitcher();
 /**
  * Here we are setting up two router navigation guards
  * (note that we can have multiple guards in multiple plugins)
@@ -29,40 +28,36 @@ const layoutSwitcher = useLayoutSwitcher()
  * </template>
  */
 export default definePlugin(async ({ router, pinia }) => {
-  const userSession = useUserSession(pinia)
-  const api = useApi()
-  const company = useCompany()
+  const userSession = useUserSession(pinia);
+  const api = useApi();
+  const company = useCompany();
 
   // 1. Check token validity at app startup
   if (userSession.isLoggedIn) {
     try {
       // Do api request call to retreive user profile.
       // Note that the api is provided with json-server
-      const response = await api.get('/v3/api/account/get_user_from_token')
-      const user=response.data[0]
-      if(user.company){
-        await company.loadCompany(user.company)
-      }
+      // const response = await api.get("/v3/api/account/get_user_from_token");
+      // const user = response.data[0];
+      // if (user.company) {
+      //   await company.loadCompany(user.company);
+      // }
 
-        layoutSwitcher.setDynamicLayoutId('sideblock-default')
-      
-      userSession.setUser(user)
-      
+      layoutSwitcher.setDynamicLayoutId("sideblock-default");
+
+      // userSession.setUser(user);
     } catch (err) {
       // delete stored token if it fails
-      userSession.logoutUser()
+      userSession.logoutUser();
     }
   }
 
   router.beforeEach((to) => {
     if (to.meta.requiresAuth && !userSession.isLoggedIn) {
-      // 2. If the page requires auth, check if user is logged in
-      // if not, redirect to login page.
       return {
-        name: '/auth/login',
-        // save the location we were at to come back later
+        name: "/auth/login",
         query: { redirect: to.fullPath },
-      }
+      };
     }
-  })
-})
+  });
+});

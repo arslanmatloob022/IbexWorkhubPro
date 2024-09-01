@@ -367,13 +367,13 @@ onMounted(() => {
                       style="font-size: 22px; color: var(--primary)"
                       class="cus-stat-heading ml-4 mt-0"
                     >
-                      Arez
+                      Ibex Builder Studios
                     </h3>
                     <h3
                       style="font-size: 14px"
                       class="cus-stat-heading ml-4 mt-0"
                     >
-                      The Compliance Manager
+                      THe
                     </h3>
                   </div>
                 </div>

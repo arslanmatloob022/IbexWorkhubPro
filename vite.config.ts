@@ -1,29 +1,31 @@
-import { resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
-import VueRouter from 'unplugin-vue-router/vite'
-import { VueRouterAutoImports } from 'unplugin-vue-router'
-import Components from 'unplugin-vue-components/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import Unfonts from 'unplugin-fonts/vite'
-import { VitePluginRadar } from 'vite-plugin-radar'
-import PurgeIcons from 'vite-plugin-purge-icons'
-import ImageMin from 'vite-plugin-imagemin'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { VitePWA } from 'vite-plugin-pwa'
-import purgecss from 'rollup-plugin-purgecss'
-import UnheadVite from '@unhead/addons/vite'
-import { unheadVueComposablesImports } from '@unhead/vue'
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite";
+import Vue from "@vitejs/plugin-vue";
+import VueRouter from "unplugin-vue-router/vite";
+import { VueRouterAutoImports } from "unplugin-vue-router";
+import Components from "unplugin-vue-components/vite";
+import AutoImport from "unplugin-auto-import/vite";
+import Unfonts from "unplugin-fonts/vite";
+import { VitePluginRadar } from "vite-plugin-radar";
+import PurgeIcons from "vite-plugin-purge-icons";
+import ImageMin from "vite-plugin-imagemin";
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
+import { VitePWA } from "vite-plugin-pwa";
+import purgecss from "rollup-plugin-purgecss";
+import UnheadVite from "@unhead/addons/vite";
+import { unheadVueComposablesImports } from "@unhead/vue";
 
 // local vite plugin
-import { VitePluginVueroDoc } from './vite-plugin-vuero-doc'
-import { VitePluginPurgeComments } from './vite-plugin-purge-comments'
+import { VitePluginVueroDoc } from "./vite-plugin-vuero-doc";
+import { VitePluginPurgeComments } from "./vite-plugin-purge-comments";
 
 // options via env variables
-const MINIFY_IMAGES = process.env.MINIFY ? process.env.MINIFY === 'true' : false
+const MINIFY_IMAGES = process.env.MINIFY
+  ? process.env.MINIFY === "true"
+  : false;
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === "production";
 
 /**
  * This is the main configuration file for vitejs
@@ -37,11 +39,11 @@ export default defineConfig({
   // You also need to add this base like `history: createWebHistory('my-subdirectory')`
   // in ./src/router.ts
   // base: '/my-subdirectory/',
-  base: '/',
+  base: "/",
   // Directory to serve as plain static assets.
-  publicDir: 'public',
+  publicDir: "public",
   // Adjust console output verbosity.
-  logLevel: 'info',
+  logLevel: "info",
   // development server configuration
   server: {
     // Vite 4 defaults to 5173, but you can override it with the port option.
@@ -52,7 +54,7 @@ export default defineConfig({
    */
   define: {
     // VSCODE_TEXTMATE_DEBUG is used in shiki, but it's not defined in the browser
-    'process.env.VSCODE_TEXTMATE_DEBUG': 'false',
+    "process.env.VSCODE_TEXTMATE_DEBUG": "false",
   },
   /**
    * By default, Vite will crawl your index.html to detect dependencies that
@@ -63,63 +65,63 @@ export default defineConfig({
    */
   optimizeDeps: {
     include: [
-      '@ckeditor/ckeditor5-vue',
-      '@ckeditor/ckeditor5-build-classic',
-      '@iconify/iconify',
-      '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.min.js',
-      '@vee-validate/zod',
-      '@vueuse/core',
-      '@vueform/multiselect',
-      '@vueform/slider',
-      'billboard.js',
-      'dayjs',
-      'dropzone',
-      'dragula',
-      'defu',
-      'filepond',
-      'filepond-plugin-file-validate-size',
-      'filepond-plugin-file-validate-type',
-      'filepond-plugin-image-exif-orientation',
-      'filepond-plugin-image-crop',
-      'filepond-plugin-image-edit',
-      'filepond-plugin-image-preview',
-      'filepond-plugin-image-resize',
-      'filepond-plugin-image-transform',
-      'focus-trap-vue',
-      'imask',
-      'nprogress',
-      'notyf',
-      'mapbox-gl',
-      'photoswipe/lightbox',
-      'photoswipe',
-      'plyr',
-      'v-calendar',
-      'vee-validate',
-      'vue',
-      'vue-scrollto',
-      'vue3-apexcharts',
-      'vue-tippy',
-      'vue-i18n',
-      'vue-router',
-      'unplugin-vue-router/runtime',
-      'simplebar',
-      'tiny-slider/src/tiny-slider',
-      'vue-accessible-color-picker',
-      'zod',
-      '@stefanprobst/remark-shiki',
-      'rehype-external-links',
-      'rehype-raw',
-      'rehype-sanitize',
-      'rehype-stringify',
-      'rehype-slug',
-      'rehype-autolink-headings',
-      'remark-gfm',
-      'remark-parse',
-      'remark-rehype',
-      'shiki',
-      'unified',
-      'workbox-window',
-      'textarea-markdown-editor/dist/esm/bootstrap',
+      "@ckeditor/ckeditor5-vue",
+      "@ckeditor/ckeditor5-build-classic",
+      "@iconify/iconify",
+      "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.min.js",
+      "@vee-validate/zod",
+      "@vueuse/core",
+      "@vueform/multiselect",
+      "@vueform/slider",
+      "billboard.js",
+      "dayjs",
+      "dropzone",
+      "dragula",
+      "defu",
+      "filepond",
+      "filepond-plugin-file-validate-size",
+      "filepond-plugin-file-validate-type",
+      "filepond-plugin-image-exif-orientation",
+      "filepond-plugin-image-crop",
+      "filepond-plugin-image-edit",
+      "filepond-plugin-image-preview",
+      "filepond-plugin-image-resize",
+      "filepond-plugin-image-transform",
+      "focus-trap-vue",
+      "imask",
+      "nprogress",
+      "notyf",
+      "mapbox-gl",
+      "photoswipe/lightbox",
+      "photoswipe",
+      "plyr",
+      "v-calendar",
+      "vee-validate",
+      "vue",
+      "vue-scrollto",
+      "vue3-apexcharts",
+      "vue-tippy",
+      "vue-i18n",
+      "vue-router",
+      "unplugin-vue-router/runtime",
+      "simplebar",
+      "tiny-slider/src/tiny-slider",
+      "vue-accessible-color-picker",
+      "zod",
+      "@stefanprobst/remark-shiki",
+      "rehype-external-links",
+      "rehype-raw",
+      "rehype-sanitize",
+      "rehype-stringify",
+      "rehype-slug",
+      "rehype-autolink-headings",
+      "remark-gfm",
+      "remark-parse",
+      "remark-rehype",
+      "shiki",
+      "unified",
+      "workbox-window",
+      "textarea-markdown-editor/dist/esm/bootstrap",
     ],
     // disabled: false,
   },
@@ -127,14 +129,14 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: '/@src/',
+        find: "/@src/",
         replacement: `/src/`,
       },
     ],
   },
   build: {
-    target: 'esnext',
-    minify: 'terser',
+    target: "esnext",
+    minify: "terser",
     // Do not warn about large chunks
     // chunkSizeWarningLimit: Infinity,
     // Double the default size threshold for inlined assets
@@ -162,7 +164,10 @@ export default defineConfig({
      * @see https://github.com/intlify/bundle-tools/blob/main/packages/unplugin-vue-i18n/README.md
      */
     VueI18nPlugin({
-      include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        "./src/locales/**"
+      ),
       fullInstall: false,
       compositionOnly: true,
     }),
@@ -175,8 +180,8 @@ export default defineConfig({
      * @see https://github.com/vuejs/rfcs/blob/ad69da2aee9242ef88f036713db68f3ef274bb1b/active-rfcs/0000-router-use-loader.md
      */
     VueRouter({
-      routesFolder: 'src/pages',
-      dts: './types/router.d.ts',
+      routesFolder: "src/pages",
+      dts: "./types/router.d.ts",
 
       /**
        * Data Fetching is an experimental feature from vue & vue-router
@@ -200,8 +205,13 @@ export default defineConfig({
      * @see https://github.com/antfu/unplugin-auto-import
      */
     AutoImport({
-      dts: './types/imports.d.ts',
-      imports: ['vue', '@vueuse/core', VueRouterAutoImports, unheadVueComposablesImports],
+      dts: "./types/imports.d.ts",
+      imports: [
+        "vue",
+        "@vueuse/core",
+        VueRouterAutoImports,
+        unheadVueComposablesImports,
+      ],
     }),
 
     /**
@@ -213,17 +223,17 @@ export default defineConfig({
      * @see /src/composable/useMarkdownToc.ts
      */
     VitePluginVueroDoc({
-      pathPrefix: 'documentation',
-      wrapperComponent: 'DocumentationItem',
+      pathPrefix: "documentation",
+      wrapperComponent: "DocumentationItem",
       shiki: {
         theme: {
-          light: 'min-light',
-          dark: 'github-dark',
+          light: "min-light",
+          dark: "github-dark",
         },
       },
       sourceMeta: {
         enabled: true,
-        editProtocol: 'vscode://vscode-remote/wsl+Ubuntu', // or 'vscode://file'
+        editProtocol: "vscode://vscode-remote/wsl+Ubuntu", // or 'vscode://file'
       },
     }),
 
@@ -241,9 +251,9 @@ export default defineConfig({
      * @see https://github.com/antfu/unplugin-vue-components
      */
     Components({
-      dirs: ['documentation', 'src/components', 'src/layouts'],
-      extensions: ['vue', 'md'],
-      dts: './types/components.d.ts',
+      dirs: ["documentation", "src/components", "src/layouts"],
+      extensions: ["vue", "md"],
+      dts: "./types/components.d.ts",
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
     }),
 
@@ -264,16 +274,16 @@ export default defineConfig({
       google: {
         families: [
           {
-            name: 'Fira Code',
-            styles: 'wght@400;600',
+            name: "Fira Code",
+            styles: "wght@400;600",
           },
           {
-            name: 'Montserrat',
-            styles: 'wght@500;600;700;800;900',
+            name: "Montserrat",
+            styles: "wght@500;600;700;800;900",
           },
           {
-            name: 'Roboto',
-            styles: 'wght@300;400;500;600;700',
+            name: "Roboto",
+            styles: "wght@300;400;500;600;700",
           },
         ],
       },
@@ -298,35 +308,40 @@ export default defineConfig({
      * @see https://github.com/antfu/vite-plugin-pwa
      */
     VitePWA({
-      base: '/',
-      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      base: "/",
+      includeAssets: [
+        "favicon.svg",
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+      ],
       manifest: {
-        name: 'AREZ - Workforce Management Software',
-        short_name: 'Arez',
-        start_url: '/?utm_source=pwa',
-        display: 'standalone',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        name: "Ibex - Real-Estate Builders",
+        short_name: "Ibex",
+        start_url: "/?utm_source=pwa",
+        display: "standalone",
+        theme_color: "#ffffff",
+        background_color: "#ffffff",
         icons: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
           },
         ],
       },
-      mode: isProd ? 'production' : 'development',
+      mode: isProd ? "production" : "development",
       // registerType: 'autoUpdate',
       workbox: {
         /**
@@ -334,7 +349,7 @@ export default defineConfig({
          *
          * @see https://vite-pwa-org.netlify.app/guide/service-worker-precache.html
          */
-        globPatterns: ['**/*.{js,css,ico,png,svg,webp,jpg,jpeg}'],
+        globPatterns: ["**/*.{js,css,ico,png,svg,webp,jpg,jpeg}"],
 
         /**
          * add external cache of google fonts
@@ -344,9 +359,9 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
+            handler: "CacheFirst",
             options: {
-              cacheName: 'google-fonts-cache',
+              cacheName: "google-fonts-cache",
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
@@ -358,9 +373,9 @@ export default defineConfig({
           },
           {
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
+            handler: "CacheFirst",
             options: {
-              cacheName: 'gstatic-fonts-cache',
+              cacheName: "gstatic-fonts-cache",
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
@@ -394,8 +409,14 @@ export default defineConfig({
         ],
       },
       defaultExtractor(content) {
-        const contentWithoutStyleBlocks = content.replace(/<style[^]+?<\/style>/gi, '')
-        return contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || []
+        const contentWithoutStyleBlocks = content.replace(
+          /<style[^]+?<\/style>/gi,
+          ""
+        );
+        return (
+          contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) ||
+          []
+        );
       },
     }),
 
@@ -424,15 +445,15 @@ export default defineConfig({
           svgo: {
             plugins: [
               {
-                name: 'removeViewBox',
+                name: "removeViewBox",
                 active: false,
               },
               {
-                name: 'removeEmptyAttrs',
+                name: "removeEmptyAttrs",
                 active: false,
               },
             ],
           },
         }),
   ],
-})
+});

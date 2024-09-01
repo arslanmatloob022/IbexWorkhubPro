@@ -10,34 +10,81 @@ import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import { useInterviewsChart } from "/@src/data/dashboards/personal-v3/interviewsChart";
 import { useProgressChart } from "/@src/data/dashboards/personal-v3/progressChart";
 import * as userData from "/@src/data/dashboards/personal-v3/users";
+import { formatDateTime } from "/@src/composable/useSupportElement";
 
 const { progressGaugeOptions, onprogressGaugeReady } = useProgressChart();
 const { interviewsOptions } = useInterviewsChart();
 const api = useApi();
 const themeColors = useThemeColors();
 const userStack = userData.userStack as VAvatarProps[];
+const loading = ref(false);
+const dashboardStats = ref({
+  all_project: 0,
+  active_projects: 0,
+  pending_projects: 0,
+  completed_projects: 0,
+  workers: 0,
+  managers: 0,
+  last_mail_sent: "",
+  clients: 0,
+  contractors: 0,
+});
 
-onMounted(() => {});
+const getDashboardStats = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/project/dashboard/", {});
+    dashboardStats.value = response.data;
+    loading.value = false;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const sendTasksMailToAllWorker = () => {
+  try {
+    loading.value = true;
+    const resp = api.post(`/api/task/worker-mail/`, {
+      worker: "all",
+    });
+    console.log(resp);
+    getDashboardStats();
+
+    loading.value = false;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(() => {
+  getDashboardStats();
+});
 </script>
 
 <template>
   <div class="personal-dashboard personal-dashboard-v3">
-    <div class="columns">
-      <div class="column is-8">
+    <div class="columns is-multiline">
+      <div class="column is-12">
         <div class="columns is-multiline is-flex-tablet-p">
           <div class="column is-12">
             <div class="stats-wrapper">
               <div class="columns is-multiline is-flex-tablet-p">
                 <div class="column is-3">
                   <div class="dashboard-card">
-                    <VBlock title="62K" subtitle="Minutes" center>
+                    <VBlock
+                      :title="
+                        dashboardStats?.all_project
+                          ? dashboardStats.all_project
+                          : '0'
+                      "
+                      subtitle="All Projects"
+                      center
+                    >
                       <template #icon>
                         <VIconBox color="info" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:clock"
-                          />
+                          <i class="fas fa-cubes" aria-hidden="true"></i>
                         </VIconBox>
                       </template>
                     </VBlock>
@@ -45,14 +92,18 @@ onMounted(() => {});
                 </div>
                 <div class="column is-3">
                   <div class="dashboard-card">
-                    <VBlock title="263" subtitle="Interviews" center>
+                    <VBlock
+                      :title="
+                        dashboardStats?.active_projects
+                          ? dashboardStats?.active_projects
+                          : '0'
+                      "
+                      subtitle="Active Projects"
+                      center
+                    >
                       <template #icon>
-                        <VIconBox color="purple" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:radio"
-                          />
+                        <VIconBox color="blue" rounded>
+                          <i class="fas fa-boxes" aria-hidden="true"></i>
                         </VIconBox>
                       </template>
                     </VBlock>
@@ -60,14 +111,18 @@ onMounted(() => {});
                 </div>
                 <div class="column is-3">
                   <div class="dashboard-card">
-                    <VBlock title="49" subtitle="Approved" center>
+                    <VBlock
+                      :title="
+                        dashboardStats?.pending_projects
+                          ? dashboardStats?.pending_projects
+                          : '0'
+                      "
+                      subtitle="Pre Construction"
+                      center
+                    >
                       <template #icon>
-                        <VIconBox color="green" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:user-check"
-                          />
+                        <VIconBox color="pink" rounded>
+                          <i class="fas fa-border-style" aria-hidden="true"></i>
                         </VIconBox>
                       </template>
                     </VBlock>
@@ -75,59 +130,18 @@ onMounted(() => {});
                 </div>
                 <div class="column is-3">
                   <div class="dashboard-card">
-                    <VBlock title="214" subtitle="Rejected" center>
-                      <template #icon>
-                        <VIconBox color="orange" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:frown"
-                          />
-                        </VIconBox>
-                      </template>
-                    </VBlock>
-                  </div>
-                </div>
-                <div class="column is-3">
-                  <div class="dashboard-card">
-                    <VBlock title="62K" subtitle="Minutes" center>
-                      <template #icon>
-                        <VIconBox color="info" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:clock"
-                          />
-                        </VIconBox>
-                      </template>
-                    </VBlock>
-                  </div>
-                </div>
-                <div class="column is-3">
-                  <div class="dashboard-card">
-                    <VBlock title="263" subtitle="Interviews" center>
-                      <template #icon>
-                        <VIconBox color="purple" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:radio"
-                          />
-                        </VIconBox>
-                      </template>
-                    </VBlock>
-                  </div>
-                </div>
-                <div class="column is-3">
-                  <div class="dashboard-card">
-                    <VBlock title="49" subtitle="Approved" center>
+                    <VBlock
+                      :title="
+                        dashboardStats?.completed_projects
+                          ? dashboardStats?.completed_projects
+                          : '0'
+                      "
+                      subtitle="Completed"
+                      center
+                    >
                       <template #icon>
                         <VIconBox color="green" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:user-check"
-                          />
+                          <i class="fas fa-dice-d6" aria-hidden="true"></i>
                         </VIconBox>
                       </template>
                     </VBlock>
@@ -135,14 +149,74 @@ onMounted(() => {});
                 </div>
                 <div class="column is-3">
                   <div class="dashboard-card">
-                    <VBlock title="214" subtitle="Rejected" center>
+                    <VBlock
+                      :title="
+                        dashboardStats?.managers
+                          ? dashboardStats?.managers
+                          : '0'
+                      "
+                      subtitle="Managers"
+                      center
+                    >
+                      <template #icon>
+                        <VIconBox color="yellow" rounded>
+                          <i
+                            class="fas fa-hospital-user"
+                            aria-hidden="true"
+                          ></i>
+                        </VIconBox>
+                      </template>
+                    </VBlock>
+                  </div>
+                </div>
+                <div class="column is-3">
+                  <div class="dashboard-card">
+                    <VBlock
+                      :title="
+                        dashboardStats?.workers ? dashboardStats?.workers : '0'
+                      "
+                      subtitle="Workers"
+                      center
+                    >
+                      <template #icon>
+                        <VIconBox color="lime" rounded>
+                          <i class="fas fa-users" aria-hidden="true"></i>
+                        </VIconBox>
+                      </template>
+                    </VBlock>
+                  </div>
+                </div>
+                <div class="column is-3">
+                  <div class="dashboard-card">
+                    <VBlock
+                      :title="
+                        dashboardStats?.contractors
+                          ? dashboardStats?.contractors
+                          : '0'
+                      "
+                      subtitle="Contractors"
+                      center
+                    >
                       <template #icon>
                         <VIconBox color="orange" rounded>
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:frown"
-                          />
+                          <i class="fas fa-user-tag" aria-hidden="true"></i>
+                        </VIconBox>
+                      </template>
+                    </VBlock>
+                  </div>
+                </div>
+                <div class="column is-3">
+                  <div class="dashboard-card">
+                    <VBlock
+                      :title="
+                        dashboardStats?.clients ? dashboardStats?.clients : '0'
+                      "
+                      subtitle="Clients"
+                      center
+                    >
+                      <template #icon>
+                        <VIconBox color="blue" rounded>
+                          <i class="fas fa-user-tie" aria-hidden="true"></i>
                         </VIconBox>
                       </template>
                     </VBlock>
@@ -150,43 +224,44 @@ onMounted(() => {});
                 </div>
               </div>
 
-              <VBlock title="Last Schedule Sent" subtitle="02 July, 2024">
+              <VBlock
+                title="Last Schedule Sent"
+                :subtitle="
+                  dashboardStats.last_mail_sent
+                    ? formatDateTime(dashboardStats.last_mail_sent)
+                    : 'N/A'
+                "
+              >
                 <template #icon>
                   <VIconBox color="success" rounded>
                     <VIcon icon="lucide:clock" />
                   </VIconBox>
                 </template>
                 <template #action>
-                  <VButton color="warning" rounded elevated>
+                  <VButton
+                    @click="sendTasksMailToAllWorker"
+                    color="warning"
+                    rounded
+                    :loading="loading"
+                    elevated
+                  >
                     Send Schedule
                   </VButton>
                 </template>
               </VBlock>
             </div>
           </div>
-
-          <div class="column is-6 h-hidden-mobile h-hidden-tablet-p">
-            <img
-              src="/@src/assets/illustrations/dashboards/personal/interviews.svg"
-              alt=""
-            />
-          </div>
-
-          <div class="column is-6">
-            <div class="dashboard-card">
-              <ApexChart
-                id="interviews-chart"
-                :height="interviewsOptions.chart.height"
-                :type="interviewsOptions.chart.type"
-                :series="interviewsOptions.series"
-                :options="interviewsOptions"
-              />
-            </div>
-          </div>
         </div>
       </div>
-
-      <div class="column is-4">
+    </div>
+    <div class="columns is-multiline">
+      <div class="column is-6">
+        <ProjectsCompletionChart />
+      </div>
+      <div class="column is-6">
+        <ActiveProjectsChart />
+      </div>
+      <div class="column is-6">
         <UIWidget class="picker-widget">
           <template #header>
             <div class="widget-toolbar">
@@ -349,6 +424,24 @@ onMounted(() => {});
             </template>
           </VBlock>
         </a>
+      </div>
+      <div class="column is-6">
+        <div class="dashboard-card">
+          <ApexChart
+            id="interviews-chart"
+            :height="interviewsOptions.chart.height"
+            :type="interviewsOptions.chart.type"
+            :series="interviewsOptions.series"
+            :options="interviewsOptions"
+          />
+        </div>
+      </div>
+
+      <div class="column is-6 h-hidden-mobile h-hidden-tablet-p">
+        <img
+          src="/@src/assets/illustrations/dashboards/personal/interviews.svg"
+          alt=""
+        />
       </div>
     </div>
   </div>

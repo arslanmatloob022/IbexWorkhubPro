@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useHead({
-  title: 'AREZ - Workforce Management Software',
-})
+  title: "IBEX - Workforce Management Software",
+});
 </script>
 
 <template>
@@ -20,42 +20,42 @@ useHead({
           class="hexagon hexagon-1 light-image-l"
           src="/images/icons/hexagons/accent.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-1 dark-image-l"
           src="/images/icons/hexagons/accent-heavy.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-2 light-image-l"
           src="/images/icons/hexagons/accent.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-2 dark-image-l"
           src="/images/icons/hexagons/accent-heavy.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-3 light-image-l"
           src="/images/icons/hexagons/green.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-3 dark-image-l"
           src="/images/icons/hexagons/green-heavy.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-4 light-image-l"
           src="/images/icons/hexagons/purple.svg"
           alt=""
-        >
+        />
         <img
           class="hexagon hexagon-4 dark-image-l"
           src="/images/icons/hexagons/purple-heavy.svg"
           alt=""
-        >
+        />
 
         <div class="hero-body">
           <div class="container">
@@ -65,25 +65,14 @@ useHead({
                   Easier development. Beautiful projects
                 </h1>
                 <h3 class="subtitle is-4 pt-2 light-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Isto modo ne
-                  improbos quidem.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Isto
+                  modo ne improbos quidem.
                 </h3>
                 <div class="buttons">
-                  <VButton
-                    color="primary"
-                    bold
-                    rounded
-                    raised
-                  >
+                  <VButton color="primary" bold rounded raised>
                     Get Started
                   </VButton>
-                  <VButton
-                    color="primary"
-                    outlined
-                    bold
-                    rounded
-                    raised
-                  >
+                  <VButton color="primary" outlined bold rounded raised>
                     14-day Trial
                   </VButton>
                 </div>
@@ -94,12 +83,12 @@ useHead({
                     class="light-image-block-l"
                     src="/@src/assets/illustrations/landing/app-1.webp"
                     alt=""
-                  >
+                  />
                   <img
                     class="dark-image-block-l"
                     src="/@src/assets/illustrations/landing/app-1.webp"
                     alt=""
-                  >
+                  />
                 </div>
               </div>
             </div>
@@ -130,14 +119,8 @@ useHead({
 
       <!-- Back To Top Button -->
       <div id="backtotop">
-        <a
-          href="#"
-          aria-label="back to top"
-        >
-          <i
-            aria-hidden="true"
-            class="fas fa-angle-up"
-          />
+        <a href="#" aria-label="back to top">
+          <i aria-hidden="true" class="fas fa-angle-up" />
         </a>
       </div>
     </div>
@@ -145,8 +128,8 @@ useHead({
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
-@import '/@src/scss/_demo/landing';
+@import "/@src/scss/abstracts/all";
+@import "/@src/scss/_demo/landing";
 
 .marketing-hero {
   position: relative;
@@ -490,13 +473,13 @@ useHead({
         position: absolute;
         inset-inline-start: 0;
         top: 0;
-        content: '';
+        content: "";
       }
 
       &::after {
-        font-family: 'Font Awesome 5 Free';
+        font-family: "Font Awesome 5 Free";
         font-weight: 900;
-        content: '\f00c';
+        content: "\f00c";
         color: var(--white);
         position: absolute;
         inset-inline-start: 11px;
@@ -524,7 +507,7 @@ useHead({
       font-weight: bold;
 
       &::after {
-        content: ' /per month';
+        content: " /per month";
         font-size: 1rem;
         font-weight: normal;
         color: var(--light-text);
@@ -559,9 +542,9 @@ useHead({
       margin-bottom: 15px;
 
       &::before {
-        font-family: 'Font Awesome 5 Free';
+        font-family: "Font Awesome 5 Free";
         font-weight: 900;
-        content: '\f00c';
+        content: "\f00c";
         font-size: 0.9rem;
         color: var(--success);
         margin-inline-end: 6px;

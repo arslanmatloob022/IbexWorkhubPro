@@ -10,22 +10,22 @@
  * @see /src/router.ts
  */
 
-import { useI18n } from 'vue-i18n'
-import { useDarkmode } from '/@src/stores/darkmode'
+import { useI18n } from "vue-i18n";
+import { useDarkmode } from "/@src/stores/darkmode";
 
-const darkmode = useDarkmode()
+const darkmode = useDarkmode();
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 useHead({
-  title: `${t('page-title')} - Arez`,
+  title: `${t("page-title")} - Ibex`,
   meta: [
     {
-      name: 'robots',
-      content: 'noindex',
+      name: "robots",
+      content: "noindex",
     },
   ],
-})
+});
 </script>
 
 <template>
@@ -43,29 +43,23 @@ useHead({
             type="checkbox"
             :checked="!darkmode.isDark"
             @change="darkmode.onChange"
-          >
+          />
           <span />
         </label>
       </div>
 
       <div class="error-wrapper">
         <div class="error-inner has-text-centered">
-          <div class="bg-number">
-            404
-          </div>
+          <div class="bg-number">404</div>
           <SVGErrorPlaceholder />
 
-          <h3>{{ t('pages.not-found.page-heading') }}</h3>
+          <h3>{{ t("pages.not-found.page-heading") }}</h3>
           <p>
-            {{ t('pages.not-found.page-body') }}
+            {{ t("pages.not-found.page-body") }}
           </p>
           <div class="button-wrap">
-            <VButton
-              color="primary"
-              elevated
-              to="/"
-            >
-              {{ t('pages.not-found.back-button') }}
+            <VButton color="primary" elevated to="/">
+              {{ t("pages.not-found.back-button") }}
             </VButton>
           </div>
         </div>

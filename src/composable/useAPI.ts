@@ -19,7 +19,7 @@ function createApi(): CustomAxiosInstance {
 
   axiosInstance.interceptors.request.use((config) => {
     if (userSession.isLoggedIn) {
-      config.headers.Authorization = `Bearer ${userSession.token}`;
+      config.headers.Authorization = `Token ${userSession.token}`;
     } else if (userSession.code) {
       config.headers.Authorization = userSession.code;
     }

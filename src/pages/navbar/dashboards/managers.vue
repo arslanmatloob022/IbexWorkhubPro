@@ -2,15 +2,15 @@
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Jobs");
+viewWrapper.setPageTitle("Managers");
 
 useHead({
-  title: "Jobs - Arez",
+  title: "Managers - Ibex",
 });
 </script>
 
 <template>
   <div class="page-content-inner">
-    <JobsDashboard />
+    <p>Managers</p>
   </div>
 </template>

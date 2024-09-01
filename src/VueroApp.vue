@@ -21,7 +21,7 @@ const rtlCodes = [
 ];
 
 useHead(() => ({
-  title: "Arez.IO",
+  title: "Ibex Builders Studios",
   link: [
     {
       rel: "apple-touch-icon",
@@ -126,7 +126,7 @@ initDarkmode();
       </RouterView>
     </Suspense>
     <ClientOnly>
-      <VReloadPrompt app-name="Arez" />
+      <VReloadPrompt app-name="Ibex" />
     </ClientOnly>
   </div>
 </template>

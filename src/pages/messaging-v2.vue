@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { usePanels } from '/@src/stores/panels'
+import { usePanels } from "/@src/stores/panels";
 
-import type { VAvatarProps } from '/@src/components/base/avatar/VAvatar.vue'
-import { useDropdown } from '/@src/composable/useDropdown'
-import { onceImageErrored } from '/@src/utils/via-placeholder'
+import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
+import { useDropdown } from "/@src/composable/useDropdown";
+import { onceImageErrored } from "/@src/utils/via-placeholder";
 
 export interface conversationData {
-  id: number
-  name: string
-  role: string
-  avatar: VAvatarProps
-  lastMessage: string
-  lastMessagePreview: string
+  id: number;
+  name: string;
+  role: string;
+  avatar: VAvatarProps;
+  lastMessage: string;
+  lastMessagePreview: string;
 }
 
 // we are using static data here, but you might need to load those from your API
@@ -19,140 +19,142 @@ export interface conversationData {
 const conversations: conversationData[] = [
   {
     id: 1,
-    name: 'Kelly Marston',
-    role: 'Product Manager',
+    name: "Kelly Marston",
+    role: "Product Manager",
     avatar: {
-      picture: '/demo/avatars/11.jpg',
+      picture: "/demo/avatars/11.jpg",
     },
-    lastMessage: '20m',
-    lastMessagePreview: 'What time was our meeting scheduled for?',
+    lastMessage: "20m",
+    lastMessagePreview: "What time was our meeting scheduled for?",
   },
   {
     id: 2,
-    name: 'Alejandro Badajoz',
-    role: 'Business Analyst',
+    name: "Alejandro Badajoz",
+    role: "Business Analyst",
     avatar: {
-      picture: '/demo/avatars/39.jpg',
+      picture: "/demo/avatars/39.jpg",
     },
-    lastMessage: '24m',
-    lastMessagePreview: 'Nah, I have a meeting that starts in 5.',
+    lastMessage: "24m",
+    lastMessagePreview: "Nah, I have a meeting that starts in 5.",
   },
   {
     id: 3,
-    name: 'Work Group',
-    role: '7 people are chatting',
+    name: "Work Group",
+    role: "7 people are chatting",
     avatar: {
-      color: 'h-purple',
-      initials: 'WG',
+      color: "h-purple",
+      initials: "WG",
     },
-    lastMessage: '31m',
-    lastMessagePreview: 'This is getting funnier and funnier. You gotta love dat team 🥰',
+    lastMessage: "31m",
+    lastMessagePreview:
+      "This is getting funnier and funnier. You gotta love dat team 🥰",
   },
   {
     id: 4,
-    name: 'Alice Carasca',
-    role: 'Software Engineer',
+    name: "Alice Carasca",
+    role: "Software Engineer",
     avatar: {
-      picture: '/demo/avatars/7.jpg',
+      picture: "/demo/avatars/7.jpg",
     },
-    lastMessage: '47m',
-    lastMessagePreview: 'I like the curves in this one.',
+    lastMessage: "47m",
+    lastMessagePreview: "I like the curves in this one.",
   },
   {
     id: 5,
-    name: 'Irina Vierbovsky',
-    role: 'Project Manager',
+    name: "Irina Vierbovsky",
+    role: "Project Manager",
     avatar: {
-      picture: '/demo/avatars/23.jpg',
+      picture: "/demo/avatars/23.jpg",
     },
-    lastMessage: '56m',
-    lastMessagePreview: 'I need some help on something Iam working on.',
+    lastMessage: "56m",
+    lastMessagePreview: "I need some help on something Iam working on.",
   },
   {
     id: 6,
-    name: 'Mary Lebowski',
-    role: 'Project Manager',
+    name: "Mary Lebowski",
+    role: "Project Manager",
     avatar: {
-      picture: '/demo/avatars/5.jpg',
+      picture: "/demo/avatars/5.jpg",
     },
-    lastMessage: '1h',
-    lastMessagePreview: 'Still down for that movie?',
+    lastMessage: "1h",
+    lastMessagePreview: "Still down for that movie?",
   },
   {
     id: 7,
-    name: 'Esteban Castellanos',
-    role: 'UI/UX Designer',
+    name: "Esteban Castellanos",
+    role: "UI/UX Designer",
     avatar: {
-      picture: '/demo/avatars/18.jpg',
+      picture: "/demo/avatars/18.jpg",
     },
-    lastMessage: '1h',
-    lastMessagePreview: 'I can send you the files.',
+    lastMessage: "1h",
+    lastMessagePreview: "I can send you the files.",
   },
   {
     id: 8,
-    name: 'Melany Wallace',
-    role: 'Web Developer',
+    name: "Melany Wallace",
+    role: "Web Developer",
     avatar: {
-      picture: '/demo/avatars/25.jpg',
+      picture: "/demo/avatars/25.jpg",
     },
-    lastMessage: '2h',
-    lastMessagePreview: 'I has some issues with the headers tough.',
+    lastMessage: "2h",
+    lastMessagePreview: "I has some issues with the headers tough.",
   },
   {
     id: 9,
-    name: 'Jimmy Hector',
-    role: 'Project Manager',
+    name: "Jimmy Hector",
+    role: "Project Manager",
     avatar: {
-      picture: '/demo/avatars/22.jpg',
+      picture: "/demo/avatars/22.jpg",
     },
-    lastMessage: '3h',
-    lastMessagePreview: 'When are you available?',
+    lastMessage: "3h",
+    lastMessagePreview: "When are you available?",
   },
   {
     id: 10,
-    name: 'Greta Kroppfer',
-    role: 'Sales Manager',
+    name: "Greta Kroppfer",
+    role: "Sales Manager",
     avatar: {
-      picture: '/demo/avatars/19.jpg',
+      picture: "/demo/avatars/19.jpg",
     },
-    lastMessage: '3h',
-    lastMessagePreview: 'Thank you for you clean presentation, it was stunning.',
+    lastMessage: "3h",
+    lastMessagePreview:
+      "Thank you for you clean presentation, it was stunning.",
   },
   {
     id: 11,
-    name: 'Tara Svenson',
-    role: 'UI/UX Designer',
+    name: "Tara Svenson",
+    role: "UI/UX Designer",
     avatar: {
-      picture: '/demo/avatars/13.jpg',
+      picture: "/demo/avatars/13.jpg",
     },
-    lastMessage: '9h',
-    lastMessagePreview: 'Hope you like them.',
+    lastMessage: "9h",
+    lastMessagePreview: "Hope you like them.",
   },
-]
+];
 
-const panels = usePanels()
-const selectedConversationId = ref(3)
-const mobileConversationListOpen = ref(false)
+const panels = usePanels();
+const selectedConversationId = ref(3);
+const mobileConversationListOpen = ref(false);
 const selectedConversation = computed(() => {
   const conversation = conversations.find(
     (item) => item.id === selectedConversationId.value
-  )
+  );
   if (conversation) {
-    return conversation
+    return conversation;
   }
 
-  return conversations[0]
-})
+  return conversations[0];
+});
 
-const dropdownElement1 = ref<HTMLElement>()
-const dropdown1 = useDropdown(dropdownElement1)
+const dropdownElement1 = ref<HTMLElement>();
+const dropdown1 = useDropdown(dropdownElement1);
 
-const dropdownElement2 = ref<HTMLElement>()
-const dropdown2 = useDropdown(dropdownElement2)
+const dropdownElement2 = ref<HTMLElement>();
+const dropdown2 = useDropdown(dropdownElement2);
 
 useHead({
-  title: 'Messaging chat - Navbar - Arez',
-})
+  title: "Messaging chat - Navbar - Ibex",
+});
 </script>
 
 <template>
@@ -162,10 +164,7 @@ useHead({
       <div class="chat-app-header">
         <!--Logo-->
         <div class="logo">
-          <AnimatedLogo
-            width="38px"
-            height="38px"
-          />
+          <AnimatedLogo width="38px" height="38px" />
         </div>
 
         <!--Search-->
@@ -177,7 +176,7 @@ useHead({
                 class="input search-input"
                 placeholder="Search..."
                 aria-label="Search"
-              >
+              />
               <div class="form-icon">
                 <i
                   aria-hidden="true"
@@ -204,11 +203,7 @@ useHead({
               @keydown.space.prevent="panels.setActive('activity')"
               @click="panels.setActive('activity')"
             >
-              <i
-                aria-hidden="true"
-                class="iconify"
-                data-icon="feather:grid"
-              />
+              <i aria-hidden="true" class="iconify" data-icon="feather:grid" />
             </a>
           </Toolbar>
 
@@ -230,7 +225,7 @@ useHead({
                   src="/images/avatars/svg/vuero-1.svg"
                   alt=""
                   @error.once="onceImageErrored(150)"
-                >
+                />
               </div>
               <i
                 aria-hidden="true"
@@ -238,20 +233,12 @@ useHead({
                 data-icon="feather:chevron-down"
               />
             </div>
-            <div
-              class="dropdown-menu"
-              role="menu"
-            >
+            <div class="dropdown-menu" role="menu">
               <div class="dropdown-content">
                 <div class="dropdown-item">
-                  <p class="is-size-7">
-                    Erik Kovalsky
-                  </p>
+                  <p class="is-size-7">Erik Kovalsky</p>
                 </div>
-                <a
-                  href="#"
-                  class="dropdown-item"
-                >
+                <a href="#" class="dropdown-item">
                   <i
                     aria-hidden="true"
                     class="iconify"
@@ -283,11 +270,8 @@ useHead({
                   />
                   <span>Settings</span>
                 </a>
-                <hr class="dropdown-divider">
-                <a
-                  href="#"
-                  class="dropdown-item"
-                >
+                <hr class="dropdown-divider" />
+                <a href="#" class="dropdown-item">
                   <i
                     aria-hidden="true"
                     class="iconify"
@@ -314,10 +298,7 @@ useHead({
         />
 
         <!--Conversation messages-->
-        <div
-          class="chat-area is-active"
-          data-simplebar
-        >
+        <div class="chat-area is-active" data-simplebar>
           <!--Conversation 1-->
           <WebappConversation1
             :class="[selectedConversationId === 1 && 'is-active']"
@@ -425,10 +406,7 @@ useHead({
                     />
                   </div>
                 </div>
-                <div
-                  class="dropdown-menu"
-                  role="menu"
-                >
+                <div class="dropdown-menu" role="menu">
                   <div class="dropdown-content">
                     <a class="dropdown-item">
                       <i
@@ -441,10 +419,7 @@ useHead({
                         <span>Embed a video</span>
                       </div>
                     </a>
-                    <a
-                      href="#"
-                      class="dropdown-item kill-drop v-modal-trigger"
-                    >
+                    <a href="#" class="dropdown-item kill-drop v-modal-trigger">
                       <i
                         aria-hidden="true"
                         class="iconify"
@@ -455,10 +430,7 @@ useHead({
                         <span>Upload pictures</span>
                       </div>
                     </a>
-                    <a
-                      href="#"
-                      class="dropdown-item kill-drop v-modal-trigger"
-                    >
+                    <a href="#" class="dropdown-item kill-drop v-modal-trigger">
                       <i
                         aria-hidden="true"
                         class="iconify"
@@ -469,11 +441,8 @@ useHead({
                         <span>Post a link</span>
                       </div>
                     </a>
-                    <hr class="dropdown-divider">
-                    <a
-                      href="#"
-                      class="dropdown-item kill-drop v-modal-trigger"
-                    >
+                    <hr class="dropdown-divider" />
+                    <a href="#" class="dropdown-item kill-drop v-modal-trigger">
                       <i
                         aria-hidden="true"
                         class="iconify"
@@ -501,50 +470,35 @@ useHead({
               type="text"
               placeholder="Type something here..."
               aria-label="Add new message"
-            >
+            />
           </div>
         </div>
 
         <!--Conversation Details-->
-        <div
-          class="detail-area"
-          data-simplebar
-        >
+        <div class="detail-area" data-simplebar>
           <div class="chat-side-content is-single">
             <VAvatar
               :picture="selectedConversation.avatar.picture"
               :color="selectedConversation.avatar.color"
               :initials="selectedConversation.avatar.initials"
             />
-            <h4
-              id="user-details-name"
-              class="user-name"
-            >
+            <h4 id="user-details-name" class="user-name">
               {{ selectedConversation.name }}
             </h4>
-            <p
-              id="user-details-title"
-              class="user-job-title"
-            >
+            <p id="user-details-title" class="user-job-title">
               {{ selectedConversation.role }}
             </p>
 
             <div class="side-actions">
               <a class="button v-button is-rounded">
                 <span class="icon is-small">
-                  <i
-                    aria-hidden="true"
-                    class="fas fa-phone"
-                  />
+                  <i aria-hidden="true" class="fas fa-phone" />
                 </span>
                 <span>Audio Call</span>
               </a>
               <a class="button v-button is-rounded">
                 <span class="icon is-small">
-                  <i
-                    aria-hidden="true"
-                    class="fas fa-video"
-                  />
+                  <i aria-hidden="true" class="fas fa-video" />
                 </span>
                 <span>Video Call</span>
               </a>
@@ -562,19 +516,8 @@ useHead({
                   stroke-linejoin="round"
                   class="feather feather-image"
                 >
-                  <rect
-                    x="3"
-                    y="3"
-                    width="18"
-                    height="18"
-                    rx="2"
-                    ry="2"
-                  />
-                  <circle
-                    cx="8.5"
-                    cy="8.5"
-                    r="1.5"
-                  />
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
                   <path d="M21 15l-5-5L5 21" />
                 </svg>
                 Shared photos
@@ -584,62 +527,62 @@ useHead({
                   src="/demo/photos/demo-apps/1.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/2.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/3.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/4.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/5.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/6.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/7.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/8.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/9.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/10.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/11.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
                 <img
                   src="/demo/photos/demo-apps/12.jpg"
                   alt=""
                   @error.once="onceImageErrored(1600, 900)"
-                >
+                />
               </div>
               <a class="view-more">View More</a>
             </div>
@@ -673,8 +616,10 @@ $overlay-bg: linear-gradient(
 $overlay-bg-dark: linear-gradient(
   to bottom,
   rgb(255 255 255 / 0%) 0%,
-  hsl(var(--dark-sidebar-h) var(--dark-sidebar-s) var(--dark-sidebar-l) / 100%) 65%,
-  hsl(var(--dark-sidebar-h) var(--dark-sidebar-s) var(--dark-sidebar-l) / 100%) 100%
+  hsl(var(--dark-sidebar-h) var(--dark-sidebar-s) var(--dark-sidebar-l) / 100%)
+    65%,
+  hsl(var(--dark-sidebar-h) var(--dark-sidebar-s) var(--dark-sidebar-l) / 100%)
+    100%
 );
 
 .chat-app-wrapper {
@@ -945,7 +890,7 @@ $overlay-bg-dark: linear-gradient(
               margin-inline-start: 4px;
 
               &::before {
-                content: '•';
+                content: "•";
                 margin-inline-end: 2px;
               }
             }

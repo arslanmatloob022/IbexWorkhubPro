@@ -60,44 +60,6 @@ const partnersCount = ref({
   industries: <any>[],
 });
 
-const getIndustryWorkerCount = (id: any) => {
-  const industry = workersCount.value.industries.find(
-    (item: any) => item.id === id
-  );
-  return industry ? industry.count : 0;
-};
-
-const getIndustryPartnerCount = (id: any) => {
-  const industry = partnersCount.value.industries.find(
-    (item: any) => item.id === id
-  );
-  return industry ? industry.count : 0;
-};
-
-const getIndustryWorkersCount = async () => {
-  try {
-    const resp = await api.get(
-      `/v3/api/company/${company.loggedCompany.id}/get_company_industry_workers_count/`
-    );
-    workersCount.value = resp.data;
-    console.log("counts", resp.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const getIndustryPartnersCount = async () => {
-  try {
-    const resp = await api.get(
-      `/v3/api/supplier/${company.loggedCompany.id}/industry_partners_count/`
-    );
-    partnersCount.value = resp.data;
-    console.log("part counts", resp.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const localFlagSrc = computed(() => {
   switch (locale.value) {
     case "fr":
@@ -118,20 +80,6 @@ const localFlagSrc = computed(() => {
   }
 });
 
-const routePaths = {
-  jobs: `/sidebar/dashboard/jobs`,
-  dashboard: `/sidebar/company`,
-  clients: `/sidebar/dashboard/business`,
-  contracts: `/sidebar/dashboard/contracts`,
-  placements: `/sidebar/dashboard/placement`,
-  partners: `/sidebar/dashboard/supplier`,
-  workers: `/sidebar/dashboard/workers`,
-  workers_anomalies: `/sidebar/dashboard/anomalies`,
-  partner_anomalies: `/sidebar/dashboard/partner-anomalies`,
-  rota: `/sidebar/dashboard/rota`,
-  settings: `/sidebar/dashboard/settings`,
-};
-
 const getPagesColors = (index: any) => {
   switch (index) {
     case 0:
@@ -149,44 +97,11 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find((key) => object[key] === value) || false;
 }
 
-const visitedPageHandler = async (currentPage: any) => {
-  try {
-    const response = await api.post("/v3/api/visited-page/", {
-      page: currentPage,
-    });
-    console.log(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const getMostVisitedPages = async () => {
-  try {
-    const response = await api.get("/v3/api/visited-page/top-visited-pages/");
-    mostVisitedPages.value = response.data;
-    console.log("visited pages", mostVisitedPages.value);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const gotoVisitedPage = (page: any) => {
   router.push(routePaths[page]);
 };
 
-watch(
-  () => router.currentRoute.value.path,
-  (newPath, oldPath) => {
-    if (newPath) {
-      getMostVisitedPages();
-      const routeName = getKeyByValue(routePaths, newPath);
-      if (routeName) {
-        console.log("Current route:", routeName);
-        visitedPageHandler(routeName);
-      }
-    }
-  }
-);
+watch(() => router.currentRoute.value.path);
 
 watchPostEffect(() => {
   viewWrapper.setPushedBlock(isDesktopSideblockOpen.value ?? false);
@@ -216,10 +131,6 @@ watch(
 );
 
 onMounted(() => {
-  getIndustryWorkersCount();
-  if (userSession.user.role != "partner") {
-    getIndustryPartnersCount();
-  }
   viewWrapper.setPushed(false);
 });
 </script>
@@ -425,7 +336,7 @@ onMounted(() => {
           <li>
             <RouterLink to="/sidebar/dashboard" class="single-link">
               <span class="icon">
-                <i class="iconify" data-icon="feather:grid" />
+                <i class="fas fa-th-large" aria-hidden="true"></i>
               </span>
               Dashboard
             </RouterLink>
@@ -441,11 +352,7 @@ onMounted(() => {
                 class="icon"
                 :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
               >
-                <i
-                  class="iconify"
-                  data-icon="feather:settings"
-                  aria-hidden="true"
-                ></i>
+                <i class="fas fa-cubes" aria-hidden="true"></i>
               </div>
               <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
                 >Projects</span
@@ -483,7 +390,7 @@ onMounted(() => {
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >All</span
+                >All Projects</span
               >
             </RouterLink>
 
@@ -507,7 +414,7 @@ onMounted(() => {
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >Active</span
+                >Completed Projects</span
               >
             </RouterLink>
 
@@ -533,7 +440,7 @@ onMounted(() => {
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >Pre Construction</span
+                >Manage Projects</span
               >
             </RouterLink>
 
@@ -565,26 +472,29 @@ onMounted(() => {
           </VCollapseLinks>
 
           <li>
-            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/managers" class="single-link">
               <span class="icon">
-                <i
-                  class="iconify"
-                  data-icon="feather:clipboard"
-                  aria-hidden="true"
-                ></i
+                <i class="fas fa-hospital-user" aria-hidden="true"></i
               ></span>
               Managers
             </RouterLink>
           </li>
+          <li>
+            <RouterLink
+              to="/sidebar/dashboard/service-partners"
+              class="single-link"
+            >
+              <span class="icon">
+                <i class="fas fa-user-friends" aria-hidden="true"></i
+              ></span>
+              Service Partners
+            </RouterLink>
+          </li>
           <div class="sleakDivider"></div>
           <li>
-            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
               <span class="icon">
-                <i
-                  class="iconify"
-                  data-icon="feather:clipboard"
-                  aria-hidden="true"
-                ></i
+                <i class="fas fa-user-tag" aria-hidden="true"></i
               ></span>
               Contractors
             </RouterLink>
@@ -592,28 +502,20 @@ onMounted(() => {
           <div class="sleakDivider"></div>
 
           <li>
-            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/workers" class="single-link">
               <span class="icon">
-                <i
-                  class="iconify"
-                  data-icon="feather:clipboard"
-                  aria-hidden="true"
-                ></i
+                <i class="fas fa-users" aria-hidden="true"></i
               ></span>
               Workers
             </RouterLink>
           </li>
           <div class="sleakDivider"></div>
           <li>
-            <RouterLink to="/sidebar/dashboard/jobs" class="single-link">
+            <RouterLink to="/sidebar/dashboard/customers" class="single-link">
               <span class="icon">
-                <i
-                  class="iconify"
-                  data-icon="feather:clipboard"
-                  aria-hidden="true"
-                ></i
+                <i class="fas fa-user-tie" aria-hidden="true"></i
               ></span>
-              Clients
+              Customers
             </RouterLink>
           </li>
 
@@ -627,11 +529,7 @@ onMounted(() => {
                 class="icon"
                 :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
               >
-                <i
-                  class="iconify"
-                  data-icon="feather:settings"
-                  aria-hidden="true"
-                ></i>
+                <i class="fas fa-cog" aria-hidden="true"></i>
               </div>
               <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
                 >Settings</span

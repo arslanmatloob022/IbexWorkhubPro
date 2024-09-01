@@ -1,42 +1,48 @@
 <script setup lang="ts">
-import { useDarkmode } from '/@src/stores/darkmode'
-import { useDropdown } from '/@src/composable/useDropdown'
-import { onceImageErrored } from '/@src/utils/via-placeholder'
+import { useDarkmode } from "/@src/stores/darkmode";
+import { useDropdown } from "/@src/composable/useDropdown";
+import { onceImageErrored } from "/@src/utils/via-placeholder";
 
-const darkmode = useDarkmode()
-const contactSearchOpen = ref(false)
-const activeTab = ref('inbox')
-const selectedConversationId = ref(1)
-const selectedConversationList = ref<number[]>([])
-const mobileMessageOpen = ref(true)
-const mobileSidebarOpen = ref(false)
+const darkmode = useDarkmode();
+const contactSearchOpen = ref(false);
+const activeTab = ref("inbox");
+const selectedConversationId = ref(1);
+const selectedConversationList = ref<number[]>([]);
+const mobileMessageOpen = ref(true);
+const mobileSidebarOpen = ref(false);
 
 const isAllChecked = computed(() => {
-  return selectedConversationList.value.length === 10
-})
+  return selectedConversationList.value.length === 10;
+});
 
 const toggleSelection = () => {
   if (isAllChecked.value) {
-    selectedConversationList.value.splice(0, selectedConversationList.value.length)
+    selectedConversationList.value.splice(
+      0,
+      selectedConversationList.value.length
+    );
   } else {
-    selectedConversationList.value.splice(0, selectedConversationList.value.length)
-    selectedConversationList.value.push(...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    selectedConversationList.value.splice(
+      0,
+      selectedConversationList.value.length
+    );
+    selectedConversationList.value.push(...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   }
-}
+};
 
-const dropdownElement1 = ref<HTMLElement>()
-const dropdown1 = useDropdown(dropdownElement1)
+const dropdownElement1 = ref<HTMLElement>();
+const dropdown1 = useDropdown(dropdownElement1);
 
-const dropdownElement2 = ref<HTMLElement>()
-const dropdown2 = useDropdown(dropdownElement2)
+const dropdownElement2 = ref<HTMLElement>();
+const dropdown2 = useDropdown(dropdownElement2);
 
 watch(selectedConversationId, () => {
-  mobileMessageOpen.value = true
-})
+  mobileMessageOpen.value = true;
+});
 
 useHead({
-  title: 'Apps 2 - Sidebar - Arez',
-})
+  title: "Apps 2 - Sidebar - Ibex",
+});
 </script>
 
 <template>
@@ -51,14 +57,8 @@ useHead({
           <!-- Header -->
           <div class="header-area">
             <div class="inbox-title">
-              <RouterLink
-                to="/"
-                class="inbox-brand"
-              >
-                <AnimatedLogo
-                  width="36px"
-                  height="36px"
-                />
+              <RouterLink to="/" class="inbox-brand">
+                <AnimatedLogo width="36px" height="36px" />
               </RouterLink>
               <span>Inbox</span>
 
@@ -68,7 +68,7 @@ useHead({
                   type="checkbox"
                   :checked="!darkmode.isDark"
                   @change="darkmode.onChange"
-                >
+                />
                 <span />
               </label>
             </div>
@@ -77,10 +77,7 @@ useHead({
               class="dropdown inbox-dropdown dropdown-trigger is-right"
             >
               <div>
-                <button
-                  class="button"
-                  @click="dropdown1.toggle"
-                >
+                <button class="button" @click="dropdown1.toggle">
                   <span class="icon is-small">
                     <i
                       aria-hidden="true"
@@ -135,11 +132,7 @@ useHead({
               @keydown.space.prevent="mobileSidebarOpen = false"
               @click="mobileSidebarOpen = false"
             >
-              <i
-                aria-hidden="true"
-                class="iconify"
-                data-icon="feather:x"
-              />
+              <i aria-hidden="true" class="iconify" data-icon="feather:x" />
             </a>
           </div>
           <!--Inner-->
@@ -240,9 +233,7 @@ useHead({
             <!--Scroll menu-->
             <div class="scroll-menu">
               <div class="title-wrap">
-                <h3 :class="[contactSearchOpen && 'is-hidden']">
-                  Contacts
-                </h3>
+                <h3 :class="[contactSearchOpen && 'is-hidden']">Contacts</h3>
                 <div
                   :class="[!contactSearchOpen && 'is-hidden']"
                   class="control has-icon"
@@ -251,7 +242,7 @@ useHead({
                     type="text"
                     class="input"
                     placeholder="Search Contacts..."
-                  >
+                  />
                   <div class="form-icon">
                     <i
                       aria-hidden="true"
@@ -306,7 +297,7 @@ useHead({
                     src="/demo/avatars/7.jpg"
                     alt=""
                     @error.once="onceImageErrored(150)"
-                  >
+                  />
                   <div class="contact-meta">
                     <span>Alice Carasca</span>
                     <span>alice@vuero.io</span>
@@ -318,7 +309,7 @@ useHead({
                     src="/demo/avatars/25.jpg"
                     alt=""
                     @error.once="onceImageErrored(150)"
-                  >
+                  />
                   <div class="contact-meta">
                     <span>Melany Wallace</span>
                     <span>melany@vuero.io</span>
@@ -330,7 +321,7 @@ useHead({
                     src="/demo/avatars/18.jpg"
                     alt=""
                     @error.once="onceImageErrored(150)"
-                  >
+                  />
                   <div class="contact-meta">
                     <span>Esteban Castellanos</span>
                     <span>esteban@vuero.io</span>
@@ -342,7 +333,7 @@ useHead({
                     src="/demo/avatars/32.jpg"
                     alt=""
                     @error.once="onceImageErrored(150)"
-                  >
+                  />
                   <div class="contact-meta">
                     <span>Jonathan Krugger</span>
                     <span>jonathan@vuero.io</span>
@@ -354,7 +345,7 @@ useHead({
                     src="/demo/avatars/38.jpg"
                     alt=""
                     @error.once="onceImageErrored(150)"
-                  >
+                  />
                   <div class="contact-meta">
                     <span>Christie Dallas</span>
                     <span>christie@vuero.io</span>
@@ -405,7 +396,7 @@ useHead({
                   type="text"
                   class="input is-rounded"
                   placeholder="Search Inbox..."
-                >
+                />
                 <div class="form-icon">
                   <i
                     aria-hidden="true"
@@ -420,10 +411,7 @@ useHead({
                 class="dropdown inbox-dropdown dropdown-trigger is-right"
               >
                 <div>
-                  <button
-                    class="button"
-                    @click="dropdown2.toggle"
-                  >
+                  <button class="button" @click="dropdown2.toggle">
                     <span class="icon is-small">
                       <i
                         aria-hidden="true"
@@ -451,7 +439,7 @@ useHead({
                       />
                       <span>Hide read</span>
                     </a>
-                    <hr class="dropdown-divider">
+                    <hr class="dropdown-divider" />
                     <a class="dropdown-item">
                       <i
                         aria-hidden="true"
@@ -1123,7 +1111,7 @@ useHead({
           .mail-content {
             padding: 40px 60px 30px;
             /* stylelint-disable-next-line font-family-name-quotes */
-            font-family: 'Roboto', sans-serif;
+            font-family: "Roboto", sans-serif;
           }
         }
 
@@ -1223,7 +1211,7 @@ useHead({
               bottom: 100%;
               inset-inline-start: 6%;
               border: solid transparent;
-              content: ' ';
+              content: " ";
               height: 0;
               width: 0;
               position: absolute;

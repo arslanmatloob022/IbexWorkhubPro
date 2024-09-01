@@ -1,28 +1,30 @@
 <script setup lang="ts">
-export type VIconBoxSize = 'small' | 'medium' | 'large' | 'big' | 'xl'
+export type VIconBoxSize = "small" | "medium" | "large" | "big" | "xl";
 export type VIconBoxColor =
-  | 'primary'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'purple'
-  | 'yellow'
-  | 'orange'
-  | 'green'
-  | 'red'
-  | 'blue'
+  | "primary"
+  | "info"
+  | "success"
+  | "warning"
+  | "danger"
+  | "purple"
+  | "yellow"
+  | "orange"
+  | "green"
+  | "pink"
+  | "lime"
+  | "red"
+  | "blue";
 export interface VIconProps {
-  size?: VIconBoxSize
-  color?: VIconBoxColor
-  rounded?: boolean
-  bordered?: boolean
+  size?: VIconBoxSize;
+  color?: VIconBoxColor;
+  rounded?: boolean;
+  bordered?: boolean;
 }
 
 const props = withDefaults(defineProps<VIconProps>(), {
   size: undefined,
   color: undefined,
-})
+});
 </script>
 
 <template>
@@ -382,6 +384,22 @@ const props = withDefaults(defineProps<VIconProps>(), {
     }
   }
 
+  &.is-lime {
+    background: var(--lime-light-22);
+
+    &.is-bordered {
+      border-color: var(--lime);
+    }
+
+    i {
+      color: var(--lime);
+    }
+
+    svg {
+      color: var(--lime);
+    }
+  }
+
   &.is-orange {
     background: var(--orange-light-20);
 
@@ -427,6 +445,22 @@ const props = withDefaults(defineProps<VIconProps>(), {
 
     svg {
       color: var(--red);
+    }
+  }
+
+  &.is-pink {
+    background: var(--warning-light-32);
+
+    &.is-bordered {
+      border-color: var(--pink);
+    }
+
+    i {
+      color: var(--pink);
+    }
+
+    svg {
+      color: var(--pink);
     }
   }
 

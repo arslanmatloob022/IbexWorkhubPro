@@ -1,9 +1,192 @@
 <script setup lang="ts">
 import { retails } from "/@src/data/layouts/view-list-v2";
+import { useApi } from "/@src/composable/useAPI";
 
-type TabId = "active" | "inactive";
-const activeTab = ref<TabId>("active");
 const filters = ref("");
+const api = useApi();
+
+const isProjectFormOpen = ref(false);
+const activeFilter = ref("all");
+const isProjectCompleted = ref(false);
+const managerCount = ref(1);
+const projectIdDeleteTobe = ref(0);
+const loading = ref(false);
+const query = ref("");
+const filteredProjects = ref([
+  {
+    title: "",
+    description: "",
+    image: null as File | null,
+    startDate: "",
+    endDate: "",
+    is_active: false,
+    managers: [],
+    client: {
+      id: 0,
+      username: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+    contractor: {
+      id: 0,
+      username: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+  },
+]);
+const projects = ref([]);
+const HomeRating = ref(4);
+const modalTitle = ref("Add New Project");
+const inputFieldValue = ref("");
+
+// Define reactive objects
+const ProjectStatuscolor = reactive({
+  pending: "secondary",
+  active: "warning",
+  completed: "success",
+});
+
+const getProjectStatus = reactive({
+  pending: "Pre Construction",
+  active: "Active",
+  completed: "Completed",
+});
+
+const alertData = reactive({
+  icon: "fa fa-warning",
+  alertTitle: "Alert",
+  alertDescription:
+    "After deleting this Project, you will not be able to recover it.",
+});
+
+const project = ref({
+  title: "",
+  description: "",
+  image: null as File | null,
+  startDate: "",
+  endDate: "",
+  is_active: false,
+  managers: [],
+  client: {
+    id: 0,
+    username: "",
+    email: "",
+    role: "",
+    avatar: "",
+  },
+  contractor: {
+    id: 0,
+    username: "",
+    email: "",
+    role: "",
+    avatar: "",
+  },
+});
+
+const managers = ref<any>([{ id: 0, avatar: "", email: "", username: "" }]);
+
+// Methods converted to Composition API syntax
+const filterProject = (filterType: string | null) => {
+  if (query.value && filterType == null) {
+    activeFilter.value = "all";
+    filteredProjects.value = projects.value.filter((project) =>
+      project.title.toLowerCase().includes(query.value.toLowerCase())
+    );
+    return;
+  } else if (!query.value && filterType == null) {
+    filteredProjects.value = projects.value;
+    return;
+  } else {
+    query.value = "";
+  }
+  activeFilter.value = filterType;
+  if (activeFilter.value != "all") {
+    const data = projects.value.filter(
+      (project) => project.status == activeFilter.value
+    );
+    filteredProjects.value = data;
+  } else {
+    filteredProjects.value = projects.value;
+  }
+};
+
+const closeProjectModalHandler = () => {
+  project.value.title = "";
+  project.value.description = "";
+  project.value.image = null;
+  project.value.startDate = "";
+  project.value.endDate = "";
+  project.value.managers = [];
+};
+
+const openDeleteAlert = (id: number) => {
+  projectIdDeleteTobe.value = id;
+  // (refs.sweetAlert as any).openModal();
+};
+
+const openCustomModal = () => {
+  closeProjectModalHandler();
+  // (refs.customModal as any).openModal();
+};
+
+const openProjectForm = () => {
+  isProjectFormOpen.value = true;
+};
+
+const closeProjectForm = () => {
+  getProjectHandler();
+  isProjectFormOpen.value = false;
+};
+
+const saveAndClose = () => {
+  // (refs.customModal as any).closeModal();
+};
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files) {
+    project.value.image = target.files[0];
+  }
+};
+
+const getProjectHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/project/my-projects-or-admin/", {});
+    projects.value = response.data;
+    filteredProjects.value = response.data.filter((project) => {
+      return project.status !== "completed";
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const deleteProject = async () => {
+  try {
+    loading.value = true;
+    await api.delete(`/api/project/${projectIdDeleteTobe.value}/`);
+    // (refs.sweetAlert as any).closeModal();
+    getProjectHandler();
+    console.log("deleted");
+  } catch (err) {
+    console.log(err);
+  } finally {
+    getProjectHandler();
+    loading.value = false;
+  }
+};
+
+// Lifecycle hook
+onMounted(() => {
+  // setTooltip();
+  getProjectHandler();
+});
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -32,7 +215,8 @@ const filteredData = computed(() => {
     <VField>
       <VControl icon="feather:search">
         <input
-          v-model="filters"
+          @input="filterProject(null)"
+          v-model="query"
           class="input custom-text-filter"
           placeholder="Search..."
         />
@@ -40,29 +224,7 @@ const filteredData = computed(() => {
     </VField>
 
     <div class="tabs-inner">
-      <div class="tabs">
-        <ul>
-          <li :class="[activeTab === 'active' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="activeTab = 'active'"
-              @click="activeTab = 'active'"
-              ><span>Active</span></a
-            >
-          </li>
-          <li :class="[activeTab === 'inactive' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="activeTab = 'inactive'"
-              @click="activeTab = 'inactive'"
-              ><span>Inactive</span></a
-            >
-          </li>
-          <li class="tab-naver" />
-        </ul>
-      </div>
+      <VButton color="primary" elevated>Add Project</VButton>
     </div>
   </div>
 
@@ -93,85 +255,69 @@ const filteredData = computed(() => {
       </VPlaceholderPage>
 
       <!--Active Tab-->
-      <div
-        id="active-items-tab"
-        class="tab-content"
-        :class="[activeTab === 'active' && 'is-active']"
-      >
-        <div class="list-view-inner">
-          <TransitionGroup name="list-complete" tag="div">
-            <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="list-view-item"
-            >
-              <div class="list-view-item-inner">
-                <img :src="item.picture" alt="" />
-                <div class="meta-left">
-                  <h3>
-                    <span>{{ item.name }}</span>
-                    <VRangeRating v-model="item.rating" class="is-inline">
-                      <i class="fas fa-star" aria-hidden="true" />
-                    </VRangeRating>
-                  </h3>
-                  <p>
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:map-pin"
-                    />
-                    <span>{{ item.location }}</span>
-                  </p>
+
+      <div class="list-view-inner">
+        <TransitionGroup name="list-complete" tag="div">
+          <div
+            v-for="item in filteredProjects"
+            :key="item.id"
+            class="list-view-item"
+          >
+            <div class="list-view-item-inner">
+              <img :src="item.image ? item.image : ''" alt="" />
+              <div class="meta-left">
+                <h3>
+                  <span>{{ item.title }}</span>
+                  <VRangeRating v-model="HomeRating" class="is-inline">
+                    <i class="fas fa-star" aria-hidden="true" />
+                  </VRangeRating>
+                </h3>
+                <p>
+                  <i
+                    aria-hidden="true"
+                    class="iconify"
+                    data-icon="feather:map-pin"
+                  />
+                  <span>{{ item.description ? item.description : "" }}</span>
+                </p>
+                <span>
                   <span>
-                    <span>
-                      {{
-                        item.details.rooms > 1
-                          ? `${item.details.rooms} rooms`
-                          : `${item.details.rooms} room`
-                      }}
-                    </span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>
-                      {{
-                        item.details.beds > 1
-                          ? `${item.details.beds} beds`
-                          : `${item.details.beds} bed`
-                      }}
-                    </span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>
+                    {{
+                      item.managers.length > 1
+                        ? `${item.managers.length} Managers`
+                        : `${item.managers.length} room`
+                    }}
+                  </span>
+                  <i aria-hidden="true" class="fas fa-circle icon-separator" />
+                  <span> 4 role </span>
+                  <i aria-hidden="true" class="fas fa-circle icon-separator" />
+                  <!-- <span>
                       {{
                         item.details.bathrooms > 1
                           ? `${item.details.bathrooms} bathrooms`
                           : `${item.details.bathrooms} bathroom`
                       }}
-                    </span>
-                  </span>
+                    </span> -->
+                </span>
 
-                  <div class="icon-list">
-                    <span v-if="item.comodities.parking">
-                      <i aria-hidden="true" class="lnil lnil-car" />
-                      <span>Parking</span>
-                    </span>
-                    <span v-if="item.comodities.wifi">
-                      <i aria-hidden="true" class="lnil lnil-signal" />
-                      <span>Wifi</span>
-                    </span>
-                    <span v-if="item.comodities.heater">
-                      <i aria-hidden="true" class="lnil lnil-air-flow" />
-                      <span>Heater</span>
-                    </span>
-                    <span v-if="item.comodities.cleaning">
-                      <i aria-hidden="true" class="lnil lnil-sun" />
-                      <span>Cleaning</span>
-                    </span>
-                    <span
+                <div class="icon-list">
+                  <span>
+                    <i aria-hidden="true" class="lnil lnil-car" />
+                    <span>Parking</span>
+                  </span>
+                  <span>
+                    <i aria-hidden="true" class="lnil lnil-signal" />
+                    <span>Wifi</span>
+                  </span>
+                  <span>
+                    <i aria-hidden="true" class="lnil lnil-air-flow" />
+                    <span>Heater</span>
+                  </span>
+                  <span>
+                    <i aria-hidden="true" class="lnil lnil-sun" />
+                    <span>Cleaning</span>
+                  </span>
+                  <!-- <span
                       v-if="
                         item.comodities.other &&
                         item.comodities.otherThing &&
@@ -203,28 +349,27 @@ const filteredData = computed(() => {
                     <span v-else-if="item.comodities.other">
                       <i aria-hidden="true" class="lnil lnil-more" />
                       <span>1 more</span>
-                    </span>
-                  </div>
+                    </span> -->
                 </div>
-                <div class="meta-right">
-                  <div class="buttons">
-                    <VButton light> More Info </VButton>
-                    <VButton color="primary" raised> Book Now </VButton>
-                  </div>
+              </div>
+              <div class="meta-right">
+                <div class="buttons">
+                  <VButton light> View Details </VButton>
+                  <VButton color="danger" raised> Delete </VButton>
                 </div>
               </div>
             </div>
-          </TransitionGroup>
-        </div>
-
-        <VFlexPagination
-          v-if="filteredData.length > 5"
-          :item-per-page="10"
-          :total-items="873"
-          :current-page="42"
-          :max-links-displayed="7"
-        />
+          </div>
+        </TransitionGroup>
       </div>
+
+      <VFlexPagination
+        v-if="filteredProjects.length > 5"
+        :item-per-page="10"
+        :total-items="873"
+        :current-page="42"
+        :max-links-displayed="5"
+      />
 
       <!--Inactive Tab-->
       <div

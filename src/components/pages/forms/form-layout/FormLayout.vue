@@ -1,31 +1,23 @@
 <script setup lang="ts">
-const companySize = ref('')
-const businessType = ref('')
-const productToDemo = ref('')
-const date = ref(new Date())
+const companySize = ref("");
+const businessType = ref("");
+const productToDemo = ref("");
+const date = ref(new Date());
 
-const { y } = useWindowScroll()
+const { y } = useWindowScroll();
 
 const isStuck = computed(() => {
-  return y.value > 30
-})
+  return y.value > 30;
+});
 const onSubmit = () => {
-  console.log('Form submitted!')
-}
+  console.log("Form submitted!");
+};
 </script>
 
 <template>
-  <form
-    method="post"
-    novalidate
-    class="form-layout"
-    @submit.prevent="onSubmit"
-  >
+  <form method="post" novalidate class="form-layout" @submit.prevent="onSubmit">
     <div class="form-outer">
-      <div
-        :class="[isStuck && 'is-stuck']"
-        class="form-header stuck-header"
-      >
+      <div :class="[isStuck && 'is-stuck']" class="form-header stuck-header">
         <div class="form-header-inner">
           <div class="left">
             <h3>Request a Demo</h3>
@@ -40,13 +32,7 @@ const onSubmit = () => {
               >
                 Cancel
               </VButton>
-              <VButton
-                type="submit"
-                color="primary"
-                raised
-              >
-                Schedule
-              </VButton>
+              <VButton type="submit" color="primary" raised> Schedule </VButton>
             </div>
           </div>
         </div>
@@ -201,18 +187,14 @@ const onSubmit = () => {
                     v-model="productToDemo"
                     :attrs="{ id }"
                     placeholder="Select a product"
-                    :options="['Vuero Starter', 'Arez Pro', 'Vuero Business']"
+                    :options="['Vuero Starter', 'Ibex Pro', 'Vuero Business']"
                   />
                 </VControl>
               </VField>
             </div>
             <div class="column is-6">
               <ClientOnly>
-                <VDatePicker
-                  v-model="date"
-                  color="green"
-                  trim-weeks
-                >
+                <VDatePicker v-model="date" color="green" trim-weeks>
                   <template #default="{ inputValue, inputEvents }">
                     <VField>
                       <VLabel>Prefered Date</VLabel>
@@ -223,7 +205,7 @@ const onSubmit = () => {
                           placeholder="Select a date"
                           :value="inputValue"
                           v-on="inputEvents"
-                        >
+                        />
                       </VControl>
                     </VField>
                   </template>
@@ -253,8 +235,8 @@ const onSubmit = () => {
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
-@import '/@src/scss/components/forms-outer';
+@import "/@src/scss/abstracts/all";
+@import "/@src/scss/components/forms-outer";
 
 .form-layout {
   max-width: 740px;

@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { useViewWrapper } from "/@src/stores/viewWrapper";
-import { useI18n } from "vue-i18n";
 
-const { t } = useI18n();
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Ibex Builders Studios");
 
-useHead(() => ({
-  title: "Ibex Builders Studios",
-}));
+viewWrapper.setPageTitle("Customers");
+useHead({
+  title: "Customers - Ibex",
+});
 </script>
 
 <template>
   <div class="page-content-inner">
-    <IbexDashboard />
+    <CustomerCompanies />
   </div>
 </template>

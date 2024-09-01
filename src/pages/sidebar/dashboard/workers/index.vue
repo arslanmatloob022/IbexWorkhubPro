@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useViewWrapper } from '/@src/stores/viewWrapper'
-const route = useRoute()
+import { useViewWrapper } from "/@src/stores/viewWrapper";
+const route = useRoute();
 
-const viewWrapper = useViewWrapper()
-let title = 'Workers'
+const viewWrapper = useViewWrapper();
+let title = "Workers";
 
 // watch(
 //   () => route.fullPath,
@@ -22,16 +22,16 @@ let title = 'Workers'
 if (route.query.type) {
   title = `Workers (${route.query.type})`;
 } else if (route.query.archive) {
-  title = 'Workers (Archived)';
+  title = "Workers (In-Active)";
 }
 viewWrapper.setPageTitle(title);
 useHead({
-  title: 'Workers - Arez',
-})
+  title: "Workers - Ibex",
+});
 </script>
 
 <template>
   <div class="page-content-inner">
-    <WorkersNetwork/>
+    <IbexWorkers />
   </div>
 </template>
