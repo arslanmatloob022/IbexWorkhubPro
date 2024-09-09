@@ -8,6 +8,7 @@ import { popovers } from "/@src/data/users/userPopovers";
 import * as usersData from "/@src/data/dashboards/personal-v2/users";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
+import { convertToFormData } from "/@src/composable/useSupportElement";
 
 const { completionOptions } = useTaskCompletionChart();
 const { barOptions } = useTeamEfficiencyChart();
@@ -39,9 +40,9 @@ const currentProjectId = ref("");
 const modalTitle = ref("Add Task");
 const sheetNameDeleteTobe = ref("");
 const editmodalTitle = ref("Edit Project");
-const preview = ref(null);
-const editProjectId = ref(null);
-const projectId = ref(route.params.id);
+const preview = ref("");
+const image = ref("");
+const editProjectId = ref("");
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
 const Taskstatus = ref([
   { value: "active", name: "Active" },
@@ -139,7 +140,7 @@ const deleteSheetTasks = () => {
   try {
     loading.value = true;
     const resp = api.patch(
-      `/api/project/${projectId.value}/delete-doc-tasks/`,
+      `/api/project/${projectId.value.value}/delete-doc-tasks/`,
       {
         document_name: sheetNameDeleteTobe.value,
       }
@@ -155,7 +156,7 @@ const deleteSheetTasks = () => {
   }
 };
 
-const projectIdDeleteTobe = ref("");
+const projectId = ref("");
 
 const toggleAddContractor = () => {
   showAddContractor.value = !showAddContractor.value;
@@ -167,7 +168,7 @@ const toggleAddClient = () => {
 
 const openDeleteAlert = (id: any) => {
   // $refs.deleteSweetAlert.openModal();
-  projectIdDeleteTobe.value = id;
+  projectId.value = id;
 };
 
 const openSheetDeleteAlert = (sheetName: any) => {
@@ -178,7 +179,7 @@ const openSheetDeleteAlert = (sheetName: any) => {
 const deleteProject = () => {
   try {
     loading.value = true;
-    const response = api.delete(`/api/project/${projectIdDeleteTobe.value}/`);
+    const response = api.delete(`/api/project/${projectId.value}/`);
     // $refs.deleteSheetSweetAlert.closeModal();
     console.log("deleted", response);
     notyf.green("Selected project deleted successfully!");
@@ -198,6 +199,237 @@ const getActiveTasks = () => {
   );
   totalActiveTasks.value = activeTasks.length;
 };
+
+const closeTheModals = () => {
+  taskData.value = {
+    title: "",
+    description: "",
+    startDate: "",
+    endDate: "",
+    workers: [],
+    status: "",
+  };
+};
+const getProject = async () => {
+  try {
+    Loading.value = true;
+    const resp = await api.get(`/api/project/${projectId.value}/`);
+    projectData.value = resp.data;
+    preview.value = resp.data.image;
+
+    getProjectTasks();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    Loading.value = false;
+  }
+};
+
+const openAlert = (id: any) => {
+  // $refs.sweetAlert.openModal();
+  deleteTaskId.value = id;
+};
+
+const getWorkershandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/", {});
+
+    workersData.value = response.data.filter(
+      (worker) => worker.role == "worker"
+    );
+
+    clientsList.value = response.data.filter(
+      (client) => client.role == "client"
+    );
+
+    contarctorList.value = response.data.filter(
+      (contractor) => contractor.role == "contractor"
+    );
+
+    console.log("data", workersData.value);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const addTaskHandler = async () => {
+  try {
+    loading.value = true;
+    let formData = convertToFormData(taskData, []);
+    const resp = await api.post("/api/task/", formData);
+    closeTheModals();
+    // $refs.customModal.closeModal();
+    getProject();
+    getProjectTasks();
+    notyf.green("Task added successfully");
+    console.log("task data", resp);
+  } catch (err) {
+    notyf.error("Something went wrong");
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getProjectTasks = async () => {
+  try {
+    Loading.value = true;
+    const resp = await api.get(`api/task/${route.params.id}/project/`);
+    projectTasks.value = resp.data;
+    console.log(resp.data);
+    getActiveTasks();
+    Loading.value = false;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const handleFileChange = (event) => {
+  projectData.value.image = event.target.files[0];
+  var input = event.target;
+  if (input.files) {
+    var reader = new FileReader();
+    reader.onload = (e) => {
+      preview.value = e.target.result;
+    };
+    image.value = input.files[0];
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+
+const editProject = async () => {
+  try {
+    projectData.value.managers = selectedManagers;
+    let formData = convertToFormData(projectData.value, ["image"]);
+    formData.delete("clientInfo");
+    formData.delete("contractorInfo");
+    if (typeof projectData.value.client == "object") {
+      formData.delete("client");
+    }
+    if (typeof projectData.value.contractor == "object") {
+      formData.delete("contractor");
+    }
+    const resp = await api.patch(`/api/project/${route.params.id}/`, formData);
+    showAddClient.value = false;
+    showAddContractor.value = false;
+
+    notyf.green("Project updated successfully");
+    getProject(resp.data.id);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const openProjectForm = (projectId: any) => {
+  isProjectFormOpen.value = true;
+  editProjectId.value = projectId;
+};
+
+const closeProjectForm = () => {
+  getProject();
+  isProjectFormOpen.value = false;
+  editProjectId.value = ""; // Reset the editTaskId after closing
+};
+
+const openTaskForm = (taskId: any = "", projectId: any = "") => {
+  isTaskFormOpen.value = true;
+  editTaskId.value = taskId;
+  currentProjectId.value = projectId;
+};
+
+const closeTaskForm = () => {
+  getProjectTasks();
+  isTaskFormOpen.value = false;
+  editTaskId.value = null; // Reset the editTaskId after closing
+};
+
+const updateTaskStatus = async (taskId: any, taskStatus: any) => {
+  try {
+    const resp = api.patch(`/api/task/${taskId}/`, {
+      status: taskStatus,
+    });
+    taskData.value.status = taskStatus;
+    console.log(resp);
+    notyf.info(`Task set to ${taskStatus} successfully`);
+    getProject();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteTask = async () => {
+  try {
+    loading.value = true;
+    const response = await api.delete(`/api/task/${deleteTaskId.value}/`);
+    console.log(response);
+    // $refs.sweetAlert.closeModal();
+    notyf.success(`Task deleted successfully`);
+    getProjectTasks();
+    loading.value = false;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const updateProjectStatus = async (projectStatus: any) => {
+  try {
+    projectData.value.status = projectStatus;
+    const resp = api.patch(`/api/project/${projectId.value}/`, {
+      status: projectStatus,
+    });
+    getProject();
+    console.log(resp);
+    notyf.green(
+      `Task set to ${
+        projectStatus == "pending" ? "Pre Construction" : projectStatus
+      } successfully`
+    );
+  } catch (err) {
+    console.log(err);
+  } finally {
+    getProject();
+  }
+};
+
+const selectedFileName = ref("");
+
+const handleFileSelect = (event) => {
+  let csvFile = event.target.files[0];
+  uploadTasksSheet(csvFile);
+  selectedFileName.value = csvFile.name;
+};
+
+const removeFile = () => {
+  selectedFileName.value = "";
+  document.getElementById("docpicker").value = "";
+};
+
+const uploadTasksSheet = async (tasksFile: any) => {
+  try {
+    Loading.value = true;
+    const resp = await api.post(`/api/task/bulk-upload/${route.params.id}/`, {
+      file: tasksFile,
+    });
+    notyf.green(`Tasks Will be generated automatically`);
+    console.log(resp);
+    getProject();
+    Loading.value = false;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(() => {
+  projectId.value = route.params.id;
+  getProject(projectId.value);
+  getWorkershandler();
+  getProjectTasks();
+});
 </script>
 
 <template>
