@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useDarkmode } from "/@src/stores/darkmode";
+const darkmode = useDarkmode();
+
 const props = defineProps<{
   light?: boolean;
 }>();
@@ -20,7 +23,11 @@ router.afterEach(() => {
   <div>
     <img
       style="width: 100%; height: 100%"
-      src="/images/logos/Arez.io_favicon_v3.0.png"
+      :src="
+        darkmode.isDark
+          ? '/logos/IbexFavicon.png'
+          : '/logos/IbexFaviconDark.png'
+      "
     />
   </div>
 </template>

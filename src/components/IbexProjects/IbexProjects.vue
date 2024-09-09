@@ -2,16 +2,21 @@
 import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 
-const filters = ref("");
 const api = useApi();
 
+const loading = ref(false);
 const isProjectFormOpen = ref(false);
-const activeFilter = ref("all");
 const isProjectCompleted = ref(false);
+const query = ref("");
+const filters = ref("");
+const activeFilter = ref("all");
+const inputFieldValue = ref("");
+const modalTitle = ref("Add New Project");
+const HomeRating = ref(4);
 const managerCount = ref(1);
 const projectIdDeleteTobe = ref(0);
-const loading = ref(false);
-const query = ref("");
+const projects = ref([]);
+
 const filteredProjects = ref([
   {
     title: "",
@@ -37,10 +42,6 @@ const filteredProjects = ref([
     },
   },
 ]);
-const projects = ref([]);
-const HomeRating = ref(4);
-const modalTitle = ref("Add New Project");
-const inputFieldValue = ref("");
 
 // Define reactive objects
 const ProjectStatuscolor = reactive({
@@ -224,7 +225,12 @@ const filteredData = computed(() => {
     </VField>
 
     <div class="tabs-inner">
-      <VButton color="primary" elevated>Add Project</VButton>
+      <VButton
+        color="primary"
+        to="/sidebar/dashboard/projects/add-project"
+        elevated
+        >Add Project</VButton
+      >
     </div>
   </div>
 
@@ -264,7 +270,10 @@ const filteredData = computed(() => {
             class="list-view-item"
           >
             <div class="list-view-item-inner">
-              <img :src="item.image ? item.image : ''" alt="" />
+              <img
+                :src="item.image ? item.image : '/images/homePlaceholder.png'"
+                alt="Sample home"
+              />
               <div class="meta-left">
                 <h3>
                   <span>{{ item.title }}</span>
@@ -354,7 +363,9 @@ const filteredData = computed(() => {
               </div>
               <div class="meta-right">
                 <div class="buttons">
-                  <VButton light> View Details </VButton>
+                  <VButton :to="`/sidebar/dashboard/projects/${item.id}`" light>
+                    View Details
+                  </VButton>
                   <VButton color="danger" raised> Delete </VButton>
                 </div>
               </div>

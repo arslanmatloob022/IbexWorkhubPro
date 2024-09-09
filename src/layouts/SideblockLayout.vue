@@ -396,7 +396,7 @@ onMounted(() => {
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/dashboard/projects?status=active"
+              to="/sidebar/dashboard/manage-projects"
               :class="{ 'cus-active-link-icon': 'active' === route.query.tab }"
               style="
                 display: flex;
@@ -414,7 +414,7 @@ onMounted(() => {
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >Completed Projects</span
+                >Manage Projects</span
               >
             </RouterLink>
 
@@ -440,33 +440,7 @@ onMounted(() => {
                   margin-left: 10px;
                   background-color: transparent !important;
                 "
-                >Manage Projects</span
-              >
-            </RouterLink>
-
-            <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/dashboard/projects?status=complete"
-              :class="{
-                'cus-active-link-icon': 'complete' === route.query.tab,
-              }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
-            >
-              <i class="lnil lnil-users" />
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Completed</span
+                >Completed Projects</span
               >
             </RouterLink>
           </VCollapseLinks>

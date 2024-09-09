@@ -1,28 +1,28 @@
 <script setup lang="ts">
-export type SideblockTheme = 'default' | 'curved' | 'color' | 'color-curved'
+export type SideblockTheme = "default" | "curved" | "color" | "color-curved";
 
 const props = withDefaults(
   defineProps<{
-    theme?: SideblockTheme
-    isOpen?: boolean
+    theme?: SideblockTheme;
+    isOpen?: boolean;
   }>(),
   {
-    theme: 'default',
+    theme: "default",
   }
-)
+);
 
 const themeClasses = computed(() => {
   switch (props.theme) {
-    case 'color':
-      return 'is-colored'
-    case 'curved':
-      return 'is-curved'
-    case 'color-curved':
-      return 'is-colored is-curved'
+    case "color":
+      return "is-colored";
+    case "curved":
+      return "is-curved";
+    case "color-curved":
+      return "is-colored is-curved";
     default:
-      return ''
+      return "";
   }
-})
+});
 </script>
 
 <template>
@@ -49,7 +49,11 @@ const themeClasses = computed(() => {
   inset-inline-start: 0;
   height: 100vh;
   width: 280px;
-  background: radial-gradient(circle 1224px at 10.6% 8.8%, rgba(255, 255, 255, 1) 0%, rgba(153, 202, 251, 1) 100.2%);
+  background: radial-gradient(
+    circle 1224px at 10.6% 8.8%,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(153, 202, 251, 1) 100.2%
+  );
   box-shadow: none;
   z-index: 35;
   transition:
@@ -136,7 +140,7 @@ const themeClasses = computed(() => {
           color: var(--primary);
         }
 
-        >a {
+        > a {
           font-weight: 600;
         }
       }
@@ -145,7 +149,7 @@ const themeClasses = computed(() => {
         font-weight: 500;
         color: var(--primary);
 
-        >a {
+        > a {
           font-weight: 600;
         }
       }
@@ -168,7 +172,7 @@ const themeClasses = computed(() => {
           .collapse-wrap {
             margin-bottom: 0.5rem;
 
-            >a {
+            > a {
               color: var(--dark-text);
               font-weight: 600;
               background: var(--widget-grey);
@@ -178,7 +182,7 @@ const themeClasses = computed(() => {
                 color: var(--primary);
               }
 
-              >svg {
+              > svg {
                 transform: rotate(calc(var(--transform-direction) * 90deg));
               }
             }
@@ -186,7 +190,7 @@ const themeClasses = computed(() => {
         }
 
         &:hover {
-          .collapse-wrap>a {
+          .collapse-wrap > a {
             color: #898989;
 
             .icon {
@@ -216,7 +220,7 @@ const themeClasses = computed(() => {
           align-items: center;
           height: 100%;
 
-          >a {
+          > a {
             font-family: var(--font-alt);
             display: flex;
             align-items: center;
@@ -241,7 +245,7 @@ const themeClasses = computed(() => {
               }
             }
 
-            >svg {
+            > svg {
               position: relative;
               top: 1px;
               height: 18px;
@@ -289,7 +293,7 @@ const themeClasses = computed(() => {
                 margin-inline-end: 10px;
               }
 
-              >span {
+              > span {
                 font-family: var(--font);
               }
 
@@ -324,14 +328,13 @@ const themeClasses = computed(() => {
         padding: 0 20px;
         font-size: 0.95rem;
 
-
         &:hover,
         &:focus {
           color: #898989;
         }
       }
 
-      >a {
+      > a {
         font-family: var(--font-alt);
         font-size: 0.9rem;
         font-weight: 500;
@@ -436,7 +439,7 @@ const themeClasses = computed(() => {
       height: 42px;
       width: 42px !important;
 
-      >img {
+      > img {
         height: 42px;
         width: 42px;
         border-radius: 50%;
@@ -682,21 +685,21 @@ html:not(.is-dark) {
       }
 
       .sidebar-block-inner {
-
         .router-link-exact-active {
           background-color: azure !important;
           color: var(--primary) !important;
         }
 
         li {
-
           &.has-children {
-            .collapse-wrap>a,i {
-              color: #ffffff
+            .collapse-wrap > a,
+            i {
+              color: #ffffff;
             }
 
             &.active {
-              .collapse-wrap>a, span {
+              .collapse-wrap > a,
+              span {
                 color: var(--white) !important;
                 background: var(--sidebar-dark-7) !important;
 
@@ -707,7 +710,7 @@ html:not(.is-dark) {
             }
 
             &:hover {
-              .collapse-wrap>a {
+              .collapse-wrap > a {
                 color: var(--smoke-white) !important;
 
                 .icon {
@@ -723,7 +726,7 @@ html:not(.is-dark) {
 
           &:hover {
             color: var(--white) !important;
-            
+
             .icon {
               i {
                 color: var(--white);

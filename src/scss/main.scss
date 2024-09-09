@@ -447,7 +447,11 @@ SCSS Imports
     background: #666;
   }
 }
-
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
 .smart-search-dropdown {
   .placement-wrapper {
     width: 100%;
@@ -477,6 +481,7 @@ SCSS Imports
     outline: none;
     width: 100%;
   }
+
   .value-image {
     width: 30px;
     border-radius: 0.5rem;
@@ -549,22 +554,33 @@ SCSS Imports
 
 // apply on alll input fields =================================================
 .cu-all-input {
+  /* General input styles */
   input {
     border-radius: 15px !important;
-    background-color: #f5f5f5;
-    border: none !important;
+    background-color: #fcfcfc;
+    border: 1px solid var(--border) !important;
     padding-left: 24px !important;
   }
+
+  /* Specific styles for color input fields */
+  input[type="color"] {
+    padding: 0;
+    border-radius: 15px; /* Makes the color picker circular */
+    border: 2px solid #ccc; /* Custom border */
+    background-color: #fff; /* Background color */
+    cursor: pointer; /* Changes cursor to pointer */
+  }
+
   textarea {
     border-radius: 15px !important;
-    background-color: #f5f5f5 !important;
-    border: none !important;
+    background-color: #fcfcfc;
+    border: 1px solid var(--border) !important;
     padding: 16px 20px !important;
   }
   select {
     border-radius: 15px !important;
-    background-color: #f5f5f5;
-    border: none !important;
+    background-color: #fcfcfc;
+    border: 1px solid var(--border) !important;
     height: 45px;
     padding-left: 36px !important;
     padding-right: 20px !important;

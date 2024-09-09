@@ -2,7 +2,7 @@
 import type { VTagColor } from "/@src/components/base/tags/VTag.vue";
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as listData from "/@src/data/layouts/view-list-v1";
-
+import { useApi } from "/@src/composable/useAPI";
 export interface UserData extends VAvatarProps {
   name: string;
   location: string;
@@ -20,23 +20,68 @@ export interface UserData extends VAvatarProps {
   teams: VAvatarProps[];
 }
 
+const api = useApi();
 const users = listData.users as UserData[];
+const managersData = ref([
+  {
+    id: "08653904-4a13-47b4-b045-9546c10a1b2b",
+    password:
+      "pbkdf2_sha256$260000$ZzDsvIbubU7GpPIHfbgkK6$lEWkAp4a7xWZfFjASFBYtWiX6BbhWmD9w78Lany7Jq4=",
+    last_login: null,
+    date_joined: "2024-08-29T15:40:17.430723Z",
+    email: "juan@ibexbuilderstudios.com",
+    role: "manager",
+    avatar: null,
+    is_active: true,
+    phoneNumber: "5484651464",
+    username: "Juan",
+    is_sentMail: false,
+  },
+]);
+const userData = ref({
+  username: "",
+  email: "",
+  status: "active",
+
+  role: "manager",
+  phoneNumber: "",
+  avatar: File | null | String,
+});
+
+const loading = ref(false);
+
+const getManagershandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/manager/", {});
+    managersData.value = response.data;
+    console.log("data", managersData);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
 
 const filters = ref("");
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return users;
+    return managersData.value;
   } else {
-    return users.filter((item) => {
+    return managersData.value.filter((item) => {
       return (
-        item.name.match(new RegExp(filters.value, "i")) ||
-        item.location.match(new RegExp(filters.value, "i"))
+        item.username.match(new RegExp(filters.value, "i")) ||
+        item.email.match(new RegExp(filters.value, "i"))
       );
     });
   }
 });
 console.log(filteredData.value);
+
+onMounted(() => {
+  getManagershandler();
+});
 </script>
 
 <template>
@@ -99,57 +144,49 @@ console.log(filteredData.value);
               class="list-view-item"
             >
               <div class="list-view-item-inner">
-                <VAvatar
-                  :picture="item.medias.avatar"
-                  size="large"
-                  :badge="item.medias.flag"
-                />
+                <VAvatar :picture="item.avatar" size="large" />
+                <!-- :badge="item.medias.flag" -->
                 <div class="meta-left">
-                  <h3>{{ item.name }}</h3>
+                  <h3>{{ item.username }}</h3>
                   <span>
                     <i
                       aria-hidden="true"
                       class="iconify"
                       data-icon="feather:map-pin"
                     />
-                    <span>{{ item.location }}</span>
+                    <span>{{ item.email }}</span>
                   </span>
                 </div>
                 <div class="meta-right">
                   <div class="tags">
-                    <VTag
-                      :label="item.role"
-                      :color="item.roleColor"
-                      rounded
-                      elevated
-                    />
+                    <VTag :label="item.role" color="warning" rounded elevated />
                   </div>
 
                   <div class="stats">
                     <div class="stat">
-                      <span>{{ item.stats.projects }}</span>
+                      <span>{{ item.phoneNumber }}</span>
                       <span>Projects</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>{{ item.stats.replies }}</span>
+                      <span>{{ item.date_joined }}</span>
                       <span>Replies</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>{{ item.stats.posts }}</span>
+                      <span>{{ item.is_active }}</span>
                       <span>Posts</span>
                     </div>
                   </div>
 
-                  <div class="network">
+                  <!-- <div class="network">
                     <VAvatarStack
                       :avatars="item.teams"
                       :limit="3"
                       size="small"
                     />
                     <span>in Team</span>
-                  </div>
+                  </div> -->
 
                   <!--Dropdown-->
                   <ListViewV1Dropdown />

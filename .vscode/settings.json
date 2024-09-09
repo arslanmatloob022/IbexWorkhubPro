@@ -1,10 +1,28 @@
 {
   "cSpell.words": [
+    "addfile",
     "apexcharts",
+    "Clientsresponse",
     "composables",
+    "Contractorsresponse",
     "crosshairs",
+    "darkmode",
+    "daygrid",
+    "fullcalendar",
+    "ibexwhite",
+    "lnil",
+    "Managersershandler",
+    "Managershandler",
     "Notyf",
     "pinia",
+    "removefile",
+    "vueuse",
     "xaxis"
+  ],
+  "i18n-ally.localesPaths": [
+    "src/locales",
+    "public/shiki/languages",
+    "src/assets/illustrations/messages",
+    "src/components/partials/inbox/messages"
   ]
 }

@@ -261,7 +261,10 @@ onMounted(() => {
       <div class="column is-6">
         <ActiveProjectsChart />
       </div>
-      <div class="column is-6">
+      <div class="column is-12">
+        <ProjectsDashboardCalendar />
+      </div>
+      <!-- <div class="column is-6">
         <UIWidget class="picker-widget">
           <template #header>
             <div class="widget-toolbar">
@@ -435,14 +438,14 @@ onMounted(() => {
             :options="interviewsOptions"
           />
         </div>
-      </div>
+      </div> -->
 
-      <div class="column is-6 h-hidden-mobile h-hidden-tablet-p">
+      <!-- <div class="column is-6 h-hidden-mobile h-hidden-tablet-p">
         <img
           src="/@src/assets/illustrations/dashboards/personal/interviews.svg"
           alt=""
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

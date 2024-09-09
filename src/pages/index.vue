@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import packageJson from "../../package.json";
-
+const router = useRouter();
 type TabId = "elements" | "components" | "forms" | "plugins";
 const activeTab = ref<TabId>("elements");
 
 useHead({
   title: "Ibex - Real Estate Builders",
+});
+onBeforeMount(() => {
+  router.push("/auth/login");
 });
 </script>
 

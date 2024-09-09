@@ -10,7 +10,7 @@ let api: CustomAxiosInstance | null = null;
 
 function createApi(): CustomAxiosInstance {
   const axiosInstance = axios.create({
-    baseURL: VITE_API_BASE_URL ?? "https://vecel-practice.vercel.app/",
+    baseURL: "https://vecel-practice.vercel.app/",
     headers: {
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
@@ -18,11 +18,7 @@ function createApi(): CustomAxiosInstance {
   });
 
   axiosInstance.interceptors.request.use((config) => {
-    if (userSession.isLoggedIn) {
-      config.headers.Authorization = `Token ${userSession.token}`;
-    } else if (userSession.code) {
-      config.headers.Authorization = userSession.code;
-    }
+    config.headers.Authorization = `Token ${userSession.token}`;
     return config;
   });
 

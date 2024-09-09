@@ -2,10 +2,10 @@
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Projects");
+viewWrapper.setPageTitle("Manage Projects");
 
 useHead({
-  title: "Projects",
+  title: "Manage Projects",
 });
 </script>
 
@@ -14,6 +14,7 @@ useHead({
     <Teleport to="[data-teleport-bg]">
       <div class="lifestyle-dashboard-bg has-top-nav" />
     </Teleport>
-    <IbexProjects class="has-navbar-spacing" />
+
+    <ProjectManagerCalendar />
   </div>
 </template>

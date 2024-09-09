@@ -2,10 +2,9 @@
 import { onBeforeMount } from "vue";
 import { useDarkmode } from "/@src/stores/darkmode";
 import { useUserSession } from "/@src/stores/userSession";
-import { useCompany } from "/@src/stores/company";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useFetch } from "/@src/composable/useFetch";
 import { useApi } from "/@src/composable/useAPI";
+import axios from "axios";
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 
 const layoutSwitcher = useLayoutSwitcher();
@@ -30,15 +29,19 @@ const handleLogin = async () => {
   if (!isLoading.value) {
     isLoading.value = true;
     try {
-      const response = await api.post("api/auth/login/", {
-        email: Email.value,
-        password: Password.value,
-      });
-      console.log("resp", response.data.user);
+      const response = await axios.post(
+        "https://vecel-practice.vercel.app/api/auth/login/",
+        {
+          email: Email.value,
+          password: Password.value,
+        }
+      );
+      console.log("resp", response.data);
 
-      is_superuser = response.data.user.is_superuser;
-      userSession.setToken(response.data.token);
-      userSession.setUser(response.data.user);
+      const token = response.data.token;
+      const user = response.data.user;
+      userSession.setToken(token);
+      userSession.setUser(user);
       loginSuccess();
     } catch (error) {
       isLoading.value = false;
@@ -82,6 +85,7 @@ onMounted(() => {});
 onBeforeMount(() => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+  console.log("urlDAta", window.location.search);
   const token = urlParams.get("token");
 
   if (token) {
@@ -92,7 +96,7 @@ onBeforeMount(() => {
 });
 
 useHead({
-  title: "Auth Login 1 - Arez",
+  title: "Login - Ibex",
 });
 </script>
 
@@ -107,12 +111,18 @@ useHead({
               <div class="columns">
                 <div class="column">
                   <img
+                    v-if="darkmode.isDark"
                     class="hero-image"
-                    src="/images/loginPageImage.jpg"
+                    src="/logos/ibexwhite.png"
+                    alt=""
+                  />
+                  <img
+                    v-else
+                    class="hero-image"
+                    src="/logos/IBEXDark.png"
                     alt=""
                   />
                 </div>
-                <!--  -->
               </div>
             </div>
           </div>
@@ -120,10 +130,9 @@ useHead({
       </div>
       <div style="z-index: 99999" class="column is-4 is-relative">
         <div class="top-tools">
-          <RouterLink to="/" class="top-logo">
+          <RouterLink to="/auth/login" class="top-logo">
             <AnimatedLogo style="width: 38px; height: 38px" />
             <h3
-              class=""
               style="
                 font-size: 1.8rem;
                 font-weight: 600;
@@ -131,8 +140,8 @@ useHead({
                 color: #777;
               "
             >
-              <span style="color: #2aac8e; font-size: 1.9rem">Admin</span>
-              Portal
+              <span style="color: #2aac8e; font-size: 1.9rem">Ibex</span>
+              WorkHub
             </h3>
           </RouterLink>
 
