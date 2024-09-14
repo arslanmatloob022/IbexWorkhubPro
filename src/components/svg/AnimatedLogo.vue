@@ -23,11 +23,7 @@ router.afterEach(() => {
   <div>
     <img
       style="width: 100%; height: 100%"
-      :src="
-        darkmode.isDark
-          ? '/logos/IbexFavicon.png'
-          : '/logos/IbexFaviconDark.png'
-      "
+      :src="darkmode.isDark ? '/logos/ibexwhite.png' : '/logos/IbexFavicon.png'"
     />
   </div>
 </template>

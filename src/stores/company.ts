@@ -13,10 +13,13 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { useApi } from "/@src/composable/useAPI";
 import { useUserSession } from "/@src/stores/userSession";
 import { changeFavicon } from "../composable/useSupportElement";
+import { useNotyf } from "../composable/useNotyf";
 
+const notyf = useNotyf();
 export const useCompany = defineStore("company", () => {
   const userSession = useUserSession();
   const api = useApi();
+  const isScheduleMode = ref(false);
   const industries = ref([{ id: "", name: "", industryLogo: "" }]);
   const suppliers = ref([{ id: "", supplierName: "" }]);
   const workersCount = ref({
@@ -70,14 +73,10 @@ export const useCompany = defineStore("company", () => {
     }
   }
 
-  async function loadIndustries() {
+  async function toggleScheduleMode() {
     loading.value = true;
-    try {
-      const response = await api.get("/v3/api/industry/");
-      industries.value = response.data ?? [];
-    } finally {
-      loading.value = false;
-    }
+    isScheduleMode.value = !isScheduleMode.value;
+    localStorage.setItem("isScheduleMode", isScheduleMode.value.toString());
   }
 
   async function loadSuppliers(id: any = loggedCompany.id) {
@@ -114,7 +113,7 @@ export const useCompany = defineStore("company", () => {
   return {
     getIndustryWorkerCount,
     loadIndustriesWorkersStat,
-    loadIndustries,
+    toggleScheduleMode,
     loadCompany,
     loadSuppliers,
     industries,
@@ -122,6 +121,7 @@ export const useCompany = defineStore("company", () => {
     workersCount,
     loggedCompany,
     loading,
+    isScheduleMode,
   } as const;
 });
 

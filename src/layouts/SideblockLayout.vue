@@ -8,7 +8,9 @@ import { useCompany } from "/@src/stores/company";
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 import { useApi } from "../composable/useAPI";
 import { useUserSession } from "/@src/stores/userSession";
+import { useNotyf } from "../composable/useNotyf";
 
+const notyf = useNotyf();
 const mostVisitedPages = ref([
   {
     id: 0,
@@ -80,29 +82,6 @@ const localFlagSrc = computed(() => {
   }
 });
 
-const getPagesColors = (index: any) => {
-  switch (index) {
-    case 0:
-      return "var(--info)";
-    case 1:
-      return "var(--danger)";
-    case 2:
-      return "var(--primary)";
-    case 3:
-      return "var(--warning)";
-  }
-};
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find((key) => object[key] === value) || false;
-}
-
-const gotoVisitedPage = (page: any) => {
-  router.push(routePaths[page]);
-};
-
-watch(() => router.currentRoute.value.path);
-
 watchPostEffect(() => {
   viewWrapper.setPushedBlock(isDesktopSideblockOpen.value ?? false);
 });
@@ -112,6 +91,18 @@ watchPostEffect(() => {
     darkmode.isDark ? "sideblock-default" : "sideblock-color"
   );
 });
+
+const isSwitchOn = ref(false);
+
+const toggleSwitch = () => {
+  company.toggleScheduleMode();
+  isSwitchOn.value = company.isScheduleMode;
+  notyf.green(
+    `The schedule mode is turned ${
+      localStorage.getItem("isScheduleMode") == "true" ? "On" : "Off"
+    }`
+  );
+};
 
 const shouldShowButton = computed(() => {
   return route.path !== "/sidebar/company";
@@ -1233,7 +1224,7 @@ onMounted(() => {
                 {{ viewWrapper.pageTitle }}
               </h1>
 
-              <span
+              <!-- <span
                 class="ml-2 is-md-bold cu-pointer"
                 :style="{ color: getPagesColors(index) }"
                 v-for="(item, index) in mostVisitedPages"
@@ -1241,7 +1232,18 @@ onMounted(() => {
                 @click="gotoVisitedPage(item.page)"
               >
                 {{ `#${item.page}` }}
-              </span>
+              </span> -->
+              <VField class="m-0">
+                <VControl>
+                  <VSwitchBlock
+                    color="info"
+                    v-model="isSwitchOn"
+                    @click="toggleSwitch"
+                    label="Schedule mode"
+                    thin
+                  />
+                </VControl>
+              </VField>
             </div>
 
             <!-- toolbar -->
@@ -1259,6 +1261,7 @@ onMounted(() => {
                 label="Rounded"
                 >Create Job</VButton
               > -->
+
               <SearchWorkerInput />
               <!-- 
               <VIconButton
@@ -1271,6 +1274,7 @@ onMounted(() => {
                 v-tooltip.bottom.left.rounded.info="'Invitation link'"
                 label="Rounded"
               /> -->
+
               <ToolbarNotification />
 
               <a
