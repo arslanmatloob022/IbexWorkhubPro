@@ -140,7 +140,7 @@ const deleteSheetTasks = () => {
   try {
     loading.value = true;
     const resp = api.patch(
-      `/api/project/${projectId.value.value}/delete-doc-tasks/`,
+      `/api/project/${projectId.value}/delete-doc-tasks/`,
       {
         document_name: sheetNameDeleteTobe.value,
       }
@@ -236,15 +236,15 @@ const getWorkershandler = async () => {
     const response = await api.get("/api/users/", {});
 
     workersData.value = response.data.filter(
-      (worker) => worker.role == "worker"
+      (worker: any) => worker.role == "worker"
     );
 
     clientsList.value = response.data.filter(
-      (client) => client.role == "client"
+      (client: any) => client.role == "client"
     );
 
     contarctorList.value = response.data.filter(
-      (contractor) => contractor.role == "contractor"
+      (contractor: any) => contractor.role == "contractor"
     );
 
     console.log("data", workersData.value);
@@ -426,7 +426,7 @@ const uploadTasksSheet = async (tasksFile: any) => {
 
 onMounted(() => {
   projectId.value = route.params.id;
-  getProject(projectId.value);
+  getProject();
   getWorkershandler();
   getProjectTasks();
 });
@@ -439,12 +439,16 @@ onMounted(() => {
       <div class="column is-12">
         <div class="dashboard-header">
           <VAvatar
-            picture="/images/avatars/svg/vuero-1.svg"
+            :picture="projectData.image"
+            squared
+            color="primary"
             badge="/images/icons/flags/united-states-of-america.svg"
-            size="xl"
+            size="xxl"
           />
           <div class="user-meta is-dark-bordered-12">
-            <h3 class="title is-4 is-narrow is-bold">Welcome back, Erik K.</h3>
+            <h3 class="title is-4 is-narrow is-bold">
+              {{ projectData.title ? projectData.title : "N/A" }}
+            </h3>
             <p class="light-text">It's really nice to see you again</p>
           </div>
           <div class="user-action">

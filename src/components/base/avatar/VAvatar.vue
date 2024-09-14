@@ -1,46 +1,51 @@
 <script setup lang="ts">
-export type VAvatarSize = 'small' | 'medium' | 'large' | 'big' | 'xl'
+export type VAvatarSize = "small" | "medium" | "large" | "big" | "xl" | "xxl";
 export type VAvatarColor =
-  | 'primary'
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'danger'
-  | 'h-purple'
-  | 'h-orange'
-  | 'h-blue'
-  | 'h-green'
-  | 'h-red'
-  | 'h-yellow'
-export type VAvatarDotColor = 'primary' | 'success' | 'info' | 'warning' | 'danger'
+  | "primary"
+  | "success"
+  | "info"
+  | "warning"
+  | "danger"
+  | "h-purple"
+  | "h-orange"
+  | "h-blue"
+  | "h-green"
+  | "h-red"
+  | "h-yellow";
+export type VAvatarDotColor =
+  | "primary"
+  | "success"
+  | "info"
+  | "warning"
+  | "danger";
 
 export interface VAvatarProps {
-  picture?: string
-  pictureDark?: string
-  placeholder?: string
-  badge?: string
-  initials?: string
-  size?: VAvatarSize
-  color?: VAvatarColor
-  dotColor?: VAvatarDotColor
-  squared?: boolean
-  dot?: boolean
+  picture?: string;
+  pictureDark?: string;
+  placeholder?: string;
+  badge?: string;
+  initials?: string;
+  size?: VAvatarSize;
+  color?: VAvatarColor;
+  dotColor?: VAvatarDotColor;
+  squared?: boolean;
+  dot?: boolean;
 }
 
 const props = withDefaults(defineProps<VAvatarProps>(), {
   picture: undefined,
   pictureDark: undefined,
-  placeholder: 'https://via.placeholder.com/50x50',
-  initials: '?',
+  placeholder: "https://via.placeholder.com/50x50",
+  initials: "?",
   badge: undefined,
   size: undefined,
   color: undefined,
   dotColor: undefined,
-})
+});
 const onceImageErroredHandler = (event: Event) => {
-  const target = event.target as HTMLImageElement
-  target.src = props.placeholder
-}
+  const target = event.target as HTMLImageElement;
+  target.src = props.placeholder;
+};
 </script>
 
 <template>
@@ -57,15 +62,21 @@ const onceImageErroredHandler = (event: Event) => {
       <img
         v-if="props.picture"
         class="avatar"
-        :class="[props.squared && 'is-squared', props.pictureDark && 'light-image']"
+        :class="[
+          props.squared && 'is-squared',
+          props.pictureDark && 'light-image',
+        ]"
         :src="props.picture"
         alt=""
         @error.once="onceImageErroredHandler"
-      >
+      />
       <span
         v-else
         class="avatar is-fake"
-        :class="[props.squared && 'is-squared', props.color && `is-${props.color}`]"
+        :class="[
+          props.squared && 'is-squared',
+          props.color && `is-${props.color}`,
+        ]"
       >
         <span>{{ props.initials }}</span>
       </span>
@@ -76,7 +87,7 @@ const onceImageErroredHandler = (event: Event) => {
         :src="props.pictureDark"
         alt=""
         @error.once="onceImageErroredHandler"
-      >
+      />
     </slot>
 
     <slot name="badge">
@@ -86,7 +97,7 @@ const onceImageErroredHandler = (event: Event) => {
         :src="props.badge"
         alt=""
         @error.once="onceImageErroredHandler"
-      >
+      />
     </slot>
   </div>
 </template>
@@ -99,7 +110,7 @@ const onceImageErroredHandler = (event: Event) => {
 
   &.has-dot {
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 1px;
       inset-inline-end: 1px;
@@ -324,7 +335,7 @@ const onceImageErroredHandler = (event: Event) => {
 
     &.has-dot {
       &::after {
-        content: '';
+        content: "";
         top: 0;
         inset-inline-end: 0;
         height: 8px;
@@ -380,7 +391,7 @@ const onceImageErroredHandler = (event: Event) => {
 
     &.has-dot {
       &::after {
-        content: '';
+        content: "";
         top: 1px;
         inset-inline-end: 1px;
         height: 12px;
@@ -436,7 +447,7 @@ const onceImageErroredHandler = (event: Event) => {
 
     &.has-dot {
       &::after {
-        content: '';
+        content: "";
         top: 4px;
         inset-inline-end: 4px;
         height: 14px;
@@ -485,7 +496,7 @@ const onceImageErroredHandler = (event: Event) => {
 
     &.has-dot {
       &::after {
-        content: '';
+        content: "";
         top: 4px;
         inset-inline-end: 4px;
         height: 16px;
@@ -534,7 +545,7 @@ const onceImageErroredHandler = (event: Event) => {
 
     &.has-dot {
       &::after {
-        content: '';
+        content: "";
         top: 6px;
         inset-inline-end: 5px;
         height: 18px;
@@ -574,6 +585,54 @@ const onceImageErroredHandler = (event: Event) => {
       border-width: 3px;
       height: 34px;
       width: 34px;
+    }
+  }
+  &.is-xxl {
+    max-width: 180px;
+    min-width: 180px;
+
+    &.has-dot {
+      &::after {
+        content: "";
+        top: 6px;
+        inset-inline-end: 5px;
+        height: 18px;
+        width: 18px;
+        border-width: 2.8px;
+      }
+
+      &.has-dot-squared {
+        &::after {
+          top: -3px;
+          inset-inline-end: -3px;
+        }
+      }
+    }
+
+    .avatar {
+      width: 180px;
+      min-width: 180px;
+      height: 180px;
+
+      &.is-squared {
+        border-radius: 22px !important;
+      }
+
+      &.is-fake {
+        width: 180px;
+        min-width: 180px;
+        height: 180px;
+
+        span {
+          font-size: 1.6rem;
+        }
+      }
+    }
+
+    .badge {
+      border-width: 3px;
+      height: 44px;
+      width: 44px;
     }
   }
 }
