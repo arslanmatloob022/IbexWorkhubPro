@@ -449,27 +449,72 @@ onMounted(() => {
             <h3 class="title is-4 is-narrow is-bold">
               {{ projectData.title ? projectData.title : "N/A" }}
             </h3>
-            <p class="light-text">It's really nice to see you again</p>
+            <p class="light-text">
+              Current status:
+              <span class="info-text is-bold"
+                >{{
+                  projectData.status === "pending"
+                    ? "Pre Construction"
+                    : projectData.status.charAt(0).toUpperCase() +
+                      projectData.status.slice(1)
+                }}
+              </span>
+            </p>
+            <Address>
+              <i class="fas fa-home"></i> {{ projectData.address }}
+            </Address>
           </div>
           <div class="user-action">
-            <h3 class="title is-2 is-narrow">3</h3>
-            <p class="light-text">Tasks are pending review</p>
-            <a class="action-link" tabindex="0">View Tasks</a>
+            <h3 class="title is-5 is-narrow">Information</h3>
+            <p class="light-text">
+              Started at:
+              {{ projectData?.startDate ? projectData?.startDate : "N/A" }}
+            </p>
+            <p class="light-text">
+              Expected end:
+              {{ projectData?.endDate ? projectData?.endDate : "N/A" }}
+            </p>
+            <p class="light-text">
+              Total jobs:
+              {{ projectData.total_tasks ? projectData.total_tasks : "N/A" }}
+              Tasks
+            </p>
           </div>
           <div class="cta h-hidden-tablet-p">
             <div class="media-flex inverted-text">
               <i aria-hidden="true" class="lnil lnil-crown-alt-1" />
-              <p class="white-text">
-                Start using our team and project management tools
-              </p>
+              <VTags class="mt-3">
+                <VTag
+                  @click="updateProjectStatus('active')"
+                  color="info"
+                  label="Active"
+                  curved
+                  :outlined="projectData.status === 'active' ? true : false"
+                />
+                <VTag
+                  @click="updateProjectStatus('pending')"
+                  color="warning"
+                  label="Pre Construction"
+                  :outlined="projectData.status === 'pending' ? true : false"
+                  curved
+                />
+                <VTag
+                  @click="updateProjectStatus('completed')"
+                  color="primary"
+                  label="Completed"
+                  :outlined="projectData.status === 'completed' ? true : false"
+                  curved
+                />
+              </VTags>
             </div>
-            <a class="link inverted-text">Learn More</a>
+            <a class="link inverted-text">Change status</a>
           </div>
         </div>
       </div>
 
       <div class="column is-8">
         <div class="dashboard-card has-margin-bottom">
+          <ProjectsTasks :projectID="route.params.id" />
           <div class="card-head">
             <h3 class="dark-inverted">Active Projects</h3>
             <a class="action-link" tabindex="0">View All</a>
@@ -589,83 +634,106 @@ onMounted(() => {
       <div class="column is-4">
         <div class="dashboard-card">
           <div class="card-head">
-            <h3 class="dark-inverted">My Team</h3>
-            <a class="action-link" tabindex="0">View All</a>
+            <h3 class="dark-inverted">Client Information</h3>
+            <a class="action-link" tabindex="0">Edit</a>
           </div>
           <div class="active-team">
-            <ul class="user-list">
+            <ul class="user-list" v-if="projectData.client">
               <li>
                 <div>
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
-                    <VAvatar picture="/demo/avatars/18.jpg" />
+                    <VAvatar :picture="projectData.client.avatar" />
                     <template #content>
                       <UserPopoverContent :user="popovers.user18" />
                     </template>
                   </Tippy>
                 </div>
                 <div class="user-list-info">
-                  <div class="name dark-inverted">Esteban C.</div>
-                  <div class="position">UI/UX Designer</div>
+                  <div class="name dark-inverted">
+                    {{ projectData.client.username }}
+                  </div>
+                  <div class="position">{{ projectData.client.email }}</div>
                 </div>
                 <div class="user-list-icons">
                   <a><i aria-hidden="true" class="fas fa-phone" /></a>
                   <a><i aria-hidden="true" class="fas fa-video" /></a>
                 </div>
               </li>
-              <li>
+            </ul>
+            <ul class="user-list" v-else>
+              <div class="user-list-info">
+                <div class="name dark-inverted">No Client Info Added yet</div>
+              </div>
+            </ul>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <div class="card-head">
+            <h3 class="dark-inverted">Assigned Manager</h3>
+            <a class="action-link" tabindex="0">Edit</a>
+          </div>
+          <div class="active-team">
+            <ul class="user-list" v-if="projectData.managers.length > 0">
+              <li v-for="manager in projectData.managers" :key="manager.id">
                 <div>
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
-                    <VAvatar initials="SC" color="h-orange" />
+                    <VAvatar :picture="manager.avatar" />
                     <template #content>
-                      <UserPopoverContent :user="popovers.user120" />
+                      <UserPopoverContent :user="popovers.user18" />
                     </template>
                   </Tippy>
                 </div>
                 <div class="user-list-info">
-                  <div class="name dark-inverted">Sara Connor</div>
-                  <div class="position">UI/UX Designer</div>
+                  <div class="name dark-inverted">{{ manager.username }}</div>
+                  <div class="position">{{ manager.email }}</div>
                 </div>
                 <div class="user-list-icons">
                   <a><i aria-hidden="true" class="fas fa-phone" /></a>
                   <a><i aria-hidden="true" class="fas fa-video" /></a>
                 </div>
               </li>
+            </ul>
+            <ul class="user-list" v-else>
+              <div class="user-list-info">
+                <div class="name dark-inverted">No Manager assigned yet</div>
+              </div>
+            </ul>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <div class="card-head">
+            <h3 class="dark-inverted">Contractor Information</h3>
+            <a class="action-link" tabindex="0">Edit</a>
+          </div>
+          <div class="active-team">
+            <ul class="user-list" v-if="projectData.contractor">
               <li>
                 <div>
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
-                    <VAvatar picture="/demo/avatars/13.jpg" />
+                    <VAvatar :picture="projectData.contractor.avatar" />
                     <template #content>
-                      <UserPopoverContent :user="popovers.user13" />
+                      <UserPopoverContent :user="popovers.user18" />
                     </template>
                   </Tippy>
                 </div>
                 <div class="user-list-info">
-                  <div class="name dark-inverted">Tara S.</div>
-                  <div class="position">UI/UX Designer</div>
+                  <div class="name dark-inverted">
+                    {{ projectData.contractor.username }}
+                  </div>
+                  <div class="position">{{ projectData.contractor.email }}</div>
                 </div>
                 <div class="user-list-icons">
                   <a><i aria-hidden="true" class="fas fa-phone" /></a>
                   <a><i aria-hidden="true" class="fas fa-video" /></a>
                 </div>
               </li>
-              <li>
-                <div>
-                  <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
-                    <VAvatar initials="NL" color="success" />
-                    <template #content>
-                      <UserPopoverContent :user="popovers.user121" />
-                    </template>
-                  </Tippy>
+            </ul>
+            <ul class="user-list" v-else>
+              <div class="user-list-info">
+                <div class="name dark-inverted">
+                  No contractor Info Added yet
                 </div>
-                <div class="user-list-info">
-                  <div class="name dark-inverted">Naomi Liversky</div>
-                  <div class="position">Frontend developer</div>
-                </div>
-                <div class="user-list-icons">
-                  <a><i aria-hidden="true" class="fas fa-phone" /></a>
-                  <a><i aria-hidden="true" class="fas fa-video" /></a>
-                </div>
-              </li>
+              </div>
             </ul>
           </div>
         </div>

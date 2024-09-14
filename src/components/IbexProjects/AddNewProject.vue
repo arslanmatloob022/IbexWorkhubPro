@@ -3,6 +3,7 @@ import VueScrollTo from "vue-scrollto";
 import { useNotyf } from "/@src/composable/useNotyf";
 import sleep from "/@src/utils/sleep";
 import { useApi } from "/@src/composable/useAPI";
+import { convertToFormData } from "/@src/composable/useSupportElement";
 
 const api = useApi();
 const router = useRouter();
@@ -45,6 +46,7 @@ const allManagers = ref([]);
 const allContractors = ref([]);
 const allClients = ref([]);
 const selectedManagers = ref([]);
+const newId = ref("");
 const preview = ref<any>("");
 const selectedFileName = ref("");
 
@@ -111,42 +113,65 @@ const onRemoveFile = () => {
 const addNewProject = async () => {
   try {
     loading.value = true;
-    let formData = new FormData();
+    const formData = new FormData();
 
-    for (let dataKey in projectData.value) {
-      if (dataKey == "clientInfo" || dataKey == "contractorInfo") {
-        let jsonData = {};
-        for (let previewKey in projectData.value[dataKey]) {
-          jsonData[previewKey] = projectData.value[dataKey][previewKey];
-        }
-        formData.append(dataKey, JSON.stringify(jsonData));
-      } else if (
-        projectData.value[dataKey] == "" ||
-        projectData.value[dataKey] == null
-      ) {
+    // Loop through the project data and append each key-value pair to formData
+    for (const dataKey in projectData.value) {
+      // Skip appending `clientInfo` if `client` exists
+      if (dataKey === "clientInfo" && projectData.value.client) {
         continue;
-      } else {
+      }
+
+      // Handle both `contractorInfo` and `clientInfo` by stringifying them
+      if (dataKey === "contractorInfo" || dataKey === "clientInfo") {
+        formData.append(dataKey, JSON.stringify(projectData.value[dataKey]));
+      }
+      // Skip empty or null values
+      else if (
+        projectData.value[dataKey] !== "" &&
+        projectData.value[dataKey] !== null
+      ) {
+        // Handle managers as an array of UUIDs or IDs
         if (
+          dataKey === "managers" &&
+          Array.isArray(projectData.value.managers)
+        ) {
+          projectData.value.managers.forEach((manager: any) => {
+            // Ensure you are appending the UUID or ID field of the manager object
+            if (manager.id) {
+              formData.append("managers", manager.id);
+            }
+          });
+        }
+        // Handle contractor by appending the UUID or ID
+        else if (dataKey === "contractor" && projectData.value.contractor.id) {
+          formData.append("contractor", projectData.value.contractor.id);
+        }
+        // Handle images or other types of file uploads
+        else if (
           dataKey !== "image" ||
           typeof projectData.value.image === "object"
         ) {
-          let value = projectData.value[dataKey];
-          if (dataKey === "managers") {
-            value.forEach((item) => {
-              formData.append("managers", item);
-            });
-          } else {
-            formData.append(dataKey, projectData.value[dataKey]);
-          }
+          formData.append(dataKey, projectData.value[dataKey]);
         }
       }
     }
 
     console.log("form data", formData);
-    const response = await api.post("/api/project/", formData);
-    notyf.success("Project added successfully");
+
+    // Send the formData to the API
+    if (newId.value) {
+      const resp = await api.patch(`/api/project/${newId.value}/`, formData);
+      notyf.info("Information added");
+    } else {
+      const response = await api.post("/api/project/", formData);
+      newId.value = response.data.id;
+      notyf.success("Project added successfully");
+    }
+    // Optionally redirect to the projects page
+    // router.push("/projects");
   } catch (err) {
-    console.log(err);
+    console.error(err);
     notyf.error("Something went wrong");
   } finally {
     loading.value = false;
@@ -529,7 +554,7 @@ onMounted(() => {
                     <VOption
                       v-for="manager in allManagers"
                       :key="manager.id"
-                      :value="manager"
+                      :value="manager.id"
                       >{{ manager.username }}
                     </VOption>
                   </VSelect>

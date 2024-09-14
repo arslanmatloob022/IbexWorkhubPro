@@ -416,6 +416,7 @@ declare module 'vue' {
     ProjectsCompletionChart: typeof import('./../src/components/pages/networks/Charts/ProjectsCompletionChart.vue')['default']
     ProjectsDashboardCalendar: typeof import('./../src/components/IbexProjects/ProjectsDashboardCalendar.vue')['default']
     ProjectsQuickDropdown: typeof import('./../src/components/partials/dropdowns/ProjectsQuickDropdown.vue')['default']
+    ProjectsTasks: typeof import('./../src/components/IbexProjects/ProjectTasks/ProjectsTasks.vue')['default']
     ProjectsToolbar: typeof import('./../src/components/partials/toolbars/ProjectsToolbar.vue')['default']
     ProjectsViewV1: typeof import('./../src/components/pages/layouts/projects/ProjectsViewV1.vue')['default']
     ProjectsViewV2: typeof import('./../src/components/pages/layouts/projects/ProjectsViewV2.vue')['default']
