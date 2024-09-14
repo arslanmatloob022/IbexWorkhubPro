@@ -409,6 +409,34 @@ onMounted(() => {
               >
             </RouterLink>
 
+
+            <RouterLink
+              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              to="/sidebar/dashboard/workers-tasks"
+              :class="{ 'cus-active-link-icon': 'active' === route.query.tab }"
+              style="
+                display: flex;
+                font-weight: 400;
+                font-family: var(--font);
+                background-color: transparent !important;
+                align-items: center;
+                padding: 0 2rem 0 3.5rem;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <span
+                style="
+                  margin-left: 10px;
+                  background-color: transparent !important;
+                "
+                >workers tasks</span
+              >
+            </RouterLink>
+
+            
+
+
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
               to="/sidebar/dashboard/projects?status=pre-construction"
