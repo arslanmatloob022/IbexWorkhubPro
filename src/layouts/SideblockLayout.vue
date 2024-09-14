@@ -616,8 +616,8 @@ onMounted(() => {
         <template #bottom-links>
           <!-- <UserProfileDropdown up /> -->
           <div class="pb-3 arez-version">
-            <p style="font-weight: 500">Powered by CodeSphere Studios</p>
-            <p style="font-weight: 500; font-size: 10px">Version 3.04</p>
+            <!-- <p style="font-weight: 500">Powered by CodeSphere Studios</p>
+            <p style="font-weight: 500; font-size: 10px">Version 3.04</p> -->
           </div>
         </template>
       </Sideblock>
