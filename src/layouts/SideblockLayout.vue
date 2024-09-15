@@ -409,7 +409,6 @@ onMounted(() => {
               >
             </RouterLink>
 
-
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
               to="/sidebar/dashboard/workers-tasks"
@@ -433,9 +432,6 @@ onMounted(() => {
                 >workers tasks</span
               >
             </RouterLink>
-
-            
-
 
             <RouterLink
               :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"

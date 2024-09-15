@@ -13,7 +13,6 @@ const selectedWorkers = ref([]);
 const props = defineProps<{
   isOpen: {
     type: boolean;
-    default: undefined;
   };
   taskId: {
     type: Number;
@@ -48,7 +47,7 @@ const taskData = ref({
   workers: [],
 });
 
-const Taskstatus = [
+const TaskStatus = [
   { value: "active", name: "Active" },
   { value: "pending", name: "Pending" },
   { value: "completed", name: "Completed" },
@@ -64,7 +63,9 @@ const removeWorker = (index: any) => {
 const fetchTaskData = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/task/${props.taskId}`);
+    const response = await api.get(
+      `/api/task/${props.taskId ? props.taskId : ""}`
+    );
     taskData.value = response.data;
     selectedWorkers.value = response.data.workers;
   } catch (err) {
@@ -83,13 +84,13 @@ const editTaskHandler = async () => {
 
     if (props.projectID) {
       // store.state.isScheduleMode
-      formData.append("schedule_mode", false);
-      formData.append("project", props.projectID);
+      formData.append("schedule_mode", "false");
+      formData.append("project", `${props.projectID}`);
       await api.post(`/api/task/`, formData);
       notyf.success("Task added successfully");
     } else {
       // store.state.isScheduleMode
-      formData.append("schedule_mode", false);
+      formData.append("schedule_mode", "false");
       await api.patch(`/api/task/${taskData.value.id}/`, formData);
       notyf.success("Task updated successfully");
     }
@@ -185,7 +186,7 @@ onMounted(() => {
               >
                 <VOption value="">Select Status</VOption>
                 <VOption
-                  v-for="task in Taskstatus"
+                  v-for="task in TaskStatus"
                   :key="task.value"
                   :value="task.value"
                   >{{ task.value }}
@@ -348,10 +349,17 @@ onMounted(() => {
       </div>
     </template>
     <template #action>
-      <VButton @click="deleteTask" class="is-left" color="danger" raised
+      <VButton
+        v-if="props.taskId"
+        @click="deleteTask"
+        class="is-left"
+        color="danger"
+        raised
         >Delete</VButton
       >
-      <VButton type="submit" color="primary" raised>Save</VButton>
+      <VButton type="submit" color="primary" raised>{{
+        props.taskId ? "Update Task" : "Add Task"
+      }}</VButton>
     </template>
   </VModal>
 </template>

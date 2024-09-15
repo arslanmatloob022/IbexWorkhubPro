@@ -2,7 +2,6 @@
 import ApexChart from "vue3-apexcharts";
 
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import { useTaskCompletionChart } from "/@src/data/dashboards/personal-v2/taskCompletionChart";
 import { useTeamEfficiencyChart } from "/@src/data/dashboards/personal-v2/teamEfficiencyChart";
 import { popovers } from "/@src/data/users/userPopovers";
 import * as usersData from "/@src/data/dashboards/personal-v2/users";
@@ -10,7 +9,61 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 
-const { completionOptions } = useTaskCompletionChart();
+import { useThemeColors } from "/@src/composable/useThemeColors";
+
+const themeColors = useThemeColors();
+
+const completionOptions = shallowRef({
+  series: [
+    {
+      name: "Pending",
+      data: [31, 40, 28, 51, 42, 109, 100],
+    },
+    {
+      name: "Completed",
+      data: [11, 32, 45, 32, 34, 52, 41],
+    },
+    {
+      name: "Blocked",
+      data: [78, 53, 36, 10, 14, 5, 2],
+    },
+  ],
+  chart: {
+    height: 295,
+    type: "area",
+    toolbar: {
+      show: false,
+    },
+  },
+  colors: [themeColors.accent, themeColors.info, themeColors.primary],
+  legend: {
+    position: "top",
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    width: [2, 3, 5],
+    curve: "smooth",
+  },
+  xaxis: {
+    type: "date",
+    categories: [
+      "2020-09-19",
+      "2020-09-20",
+      "2020-09-21",
+      "2020-09-22",
+      "2020-09-23",
+      "2020-09-24",
+      "2020-09-25",
+    ],
+  },
+  tooltip: {
+    x: {
+      format: "dd/MM/yy HH:mm",
+    },
+  },
+});
 const { barOptions } = useTeamEfficiencyChart();
 const avatarStack1 = usersData.avatarStack1 as VAvatarProps[];
 const avatarStack2 = usersData.avatarStack1 as VAvatarProps[];
@@ -514,7 +567,6 @@ onMounted(() => {
 
       <div class="column is-8">
         <div class="dashboard-card has-margin-bottom">
-          <ProjectsTasks :projectID="route.params.id" />
           <div class="card-head">
             <h3 class="dark-inverted">Active Projects</h3>
             <a class="action-link" tabindex="0">View All</a>
@@ -808,6 +860,9 @@ onMounted(() => {
             </template>
           </VPlaceholderSection>
         </div>
+      </div>
+      <div class="column is-12">
+        <ProjectsTasks :projectID="route.params.id" />
       </div>
     </div>
   </div>
