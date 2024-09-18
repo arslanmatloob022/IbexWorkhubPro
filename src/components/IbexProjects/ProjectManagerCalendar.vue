@@ -6,7 +6,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
+import { title } from "process";
 const api = useApi();
+const calendarRef = ref(null);
+
 const userSession = useUserSession();
 const notyf = useNotyf();
 const loading = ref(false);
@@ -21,6 +24,7 @@ const projects = ref([]);
 const projectID = ref<any>(0);
 const selectedWorkerName = ref("");
 const startDate = ref<any>("");
+const endDate = ref<any>("");
 const selectedWorkerId = ref(0);
 const showWorkerChart = ref(true);
 const isTaskFormOpen = ref<any>(false);
@@ -46,7 +50,6 @@ const calendarOptions = ref({
   height: "auto",
   themeSystem: "cerulean",
   resourceAreaWidth: "20%",
-  resourceGroupField: "title",
   resourcesInitiallyExpanded: false,
   selectable: true,
   headerToolbar: {
@@ -67,17 +70,18 @@ const calendarOptions = ref({
     },
   },
   resourceAreaHeaderContent: "Projects",
+  // resourceGroupField: 'project',
   resources: [],
-  resourceId: selectedWorkerId.value,
   eventDrop: (info: any) => {
-    console.log(info.event);
-    eventChangeHandler(info);
-    // info.revert();
+    // eventChangeHandler(info);
+    info.revert();
   },
   eventResize: (info: any) => {
     eventChangeHandler(info);
   },
-  dateClick: (info: any) => {
+
+
+  select: (info: any) => {
     if (userSession.user.role === "contractor") {
       return;
     }
@@ -87,19 +91,29 @@ const calendarOptions = ref({
     ) {
       return;
     }
+    console.log("start date", info.startStr)
     editTaskId.value = 0;
-    projectID.value = info.resource.id;
-    startDate.value = info.dateStr;
+    projectID.value = info.resource.extendedProps.project;
+    startDate.value = info.startStr;
+    endDate.value = info.endStr
     isTaskFormOpen.value = true;
   },
+
+
+
+
+
+
 });
+
+
+
 
 const eventChangeHandler = (info: any) => {
   console.warn("inside func");
   console.log("inside ", userSession.user.role);
 
   if (userSession.user.role === "contractor") {
-    console.log("inside ", userSession.user.role);
     info.revert();
     return;
   } else if (userSession.user.role === "manager") {
@@ -115,9 +129,9 @@ const eventChangeHandler = (info: any) => {
 
   let start = info.event.startStr;
   let end = info.event.end.toISOString().substring(0, 10);
-  console.log("resource ids", info.event._def.resourceIds[0]);
-
-  if (info.event.extendedProps.project != info.event._def.resourceIds[0]) {
+  console.log("resource ids", info.event);
+console.log("event", info.event)
+  if (info.event.id != info.event._def.publicId) {
     info.revert();
     return;
   }
@@ -206,9 +220,11 @@ const getManagersById = (id: any) => {
 
 const renderCalender = () => {
   console.log(projects.value);
+
+  // Map tasks to events
   const events = tasks.value.map((task) => ({
     id: task.id,
-    resourceId: task.project,
+    resourceId: task.id,
     project: task.project,
     start: task.startDate,
     end: addOneDayToDate(task.endDate),
@@ -219,6 +235,8 @@ const renderCalender = () => {
     borderColor: colors[task.status],
     managers: getManagersById(task.project),
   }));
+
+  // Map projects to background events
   const bgEvents = projects.value.map((project) => ({
     id: project.id,
     resourceId: project.id,
@@ -227,12 +245,40 @@ const renderCalender = () => {
     title: project.title,
     display: "background",
     color: project.color,
-    // color:colors[project.status],
   }));
+
+  // Merge all events
   const allEvents = [...events, ...bgEvents];
-  calendarOptions.value.resources = projects.value;
-  calendarOptions.value.events = events;
+
+  // Map tasks as child resources of their respective projects
+  const projectResources = projects.value.map((project) => {
+    const taskResources = tasks.value
+      .filter((task) => task.project === project.id)
+      .map((task) => ({
+        id: task.id,
+        title: task.title,
+        project: task.project,
+        initiallyExpanded: true, // Child resources collapsed by default
+      }));
+
+    return {
+      id: project.id,
+      title: project.title,
+      eventBackgroundColor: project.color,
+      project: project.id,
+      initiallyExpanded: true, // Parent resource expanded
+      children: taskResources, // Tasks as child resources
+    };
+  });
+console.log("proejrct rources")
+console.log(projectResources)
+  // Assign resources and events to calendar options
+  calendarOptions.value.resources = projectResources;
+  calendarOptions.value.events = allEvents;
+
+
 };
+
 
 const changeFilterHandler = () => {
   console.log("func called", activeFilter.value);
@@ -314,6 +360,9 @@ onMounted(async () => {
   renderCalender();
   console.log("projects", calendarOptions.value);
   showWorkerChart.value = true;
+
+
+
 });
 </script>
 
@@ -458,9 +507,22 @@ onMounted(async () => {
         </VButtons>
       </div>
     </form>
-    <FullCalendar :options="calendarOptions">
+    <FullCalendar :options="calendarOptions" ref="calendarRef">
       <template v-slot:eventContent="arg">
+        <div>
+          <p
+          v-if=" arg.event?.display =='background'"
+            style="font-weight: 500; margin-bottom: 0px; padding-left: 10px; color: black;" 
+            
+          >
+            
+
+            project: {{ arg.event.title }}
+          </p>
+        
         <div
+        v-else
+        @click="eventClick(arg)"
           style="
             display: flex;
             flex-wrap: wrap;
@@ -470,11 +532,11 @@ onMounted(async () => {
         >
           <p
             style="font-weight: 500; margin-bottom: 0px; padding-left: 10px"
-            @click="eventClick(arg)"
+            
           >
-            {{ arg.event.title }}
+            <!-- {{ arg.event.title }} -->
           </p>
-          <div class="avatars">
+          <div class="avatars" v-if="arg.event.extendedProps?.workers?.length">
             <div
               class="avatars__item"
               v-for="worker in arg.event.extendedProps.workers"
@@ -523,9 +585,23 @@ onMounted(async () => {
                   {{ worker.username ? worker.username.slice(0, 2) : "AA" }}
                 </h6>
               </div>
+
+              <p>{{ worker.username }}</p>
             </div>
           </div>
+          <p
+          v-if="!arg.event.extendedProps?.workers?.length && arg.event?.display !='background'"
+            style="font-weight: 500; margin-bottom: 0px; padding-left: 10px"
+            
+          >
+            No worker is assigned yet
+
+          </p>
+
+       
         </div>
+     
+      </div>
       </template>
     </FullCalendar>
 
@@ -535,6 +611,7 @@ onMounted(async () => {
       :taskId="editTaskId"
       :projectID="projectID"
       :startDate="startDate"
+      :endDate = "endDate"
       @update:OnSuccess="
         () => {
           getProjectHandler(), getTasksHandler();

@@ -19,7 +19,11 @@ const props = defineProps<{
     default: null;
   };
   projectID: {
-    type: Number;
+    type: String;
+    default: null;
+  };
+  endDate: {
+    type: String;
     default: null;
   };
   startDate: {
@@ -144,6 +148,7 @@ onMounted(() => {
 
   if (props.startDate) {
     taskData.value.startDate = props.startDate;
+    taskData.value.endDate = props.endDate
   }
 });
 </script>
