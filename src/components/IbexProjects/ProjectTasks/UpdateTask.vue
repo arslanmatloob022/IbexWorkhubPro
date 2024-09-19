@@ -11,19 +11,27 @@ const loading = ref(false);
 let selectWorkersSlot = ref<any>([]);
 const selectedWorkers = ref([]);
 
-const props = withDefaults(
-  defineProps<{
-    isOpen?: boolean;
-    taskIdSelected?: string;
-    projectID?: string;
-    startDate?: string;
-  }>(),
-  {
-    projectID: "",
-    startDate: "",
-    taskIdSelected: undefined,
-  }
-);
+const props = defineProps<{
+  isOpen: {
+    type: boolean;
+  };
+  taskId: {
+    type: Number;
+    default: null;
+  };
+  projectID: {
+    type: String;
+    default: null;
+  };
+  endDate: {
+    type: String;
+    default: null;
+  };
+  startDate: {
+    type: String;
+    default: null;
+  };
+}>();
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -142,6 +150,7 @@ onMounted(() => {
 
   if (props.startDate) {
     taskData.value.startDate = props.startDate;
+    taskData.value.endDate = props.endDate;
   }
 });
 </script>
