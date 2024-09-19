@@ -128,16 +128,6 @@ onMounted(() => {
 
 <template>
   <div class="sidebar-layout">
-    <df-messenger
-      class="df-messenger"
-      project-id="earnflex-frontier"
-      agent-id="66271cd5-26e9-4a25-9c2b-6bc2329eef22"
-      language-code="en"
-      max-query-length="-1"
-    >
-      <df-messenger-chat-bubble chat-title="Arez FAQ&#x27;s">
-      </df-messenger-chat-bubble>
-    </df-messenger>
     <!-- Mobile navigation -->
     <MobileNavbar
       :is-open="isMobileSideblockOpen"
@@ -155,7 +145,7 @@ onMounted(() => {
       </template>
     </MobileNavbar>
 
-    <MobileSidebar
+    <!-- <MobileSidebar
       :is-open="isMobileSideblockOpen"
       @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
     >
@@ -245,11 +235,98 @@ onMounted(() => {
           </a>
         </li>
       </template>
+    </MobileSidebar> -->
+
+    <!-- My editing -->
+    <MobileSidebar
+      :is-open="isMobileSideblockOpen"
+      @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
+    >
+      <template #links>
+        <li>
+          <a
+            @click="router.push('/sidebar/dashboard')"
+            :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
+            aria-label="Display dashboard content"
+            tabindex="0"
+            role="button"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:grid" />
+          </a>
+        </li>
+        <li>
+          <a
+            @click="router.push('/sidebar/dashboard/manage-projects')"
+            aria-label="Display layout content"
+            :class="[activeMobileSubsidebar === 'layout' && 'is-active']"
+            tabindex="0"
+            role="button"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:grid" />
+          </a>
+        </li>
+        <li>
+          <a
+            @click="router.push('/sidebar/dashboard/projects')"
+            aria-label="Display element content"
+            :class="[activeMobileSubsidebar === 'elements' && 'is-active']"
+            tabindex="0"
+            role="button"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:box" />
+          </a>
+        </li>
+        <li>
+          <a
+            @click="router.push('/sidebar/dashboard/projects')"
+            aria-label="Display components content"
+            :class="[activeMobileSubsidebar === 'components' && 'is-active']"
+            tabindex="0"
+            role="button"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:cpu" />
+          </a>
+        </li>
+        <li>
+          <a
+            @click="router.push('/sidebar/dashboard/projects')"
+            aria-label="Display components content"
+            :class="[activeMobileSubsidebar === 'components' && 'is-active']"
+            tabindex="0"
+            role="button"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:cpu" />
+          </a>
+        </li>
+      </template>
+
+      <template #bottom-links>
+        <li>
+          <a
+            aria-label="Display search panel"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="panels.setActive('search')"
+            @click="panels.setActive('search')"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:search" />
+          </a>
+        </li>
+        <li>
+          <a aria-label="View settings" href="#">
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:settings"
+            />
+          </a>
+        </li>
+      </template>
     </MobileSidebar>
 
     <!-- Mobile subsidebar links -->
     <Transition name="slide-x">
-      <LayoutsMobileSubsidebar
+      <!-- <LayoutsMobileSubsidebar
         v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
       />
       <DashboardsMobileSubsidebar
@@ -261,11 +338,9 @@ onMounted(() => {
         v-else-if="
           isMobileSideblockOpen && activeMobileSubsidebar === 'components'
         "
-      />
+      /> -->
       <ElementsMobileSubsidebar
-        v-else-if="
-          isMobileSideblockOpen && activeMobileSubsidebar === 'elements'
-        "
+        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'elements'"
       />
     </Transition>
 
@@ -274,7 +349,11 @@ onMounted(() => {
 
     <Transition name="slide-x">
       <!-- open menu -->
-      <Sideblock v-if="isDesktopSideblockOpen" :theme="props.theme">
+      <Sideblock
+        class="is-curved is-colored"
+        v-if="isDesktopSideblockOpen"
+        :theme="props.theme"
+      >
         <template #header>
           <div
             @click="router.push('/sidebar/company')"
@@ -329,7 +408,8 @@ onMounted(() => {
               <span class="icon">
                 <i class="fas fa-th-large" aria-hidden="true"></i>
               </span>
-              Dashboard
+              <span> Dashboard </span>
+              <!-- <span class="badge">5</span> -->
             </RouterLink>
           </li>
 
@@ -337,17 +417,14 @@ onMounted(() => {
           <VCollapseLinks
             v-model:open="openSideblockLinks"
             collapse-id="Projects"
+            class="collapse-wrap"
           >
+            <!-- :class="[isOpen && 'active']" -->
             <template #header>
-              <div
-                class="icon"
-                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
-              >
+              <div class="icon">
                 <i class="fas fa-cubes" aria-hidden="true"></i>
               </div>
-              <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
-                >Projects</span
-              >
+              <span>Projects</span>
               <i
                 aria-hidden="true"
                 class="iconify rtl-hidden"
@@ -362,101 +439,41 @@ onMounted(() => {
 
             <!-- to="/sidebar/dashboard/settings?tab=about" -->
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/projects"
-              :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                align-items: center;
-                background-color: transparent !important;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
+              :class="{ active: 'projects' === route.query.tab }"
             >
               <i class="lnil lnil-home" />
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >All Projects</span
-              >
+              <span>All Projects</span>
             </RouterLink>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/manage-projects"
-              :class="{ 'cus-active-link-icon': 'active' === route.query.tab }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
+              :class="{ active: 'manage-projects' === route.query.tab }"
             >
               <i class="lnil lnil-file-name" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Manage Projects</span
-              >
+              <span>Manage Projects</span>
             </RouterLink>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/workers-tasks"
-              :class="{ 'cus-active-link-icon': 'active' === route.query.tab }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
+              :class="{ active: 'workers-tasks' === route.query.tab }"
             >
               <i class="lnil lnil-file-name" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >workers tasks</span
-              >
+              <span>Workers chart</span>
             </RouterLink>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
-              to="/sidebar/dashboard/projects?status=pre-construction"
+              class="is-submenu"
+              to="/sidebar/dashboard/projects"
               :class="{
-                'cus-active-link-icon': 'pre-construction' === route.query.tab,
+                active: 'pre-construction' === route.query.tab,
               }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
             >
               <i class="lnil lnil-file-name" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Completed Projects</span
-              >
+              <span>Completed Projects</span>
             </RouterLink>
           </VCollapseLinks>
 
@@ -479,7 +496,6 @@ onMounted(() => {
               Service Partners
             </RouterLink>
           </li>
-          <div class="sleakDivider"></div>
           <li>
             <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
               <span class="icon">
@@ -488,7 +504,6 @@ onMounted(() => {
               Contractors
             </RouterLink>
           </li>
-          <div class="sleakDivider"></div>
 
           <li>
             <RouterLink to="/sidebar/dashboard/workers" class="single-link">
@@ -498,7 +513,6 @@ onMounted(() => {
               Workers
             </RouterLink>
           </li>
-          <div class="sleakDivider"></div>
           <li>
             <RouterLink to="/sidebar/dashboard/customers" class="single-link">
               <span class="icon">
@@ -514,15 +528,10 @@ onMounted(() => {
             collapse-id="report"
           >
             <template #header>
-              <div
-                class="icon"
-                :style="{ color: darkmode.isDark ? '#585858' : '#ffffff' }"
-              >
+              <div class="icon">
                 <i class="fas fa-cog" aria-hidden="true"></i>
               </div>
-              <span :style="{ color: darkmode.isDark ? '#585858' : '' }"
-                >Settings</span
-              >
+              <span>Settings</span>
               <i
                 aria-hidden="true"
                 class="iconify rtl-hidden"
@@ -536,103 +545,43 @@ onMounted(() => {
             </template>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/settings?tab=about"
-              :class="{ 'cus-active-link-icon': 'about' === route.query.tab }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                align-items: center;
-                background-color: transparent !important;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
+              :class="{ active: 'about' === route.query.tab }"
             >
               <i class="lnil lnil-home" />
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Home</span
-              >
+              <span>Home</span>
             </RouterLink>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/settings?tab=docs"
-              :class="{ 'cus-active-link-icon': 'docs' === route.query.tab }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
+              :class="{ active: 'docs' === route.query.tab }"
             >
               <i class="lnil lnil-file-name" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Worker Compliance</span
-              >
+              <span>Worker Compliance</span>
             </RouterLink>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/settings?tab=partner-doc"
               :class="{
-                'cus-active-link-icon': 'partner-doc' === route.query.tab,
+                active: 'partner-doc' === route.query.tab,
               }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
             >
               <i class="lnil lnil-file-name" aria-hidden="true"></i>
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Service Partners Compliance</span
-              >
+              <span>Service Partners Compliance</span>
             </RouterLink>
 
             <RouterLink
-              :style="{ color: darkmode.isDark ? '#585858' : '#fff' }"
+              class="is-submenu"
               to="/sidebar/dashboard/settings?tab=team-members"
               :class="{
-                'cus-active-link-icon': 'team-members' === route.query.tab,
+                active: 'team-members' === route.query.tab,
               }"
-              style="
-                display: flex;
-                font-weight: 400;
-                font-family: var(--font);
-                background-color: transparent !important;
-                align-items: center;
-                padding: 0 2rem 0 3.5rem;
-                font-size: 0.9rem;
-              "
             >
               <i class="lnil lnil-users" />
-              <span
-                style="
-                  margin-left: 10px;
-                  background-color: transparent !important;
-                "
-                >Controllers</span
-              >
+              <span>Controllers</span>
             </RouterLink>
           </VCollapseLinks>
         </template>
@@ -646,7 +595,12 @@ onMounted(() => {
         </template>
       </Sideblock>
       <!-- collapsed menu -->
-      <Sideblock style="width: 100px" :theme="props.theme" v-else>
+      <Sideblock
+        style="width: 100px"
+        class="is-curved"
+        :theme="props.theme"
+        v-else
+      >
         <template #header>
           <div
             style="
@@ -751,19 +705,12 @@ onMounted(() => {
             >
               <template #header>
                 <span class="icon" id="cus-spanLink">
-                  <i
-                    class="iconify"
-                    style="margin: 0; margin-right: 4px"
-                    :style="{
-                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
-                    }"
-                    data-icon="feather:user"
-                  ></i>
+                  <i class="iconify" data-icon="feather:user"></i>
                 </span>
               </template>
               <RouterLink
                 to="/sidebar/dashboard/supplier"
-                :class="{ 'cus-active-link': 'All' === route.query.type }"
+                :class="{ 'active-link': 'All' === route.query.type }"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -791,7 +738,7 @@ onMounted(() => {
                 v-for="(item, index) in company.loggedCompany.industry"
                 :key="index"
                 :to="`/sidebar/dashboard/supplier?type=${item.name}`"
-                :class="{ 'cus-active-link': item.name === route.query.type }"
+                :class="{ 'active-link': item.name === route.query.type }"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -824,19 +771,12 @@ onMounted(() => {
             >
               <template #header>
                 <span class="icon" id="cus-spanLink">
-                  <i
-                    class="iconify"
-                    style="margin: 0; margin-right: 4px"
-                    :style="{
-                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
-                    }"
-                    data-icon="feather:users"
-                  ></i>
+                  <i class="iconify" data-icon="feather:users"></i>
                 </span>
               </template>
               <RouterLink
                 to="/sidebar/dashboard/workers?type=All"
-                :class="{ 'cus-active-link': 'All' === route.query.type }"
+                :class="{ 'active-link': 'All' === route.query.type }"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -864,7 +804,7 @@ onMounted(() => {
                 v-for="(item, index) in company.loggedCompany.industry"
                 :key="index"
                 :to="`/sidebar/dashboard/workers?type=${item.name}`"
-                :class="{ 'cus-active-link': item.name === route.query.type }"
+                :class="{ 'active-link': item.name === route.query.type }"
                 style="
                   display: flex;
                   flex-direction: column;
@@ -890,7 +830,7 @@ onMounted(() => {
               <!-- archive link -->
               <RouterLink
                 to="/sidebar/dashboard/workers?archive=true"
-                :class="{ 'cus-active-link': 'true' === route.query.archive }"
+                :class="{ 'active-link': 'true' === route.query.archive }"
                 style="
                   padding: 0;
                   background-color: transparent !important;
@@ -927,10 +867,6 @@ onMounted(() => {
                   <i
                     class="iconify"
                     data-icon="feather:search"
-                    style="margin: 0; margin-right: 4px"
-                    :style="{
-                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
-                    }"
                     aria-hidden="true"
                   ></i>
                 </span>
@@ -939,18 +875,7 @@ onMounted(() => {
               <!-- workeras anomalies -->
               <RouterLink
                 to="/sidebar/dashboard/anomalies?page=1"
-                :class="{ 'cus-active-link': 'about' === route.query.tab }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  color: #575757;
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
+                :class="{ 'active-link': 'about' === route.query.tab }"
               >
                 <i
                   :style="{ color: darkmode.isDark ? '' : 'white' }"
@@ -961,18 +886,7 @@ onMounted(() => {
               <!-- partner anomalies -->
               <RouterLink
                 to="/sidebar/dashboard/partner-anomalies?page=1"
-                :class="{ 'cus-active-link': 'docs' === route.query.tab }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  color: #575757;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
+                :class="{ 'active-link': 'docs' === route.query.tab }"
               >
                 <i class="lnir lnir-user" aria-hidden="true"></i>
               </RouterLink>
@@ -990,10 +904,6 @@ onMounted(() => {
                   <i
                     class="iconify"
                     data-icon="feather:book-open"
-                    style="margin: 0; margin-right: 4px"
-                    :style="{
-                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
-                    }"
                     aria-hidden="true"
                   ></i>
                 </span>
@@ -1002,18 +912,7 @@ onMounted(() => {
               <!-- complete rota -->
               <RouterLink
                 to="/sidebar/dashboard/rota?tab=complete-rota"
-                :class="{ 'cus-active-link': 'about' === route.query.tab }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  color: #575757;
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
+                :class="{ 'active-link': 'about' === route.query.tab }"
               >
                 <i
                   :style="{ color: darkmode.isDark ? '' : 'white' }"
@@ -1024,18 +923,7 @@ onMounted(() => {
               <!-- rota analytics -->
               <RouterLink
                 to="/sidebar/dashboard/rota?tab=rota-analytics"
-                :class="{ 'cus-active-link': 'docs' === route.query.tab }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  color: #575757;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
+                :class="{ 'active-link': 'docs' === route.query.tab }"
               >
                 <i class="lnil lnil-graph-alt-3" aria-hidden="true"></i>
               </RouterLink>
@@ -1044,19 +932,8 @@ onMounted(() => {
               <RouterLink
                 to="/sidebar/dashboard/rota?tab=worker-calendar"
                 :class="{
-                  'cus-active-link': 'partner-doc' === route.query.tab,
+                  'active-link': 'partner-doc' === route.query.tab,
                 }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  color: #575757;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
               >
                 <i class="lnil lnil-calender-alt-1" aria-hidden="true"></i>
               </RouterLink>
@@ -1065,19 +942,8 @@ onMounted(() => {
               <RouterLink
                 to="/sidebar/dashboard/rota?tab=site-calendar"
                 :class="{
-                  'cus-active-link': 'team-members' === route.query.tab,
+                  'active-link': 'team-members' === route.query.tab,
                 }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  background-color: transparent !important;
-                  align-items: center;
-                  color: #575757;
-                  font-size: 0.9rem;
-                  font-weight: 400;
-                "
               >
                 <i style="color: #f1f1f1" class="lnil lnil-calender-alt-3" />
               </RouterLink>
@@ -1097,7 +963,6 @@ onMounted(() => {
             </RouterLink>
           </li>
 
-          <!-- Company settings -->
           <li>
             <VCollapseLinks
               v-model:open="openSideblockLinks"
@@ -1108,10 +973,6 @@ onMounted(() => {
                   <i
                     class="iconify"
                     data-icon="feather:settings"
-                    style="margin: 0; margin-right: 4px"
-                    :style="{
-                      color: darkmode.isDark ? '#585858' : 'whitesmoke',
-                    }"
                     aria-hidden="true"
                   ></i>
                 </span>
@@ -1119,18 +980,7 @@ onMounted(() => {
 
               <RouterLink
                 to="/sidebar/dashboard/settings?tab=about"
-                :class="{ 'cus-active-link': 'about' === route.query.tab }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  color: #575757;
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
+                :class="{ 'active-link': 'about' === route.query.tab }"
               >
                 <i
                   :style="{ color: darkmode.isDark ? '' : 'white' }"
@@ -1140,18 +990,7 @@ onMounted(() => {
 
               <RouterLink
                 to="/sidebar/dashboard/settings?tab=docs"
-                :class="{ 'cus-active-link': 'docs' === route.query.tab }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  color: #575757;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
+                :class="{ 'active-link': 'docs' === route.query.tab }"
               >
                 <i class="lnil lnil-file-name" aria-hidden="true"></i>
               </RouterLink>
@@ -1159,19 +998,8 @@ onMounted(() => {
               <RouterLink
                 to="/sidebar/dashboard/settings?tab=partner-doc"
                 :class="{
-                  'cus-active-link': 'partner-doc' === route.query.tab,
+                  'active-link': 'partner-doc' === route.query.tab,
                 }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  color: #575757;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  align-items: center;
-                  font-size: 0.9rem;
-                  background-color: transparent !important;
-                  font-weight: 400;
-                "
               >
                 <i class="lnil lnil-folder-alt-1" aria-hidden="true"></i>
               </RouterLink>
@@ -1179,21 +1007,10 @@ onMounted(() => {
               <RouterLink
                 to="/sidebar/dashboard/settings?tab=team-members"
                 :class="{
-                  'cus-active-link': 'team-members' === route.query.tab,
+                  'is-active': 'team-members' === route.query.tab,
                 }"
-                style="
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  background-color: transparent !important;
-                  align-items: center;
-                  color: #575757;
-                  font-size: 0.9rem;
-                  font-weight: 400;
-                "
               >
-                <i style="color: #f1f1f1" class="lnil lnil-users" />
+                <i class="lnil lnil-users" />
               </RouterLink>
             </VCollapseLinks>
           </li>
@@ -1211,7 +1028,7 @@ onMounted(() => {
     <SearchPanel />
     <TaskPanel />
 
-    <VViewWrapper class="mt-2" :full="isDesktopSideblockOpen">
+    <VViewWrapper class="mt-0" :full="isDesktopSideblockOpen">
       <VPageContentWrapper>
         <template v-if="props.nowrap">
           <slot />
@@ -1248,15 +1065,6 @@ onMounted(() => {
                 {{ viewWrapper.pageTitle }}
               </h1>
 
-              <!-- <span
-                class="ml-2 is-md-bold cu-pointer"
-                :style="{ color: getPagesColors(index) }"
-                v-for="(item, index) in mostVisitedPages"
-                :key="index"
-                @click="gotoVisitedPage(item.page)"
-              >
-                {{ `#${item.page}` }}
-              </span> -->
               <VField class="m-0">
                 <VControl>
                   <VSwitchBlock
@@ -1272,32 +1080,7 @@ onMounted(() => {
 
             <!-- toolbar -->
             <div class="toolbar">
-              <!-- <VButton
-                class="mr-4"
-                color="info"
-                rounded
-                light
-                raised
-                @click="addJobModalOpen = true"
-                circle
-                icon="fas fa-plus"
-                v-tooltip.bottom.left.rounded.info="'Create new job'"
-                label="Rounded"
-                >Create Job</VButton
-              > -->
-
               <SearchWorkerInput />
-              <!-- 
-              <VIconButton
-                color="info"
-                light
-                raised
-                @click="invitationModal = true"
-                circle
-                icon="fas fa-link"
-                v-tooltip.bottom.left.rounded.info="'Invitation link'"
-                label="Rounded"
-              /> -->
 
               <ToolbarNotification />
 
@@ -1346,34 +1129,13 @@ onMounted(() => {
     </VViewWrapper>
   </div>
 
-  <AddJobsModal
-    v-if="addJobModalOpen"
-    :AddJobModalOpen="addJobModalOpen"
-    @update:modalHandler="addJobModalOpen = false"
-  />
-
   <InvitationLink
     v-if="invitationModal"
     :invitationModal="invitationModal"
     @update:modalHandler="(value: boolean) => (invitationModal = value)"
   />
 </template>
-<style lang="scss">
-.sleakDivider {
-  margin-top: 6px;
-  width: 24px;
-  border-radius: 20%;
-  height: 4px;
-  background-color: #e2e2e28c;
-  margin-left: 15%;
-}
-.df-messenger {
-  position: fixed !important;
-  bottom: 10px;
-  right: 10px;
-  z-index: 99;
-}
-</style>
+
 <style lang="scss" scoped>
 .arez-version {
   p {
@@ -1397,106 +1159,5 @@ onMounted(() => {
 
 .icon-iconify:hover {
   color: var(--white);
-}
-
-#cus-spanLink {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center;
-  margin: 0;
-}
-
-#cus-routerLinks {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
-.cus-active-link {
-  transition: all 0.3s ease-in-out;
-  color: var(--primary) !important;
-  font-weight: 700 !important;
-  transform: translate(1.2);
-
-  img {
-    border: 2px solid var(--success);
-    border-radius: 8px;
-  }
-
-  i {
-    padding: 6px;
-    border-radius: 8px;
-    border: 1px solid #dbdbdb;
-  }
-}
-
-.cus-active-link-icon {
-  color: var(--primary) !important;
-  font-weight: 500 !important;
-
-  img {
-    border: 2px solid var(--primary);
-    border-radius: 8px;
-  }
-
-  i {
-    font-weight: 600;
-  }
-}
-
-.cus-dropdown-head {
-  display: flex !important;
-}
-
-.indutryOptions {
-  margin-top: 20px;
-  display: flex;
-  gap: 0px;
-
-  .options {
-    width: 80px;
-    height: 80px;
-    cursor: pointer;
-    color: aliceblue;
-    display: flex;
-    gap: 6px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    img {
-      width: 60px;
-      height: 60px;
-    }
-
-    p {
-      font-weight: 500;
-    }
-  }
-
-  .cus-selected {
-    width: 80px;
-    height: 80px;
-    cursor: pointer;
-
-    display: flex;
-    gap: 6px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    img {
-      width: 60px;
-      height: 60px;
-      border-color: var(--primary);
-      border: 2px solid var(--primary);
-      border-radius: 16px;
-    }
-
-    p {
-      font-weight: 600;
-      color: var(--primary);
-    }
-  }
 }
 </style>

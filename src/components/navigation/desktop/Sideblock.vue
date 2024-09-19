@@ -49,11 +49,7 @@ const themeClasses = computed(() => {
   inset-inline-start: 0;
   height: 100vh;
   width: 280px;
-  background: radial-gradient(
-    circle 1224px at 10.6% 8.8%,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(153, 202, 251, 1) 100.2%
-  );
+  background-color: var(--white);
   box-shadow: none;
   z-index: 35;
   transition:
@@ -99,7 +95,7 @@ const themeClasses = computed(() => {
       width: 18px;
       height: 18px;
 
-      svg {
+      .iconify {
         width: 18px;
         height: 18px;
       }
@@ -112,6 +108,7 @@ const themeClasses = computed(() => {
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    background: var(--white);
     margin-top: 40px;
 
     &::-webkit-scrollbar {
@@ -182,7 +179,7 @@ const themeClasses = computed(() => {
                 color: var(--primary);
               }
 
-              > svg {
+              > .iconify {
                 transform: rotate(calc(var(--transform-direction) * 90deg));
               }
             }
@@ -191,7 +188,7 @@ const themeClasses = computed(() => {
 
         &:hover {
           .collapse-wrap > a {
-            color: #898989;
+            color: var(--dark-text);
 
             .icon {
               color: var(--primary);
@@ -236,16 +233,16 @@ const themeClasses = computed(() => {
               font-size: 1.25rem;
               margin-inline-end: 1rem;
 
-              i {
+              .iconify {
                 font-size: 1.25rem;
               }
 
-              svg {
+              .iconify {
                 stroke-width: 1.5px;
               }
             }
 
-            > svg {
+            > .iconify {
               position: relative;
               top: 1px;
               height: 18px;
@@ -267,7 +264,7 @@ const themeClasses = computed(() => {
               .is-submenu {
                 font-weight: 500;
 
-                svg {
+                .iconify {
                   display: block;
                 }
               }
@@ -297,7 +294,7 @@ const themeClasses = computed(() => {
                 font-family: var(--font);
               }
 
-              svg {
+              .iconify {
                 display: none;
                 height: 8px;
                 width: 8px;
@@ -327,10 +324,11 @@ const themeClasses = computed(() => {
         width: 100%;
         padding: 0 20px;
         font-size: 0.95rem;
+        color: var(--light-text);
 
         &:hover,
         &:focus {
-          color: #898989;
+          color: var(--dark-text);
         }
       }
 
@@ -338,7 +336,7 @@ const themeClasses = computed(() => {
         font-family: var(--font-alt);
         font-size: 0.9rem;
         font-weight: 500;
-        color: var(--dark-text);
+        color: var(--light-text);
       }
     }
 
@@ -348,7 +346,7 @@ const themeClasses = computed(() => {
       align-items: center;
       font-size: 0.9rem;
       font-weight: 500;
-      color: #585858;
+      color: var(--light-text);
       padding: 0.85rem;
       margin: 0 2rem 0.25rem;
       width: 100%;
@@ -358,15 +356,15 @@ const themeClasses = computed(() => {
       &:hover,
       &:focus,
       &.active {
-        background: var(--smoke-white);
-        color: #898989;
+        background: var(--widget-grey);
+        color: var(--dark-text);
 
         .icon {
-          i {
+          .iconify {
             color: var(--primary);
           }
 
-          svg {
+          .iconify {
             stroke: var(--primary);
           }
         }
@@ -376,11 +374,11 @@ const themeClasses = computed(() => {
         font-size: 1.25rem;
         margin-inline-end: 1rem;
 
-        i {
+        .iconify {
           font-size: 1.25rem;
         }
 
-        svg {
+        .iconify {
           stroke-width: 1.5px;
         }
       }
@@ -407,7 +405,7 @@ const themeClasses = computed(() => {
     align-items: center;
     justify-content: space-between;
 
-    a {
+    a:not(.dropdown-item) {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -421,7 +419,8 @@ const themeClasses = computed(() => {
       border-radius: 50%;
       transition: background-color 0.3s;
 
-      svg {
+      .iconify {
+        font-size: 18px;
         height: 20px;
         width: 20px;
         transition: stroke 0.3s;
@@ -461,100 +460,19 @@ const themeClasses = computed(() => {
       }
     }
   }
-
-  .profile-dropdown {
-    .dropdown-menu {
-      bottom: 0;
-      inset-inline-start: 145%;
-
-      .dropdown-content {
-        padding-top: 0;
-        overflow: hidden;
-
-        .dropdown-head {
-          display: flex;
-          align-items: center;
-          padding: 20px 16px;
-          margin-bottom: 12px;
-          background: #fafafa;
-
-          .meta {
-            margin-inline-start: 12px;
-            font-family: var(--font);
-
-            span {
-              display: block;
-
-              &:first-child {
-                font-size: 1.1rem;
-                font-weight: 500;
-                color: var(--dark-text);
-                line-height: 1.2;
-              }
-
-              &:nth-child(2) {
-                text-transform: uppercase;
-                color: var(--light-text);
-                font-size: 0.7rem;
-              }
-            }
-          }
-        }
-
-        .logout-button {
-          svg {
-            stroke: var(--smoke-white) !important;
-          }
-        }
-      }
-
-      .dropdown-item {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        width: 100% !important;
-
-        &:hover,
-        &:focus:not(.is-button) {
-          background: var(--fade-grey-light-3);
-        }
-      }
-
-      .flex-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 0 15px;
-
-        .toggle-title {
-          font-size: 0.8rem;
-          color: var(--muted-grey);
-
-          &:hover,
-          &:focus {
-            background: transparent !important;
-          }
-        }
-
-        &:hover {
-          background: transparent !important;
-        }
-      }
-    }
-  }
 }
 
 /* ==========================================================================
 2. Sidebar Block Dark mode
 ========================================================================== */
-/*
+
 .is-dark {
   .sidebar-block {
-    background: var(--dark-sidebar-light-5);
-    border-color: var(--dark-sidebar-light-5) !important;
+    background: color-mix(in oklab, var(--dark-sidebar), white 5%);
+    border-color: color-mix(in oklab, var(--dark-sidebar), white 5%) !important;
 
     .panel-close {
-      svg {
+      .iconify {
         stroke: var(--muted-grey) !important;
       }
     }
@@ -566,14 +484,14 @@ const themeClasses = computed(() => {
     }
 
     .sidebar-block-inner {
-      background: var(--dark-sidebar-light-5);
+      background: color-mix(in oklab, var(--dark-sidebar), white 5%);
 
       li {
         &.has-children {
           &.active {
             .collapse-wrap > a {
               color: var(--smoke-white);
-              background: var(--dark-sidebar-light-8);
+              background: color-mix(in oklab, var(--dark-sidebar), white 8%);
 
               .icon {
                 color: var(--accent);
@@ -602,15 +520,15 @@ const themeClasses = computed(() => {
       .single-link {
         &:hover,
         &.active {
-          background: var(--dark-sidebar-light-8);
+          background: color-mix(in oklab, var(--dark-sidebar), white 8%);
           color: var(--smoke-white);
 
           .icon {
-            i {
+            .iconify {
               color: var(--accent);
             }
 
-            svg {
+            .iconify {
               stroke: var(--accent);
             }
           }
@@ -628,35 +546,21 @@ const themeClasses = computed(() => {
 
         &:hover,
         &:focus {
-          background: var(--dark-sidebar-light-8);
+          background: color-mix(in oklab, var(--dark-sidebar), white 8%);
           color: var(--accent);
-        }
-      }
-
-      .profile-dropdown {
-        .dropdown-menu {
-          .dropdown-content {
-            .dropdown-head {
-              background: var(--dark-sidebar-light-2);
-
-              .meta span:first-child {
-                color: var(--smoke-white);
-              }
-            }
-          }
         }
       }
     }
   }
 }
-*/
-@media only screen and (width <=767px) {
+
+@media only screen and (width <= 767px) {
   .sidebar-block {
     display: none;
   }
 }
 
-@media only screen and (width >=768px) and (width <=1024px) and (orientation: portrait) {
+@media only screen and (width >= 768px) and (width <= 1024px) and (orientation: portrait) {
   .sidebar-block {
     display: none;
   }
@@ -669,11 +573,11 @@ const themeClasses = computed(() => {
 html:not(.is-dark) {
   .sidebar-block {
     &.is-colored {
-      background: linear-gradient(167deg, #35b260 0%, #0f99a8 100%);
-      border-color: rgba(173, 252, 234, 0.9) !important;
+      background: color-mix(in oklab, var(--dark), black 12%) !important;
+      border-color: color-mix(in oklab, var(--dark), white 5%) !important;
 
       .panel-close {
-        svg {
+        .iconify {
           stroke: var(--muted-grey) !important;
         }
       }
@@ -685,26 +589,21 @@ html:not(.is-dark) {
       }
 
       .sidebar-block-inner {
-        .router-link-exact-active {
-          background-color: azure !important;
-          color: var(--primary) !important;
-        }
+        background: color-mix(in oklab, var(--dark), black 12%) !important;
 
         li {
           &.has-children {
-            .collapse-wrap > a,
-            i {
-              color: #ffffff;
-            }
-
             &.active {
-              .collapse-wrap > a,
-              span {
-                color: var(--white) !important;
-                background: var(--sidebar-dark-7) !important;
+              .collapse-wrap > a {
+                color: var(--smoke-white) !important;
+                background: color-mix(
+                  in oklab,
+                  var(--dark),
+                  black 7%
+                ) !important;
 
                 .icon {
-                  color: var(--white) !important;
+                  color: var(--primary) !important;
                 }
               }
             }
@@ -714,7 +613,7 @@ html:not(.is-dark) {
                 color: var(--smoke-white) !important;
 
                 .icon {
-                  color: var(--white) !important;
+                  color: var(--primary) !important;
                 }
               }
             }
@@ -722,66 +621,30 @@ html:not(.is-dark) {
         }
 
         a:not(.single-link) {
-          color: #ffffff;
-
           &:hover {
-            color: var(--white) !important;
-
-            .icon {
-              i {
-                color: var(--white);
-              }
-
-              svg {
-                stroke: var(--white);
-              }
-            }
+            color: var(--smoke-white) !important;
           }
         }
 
         .single-link {
-          color: #ffffff;
-
           &:hover,
-          &:focus,
           &.active {
-            background-color: azure;
-            color: var(--primary) !important;
+            background: color-mix(in oklab, var(--dark), black 7%) !important;
+            color: var(--smoke-white) !important;
 
             .icon {
-              i {
-                color: var(--white);
+              .iconify {
+                color: var(--primary) !important;
               }
 
-              svg {
-                stroke: var(--white);
+              .iconify {
+                stroke: var(--primary) !important;
               }
-            }
-          }
-
-          .icon {
-            font-size: 1.25rem;
-            margin-inline-end: 1rem;
-
-            i {
-              font-size: 1.25rem;
-            }
-
-            svg {
-              stroke-width: 1.5px;
             }
           }
 
           .badge {
-            margin-inline-start: auto;
-            color: var(--white);
-            background: var(--primary);
-            height: 1.5rem;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            line-height: 0.6;
-            border-radius: 10rem;
+            background: var(--primary) !important;
           }
         }
       }
@@ -792,7 +655,7 @@ html:not(.is-dark) {
 
           &:hover,
           &:focus {
-            background: var(--sidebar-dark-7) !important;
+            background: color-mix(in oklab, var(--dark), black 7%) !important;
             color: var(--primary) !important;
           }
         }

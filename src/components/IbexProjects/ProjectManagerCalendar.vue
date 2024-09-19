@@ -24,7 +24,7 @@ const startDate = ref<any>("");
 const selectedWorkerId = ref(0);
 const showWorkerChart = ref(true);
 const isTaskFormOpen = ref<any>(false);
-const editTaskId = ref<any>(0);
+const editTaskId = ref<any>("");
 const dropdownFilters = ref({
   all: "all",
   active: "active",
@@ -87,7 +87,7 @@ const calendarOptions = ref({
     ) {
       return;
     }
-    editTaskId.value = 0;
+    editTaskId.value = "";
     projectID.value = info.resource.id;
     startDate.value = info.dateStr;
     isTaskFormOpen.value = true;

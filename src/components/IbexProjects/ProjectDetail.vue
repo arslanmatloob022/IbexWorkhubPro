@@ -10,60 +10,10 @@ import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 
 import { useThemeColors } from "/@src/composable/useThemeColors";
+import TasksCompletionChart from "./ProjectTasks/TasksCompletionChart.vue";
 
 const themeColors = useThemeColors();
 
-const completionOptions = shallowRef({
-  series: [
-    {
-      name: "Pending",
-      data: [31, 40, 28, 51, 42, 109, 100],
-    },
-    {
-      name: "Completed",
-      data: [11, 32, 45, 32, 34, 52, 41],
-    },
-    {
-      name: "Blocked",
-      data: [78, 53, 36, 10, 14, 5, 2],
-    },
-  ],
-  chart: {
-    height: 295,
-    type: "area",
-    toolbar: {
-      show: false,
-    },
-  },
-  colors: [themeColors.accent, themeColors.info, themeColors.primary],
-  legend: {
-    position: "top",
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  stroke: {
-    width: [2, 3, 5],
-    curve: "smooth",
-  },
-  xaxis: {
-    type: "date",
-    categories: [
-      "2020-09-19",
-      "2020-09-20",
-      "2020-09-21",
-      "2020-09-22",
-      "2020-09-23",
-      "2020-09-24",
-      "2020-09-25",
-    ],
-  },
-  tooltip: {
-    x: {
-      format: "dd/MM/yy HH:mm",
-    },
-  },
-});
 const { barOptions } = useTeamEfficiencyChart();
 const avatarStack1 = usersData.avatarStack1 as VAvatarProps[];
 const avatarStack2 = usersData.avatarStack1 as VAvatarProps[];
@@ -88,6 +38,8 @@ const contarctorList = ref([]);
 const selectedManagers = ref([]);
 const deleteTaskId = ref(0);
 const activeTasks = ref(0);
+const projectCompletedTasks = ref<any>(0);
+const projectActiveTasks = ref<any>(0);
 const editTaskId = ref("");
 const currentProjectId = ref("");
 const modalTitle = ref("Add Task");
@@ -104,7 +56,7 @@ const Taskstatus = ref([
   { value: "cancelled", name: "cancelled" },
 ]);
 
-const projectData = ref({
+const projectData = ref<any>({
   id: 0,
   title: "",
   created: "",
@@ -126,7 +78,7 @@ const projectData = ref({
     password: "",
     avatar: null as File | String | null,
   },
-  uploaded_files: [],
+  uploaded_files: <any>[],
   contractorInfo: {
     id: 0,
     username: "",
@@ -189,25 +141,110 @@ const delteSheetAlertData = ref({
     "After deleting this Sheet all tasks created by this sheet will be deleted permanently",
 });
 
-const deleteSheetTasks = () => {
-  try {
-    loading.value = true;
-    const resp = api.patch(
-      `/api/project/${projectId.value}/delete-doc-tasks/`,
-      {
-        document_name: sheetNameDeleteTobe.value,
-      }
-    );
-    console.log(resp);
-    getProject();
-    notyf.error("All Tasks will be deleted that are created by Sheet!");
-    loading.value = false;
-  } catch (err) {
-    console.log(err);
-  } finally {
-    getProject();
-  }
-};
+const completionOptions = shallowRef({
+  series: [
+    {
+      name: "Pending",
+      data: [31, 40, 28, 51, 42, 109, 100],
+    },
+    {
+      name: "Completed",
+      data: [11, 32, 45, 32, 34, 52, 41],
+    },
+    {
+      name: "Blocked",
+      data: [78, 53, 36, 10, 14, 5, 2],
+    },
+  ],
+  chart: {
+    height: 295,
+    type: "area",
+    toolbar: {
+      show: false,
+    },
+  },
+  colors: [themeColors.accent, themeColors.info, themeColors.primary],
+  legend: {
+    position: "top",
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    width: [2, 3, 5],
+    curve: "smooth",
+  },
+  xaxis: {
+    type: "date",
+    categories: [
+      "2020-09-19",
+      "2020-09-20",
+      "2020-09-21",
+      "2020-09-22",
+      "2020-09-23",
+      "2020-09-24",
+      "2020-09-25",
+    ],
+  },
+  tooltip: {
+    x: {
+      format: "dd/MM/yy HH:mm",
+    },
+  },
+});
+
+const gaugeOptions = shallowRef({
+  // series: [5, 6],
+  series: [projectActiveTasks.value, projectCompletedTasks.value],
+  chart: {
+    height: 220,
+    type: "radialBar",
+    offsetY: -10,
+  },
+  colors: [themeColors.accent, themeColors.primary],
+  plotOptions: {
+    radialBar: {
+      startAngle: -135,
+      endAngle: 135,
+      inverseOrder: true,
+      dataLabels: {
+        show: true,
+        name: {
+          show: true,
+          fontSize: "14px",
+          fontWeight: 500,
+          offsetY: -10,
+        },
+        value: {
+          show: true,
+          fontWeight: 600,
+          color: themeColors.lightText,
+          fontSize: "16px",
+          offsetY: -5,
+        },
+        total: {
+          value: 30,
+          show: true,
+          fontSize: "14px",
+          fontWeight: 500,
+          color: themeColors.lightText,
+        },
+      },
+      hollow: {
+        margin: 15,
+        size: "75%",
+      },
+      track: {
+        strokeWidth: "30%",
+      },
+    },
+  },
+
+  stroke: {
+    lineCap: "round",
+  },
+  labels: ["Active", "Completed"],
+});
 
 const projectId = ref("");
 
@@ -476,6 +513,13 @@ const uploadTasksSheet = async (tasksFile: any) => {
     console.log(err);
   }
 };
+const getCompletedTasks = (total: any) => {
+  projectCompletedTasks.value = total;
+};
+
+const getAllActiveTasks = (total: any) => {
+  projectActiveTasks.value = total;
+};
 
 onMounted(() => {
   projectId.value = route.params.id;
@@ -533,6 +577,7 @@ onMounted(() => {
               Tasks
             </p>
           </div>
+
           <div class="cta h-hidden-tablet-p">
             <div class="media-flex inverted-text">
               <i aria-hidden="true" class="lnil lnil-crown-alt-1" />
@@ -567,91 +612,11 @@ onMounted(() => {
 
       <div class="column is-8">
         <div class="dashboard-card has-margin-bottom">
-          <div class="card-head">
-            <h3 class="dark-inverted">Active Projects</h3>
-            <a class="action-link" tabindex="0">View All</a>
-          </div>
-          <div class="active-projects">
-            <!--Project-->
-            <VBlock
-              title="Delivery App Project"
-              subtitle="Updated 30m ago"
-              center
-            >
-              <template #icon>
-                <VAvatar
-                  picture="/demo/photos/apps/1.jpg"
-                  badge="/images/icons/stacks/illustrator.svg"
-                  size="medium"
-                  squared
-                />
-              </template>
-              <template #action>
-                <VAvatarStack :avatars="avatarStack1" size="small" />
-                <ProjectWidgetDropdown />
-              </template>
-            </VBlock>
-
-            <!--Project-->
-            <VBlock
-              title="Health and Fitness Dashboard"
-              subtitle="Updated 5h ago"
-              center
-            >
-              <template #icon>
-                <VAvatar
-                  picture="/demo/photos/apps/2.png"
-                  badge="/images/icons/stacks/reactjs.svg"
-                  size="medium"
-                  squared
-                />
-              </template>
-              <template #action>
-                <VAvatarStack :avatars="avatarStack2" size="small" />
-                <ProjectWidgetDropdown />
-              </template>
-            </VBlock>
-
-            <!--Project-->
-            <VBlock
-              title="Learning Tracker Dashboard"
-              subtitle="Updated 7h ago"
-              center
-            >
-              <template #icon>
-                <VAvatar
-                  picture="/demo/photos/apps/3.png"
-                  badge="/images/icons/stacks/angular.svg"
-                  size="medium"
-                  squared
-                />
-              </template>
-              <template #action>
-                <VAvatarStack :avatars="avatarStack3" size="small" />
-                <ProjectWidgetDropdown />
-              </template>
-            </VBlock>
-
-            <!--Project-->
-            <VBlock
-              title="Banking App Dashboard"
-              subtitle="Updated 10h ago"
-              center
-            >
-              <template #icon>
-                <VAvatar
-                  picture="/demo/photos/apps/4.png"
-                  badge="/images/icons/stacks/js.svg"
-                  size="medium"
-                  squared
-                />
-              </template>
-              <template #action>
-                <VAvatarStack :avatars="avatarStack4" size="small" />
-                <ProjectWidgetDropdown />
-              </template>
-            </VBlock>
-          </div>
+          <ProjectFiles
+            :projectId="route.params.id"
+            :files="projectData.uploaded_files"
+            @update:on-upload-file="getProject"
+          />
         </div>
 
         <div class="dashboard-card">
@@ -668,7 +633,7 @@ onMounted(() => {
           />
         </div>
 
-        <div class="dashboard-card">
+        <!-- <div class="dashboard-card">
           <div class="card-head">
             <h3 class="dark-inverted">Team Efficiency</h3>
             <a class="action-link" tabindex="0">Reports</a>
@@ -680,49 +645,17 @@ onMounted(() => {
             :series="barOptions.series"
             :options="barOptions"
           />
-        </div>
+        </div> -->
       </div>
 
       <div class="column is-4">
-        <div class="dashboard-card">
-          <div class="card-head">
-            <h3 class="dark-inverted">Client Information</h3>
-            <a class="action-link" tabindex="0">Edit</a>
-          </div>
-          <div class="active-team">
-            <ul class="user-list" v-if="projectData.client">
-              <li>
-                <div>
-                  <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
-                    <VAvatar :picture="projectData.client.avatar" />
-                    <template #content>
-                      <UserPopoverContent :user="popovers.user18" />
-                    </template>
-                  </Tippy>
-                </div>
-                <div class="user-list-info">
-                  <div class="name dark-inverted">
-                    {{ projectData.client.username }}
-                  </div>
-                  <div class="position">{{ projectData.client.email }}</div>
-                </div>
-                <div class="user-list-icons">
-                  <a><i aria-hidden="true" class="fas fa-phone" /></a>
-                  <a><i aria-hidden="true" class="fas fa-video" /></a>
-                </div>
-              </li>
-            </ul>
-            <ul class="user-list" v-else>
-              <div class="user-list-info">
-                <div class="name dark-inverted">No Client Info Added yet</div>
-              </div>
-            </ul>
-          </div>
-        </div>
+        <!-- <TasksCompletionChart :completedTasks="projectCompletedTasks" /> -->
+
+        <!-- manager card -->
         <div class="dashboard-card">
           <div class="card-head">
             <h3 class="dark-inverted">Assigned Manager</h3>
-            <a class="action-link" tabindex="0">Edit</a>
+            <a class="action-link" tabindex="0"></a>
           </div>
           <div class="active-team">
             <ul class="user-list" v-if="projectData.managers.length > 0">
@@ -752,10 +685,71 @@ onMounted(() => {
             </ul>
           </div>
         </div>
+
+        <!-- Client info -->
+        <div class="dashboard-card">
+          <div class="card-head">
+            <h3 class="dark-inverted">Client Information</h3>
+            <a @click="toggleAddClient" class="action-link" tabindex="0"
+              >{{ showAddClient ? "Close" : "Edit" }}
+            </a>
+          </div>
+          <div class="active-team">
+            <ul class="user-list" v-if="projectData.client">
+              <li>
+                <div>
+                  <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
+                    <VAvatar :picture="projectData.client.avatar" />
+                    <template #content>
+                      <UserPopoverContent :user="popovers.user18" />
+                    </template>
+                  </Tippy>
+                </div>
+                <div class="user-list-info">
+                  <div class="name dark-inverted">
+                    {{ projectData.client.username }}
+                  </div>
+                  <div class="position">{{ projectData.client.email }}</div>
+                </div>
+                <div class="user-list-icons">
+                  <a><i aria-hidden="true" class="fas fa-phone" /></a>
+                  <a><i aria-hidden="true" class="fas fa-video" /></a>
+                </div>
+              </li>
+            </ul>
+            <ul class="user-list" v-else>
+              <div class="user-list-info">
+                <div class="name dark-inverted">No Client Info Added yet</div>
+              </div>
+            </ul>
+            <div v-if="showAddClient">
+              <VField>
+                <VLabel>Select client</VLabel>
+                <VControl>
+                  <VSelect v-model="projectData.client" @change="editProject">
+                    <VOption value=""> Clients </VOption>
+                    <VOption
+                      v-for="client in clientsList"
+                      :key="client.id"
+                      :value="client.id"
+                      value="Superman"
+                    >
+                      {{ client.username }}
+                    </VOption>
+                  </VSelect>
+                </VControl>
+              </VField>
+            </div>
+          </div>
+        </div>
+
+        <!-- contractor card -->
         <div class="dashboard-card">
           <div class="card-head">
             <h3 class="dark-inverted">Contractor Information</h3>
-            <a class="action-link" tabindex="0">Edit</a>
+            <a @click="toggleAddContractor" class="action-link" tabindex="0">{{
+              showAddContractor ? "Close" : "Edit"
+            }}</a>
           </div>
           <div class="active-team">
             <ul class="user-list" v-if="projectData.contractor">
@@ -787,6 +781,25 @@ onMounted(() => {
                 </div>
               </div>
             </ul>
+            <div v-if="showAddContractor">
+              <VField>
+                <VLabel>Select contractor</VLabel>
+                <VControl>
+                  <VSelect
+                    v-model="projectData.contractor"
+                    @change="editProject"
+                  >
+                    <VOption
+                      v-for="contractor in contarctorList"
+                      :key="contractor.id"
+                      :value="contractor.id"
+                    >
+                      {{ contractor.username }}
+                    </VOption>
+                  </VSelect>
+                </VControl>
+              </VField>
+            </div>
           </div>
         </div>
 
@@ -837,7 +850,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="dashboard-card">
+        <!-- <div class="dashboard-card">
           <VPlaceholderSection
             title="Go Premium"
             subtitle="Unlock more features and business tools by going premium"
@@ -859,16 +872,20 @@ onMounted(() => {
               <VButton color="primary" elevated> Go Premium </VButton>
             </template>
           </VPlaceholderSection>
-        </div>
+        </div> -->
       </div>
       <div class="column is-12">
-        <ProjectsTasks :projectID="route.params.id" />
+        <ProjectsTasks
+          @update:completedTasks="getCompletedTasks"
+          @update:active-tasks="getAllActiveTasks"
+          :projectID="route.params.id"
+        />
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "/@src/scss/abstracts/all";
 
 .is-navbar {

@@ -20,24 +20,27 @@ const api = useApi();
 const projects = listData.projects as ProjectData[];
 const notyf = useNotyf();
 const currentPage = ref(1);
+const startDate = ref("");
+
 const props = withDefaults(
   defineProps<{
-    activeTab?: "active" | "closed";
-    projectID?: "";
+    projectID?: string;
   }>(),
   {
-    activeTab: "active",
+    projectID: "",
   }
 );
 
 const emits = defineEmits<{
-  (e: "update-getAllTasks", value: void): null;
+  (e: "update:getAllTasks", value: null): void;
+  (e: "update:completedTasks", value: number): void;
+  (e: "update:activeTasks", value: number): void;
 }>();
 
 const editmodalTitle = ref("Edit Project");
 const modalTitle = ref("Add Task");
 const filters = ref("");
-const tab = ref(props.activeTab);
+const tab = ref("active");
 const showDropdown = ref(false);
 const currentTask = ref(0);
 const isOpen = ref(false);
@@ -52,7 +55,7 @@ const taskData = ref({});
 const selectedManagers = ref([]);
 const preview = ref("");
 const editProjectId = ref("");
-const editTaskId = ref("");
+const taskToBeEdit = ref("");
 const currentProjectId = ref("");
 
 const Taskstatus = ref([
@@ -169,10 +172,6 @@ const getProjectTasks = async () => {
     loading.value = true;
     const resp = await api.get(`api/task/${props.projectID}/project/`);
     projectTasks.value = resp.data;
-    projectTasks.value.map((task) => ({
-      ...task,
-      isOpen: false,
-    }));
     console.log(resp.data);
     loading.value = false;
   } catch (err) {
@@ -184,6 +183,7 @@ const totalActiveTasks = computed(() => {
   let totalActiveTasks = projectTasks.value.filter(
     (task) => task.status == "active"
   );
+  emits("update:completedTasks", totalActiveTasks.length);
   return totalActiveTasks.length;
 });
 
@@ -191,6 +191,7 @@ const totalPendingTasks = computed(() => {
   let totalPendingTasks = projectTasks.value.filter(
     (task) => task.status == "pending"
   );
+  emits("update:activeTasks", totalPendingTasks.length);
   return totalPendingTasks.length;
 });
 
@@ -201,15 +202,15 @@ const totalCompletedTasks = computed(() => {
   return totalCompletedTasks.length;
 });
 
-const openTaskForm = (taskId: any = "") => {
+const openTaskForm = (taskId: any) => {
+  taskToBeEdit.value = taskId;
   isTaskFormOpen.value = true;
-  editTaskId.value = taskId;
 };
 const closeTaskForm = () => {
   getProjectTasks();
   isTaskFormOpen.value = false;
-  currentTask.value = 0;
-  editTaskId.value = ""; // Reset the editTaskId after closing
+  // currentTask.value = 0;
+  taskToBeEdit.value = "";
 };
 
 const updateTaskStatus = async (taskId: any, taskStatus: any) => {
@@ -219,9 +220,9 @@ const updateTaskStatus = async (taskId: any, taskStatus: any) => {
       status: taskStatus,
       schedule_mode: localStorage.getItem("isScheduleMode"),
     });
+    getProjectTasks();
     notyf.success(`Task set to ${taskStatus} successfully`);
     currentTask.value = 0;
-    getProjectTasks();
     loading.value = false;
   } catch (err) {
     console.log(err);
@@ -259,7 +260,7 @@ const getWorkershandler = async () => {
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return projectTasks.value;
+    return projectTasks.value.filter((tasks) => tasks.status != "completed");
   } else {
     const filterRe = new RegExp(filters.value, "i");
 
@@ -308,7 +309,7 @@ onMounted(() => {
           />
         </VControl>
         <VButton
-          @click="openTaskForm"
+          @click="openTaskForm()"
           color="primary"
           icon="fas fa-plus"
           elevated
@@ -718,9 +719,10 @@ onMounted(() => {
     v-if="isTaskFormOpen"
     :projectID="props.projectID"
     :isOpen="isTaskFormOpen"
-    :closeModal="closeTaskForm"
-    :taskId="editTaskId"
-    @update:modalHandler="isTaskFormOpen = false"
+    :taskIdSelected="taskToBeEdit"
+    :startDate="startDate"
+    @update:modalHandler="closeTaskForm"
+    @update:OnSuccess="getProjectTasks"
   />
 </template>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, shallowRef, watch } from "vue";
-import { useApi, useDeviceApi } from "/@src/composable/useAPI";
+import { useApi } from "/@src/composable/useAPI";
 
 let map;
 let directionsService;

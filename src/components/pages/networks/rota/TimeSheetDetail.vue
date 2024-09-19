@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, shallowRef, watch } from "vue";
-import { useApi, useDeviceApi } from "/@src/composable/useAPI";
+import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useThemeColors } from "/@src/composable/useThemeColors";
 

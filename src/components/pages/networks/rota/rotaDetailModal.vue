@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, shallowRef, watch } from "vue";
-import { useApi, useDeviceApi } from "/@src/composable/useAPI";
+import { useApi } from "/@src/composable/useAPI";
 import { useThemeColors } from "/@src/composable/useThemeColors";
 import { close } from "fs-extra";
 import { useNotyf } from "/@src/composable/useNotyf";
@@ -99,12 +99,12 @@ const props = defineProps<{
   timeSheetDetailModal: boolean;
   timesheetId: string | number;
   rotaId: string | number;
-  getRota:Function;
+  getRota: Function;
 }>();
 
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
-  props.getRota()
+  props.getRota();
 };
 
 const getRotaDetailHandler = async () => {

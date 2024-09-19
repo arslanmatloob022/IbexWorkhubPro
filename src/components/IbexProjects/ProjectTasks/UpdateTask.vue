@@ -8,25 +8,22 @@ const notyf = useNotyf();
 const api = useApi();
 const allWorkers = ref([]);
 const loading = ref(false);
+let selectWorkersSlot = ref<any>([]);
 const selectedWorkers = ref([]);
 
-const props = defineProps<{
-  isOpen: {
-    type: boolean;
-  };
-  taskId: {
-    type: Number;
-    default: null;
-  };
-  projectID: {
-    type: Number;
-    default: null;
-  };
-  startDate: {
-    type: String;
-    default: null;
-  };
-}>();
+const props = withDefaults(
+  defineProps<{
+    isOpen?: boolean;
+    taskIdSelected?: string;
+    projectID?: string;
+    startDate?: string;
+  }>(),
+  {
+    projectID: "",
+    startDate: "",
+    taskIdSelected: undefined,
+  }
+);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -54,20 +51,16 @@ const TaskStatus = [
   { value: "cancelled", name: "Cancelled" },
 ];
 
-const modalTitle = computed(() => (props.taskId ? "Edit Task" : "Add Task"));
-
-const removeWorker = (index: any) => {
-  selectedWorkers.value.splice(index, 1);
-};
-
 const fetchTaskData = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/task/${props.taskId ? props.taskId : ""}`
+      `/api/task/${props.taskIdSelected ? props.taskIdSelected : ""}`
     );
     taskData.value = response.data;
-    selectedWorkers.value = response.data.workers;
+    selectWorkersSlot.value = response.data.workers.map(
+      (worker: any) => worker.id
+    );
   } catch (err) {
     console.log(err);
   } finally {
@@ -75,21 +68,21 @@ const fetchTaskData = async () => {
   }
 };
 
+watch(selectWorkersSlot.value, () => {
+  console.log("data type", selectWorkersSlot);
+});
+
 const editTaskHandler = async () => {
   try {
     loading.value = true;
-    let workerIDs = selectedWorkers.value.map((item) => item.id);
-    taskData.value.workers = workerIDs;
-    let formData = convertToFormData(taskData.value, []);
-
-    if (props.projectID) {
-      // store.state.isScheduleMode
+    taskData.value.workers = selectWorkersSlot.value;
+    let formData = convertToFormData(taskData.value, ["workers"]);
+    if (!props.taskIdSelected) {
       formData.append("schedule_mode", "false");
       formData.append("project", `${props.projectID}`);
       await api.post(`/api/task/`, formData);
       notyf.success("Task added successfully");
     } else {
-      // store.state.isScheduleMode
       formData.append("schedule_mode", "false");
       await api.patch(`/api/task/${taskData.value.id}/`, formData);
       notyf.success("Task updated successfully");
@@ -107,7 +100,7 @@ const editTaskHandler = async () => {
 const deleteTask = async () => {
   try {
     loading.value = true;
-    const response = await api.delete(`/api/task/${props.taskId}/`);
+    const response = await api.delete(`/api/task/${props.taskIdSelected}/`);
     console.log(response);
     notyf.error("Task deleted successfully");
     closeModalHandler();
@@ -123,7 +116,12 @@ const getWorkershandler = async () => {
   try {
     loading.value = true;
     const response = await api.get("/api/users/by-role-option/worker/", {});
-    allWorkers.value = response.data;
+    allWorkers.value = response.data.map((worker) => {
+      return {
+        value: worker.id,
+        label: worker.username,
+      };
+    });
   } catch (err) {
     console.log(err);
   } finally {
@@ -137,7 +135,7 @@ const closeModalHandler = () => {
 };
 
 onMounted(() => {
-  if (props.taskId) {
+  if (props.taskIdSelected) {
     fetchTaskData();
   }
   getWorkershandler();
@@ -152,14 +150,14 @@ onMounted(() => {
   <VModal
     is="form"
     :open="props.isOpen"
-    :title="props.taskId ? 'Update Task' : 'Add New Task'"
+    :title="props.taskIdSelected ? 'Update Task' : 'Add Task'"
     size="big"
     actions="right"
     @submit.prevent="editTaskHandler"
     @close="closeModalHandler"
   >
     <template #content>
-      <div class="modal-form columns cu-all-input is-multiline">
+      <div class="modal-form columns is-multiline">
         <div class="field column is-6 mb-0">
           <VField>
             <VLabel>Title: *</VLabel>
@@ -267,7 +265,7 @@ onMounted(() => {
         </div>
 
         <!-- external id -->
-        <div class="field column is-6 mb-0">
+        <!-- <div class="field column is-6 mb-0">
           <VField>
             <VLabel>Color</VLabel>
             <VControl>
@@ -278,59 +276,28 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-        </div>
+        </div> -->
 
         <div class="field column is-6 mb-0">
           <label>Select workers * </label>
-          <VField>
-            <VControl>
-              <VSelect
-                v-model="selectedWorkers"
-                multiple
-                required
-                name="status"
-                class="is-rounded"
-              >
-                <VOption
-                  v-for="worker in allWorkers"
-                  :key="worker.id"
-                  :value="worker"
-                  >{{ worker.username }}
-                </VOption>
-              </VSelect>
-            </VControl>
-          </VField>
-          <!-- <VField v-slot="{ id }">
-            <VLabel>Method</VLabel>
+          <VField v-slot="{ id }">
             <VControl>
               <Multiselect
-                v-model="selectedWorkers"
+                v-model="selectWorkersSlot"
+                required
                 :attrs="{ id }"
-                :options="[
-                  'LVL 1 Security warehouse',
-                  'LVL 2 Security warehouse',
-                  'LVL 3 Security warehouse',
-                ]"
-                placeholder="Select a storage"
+                mode="tags"
+                :searchable="true"
+                :create-tag="true"
+                :options="allWorkers"
+                placeholder="Add workers"
               />
             </VControl>
-          </VField> -->
-        </div>
-        <div class="field column is-6 mb-0">
-          <div class="flex-grid fullWidth">
-            <VTags
-              v-for="(worker, index) in selectedWorkers"
-              :key="index"
-              addons
-            >
-              <VTag :label="worker.username" color="primary" />
-              <VTag @click="removeWorker(index)" remove />
-            </VTags>
-          </div>
+          </VField>
         </div>
 
         <!-- address -->
-        <div class="field column is-12 mb-0">
+        <div class="field column is-6 mb-0">
           <VField>
             <VLabel>Description</VLabel>
             <VControl>
@@ -345,12 +312,24 @@ onMounted(() => {
         </div>
 
         <!-- Industry -->
-        <div class="field column is-6 mb-0"></div>
+        <div class="field column is-6 mb-0">
+          <VField>
+            <VLabel>Internal Notes</VLabel>
+            <VControl>
+              <VTextarea
+                type="text"
+                rows="3"
+                :placeholder="loading ? 'Loading...' : 'Internal notes'"
+                v-model="taskData.internalNotes"
+              />
+            </VControl>
+          </VField>
+        </div>
       </div>
     </template>
     <template #action>
       <VButton
-        v-if="props.taskId"
+        v-if="props.taskIdSelected"
         @click="deleteTask"
         class="is-left"
         color="danger"
@@ -358,7 +337,7 @@ onMounted(() => {
         >Delete</VButton
       >
       <VButton type="submit" color="primary" raised>{{
-        props.taskId ? "Update Task" : "Add Task"
+        props.taskIdSelected ? "Update Task" : "Add Task"
       }}</VButton>
     </template>
   </VModal>

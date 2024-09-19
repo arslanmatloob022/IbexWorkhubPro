@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { useApi, useDeviceApi } from "/@src/composable/useAPI";
+import { useApi } from "/@src/composable/useAPI";
 import { TimeSheetInterFace } from "/@src/composable/useInterfaces";
 import { formatDate, formatDateTime } from "/@src/composable/useSupportElement";
 
 const api = useApi();
-const deviceapi = useDeviceApi();
 const Loading = ref(false);
 const timeSheetDetailModal = ref(false);
 const timesheetID = ref(0);
@@ -18,7 +17,7 @@ const props = defineProps({
 const getAllWorkerProfileActivities = async () => {
   try {
     Loading.value = true;
-    const resp = await deviceapi.get(`/api/timesheetdata/worker/${props.id}/`);
+    const resp = await api.get(`/api/timesheetdata/worker/${props.id}/`);
     timesheet.value = resp.data;
     console.log("timesheeeet", timesheet.value);
     Loading.value = false;
@@ -69,7 +68,7 @@ const ringColors = <any>{
 //       timesheet_officerActivity_LineDataArray = timesheet_officerActivity_dataArray;
 
 onMounted(() => {
-  getAllWorkerProfileActivities();
+  // getAllWorkerProfileActivities();
 });
 </script>
 
@@ -123,10 +122,9 @@ onMounted(() => {
                           {{
                             item.bookOnLocation &&
                             item.bookOnLocation.length > 90
-                              ? item.bookOnLocation.slice(0, 90)+"..."
+                              ? item.bookOnLocation.slice(0, 90) + "..."
                               : item.bookOnLocation
                           }}
-                         
                         </span>
                       </div>
                     </div>
@@ -156,7 +154,7 @@ onMounted(() => {
                           {{
                             item.bookOffLocation &&
                             item.bookOffLocation.length > 90
-                              ? item.bookOffLocation.slice(0, 90)+"..."
+                              ? item.bookOffLocation.slice(0, 90) + "..."
                               : item.bookOffLocation
                           }}
                         </span>

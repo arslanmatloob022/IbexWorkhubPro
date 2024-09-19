@@ -1,1 +1,0 @@
-import{J as s,v as t,x as a,U as e,K as n,F as r,z as o,y as u}from"./index-a3511ab8.js";const c={class:"auth-wrapper"};const d=s({},[["render",function(s,n){return t(),a("div",c,[e(s.$slots,"default")])}]]);const l=s({},[["render",function(s,a){const e=n("RouterView"),c=d;return t(),r(c,null,{default:o((()=>[u(e)])),_:1})}]]);export{l as default};

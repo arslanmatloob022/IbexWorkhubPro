@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { useApi, useDeviceApi } from "/@src/composable/useAPI";
+import { useApi } from "/@src/composable/useAPI";
 import { TimeSheetInterFace } from "/@src/composable/useInterfaces";
 import { formatDate, formatDateTime } from "/@src/composable/useSupportElement";
 
 const api = useApi();
-const deviceapi = useDeviceApi();
 const Loading = ref(false);
 const timeSheetDetailModal = ref(false);
 const timesheetID = ref(0);

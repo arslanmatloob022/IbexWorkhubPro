@@ -234,11 +234,11 @@ watchEffect(() => {
           </div>
 
           <div class="" style="position: absolute; bottom: 3rem; left: 31rem">
-            <img
+            <!-- <img
               src="/arrow3x.png"
               alt="arrow"
               style="width: 32px; height: 36px; rotate: 360deg"
-            />
+            /> -->
           </div>
           <!-- Site Details -->
           <div

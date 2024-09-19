@@ -1,1 +1,0 @@
-import{e as s,L as a,o as e,v as n,x as o}from"./index-a3511ab8.js";const t=s({__name:"index",setup(s){const t=a();return e((()=>{t.push("/sidebar/company")})),(s,a)=>(n(),o("div"))}});export{t as default};
