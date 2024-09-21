@@ -301,7 +301,7 @@ onMounted(() => {
   <div>
     <div class="list-flex-toolbar is-reversed">
       <VButtons>
-        <VControl class="mr-2" icon="feather:search">
+        <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
           <input
             v-model="filters"
             class="input custom-text-filter"
@@ -345,29 +345,6 @@ onMounted(() => {
     </div>
 
     <div class="flex-list-wrapper flex-list-v2">
-      <!--List Empty Search Placeholder -->
-      <VPlaceholderPage
-        v-if="tab === 'active' && filteredData.length === 0"
-        title="We couldn't find any matching results."
-        subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
-        larger
-      >
-        <template #image>
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/search-4.svg"
-            alt=""
-          />
-          <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-            alt=""
-          />
-        </template>
-      </VPlaceholderPage>
-
       <!--Active Tab-->
       <div v-if="tab === 'active'" class="tab-content is-active">
         <div class="all-projects">
@@ -531,9 +508,9 @@ onMounted(() => {
           <!--Empty placeholder-->
           <VPlaceholderPage
             v-else
-            title="No closed projects."
-            subtitle="Looks like you don't have any closed project yet. When you'll
-                start closing off projects, they will be showing up in here."
+            title="There is no task added on this projects."
+            subtitle="Looks like you don't have any task on this project yet. When you'll
+                start creating tasks of this project, they will be showing up in here."
           >
             <template #image>
               <img

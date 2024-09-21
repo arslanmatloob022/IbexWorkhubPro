@@ -179,10 +179,8 @@ const optionsSingle = [
       <!--List Empty Search Placeholder -->
       <VPlaceholderPage
         :class="[filteredData.length !== 0 && 'is-hidden']"
-        title="We couldn't find any matching results."
-        subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
+        title="There is not file uploaded"
+        subtitle="There is no file uploaded on this project to create the tasks. As you will upload the file and that will appear here on the spot"
         larger
       >
         <template #image>

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useViewWrapper } from "/@src/stores/viewWrapper";
+import { useViewWrapper } from '/@src/stores/viewWrapper'
 
-const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Job Info");
+const viewWrapper = useViewWrapper()
+viewWrapper.setPageTitle('Partner Info')
 
 useHead({
-  title: "Jobs - Arez",
-});
+  title: 'Partners - Arez',
+})
 </script>
 
 <template>
-  <div>
-    <JobsForms />
+  <div class="">
+    <SupplierProfile/>
   </div>
 </template>

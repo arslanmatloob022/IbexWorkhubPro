@@ -21,6 +21,8 @@ export interface UserData extends VAvatarProps {
 }
 
 const api = useApi();
+const isOpenModal = ref(false);
+const currentSelectId = ref("");
 const users = listData.users as UserData[];
 const managersData = ref([
   {
@@ -45,7 +47,7 @@ const userData = ref({
 
   role: "manager",
   phoneNumber: "",
-  avatar: File | null | String,
+  avatar: null as File | null | String,
 });
 
 const loading = ref(false);
@@ -55,7 +57,7 @@ const getManagershandler = async () => {
     loading.value = true;
     const response = await api.get("/api/users/by-role/manager/", {});
     managersData.value = response.data;
-    console.log("data", managersData);
+    isOpenModal.value = false;
   } catch (err) {
     console.log(err);
   } finally {
@@ -63,6 +65,10 @@ const getManagershandler = async () => {
   }
 };
 
+const openUserModal = (id: any = "") => {
+  currentSelectId.value = id;
+  isOpenModal.value = !isOpenModal.value;
+};
 const filters = ref("");
 
 const filteredData = computed(() => {
@@ -103,8 +109,13 @@ onMounted(() => {
       </div>
 
       <div class="buttons">
-        <VButton color="primary" icon="fas fa-check" elevated>
-          Approve
+        <VButton
+          @click="openUserModal()"
+          color="primary"
+          icon="fas fa-plus"
+          elevated
+        >
+          Manager
         </VButton>
       </div>
     </div>
@@ -173,9 +184,10 @@ onMounted(() => {
                       <span>Replies</span>
                     </div>
                     <div class="separator" />
-                    <div class="stat">
+                    <div @click="openUserModal(item.id)" class="stat">
                       <span>{{ item.is_active }}</span>
-                      <span>Posts</span>
+                      <!-- <span>Posts</span> -->
+                      <span>Edit</span>
                     </div>
                   </div>
 
@@ -206,6 +218,14 @@ onMounted(() => {
       />
     </div>
   </div>
+  <AddUpdateUser
+    v-if="isOpenModal"
+    :is-modal-open="isOpenModal"
+    user-role="manager"
+    :user-id="currentSelectId"
+    @update:close-modal-handler="isOpenModal = false"
+    @update:action-update-handler="getManagershandler"
+  />
 </template>
 
 <style lang="scss">

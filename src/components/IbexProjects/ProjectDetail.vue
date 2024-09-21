@@ -25,6 +25,7 @@ const notyf = useNotyf();
 const route = useRoute();
 const router = useRouter();
 const democheck = ref(["value_2"]);
+const tab = ref("detail");
 
 const Loading = ref(false);
 const showAddClient = ref(false);
@@ -532,6 +533,7 @@ onMounted(() => {
 <template>
   <div class="personal-dashboard personal-dashboard-v2">
     <!--Personal Dashboard V2-->
+
     <div class="columns is-multiline">
       <div class="column is-12">
         <div class="dashboard-header">
@@ -609,7 +611,34 @@ onMounted(() => {
           </div>
         </div>
       </div>
+    </div>
+    <div class="tabs-inner">
+      <div class="tabs is-boxed" slider>
+        <ul>
+          <li :class="[tab === 'detail' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'detail'"
+              @click="tab = 'detail'"
+              ><span>Project info</span></a
+            >
+          </li>
+          <li :class="[tab === 'tasks' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'tasks'"
+              @click="tab = 'tasks'"
+              ><span>Tasks</span></a
+            >
+          </li>
+          <li class="tab-naver" />
+        </ul>
+      </div>
+    </div>
 
+    <div v-if="tab === 'detail'" class="columns is-multiline">
       <div class="column is-8">
         <div class="dashboard-card has-margin-bottom">
           <ProjectFiles
@@ -874,6 +903,8 @@ onMounted(() => {
           </VPlaceholderSection>
         </div> -->
       </div>
+    </div>
+    <div v-if="tab === 'tasks'" class="columns is-multiline">
       <div class="column is-12">
         <ProjectsTasks
           @update:completedTasks="getCompletedTasks"

@@ -122,33 +122,27 @@ const addNewProject = async () => {
         continue;
       }
 
-      // Handle both `contractorInfo` and `clientInfo` by stringifying them
       if (dataKey === "contractorInfo" || dataKey === "clientInfo") {
         formData.append(dataKey, JSON.stringify(projectData.value[dataKey]));
-      }
-      // Skip empty or null values
-      else if (
+      } else if (
         projectData.value[dataKey] !== "" &&
         projectData.value[dataKey] !== null
       ) {
-        // Handle managers as an array of UUIDs or IDs
         if (
           dataKey === "managers" &&
           Array.isArray(projectData.value.managers)
         ) {
           projectData.value.managers.forEach((manager: any) => {
-            // Ensure you are appending the UUID or ID field of the manager object
             if (manager.id) {
               formData.append("managers", manager.id);
             }
           });
-        }
-        // Handle contractor by appending the UUID or ID
-        else if (dataKey === "contractor" && projectData.value.contractor.id) {
+        } else if (
+          dataKey === "contractor" &&
+          projectData.value.contractor.id
+        ) {
           formData.append("contractor", projectData.value.contractor.id);
-        }
-        // Handle images or other types of file uploads
-        else if (
+        } else if (
           dataKey !== "image" ||
           typeof projectData.value.image === "object"
         ) {
@@ -159,7 +153,6 @@ const addNewProject = async () => {
 
     console.log("form data", formData);
 
-    // Send the formData to the API
     if (newId.value) {
       const resp = await api.patch(`/api/project/${newId.value}/`, formData);
       notyf.info("Information added");
@@ -168,8 +161,6 @@ const addNewProject = async () => {
       newId.value = response.data.id;
       notyf.success("Project added successfully");
     }
-    // Optionally redirect to the projects page
-    // router.push("/projects");
   } catch (err) {
     console.error(err);
     notyf.error("Something went wrong");

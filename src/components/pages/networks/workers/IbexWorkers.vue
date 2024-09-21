@@ -1,7 +1,33 @@
 <script setup lang="ts">
+import { useApi } from "/@src/composable/useAPI";
+import { useNotyf } from "/@src/composable/useNotyf";
+import { useUserSession } from "/@src/stores/userSession";
 import { users } from "/@src/data/layouts/card-grid-v1";
 
+const api = useApi();
+const notyf = useNotyf();
+const userSession = useUserSession();
+const showPassword = ref(false);
+const managersData = ref([]);
 const filters = ref("");
+const selectedIdToDelete = ref("");
+
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+const workersData = ref({
+  username: "",
+  email: "",
+  password: "",
+  is_sentMail: false,
+  status: "",
+  role: "worker",
+  phoneNumber: "",
+  avatar: null as File | null | String,
+});
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -25,6 +51,156 @@ const optionsSingle = [
   "Software Eng.",
   "Business",
 ];
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+const loading = ref(false);
+const selectedIdToChangeStatus = ref(null);
+const selectedStatus = ref(null);
+const preview = ref(null);
+const phoneNumber = ref("");
+const userData = ref({
+  username: "",
+  email: "",
+  password: "",
+  status: "",
+  avatar: null,
+  is_sentMail: false,
+  phoneNumber: "",
+});
+const editModeId = ref(0);
+const modalTitle = ref("");
+
+const openStatusAlert = (user) => {
+  selectedIdToChangeStatus.value = user.id;
+  selectedStatus.value = user.is_active;
+  SweetAlertProps.value.title = "Change Status";
+  SweetAlertProps.value.subtitle = !selectedStatus.value
+    ? "From now this user will be able to login and perform all activities"
+    : "After this User will not be able to login into the system";
+};
+
+const closeUserModalHandler = () => {
+  userData.value.username = "";
+  userData.value.email = "";
+  userData.value.password = "";
+  userData.value.status = "";
+  preview.value = null;
+  phoneNumber.value = "";
+};
+
+const openDeleteModal = (id: any) => {
+  selectedIdToDelete.value = id;
+};
+
+const deletUser = async () => {
+  try {
+    loading.value = true;
+    await api.delete(`/api/users/${selectedIdToDelete.value}/`, {});
+    await getManagershandler();
+    notyf.green("Worker deleted successfully");
+  } catch (err) {
+    console.log(err);
+    notyf.error("Error while deleting");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const openCustomModal = (isEdit = false, manager = {}) => {
+  closeUserModalHandler();
+  if (isEdit) {
+    editModeId.value = manager.id;
+    modalTitle.value = "Edit Worker";
+    userData.username = manager.username;
+    userData.email = manager.email;
+    userData.password = manager.password;
+    userData.avatar = manager.avatar;
+    preview.value = manager.avatar;
+    userData.is_sentMail = manager.is_sentMail;
+    userData.phoneNumber = manager.phoneNumber;
+  } else {
+    editModeId.value = 0;
+    modalTitle.value = "Add Worker";
+  }
+};
+
+const saveAndClose = () => {};
+
+const handleFileChange = (event) => {
+  userData.value.avatar = event.target.files[0];
+  const input = event.target;
+  if (input.files) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.value = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+
+const getManagershandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/worker/", {});
+    managersData.value = response.data;
+    console.log("data", managersData.value);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const addNewManager = async () => {
+  try {
+    loading.value = true;
+
+    let formData = convertToFormData(userData.value, ["avatar"]);
+
+    if (!editModeId.value && userData.value.password) {
+      formData.append("password", userData.value.password);
+    }
+
+    const response = editModeId.value
+      ? await api.patch(`/api/users/${editModeId.value}/`, formData)
+      : await api.post("/api/users/", formData);
+    notyf.green("Worker added or updated successfully");
+
+    saveAndClose();
+    await getManagershandler();
+    console.log(response);
+  } catch (err) {
+    console.log(err);
+    notyf.info(
+      "Enter the information carefully and try again OR user with email already exists"
+    );
+  } finally {
+    loading.value = false;
+  }
+};
+
+const changeUserStatus = async () => {
+  try {
+    const resp = await api.patch(
+      `/api/users/${selectedIdToChangeStatus.value}/`,
+      {
+        is_active: !selectedStatus.value,
+      }
+    );
+    await getManagershandler();
+    notyf.success(
+      !selectedStatus.value
+        ? "Worker set active successfully"
+        : "Worker set inactive successfully"
+    );
+
+    console.log(resp);
+  } catch (err) {
+    console.log(err);
+  }
+};
 </script>
 
 <template>

@@ -356,7 +356,7 @@ onMounted(() => {
       >
         <template #header>
           <div
-            @click="router.push('/sidebar/company')"
+            @click="router.push('/sidebar/dashboard')"
             style="
               width: 280px;
               margin-top: 20px;
@@ -375,13 +375,7 @@ onMounted(() => {
                 cursor: pointer;
               "
               @click="router.push('/sidebar/networks/dashboard')"
-              :src="
-                company.loggedCompany.compnayLogo
-                  ? company.loggedCompany.compnayLogo
-                  : darkmode.isDark
-                  ? '/images/logos/newArezLogo.svg'
-                  : '/images/logos/smallarezdarkversion.svg'
-              "
+              src="/logos/ibexwhite.png"
             />
           </div>
 
@@ -486,22 +480,22 @@ onMounted(() => {
             </RouterLink>
           </li>
           <li>
-            <RouterLink
-              to="/sidebar/dashboard/service-partners"
-              class="single-link"
-            >
+            <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
               <span class="icon">
                 <i class="fas fa-user-friends" aria-hidden="true"></i
               ></span>
-              Service Partners
+              Contractors
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
+            <RouterLink
+              to="/sidebar/dashboard/sub-contractors"
+              class="single-link"
+            >
               <span class="icon">
                 <i class="fas fa-user-tag" aria-hidden="true"></i
               ></span>
-              Contractors
+              Sub Contractors
             </RouterLink>
           </li>
 

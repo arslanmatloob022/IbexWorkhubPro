@@ -31,6 +31,7 @@ declare module 'vue' {
     AddReference: typeof import('./../src/components/pages/AddReference.vue')['default']
     AddRotaModal: typeof import('./../src/components/pages/networks/rota/AddRotaModal.vue')['default']
     AddTeamMember: typeof import('./../src/components/pages/networks/team-members/AddTeamMember.vue')['default']
+    AddUpdateUser: typeof import('./../src/components/IbexUsers/AddUpdateUser.vue')['default']
     AddWorker: typeof import('./../src/components/pages/networks/workers/AddWorker.vue')['default']
     AdminDashboard: typeof import('./../src/components/pages/networks/dashboard/AdminDashboard.vue')['default']
     AdminProfile: typeof import('./../src/components/pages/networks/Personal-Profil/AdminProfile.vue')['default']
