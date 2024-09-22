@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import ProjectDetail from "/@src/components/IbexProjects/ProjectDetail.vue";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Completed Project");
+viewWrapper.setPageTitle("Completed Projects");
 
 useHead({
-  title: "Completed Project",
+  title: "Completed Projects - Ibex",
 });
 </script>
 
@@ -15,6 +14,6 @@ useHead({
     <Teleport to="[data-teleport-bg]">
       <div class="lifestyle-dashboard-bg has-top-nav" />
     </Teleport>
-    <ProjectDetail class="has-navbar-spacing" />
+    <CompletedProjects class="has-navbar-spacing" />
   </div>
 </template>

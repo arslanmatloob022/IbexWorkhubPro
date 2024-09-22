@@ -3,10 +3,10 @@ import ProjectDetail from "/@src/components/IbexProjects/ProjectDetail.vue";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Completed Project");
+viewWrapper.setPageTitle("Projects");
 
 useHead({
-  title: "Completed Project",
+  title: "Projects",
 });
 </script>
 

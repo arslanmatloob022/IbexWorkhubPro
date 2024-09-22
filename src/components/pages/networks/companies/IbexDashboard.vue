@@ -255,11 +255,12 @@ onMounted(() => {
       </div>
     </div>
     <div class="columns is-multiline">
-      <div class="column is-6">
-        <ProjectsCompletionChart />
+      <div class="column is-8">
+        <DashbaordTasksChart />
       </div>
-      <div class="column is-6">
-        <ActiveProjectsChart />
+      <div class="column is-4">
+        <DashBoardTasksPie />
+        <!-- <ActiveProjectsChart /> -->
       </div>
       <div class="column is-12">
         <ProjectsDashboardCalendar />

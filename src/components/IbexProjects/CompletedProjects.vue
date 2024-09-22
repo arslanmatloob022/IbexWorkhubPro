@@ -16,12 +16,6 @@ const HomeRating = ref(4);
 const managerCount = ref(1);
 const projectIdDeleteTobe = ref(0);
 const projects = ref([]);
-const SweetAlertProps = ref({
-  title: "",
-  subtitle: "test",
-  isSweetAlertOpen: false,
-  btntext: "text",
-});
 
 const filteredProjects = ref([
   {
@@ -48,25 +42,11 @@ const filteredProjects = ref([
     },
   },
 ]);
-
-// Define reactive objects
-const ProjectStatuscolor = reactive({
-  pending: "secondary",
-  active: "warning",
-  completed: "success",
-});
-
-const getProjectStatus = reactive({
-  pending: "Pre Construction",
-  active: "Active",
-  completed: "Completed",
-});
-
-const alertData = reactive({
-  icon: "fa fa-warning",
-  alertTitle: "Alert",
-  alertDescription:
-    "After deleting this Project, you will not be able to recover it.",
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
 });
 
 const project = ref({
@@ -95,31 +75,6 @@ const project = ref({
 
 const managers = ref<any>([{ id: 0, avatar: "", email: "", username: "" }]);
 
-// Methods converted to Composition API syntax
-const filterProject = (filterType: string | null) => {
-  if (query.value && filterType == null) {
-    activeFilter.value = "all";
-    filteredProjects.value = projects.value.filter((project) =>
-      project.title.toLowerCase().includes(query.value.toLowerCase())
-    );
-    return;
-  } else if (!query.value && filterType == null) {
-    filteredProjects.value = projects.value;
-    return;
-  } else {
-    query.value = "";
-  }
-  activeFilter.value = filterType;
-  if (activeFilter.value != "all") {
-    const data = projects.value.filter(
-      (project) => project.status == activeFilter.value
-    );
-    filteredProjects.value = data;
-  } else {
-    filteredProjects.value = projects.value;
-  }
-};
-
 const closeProjectModalHandler = () => {
   project.value.title = "";
   project.value.description = "";
@@ -140,7 +95,6 @@ const openDeleteAlert = (id: any) => {
 
 const openCustomModal = () => {
   closeProjectModalHandler();
-  // (refs.customModal as any).openModal();
 };
 
 const openProjectForm = () => {
@@ -166,10 +120,11 @@ const handleFileChange = (event: Event) => {
 const getProjectHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/project/my-projects-or-admin/", {});
-    projects.value = response.data;
-    filteredProjects.value = response.data.filter((project) => {
-      return project.status !== "completed";
+    const response = await api.get("/api/project/completed/", {});
+    let data = response.data;
+
+    projects.value = data.filter((project) => {
+      return project.status == "completed";
     });
   } catch (err) {
     console.log(err);
@@ -182,41 +137,28 @@ const deleteProject = async () => {
   try {
     loading.value = true;
     await api.delete(`/api/project/${projectIdDeleteTobe.value}/`);
+    notyf.success("Project deleted successfully");
+    SweetAlertProps.value.isSweetAlertOpen = false;
     getProjectHandler();
-    notyf.success("Project has been deleted");
   } catch (err) {
     console.log(err);
   } finally {
-    getProjectHandler();
     loading.value = false;
   }
 };
 
-// Lifecycle hook
-onMounted(() => {
-  // setTooltip();
-  getProjectHandler();
-});
-
 const filteredData = computed(() => {
-  if (!filters.value) {
-    return retails;
+  if (!query.value) {
+    return projects.value;
   } else {
-    return retails.filter((item) => {
-      return (
-        item.name.match(new RegExp(filters.value, "i")) ||
-        item.location.match(new RegExp(filters.value, "i")) ||
-        ("parking".match(new RegExp(filters.value, "i")) &&
-          item.comodities.parking) ||
-        ("wifi".match(new RegExp(filters.value, "i")) &&
-          item.comodities.wifi) ||
-        ("heater".match(new RegExp(filters.value, "i")) &&
-          item.comodities.heater) ||
-        ("cleaning".match(new RegExp(filters.value, "i")) &&
-          item.comodities.cleaning)
-      );
+    return projects.value.filter((item) => {
+      return item.title.match(new RegExp(query.value, "i"));
     });
   }
+});
+
+onMounted(() => {
+  getProjectHandler();
 });
 </script>
 
@@ -227,7 +169,6 @@ const filteredData = computed(() => {
       <VField>
         <VControl icon="feather:search">
           <input
-            @input="filterProject(null)"
             v-model="query"
             class="input custom-text-filter"
             placeholder="Search..."
@@ -251,7 +192,7 @@ const filteredData = computed(() => {
         <!--List Empty Search Placeholder -->
         <VPlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
-          title="We couldn't find any matching results."
+          title="There is no completed project "
           subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
           criteria."
@@ -276,7 +217,7 @@ const filteredData = computed(() => {
         <div class="list-view-inner">
           <TransitionGroup name="list-complete" tag="div">
             <div
-              v-for="item in filteredProjects"
+              v-for="item in filteredData"
               :key="item.id"
               class="list-view-item"
             >
@@ -287,7 +228,7 @@ const filteredData = computed(() => {
                 />
                 <div class="meta-left">
                   <h3>
-                    <span>{{ item.title }}</span>
+                    <span>{{ item?.title }}</span>
                     <VRangeRating v-model="HomeRating" class="is-inline">
                       <i class="fas fa-star" aria-hidden="true" />
                     </VRangeRating>
@@ -298,7 +239,7 @@ const filteredData = computed(() => {
                       class="iconify"
                       data-icon="feather:map-pin"
                     />
-                    <span>{{ item.description ? item.description : "" }}</span>
+                    <span>{{ item?.description ? item.description : "" }}</span>
                   </p>
                   <span>
                     <span>
@@ -401,42 +342,12 @@ const filteredData = computed(() => {
         </div>
 
         <VFlexPagination
-          v-if="filteredProjects.length > 5"
+          v-if="filteredData.length > 5"
           :item-per-page="10"
           :total-items="873"
           :current-page="42"
           :max-links-displayed="5"
         />
-
-        <!--Inactive Tab-->
-        <div
-          id="inactive-items-tab"
-          class="tab-content"
-          :class="[activeTab === 'inactive' && 'is-active']"
-        >
-          <div class="list-view-inner">
-            <!--Empty placeholder-->
-            <VPlaceholderPage
-              title="There are no inactive properties."
-              subtitle="Looks like there are no inactive properties to display. You can
-                disable and also enable a property from the property settings."
-              larger
-            >
-              <template #image>
-                <img
-                  class="light-image"
-                  src="/@src/assets/illustrations/placeholders/having-coffee.svg"
-                  alt=""
-                />
-                <img
-                  class="dark-image"
-                  src="/@src/assets/illustrations/placeholders/having-coffee-dark.svg"
-                  alt=""
-                />
-              </template>
-            </VPlaceholderPage>
-          </div>
-        </div>
       </div>
       <SweetAlert
         v-if="SweetAlertProps.isSweetAlertOpen"

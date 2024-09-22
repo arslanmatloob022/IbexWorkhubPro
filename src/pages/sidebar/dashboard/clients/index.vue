@@ -3,14 +3,14 @@ import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
 
-viewWrapper.setPageTitle("Customers");
+viewWrapper.setPageTitle("Clients Ibex");
 useHead({
-  title: "Customers - Ibex",
+  title: "Clients - Ibex",
 });
 </script>
 
 <template>
   <div class="page-content-inner">
-    <CustomerCompanies />
+    <ClientsList />
   </div>
 </template>

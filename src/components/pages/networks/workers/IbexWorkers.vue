@@ -8,7 +8,6 @@ const api = useApi();
 const notyf = useNotyf();
 const userSession = useUserSession();
 const showPassword = ref(false);
-const managersData = ref([]);
 const filters = ref("");
 const selectedIdToDelete = ref("");
 
@@ -18,26 +17,37 @@ const SweetAlertProps = ref({
   isSweetAlertOpen: false,
   btntext: "text",
 });
-const workersData = ref({
-  username: "",
-  email: "",
-  password: "",
-  is_sentMail: false,
-  status: "",
-  role: "worker",
-  phoneNumber: "",
-  avatar: null as File | null | String,
-});
+
+const workersData = ref([
+  {
+    username: "",
+    email: "",
+    password: "",
+    is_sentMail: false,
+    status: "",
+    role: "worker",
+    is_active: true,
+    phoneNumber: "",
+    avatar: null as File | null | String,
+  },
+]);
+
+const currentSelectId = ref("");
+const isOpenModal = ref(false);
+
+const openUserModal = (id: any = "") => {
+  currentSelectId.value = id;
+  isOpenModal.value = !isOpenModal.value;
+};
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return users;
+    return workersData.value;
   } else {
-    return users.filter((item) => {
+    return workersData.value.filter((item) => {
       return (
-        item.name.match(new RegExp(filters.value, "i")) ||
-        item.role.match(new RegExp(filters.value, "i")) ||
-        item.medias.badge.match(new RegExp(filters.value, "i"))
+        item.username.match(new RegExp(filters.value, "i")) ||
+        item.email.match(new RegExp(filters.value, "i"))
       );
     });
   }
@@ -55,6 +65,7 @@ const optionsSingle = [
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
+
 const loading = ref(false);
 const selectedIdToChangeStatus = ref(null);
 const selectedStatus = ref(null);
@@ -72,33 +83,35 @@ const userData = ref({
 const editModeId = ref(0);
 const modalTitle = ref("");
 
-const openStatusAlert = (user) => {
+const openStatusAlert = (user: any) => {
   selectedIdToChangeStatus.value = user.id;
   selectedStatus.value = user.is_active;
   SweetAlertProps.value.title = "Change Status";
+  SweetAlertProps.value.btntext = `${
+    user.is_active ? "In-Activate" : "Activate"
+  }`;
   SweetAlertProps.value.subtitle = !selectedStatus.value
     ? "From now this user will be able to login and perform all activities"
     : "After this User will not be able to login into the system";
+  SweetAlertProps.value.isSweetAlertOpen = true;
 };
 
-const closeUserModalHandler = () => {
-  userData.value.username = "";
-  userData.value.email = "";
-  userData.value.password = "";
-  userData.value.status = "";
-  preview.value = null;
-  phoneNumber.value = "";
+const openDeleteModal = (worker: any) => {
+  selectedIdToDelete.value = worker.id;
+  SweetAlertProps.value = {
+    title: `Delete ${worker.username}?`,
+    subtitle:
+      "After deleting this worker you won't be able to recover it again.",
+    btntext: `Delete it`,
+    isSweetAlertOpen: true,
+  };
 };
 
-const openDeleteModal = (id: any) => {
-  selectedIdToDelete.value = id;
-};
-
-const deletUser = async () => {
+const deleteWorker = async () => {
   try {
     loading.value = true;
     await api.delete(`/api/users/${selectedIdToDelete.value}/`, {});
-    await getManagershandler();
+    await getWorkershandler();
     notyf.green("Worker deleted successfully");
   } catch (err) {
     console.log(err);
@@ -108,74 +121,14 @@ const deletUser = async () => {
   }
 };
 
-const openCustomModal = (isEdit = false, manager = {}) => {
-  closeUserModalHandler();
-  if (isEdit) {
-    editModeId.value = manager.id;
-    modalTitle.value = "Edit Worker";
-    userData.username = manager.username;
-    userData.email = manager.email;
-    userData.password = manager.password;
-    userData.avatar = manager.avatar;
-    preview.value = manager.avatar;
-    userData.is_sentMail = manager.is_sentMail;
-    userData.phoneNumber = manager.phoneNumber;
-  } else {
-    editModeId.value = 0;
-    modalTitle.value = "Add Worker";
-  }
-};
-
-const saveAndClose = () => {};
-
-const handleFileChange = (event) => {
-  userData.value.avatar = event.target.files[0];
-  const input = event.target;
-  if (input.files) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      preview.value = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-};
-
-const getManagershandler = async () => {
+const getWorkershandler = async () => {
   try {
     loading.value = true;
     const response = await api.get("/api/users/by-role/worker/", {});
-    managersData.value = response.data;
-    console.log("data", managersData.value);
+    workersData.value = response.data;
+    console.log("data", workersData.value);
   } catch (err) {
     console.log(err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const addNewManager = async () => {
-  try {
-    loading.value = true;
-
-    let formData = convertToFormData(userData.value, ["avatar"]);
-
-    if (!editModeId.value && userData.value.password) {
-      formData.append("password", userData.value.password);
-    }
-
-    const response = editModeId.value
-      ? await api.patch(`/api/users/${editModeId.value}/`, formData)
-      : await api.post("/api/users/", formData);
-    notyf.green("Worker added or updated successfully");
-
-    saveAndClose();
-    await getManagershandler();
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-    notyf.info(
-      "Enter the information carefully and try again OR user with email already exists"
-    );
   } finally {
     loading.value = false;
   }
@@ -183,28 +136,36 @@ const addNewManager = async () => {
 
 const changeUserStatus = async () => {
   try {
+    loading.value = true;
     const resp = await api.patch(
       `/api/users/${selectedIdToChangeStatus.value}/`,
       {
         is_active: !selectedStatus.value,
       }
     );
-    await getManagershandler();
+    await getWorkershandler();
     notyf.success(
       !selectedStatus.value
         ? "Worker set active successfully"
         : "Worker set inactive successfully"
     );
-
+    SweetAlertProps.value.isSweetAlertOpen = false;
     console.log(resp);
   } catch (err) {
     console.log(err);
+  } finally {
+    loading.value = false;
   }
 };
+
+onMounted(() => {
+  getWorkershandler();
+});
 </script>
 
 <template>
-  <div>
+  <PlaceloadV3 v-if="loading" />
+  <div v-else>
     <div class="card-grid-toolbar">
       <VControl icon="feather:search">
         <input
@@ -225,11 +186,11 @@ const changeUserStatus = async () => {
             />
           </VControl>
         </VField>
-        <VButton color="primary" raised>
+        <VButton @click="openUserModal()" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
-          <span>Add User</span>
+          <span> Worker</span>
         </VButton>
       </div>
     </div>
@@ -269,25 +230,51 @@ const changeUserStatus = async () => {
           <div class="card-grid-item">
             <div class="card-grid-item-body">
               <div class="left">
-                <VAvatar
-                  size="big"
-                  :picture="item.medias.avatar"
-                  :badge="item.medias.badge"
-                />
+                <VAvatar size="big" :picture="item.avatar" />
                 <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span class="dark-inverted">{{ item.username }}</span>
                   <span>{{ item.role }}</span>
                 </div>
               </div>
               <div class="right">
                 <div class="social-links">
                   <a
-                    v-for="(channel, channelIndex) in item.social"
-                    :key="channelIndex"
-                    :href="channel.url"
+                    @click="openStatusAlert(item)"
+                    v-if="item.is_active"
+                    channel="Linkedin"
                     class="social-link"
                   >
-                    <i aria-hidden="true" :class="channel.icon" />
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                  </a>
+                  <a
+                    v-else
+                    @click="openStatusAlert(item)"
+                    channel="Linkedin"
+                    class="social-link"
+                  >
+                    <i class="fas fa-ban" aria-hidden="true"></i>
+                  </a>
+                  <a
+                    v-if="item.is_sentMail"
+                    channel="Twitter"
+                    class="social-link"
+                  >
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                  </a>
+
+                  <a
+                    channel="Dribbble"
+                    @click="openUserModal(item.id)"
+                    class="social-link"
+                  >
+                    <i aria-hidden="true" class="fas fa-edit" />
+                  </a>
+                  <a
+                    channel="Dribbble"
+                    @click="openDeleteModal(item)"
+                    class="social-link"
+                  >
+                    <i aria-hidden="true" class="fas fa-trash" />
                   </a>
                 </div>
               </div>
@@ -297,15 +284,21 @@ const changeUserStatus = async () => {
               <div class="left">
                 <div class="progress-stats">
                   <span class="dark-inverted">Progress</span>
-                  <span>{{ item.progress }}%</span>
+                  <span>60%</span>
                 </div>
                 <div class="progress-bar">
-                  <VProgress size="tiny" :value="item.progress" />
+                  <VProgress size="tiny" :value="60" />
                 </div>
               </div>
               <div class="right">
                 <div class="buttons">
-                  <VButton dark-outlined rounded> View Profile </VButton>
+                  <VButton
+                    :to="`/sidebar/dashboard/workers/${item.id}`"
+                    dark-outlined
+                    rounded
+                  >
+                    View Profile
+                  </VButton>
                 </div>
               </div>
             </div>
@@ -313,6 +306,35 @@ const changeUserStatus = async () => {
         </div>
       </TransitionGroup>
     </div>
+
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :loading="loading"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="changeUserStatus"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :loading="loading"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="deleteWorker"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <AddUpdateUser
+      v-if="isOpenModal"
+      :is-modal-open="isOpenModal"
+      user-role="worker"
+      :user-id="currentSelectId"
+      @update:close-modal-handler="isOpenModal = false"
+      @update:action-update-handler="getWorkershandler"
+    />
   </div>
 </template>
 

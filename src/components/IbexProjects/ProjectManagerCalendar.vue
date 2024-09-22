@@ -308,10 +308,13 @@ const getProjectHandler = async () => {
 
 const getTasksHandler = async () => {
   try {
+    loading.value = true;
     const response = await api.get("/api/task", {});
     tasks.value = response.data;
   } catch (err) {
     tasks.value = [];
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -365,6 +368,7 @@ onMounted(async () => {
             />
           </VControl>
         </VField>
+        <div v-if="loading" class="rota-loader"></div>
 
         <VButtons>
           <VDropdown class="mr-1" title="Select project filter" right spaced>
@@ -445,46 +449,7 @@ onMounted(async () => {
               </a>
             </template>
           </VDropdown>
-          <VButton
-            elevated
-            @click="
-              () => {
-                changeFilterHandler();
-                activeFilter = 'all';
-              }
-            "
-            :class="activeFilter == 'all' ? 'active-btn' : ''"
-            color="primary"
-            >All</VButton
-          >
 
-          <VButton
-            elevated
-            @click="
-              () => {
-                changeFilterHandler();
-
-                activeFilter = 'active';
-              }
-            "
-            :class="activeFilter == 'active' ? 'active-btn' : ''"
-            color="info"
-            >Active</VButton
-          >
-
-          <VButton
-            elevated
-            @click="
-              () => {
-                changeFilterHandler();
-
-                activeFilter = 'pending';
-              }
-            "
-            :class="activeFilter == 'pending' ? 'active-btn' : ''"
-            color="warning"
-            >Pre Construction</VButton
-          >
           <VButton elevated raised color="dark" @click="toggleFullScreen()">
             <i :class="fullWidthView ? 'fa fa-compress' : 'fa fa-expand'"></i>
           </VButton>
@@ -493,7 +458,7 @@ onMounted(async () => {
     </form>
     <FullCalendar :options="calendarOptions" ref="calendarRef">
       <template v-slot:eventContent="arg">
-        <div>
+        <div style="height: 100%; position: relative">
           <p
             v-if="arg.event?.display == 'background'"
             style="
@@ -517,7 +482,12 @@ onMounted(async () => {
             "
           >
             <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
-              <!-- {{ arg.event.title }} -->
+              <span
+                v-for="worker in arg.event.extendedProps?.workers"
+                :key="worker.id"
+              >
+                {{ worker.username }},
+              </span>
             </p>
             <div
               class="avatars"
@@ -528,20 +498,38 @@ onMounted(async () => {
                 v-for="worker in arg.event.extendedProps.workers"
                 :key="worker.id"
               >
-                <img
-                  v-if="worker.avatar"
-                  :src="worker.avatar"
-                  alt=""
-                  @click="workerImageClick(worker)"
-                  :title="worker.username"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="bottom"
-                  :data-bs-original-title="
-                    worker.username ? worker.username : 'Hi'
-                  "
-                />
+                <Tippy>
+                  <img
+                    v-if="worker.avatar"
+                    :src="worker.avatar"
+                    alt=""
+                    @click="workerImageClick(worker)"
+                    :title="worker.username"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    :data-bs-original-title="
+                      worker.username ? worker.username : 'Hi'
+                    "
+                  />
+                  <template #content>
+                    <div class="v-popover-content is-text">
+                      <div class="popover-head">
+                        <VAvatar :picture="worker.avatar" size="small" />
+                        <h4 class="dark-inverted">
+                          {{ worker.username ? worker.username : "" }}
+                        </h4>
+                      </div>
+                      <div class="popover-body">
+                        <p>
+                          {{ arg.event?.title }}
+                        </p>
+                      </div>
+                    </div>
+                  </template>
+                </Tippy>
+
                 <div
-                  v-else
+                  v-if="arg.event.extendedProps?.workers?.length == 0"
                   @click="workerImageClick(worker)"
                   data-bs-toggle="tooltip"
                   data-bs-placement="bottom"
@@ -592,7 +580,7 @@ onMounted(async () => {
     <UpdateTask
       v-if="isTaskFormOpen"
       :isOpen="isTaskFormOpen"
-      :taskId="editTaskId"
+      :taskIdSelected="editTaskId"
       :projectID="projectID"
       :startDate="startDate"
       :endDate="endDate"
@@ -613,26 +601,32 @@ onMounted(async () => {
 <style lang="scss">
 .fc-event.fc-event-draggable {
   margin-right: 1px;
-  border-width: 3px;
+  border-width: 1px;
   border-radius: 4px;
+  height: 100% !important;
 }
 .fc-event {
-  margin-bottom: 6px !important;
+  margin-bottom: 0px !important;
 }
 </style>
 <style lang="scss" scoped>
 .fc-h-event {
   border-width: thick !important;
   border-radius: 2px !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 1px !important;
 }
 
 .avatars {
   display: flex;
+  position: absolute;
+  right: -20%; /* Move it outside of the parent element */
+  top: 50%; /* Center vertically within parent */
+  transform: translateY(-50%); /* Adjust for vertical centering */
   list-style-type: none;
-  margin: auto;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   flex-direction: row;
+  align-items: center;
 }
 
 .avatars:hover .avatars__item {

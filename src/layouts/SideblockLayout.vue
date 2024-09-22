@@ -400,7 +400,7 @@ onMounted(() => {
           <li>
             <RouterLink to="/sidebar/dashboard" class="single-link">
               <span class="icon">
-                <i class="fas fa-th-large" aria-hidden="true"></i>
+                <i class="lnir lnir-bar-chart" aria-hidden="true"></i>
               </span>
               <span> Dashboard </span>
               <!-- <span class="badge">5</span> -->
@@ -416,7 +416,7 @@ onMounted(() => {
             <!-- :class="[isOpen && 'active']" -->
             <template #header>
               <div class="icon">
-                <i class="fas fa-cubes" aria-hidden="true"></i>
+                <i class="lnir lnir-list-alt-1" aria-hidden="true"></i>
               </div>
               <span>Projects</span>
               <i
@@ -437,7 +437,7 @@ onMounted(() => {
               to="/sidebar/dashboard/projects"
               :class="{ active: 'projects' === route.query.tab }"
             >
-              <i class="lnil lnil-home" />
+              <i class="lnir lnir-list-alt" aria-hidden="true"></i>
               <span>All Projects</span>
             </RouterLink>
 
@@ -446,7 +446,7 @@ onMounted(() => {
               to="/sidebar/dashboard/manage-projects"
               :class="{ active: 'manage-projects' === route.query.tab }"
             >
-              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <i class="lnir lnir-appointment" aria-hidden="true"></i>
               <span>Manage Projects</span>
             </RouterLink>
 
@@ -455,18 +455,18 @@ onMounted(() => {
               to="/sidebar/dashboard/workers-tasks"
               :class="{ active: 'workers-tasks' === route.query.tab }"
             >
-              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <i class="lnir lnir-calendar" aria-hidden="true"></i>
               <span>Workers chart</span>
             </RouterLink>
 
             <RouterLink
               class="is-submenu"
-              to="/sidebar/dashboard/projects"
+              to="/sidebar/dashboard/completed-projects"
               :class="{
                 active: 'pre-construction' === route.query.tab,
               }"
             >
-              <i class="lnil lnil-file-name" aria-hidden="true"></i>
+              <i class="lnir lnir-list" aria-hidden="true"></i>
               <span>Completed Projects</span>
             </RouterLink>
           </VCollapseLinks>
@@ -474,7 +474,7 @@ onMounted(() => {
           <li>
             <RouterLink to="/sidebar/dashboard/managers" class="single-link">
               <span class="icon">
-                <i class="fas fa-hospital-user" aria-hidden="true"></i
+                <i class="lnir lnir-user-alt-1" aria-hidden="true"></i
               ></span>
               Managers
             </RouterLink>
@@ -482,7 +482,7 @@ onMounted(() => {
           <li>
             <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
               <span class="icon">
-                <i class="fas fa-user-friends" aria-hidden="true"></i
+                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
               ></span>
               Contractors
             </RouterLink>
@@ -493,7 +493,7 @@ onMounted(() => {
               class="single-link"
             >
               <span class="icon">
-                <i class="fas fa-user-tag" aria-hidden="true"></i
+                <i class="lnir lnir-users" aria-hidden="true"></i
               ></span>
               Sub Contractors
             </RouterLink>
@@ -502,17 +502,17 @@ onMounted(() => {
           <li>
             <RouterLink to="/sidebar/dashboard/workers" class="single-link">
               <span class="icon">
-                <i class="fas fa-users" aria-hidden="true"></i
+                <i class="lnir lnir-network" aria-hidden="true"></i
               ></span>
               Workers
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/sidebar/dashboard/customers" class="single-link">
+            <RouterLink to="/sidebar/dashboard/clients" class="single-link">
               <span class="icon">
-                <i class="fas fa-user-tie" aria-hidden="true"></i
+                <i class="lnir lnir-briefcase-alt" aria-hidden="true"></i
               ></span>
-              Customers
+              Clients
             </RouterLink>
           </li>
 

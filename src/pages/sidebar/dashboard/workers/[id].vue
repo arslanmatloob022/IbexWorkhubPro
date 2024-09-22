@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { useViewWrapper } from '/@src/stores/viewWrapper'
+import { useViewWrapper } from "/@src/stores/viewWrapper";
 
-const viewWrapper = useViewWrapper()
-viewWrapper.setPageTitle('Worker Info')
+const viewWrapper = useViewWrapper();
+viewWrapper.setPageTitle("Worker Info");
 
 useHead({
-  title: 'Workers - Arez',
-})
+  title: "Worker info - Ibex",
+});
 </script>
 
 <template>
   <div class="">
-    <Teleport to="[data-teleport-bg]">
-      <div class="lifestyle-dashboard-bg" />
-    </Teleport>
-    <WorkerProfile/>
+    <IbexWorkerProfile />
   </div>
 </template>

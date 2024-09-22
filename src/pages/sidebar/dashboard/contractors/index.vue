@@ -3,9 +3,9 @@ import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
 
-viewWrapper.setPageTitle("Service Partners");
+viewWrapper.setPageTitle("Contractors");
 useHead({
-  title: "Service Partners - Ibex",
+  title: "Contractors - Ibex",
 });
 </script>
 

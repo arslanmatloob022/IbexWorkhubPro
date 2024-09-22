@@ -8,23 +8,13 @@ import * as usersData from "/@src/data/dashboards/personal-v2/users";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
-
 import { useThemeColors } from "/@src/composable/useThemeColors";
-import TasksCompletionChart from "./ProjectTasks/TasksCompletionChart.vue";
 
 const themeColors = useThemeColors();
-
-const { barOptions } = useTeamEfficiencyChart();
-const avatarStack1 = usersData.avatarStack1 as VAvatarProps[];
-const avatarStack2 = usersData.avatarStack1 as VAvatarProps[];
-const avatarStack3 = usersData.avatarStack1 as VAvatarProps[];
-const avatarStack4 = usersData.avatarStack1 as VAvatarProps[];
-
 const api = useApi();
 const notyf = useNotyf();
 const route = useRoute();
 const router = useRouter();
-const democheck = ref(["value_2"]);
 const tab = ref("detail");
 
 const Loading = ref(false);
@@ -33,21 +23,18 @@ const isTaskFormOpen = ref(false);
 const showAddContractor = ref(false);
 const isProjectFormOpen = ref(false);
 const loading = ref(false);
-const assignToMore = ref(false);
 const clientsList = ref([]);
 const contarctorList = ref([]);
 const selectedManagers = ref([]);
 const deleteTaskId = ref(0);
-const activeTasks = ref(0);
 const projectCompletedTasks = ref<any>(0);
 const projectActiveTasks = ref<any>(0);
 const editTaskId = ref("");
 const currentProjectId = ref("");
-const modalTitle = ref("Add Task");
 const sheetNameDeleteTobe = ref("");
-const editmodalTitle = ref("Edit Project");
 const preview = ref("");
 const image = ref("");
+const projectId = ref("");
 const editProjectId = ref("");
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
 const Taskstatus = ref([
@@ -56,7 +43,7 @@ const Taskstatus = ref([
   { value: "completed", name: "Completed" },
   { value: "cancelled", name: "cancelled" },
 ]);
-
+const projectTodaysTasks = ref<any>([]);
 const projectData = ref<any>({
   id: 0,
   title: "",
@@ -121,25 +108,34 @@ const projectTasks = ref([
   },
 ]);
 
-const alertData = ref({
-  icon: "fa fa-bell",
-  alertTitle: "Delete Task ?",
-  alertDescription:
-    "After deleting this task you will not be able to recover it",
-});
-
-const delteAlertData = ref({
+const deleteAlertData = ref({
   icon: "fa fa-warning",
   alertTitle: "Delete Project Permanently?",
   alertDescription:
     "After deleting this Project you will not be able to recover it",
 });
 
-const delteSheetAlertData = ref({
-  icon: "fa fa-warning",
-  alertTitle: "Delete Tasks' Sheet Permanently?",
-  alertDescription:
-    "After deleting this Sheet all tasks created by this sheet will be deleted permanently",
+const completionChart = shallowRef({
+  height: 180,
+  type: "radialBar",
+  series: [],
+  title: {
+    text: "",
+  },
+  chart: {
+    toolbar: {
+      show: false,
+    },
+  },
+  colors: [themeColors.primary, themeColors.purple, themeColors.orange],
+  plotOptions: {
+    radialBar: {
+      hollow: {
+        size: "55%",
+      },
+    },
+  },
+  labels: ["Completion"],
 });
 
 const completionOptions = shallowRef({
@@ -194,61 +190,6 @@ const completionOptions = shallowRef({
   },
 });
 
-const gaugeOptions = shallowRef({
-  // series: [5, 6],
-  series: [projectActiveTasks.value, projectCompletedTasks.value],
-  chart: {
-    height: 220,
-    type: "radialBar",
-    offsetY: -10,
-  },
-  colors: [themeColors.accent, themeColors.primary],
-  plotOptions: {
-    radialBar: {
-      startAngle: -135,
-      endAngle: 135,
-      inverseOrder: true,
-      dataLabels: {
-        show: true,
-        name: {
-          show: true,
-          fontSize: "14px",
-          fontWeight: 500,
-          offsetY: -10,
-        },
-        value: {
-          show: true,
-          fontWeight: 600,
-          color: themeColors.lightText,
-          fontSize: "16px",
-          offsetY: -5,
-        },
-        total: {
-          value: 30,
-          show: true,
-          fontSize: "14px",
-          fontWeight: 500,
-          color: themeColors.lightText,
-        },
-      },
-      hollow: {
-        margin: 15,
-        size: "75%",
-      },
-      track: {
-        strokeWidth: "30%",
-      },
-    },
-  },
-
-  stroke: {
-    lineCap: "round",
-  },
-  labels: ["Active", "Completed"],
-});
-
-const projectId = ref("");
-
 const toggleAddContractor = () => {
   showAddContractor.value = !showAddContractor.value;
 };
@@ -258,26 +199,17 @@ const toggleAddClient = () => {
 };
 
 const openDeleteAlert = (id: any) => {
-  // $refs.deleteSweetAlert.openModal();
   projectId.value = id;
-};
-
-const openSheetDeleteAlert = (sheetName: any) => {
-  // $refs.deleteSheetSweetAlert.openModal();
-  sheetNameDeleteTobe.value = sheetName;
 };
 
 const deleteProject = () => {
   try {
     loading.value = true;
     const response = api.delete(`/api/project/${projectId.value}/`);
-    // $refs.deleteSheetSweetAlert.closeModal();
-    console.log("deleted", response);
     notyf.green("Selected project deleted successfully!");
     router.push("/sidebar/dashboard/projects");
   } catch (err) {
     console.log(err);
-    console.log("not deleted");
   } finally {
     loading.value = false;
   }
@@ -306,6 +238,8 @@ const getProject = async () => {
     Loading.value = true;
     const resp = await api.get(`/api/project/${projectId.value}/`);
     projectData.value = resp.data;
+    let completion = resp.data.percentage.toFixed(2);
+    completionChart.value.series.push(completion);
     preview.value = resp.data.image;
 
     getProjectTasks();
@@ -314,11 +248,6 @@ const getProject = async () => {
   } finally {
     Loading.value = false;
   }
-};
-
-const openAlert = (id: any) => {
-  // $refs.sweetAlert.openModal();
-  deleteTaskId.value = id;
 };
 
 const getWorkershandler = async () => {
@@ -487,6 +416,17 @@ const updateProjectStatus = async (projectStatus: any) => {
   }
 };
 
+const getTodayTask = async () => {
+  try {
+    const resp = await api.get(
+      `/api/task/today-tasks/?project=${route.params.id}`
+    );
+    projectTodaysTasks.value = resp.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const selectedFileName = ref("");
 
 const handleFileSelect = (event) => {
@@ -527,6 +467,7 @@ onMounted(() => {
   getProject();
   getWorkershandler();
   getProjectTasks();
+  getTodayTask();
 });
 </script>
 
@@ -580,32 +521,18 @@ onMounted(() => {
             </p>
           </div>
 
-          <div class="cta h-hidden-tablet-p">
+          <div class="h-hidden-tablet-p">
             <div class="media-flex inverted-text">
-              <i aria-hidden="true" class="lnil lnil-crown-alt-1" />
-              <VTags class="mt-3">
-                <VTag
-                  @click="updateProjectStatus('active')"
-                  color="info"
-                  label="Active"
-                  curved
-                  :outlined="projectData.status === 'active' ? true : false"
-                />
-                <VTag
-                  @click="updateProjectStatus('pending')"
-                  color="warning"
-                  label="Pre Construction"
-                  :outlined="projectData.status === 'pending' ? true : false"
-                  curved
-                />
-                <VTag
-                  @click="updateProjectStatus('completed')"
-                  color="primary"
-                  label="Completed"
-                  :outlined="projectData.status === 'completed' ? true : false"
-                  curved
-                />
-              </VTags>
+              <ApexChart
+                v-if="!Loading"
+                id="completion-chart"
+                :height="completionChart.height"
+                :type="completionChart.type"
+                :series="completionChart.series"
+                label="Completion"
+                :options="completionChart"
+              />
+              <!-- <i aria-hidden="true" class="lnil lnil-crown-alt-1" /> -->
             </div>
             <a class="link inverted-text">Change status</a>
           </div>
@@ -833,50 +760,7 @@ onMounted(() => {
         </div>
 
         <div class="dashboard-card">
-          <div class="card-head">
-            <h3 class="dark-inverted">Todo Today</h3>
-            <a class="action-link" tabindex="0">View All</a>
-          </div>
-          <div class="active-list">
-            <div class="checkboxes-list">
-              <!-- List item -->
-              <div class="list-item">
-                <!-- Animated checkbox-->
-                <VAnimatedCheckbox v-model="democheck" value="value_1" />
-                <div class="item-meta">
-                  <span class="dark-inverted">Call Mr. Markstrom</span>
-                  <span>Review the project initial wireframes</span>
-                </div>
-              </div>
-              <!-- List item -->
-              <div class="list-item">
-                <!-- Animated checkbox-->
-                <VAnimatedCheckbox v-model="democheck" value="value_2" />
-                <div class="item-meta">
-                  <span class="dark-inverted">Finish wireframes</span>
-                  <span>Make all requested changes and publish</span>
-                </div>
-              </div>
-              <!-- List item -->
-              <div class="list-item">
-                <!-- Animated checkbox-->
-                <VAnimatedCheckbox v-model="democheck" value="value_3" />
-                <div class="item-meta">
-                  <span class="dark-inverted">Update timesheets</span>
-                  <span>Update all the team timesheets</span>
-                </div>
-              </div>
-              <!-- List item -->
-              <div class="list-item">
-                <!-- Animated checkbox-->
-                <VAnimatedCheckbox v-model="democheck" value="value_4" />
-                <div class="item-meta">
-                  <span class="dark-inverted">Request payout</span>
-                  <span>send project invoice to client</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProjectTodayTasks :projectId="route.params.id" />
         </div>
 
         <!-- <div class="dashboard-card">

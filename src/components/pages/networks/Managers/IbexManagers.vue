@@ -91,7 +91,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <PlaceloadV1 v-if="loading" />
+  <div v-else>
     <div class="list-view-toolbar">
       <VField>
         <VControl icon="feather:search">

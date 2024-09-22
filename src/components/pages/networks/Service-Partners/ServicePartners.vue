@@ -4,19 +4,45 @@ import type {
   VAvatarColor,
 } from "/@src/components/base/avatar/VAvatar.vue";
 import { users } from "/@src/data/layouts/user-grid-v1";
-
+import { useApi } from "/@src/composable/useAPI";
+import { useNotyf } from "/@src/composable/useNotyf";
+const api = useApi();
+const notyf = useNotyf();
 const filters = ref("");
+
+const loading = ref(false);
+
+const ContractorsData = ref([
+  {
+    id: "",
+    password: "",
+    last_login: null,
+    date_joined: "",
+    email: "",
+    role: "contractor",
+    avatar: null,
+    is_active: true,
+    phoneNumber: "",
+    username: "",
+    is_sentMail: false,
+  },
+]);
+
+const currentSelectId = ref("");
+const isOpenModal = ref(false);
+const openUserModal = (id: any = "") => {
+  currentSelectId.value = id;
+  isOpenModal.value = !isOpenModal.value;
+};
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return users;
+    return ContractorsData.value;
   } else {
-    return users.filter((item) => {
+    return ContractorsData.value.filter((item) => {
       return (
         item.username.match(new RegExp(filters.value, "i")) ||
-        item.location.match(new RegExp(filters.value, "i")) ||
-        item.position.match(new RegExp(filters.value, "i")) ||
-        item.badge.match(new RegExp(filters.value, "i"))
+        item.email.match(new RegExp(filters.value, "i"))
       );
     });
   }
@@ -38,10 +64,28 @@ function getAvatarData(user: any): VAvatarProps {
     color: user?.color as VAvatarColor,
   };
 }
+
+const getContractorshandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/contractor/", {});
+    ContractorsData.value = response.data;
+    console.log("data", ContractorsData.value);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  getContractorshandler();
+});
 </script>
 
 <template>
-  <div>
+  <PlaceloadV3 v-if="loading" />
+  <div v-if="!loading">
     <div class="user-grid-toolbar">
       <VControl icon="feather:search">
         <input
@@ -52,17 +96,7 @@ function getAvatarData(user: any): VAvatarProps {
       </VControl>
 
       <VButtons>
-        <VField class="h-hidden-mobile">
-          <VControl>
-            <Multiselect
-              v-model="valueSingle"
-              :options="optionsSingle"
-              :max-height="145"
-              placeholder="Select an option"
-            />
-          </VControl>
-        </VField>
-        <VButton color="primary" raised>
+        <VButton @click="openUserModal()" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
@@ -99,17 +133,16 @@ function getAvatarData(user: any): VAvatarProps {
         <!--Grid item-->
         <div v-for="item in filteredData" :key="item.id" class="column is-3">
           <div class="grid-item">
-            <VAvatar :picture="item.avatar" :badge="item.badge" size="big" />
+            <VAvatar :picture="item.avatar" size="big" />
             <h3 class="dark-inverted">
-              {{ item.fullName }}
+              {{ item.username }}
             </h3>
-            <p>{{ item.position }}</p>
+            <p>{{ item.role }}</p>
             <div class="people">
-              <VAvatar
-                v-for="user in item.team"
-                :key="user.id"
-                size="small"
-                v-bind="getAvatarData(user)"
+              <VTag
+                :color="item.is_active ? 'primary' : 'warning'"
+                rounded
+                :label="item.is_active ? 'Active' : 'In-Active'"
               />
             </div>
             <div class="buttons">
@@ -138,6 +171,14 @@ function getAvatarData(user: any): VAvatarProps {
         </div>
       </TransitionGroup>
     </div>
+    <AddUpdateUser
+      v-if="isOpenModal"
+      :is-modal-open="isOpenModal"
+      user-role="contractor"
+      :user-id="currentSelectId"
+      @update:close-modal-handler="isOpenModal = false"
+      @update:action-update-handler="getContractorshandler"
+    />
   </div>
 </template>
 

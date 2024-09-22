@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { emit } from "process";
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as listData from "/@src/data/layouts/flex-list-v2";
 import { convertToFormData } from "/@src/composable/useSupportElement";
@@ -17,17 +16,17 @@ export interface ProjectData {
 }
 
 const api = useApi();
-const projects = listData.projects as ProjectData[];
 const notyf = useNotyf();
-const currentPage = ref(1);
 const startDate = ref("");
 
 const props = withDefaults(
   defineProps<{
     projectID?: string;
+    workerId?: string;
   }>(),
   {
     projectID: "",
+    workerId: "",
   }
 );
 
@@ -37,26 +36,14 @@ const emits = defineEmits<{
   (e: "update:activeTasks", value: number): void;
 }>();
 
-const editmodalTitle = ref("Edit Project");
-const modalTitle = ref("Add Task");
 const filters = ref("");
 const tab = ref("active");
-const showDropdown = ref(false);
 const currentTask = ref(0);
-const isOpen = ref(false);
-const isProjectFormOpen = ref(false);
 const loading = ref(false);
-const assignToMore = ref(false);
 const isTaskFormOpen = ref(false);
 const deleteTaskId = ref(0);
-const activeTasks = ref(0);
-const projectid = ref(0);
 const taskData = ref({});
-const selectedManagers = ref([]);
-const preview = ref("");
-const editProjectId = ref("");
 const taskToBeEdit = ref("");
-const currentProjectId = ref("");
 
 const Taskstatus = ref([
   { value: "active", name: "Active" },
@@ -65,21 +52,8 @@ const Taskstatus = ref([
   { value: "cancelled", name: "cancelled" },
 ]);
 
-const alertData = ref({
-  icon: "fa fa-bell",
-  alertTitle: "Delete Task ?",
-  alertDescription:
-    "After deleting this task you will not be able to recover it",
-});
-const delteAlertData = ref({
-  icon: "fa fa-warning",
-  alertTitle: "Delete Project Permanently?",
-  alertDescription:
-    "After deleting this Project you will not be able to recover it",
-});
-
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
-const projectTasks = ref([
+const workerTasks = ref([
   {
     id: 0,
     title: "",
@@ -94,32 +68,13 @@ const projectTasks = ref([
     costCode: "",
   },
 ]);
+
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
 });
-
-const columns = {
-  title: {
-    label: "Title",
-    // grow: true,
-    // media: true,
-  },
-  quantity: "Quantity/Unit",
-  start: "Start Date",
-  end: "End Date",
-  status: "Status",
-  team: {
-    label: "Worker(s)",
-    cellClass: "h-hidden-tablet-p",
-  },
-  actions: {
-    label: "Actions",
-    align: "end",
-  },
-} as const;
 
 const toggleDropdown = (taskId: any) => {
   if (currentTask.value === taskId) {
@@ -156,7 +111,7 @@ const addTaskHandler = async () => {
     let formData = convertToFormData(taskData, []);
     const resp = await api.post("/api/task/", formData);
     closeTheModals();
-    getProjectTasks();
+    getWorkerTasks();
     notyf.success("Task added successfully");
     console.log("task data", resp);
   } catch (err) {
@@ -167,21 +122,20 @@ const addTaskHandler = async () => {
   }
 };
 
-const getProjectTasks = async () => {
+const getWorkerTasks = async () => {
   try {
     loading.value = true;
-    const resp = await api.get(`api/task/${props.projectID}/project/`);
-    projectTasks.value = resp.data;
+    const resp = await api.get(`/api/task/${props.workerId}/worker-tasks/`);
+    workerTasks.value = resp.data;
     console.log(resp.data);
+    loading.value = false;
   } catch (err) {
     console.log(err);
-  } finally {
-    loading.value = false;
   }
 };
 
 const totalActiveTasks = computed(() => {
-  let totalActiveTasks = projectTasks.value.filter(
+  let totalActiveTasks = workerTasks.value.filter(
     (task) => task.status == "active"
   );
   emits("update:completedTasks", totalActiveTasks.length);
@@ -189,7 +143,7 @@ const totalActiveTasks = computed(() => {
 });
 
 const totalPendingTasks = computed(() => {
-  let totalPendingTasks = projectTasks.value.filter(
+  let totalPendingTasks = workerTasks.value.filter(
     (task) => task.status == "pending"
   );
   emits("update:activeTasks", totalPendingTasks.length);
@@ -197,7 +151,7 @@ const totalPendingTasks = computed(() => {
 });
 
 const totalCompletedTasks = computed(() => {
-  let totalCompletedTasks = projectTasks.value.filter(
+  let totalCompletedTasks = workerTasks.value.filter(
     (task) => task.status == "completed"
   );
   return totalCompletedTasks.length;
@@ -208,7 +162,7 @@ const openTaskForm = (taskId: any) => {
   isTaskFormOpen.value = true;
 };
 const closeTaskForm = () => {
-  getProjectTasks();
+  getWorkerTasks();
   isTaskFormOpen.value = false;
   // currentTask.value = 0;
   taskToBeEdit.value = "";
@@ -221,7 +175,7 @@ const updateTaskStatus = async (taskId: any, taskStatus: any) => {
       status: taskStatus,
       schedule_mode: localStorage.getItem("isScheduleMode"),
     });
-    getProjectTasks();
+    getWorkerTasks();
     notyf.success(`Task set to ${taskStatus} successfully`);
     currentTask.value = 0;
     loading.value = false;
@@ -236,7 +190,7 @@ const deleteTask = async () => {
     const response = await api.delete(`/api/task/${deleteTaskId.value}/`);
     console.log(response);
     notyf.success(`Task deleted successfully`);
-    getProjectTasks();
+    getWorkerTasks();
     SweetAlertProps.value.isSweetAlertOpen = false;
     currentTask.value = 0;
   } catch (err) {
@@ -261,11 +215,11 @@ const getWorkershandler = async () => {
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return projectTasks.value.filter((tasks) => tasks.status != "completed");
+    return workerTasks.value.filter((tasks) => tasks.status != "completed");
   } else {
     const filterRe = new RegExp(filters.value, "i");
 
-    return projectTasks.value.filter((item) => {
+    return workerTasks.value.filter((item) => {
       return (
         item.status != "completed" &&
         (item.title.match(filterRe) ||
@@ -278,11 +232,11 @@ const filteredData = computed(() => {
 
 const filteredCompletedData = computed(() => {
   if (!filters.value) {
-    return projectTasks.value.filter((tasks) => tasks.status == "completed");
+    return workerTasks.value.filter((tasks) => tasks.status == "completed");
   } else {
     const filterRe = new RegExp(filters.value, "i");
 
-    return projectTasks.value.filter((item) => {
+    return workerTasks.value.filter((item) => {
       return (
         item.status == "completed" &&
         (item.title.match(filterRe) ||
@@ -294,13 +248,12 @@ const filteredCompletedData = computed(() => {
 });
 
 onMounted(() => {
-  getProjectTasks();
+  getWorkerTasks();
 });
 </script>
 
 <template>
-  <PlaceloadV3 v-if="loading" />
-  <div v-else>
+  <div>
     <div class="list-flex-toolbar is-reversed">
       <VButtons>
         <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
@@ -356,7 +309,7 @@ onMounted(() => {
             <div class="header-item">
               <div class="item-inner">
                 <i aria-hidden="true" class="lnil lnil-analytics-alt-1" />
-                <span>{{ projectTasks.length }}</span>
+                <span>{{ workerTasks.length }}</span>
                 <p>Total Tasks</p>
               </div>
             </div>
@@ -701,7 +654,7 @@ onMounted(() => {
     :taskIdSelected="taskToBeEdit"
     :startDate="startDate"
     @update:modalHandler="closeTaskForm"
-    @update:OnSuccess="getProjectTasks"
+    @update:OnSuccess="getWorkerTasks"
   />
 </template>
 

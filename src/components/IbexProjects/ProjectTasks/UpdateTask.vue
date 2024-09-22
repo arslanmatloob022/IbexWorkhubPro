@@ -11,27 +11,22 @@ const loading = ref(false);
 let selectWorkersSlot = ref<any>([]);
 const selectedWorkers = ref([]);
 
-const props = defineProps<{
-  isOpen: {
-    type: boolean;
-  };
-  taskId: {
-    type: Number;
-    default: null;
-  };
-  projectID: {
-    type: String;
-    default: null;
-  };
-  endDate: {
-    type: String;
-    default: null;
-  };
-  startDate: {
-    type: String;
-    default: null;
-  };
-}>();
+const props = withDefaults(
+  defineProps<{
+    isOpen?: boolean;
+    taskIdSelected?: string;
+    projectID?: string;
+    endDate?: string;
+    startDate?: string;
+  }>(),
+  {
+    isOpen: false,
+    taskIdSelected: "",
+    projectID: "",
+    endDate: "",
+    startDate: "",
+  }
+);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;

@@ -52,8 +52,6 @@ const handleFileChange = (event) => {
   if (input && input.files && input.files.length > 0) {
     const file = input.files[0];
     userFormData.value.avatar = file;
-    console.log("file", file);
-    console.log("form file", userFormData.value.avatar);
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -82,17 +80,20 @@ const addUpdateUserHandler = async () => {
       notyf.success("User added successfully");
     }
     actionUpdateHandler();
+    closeModalHandler();
   } catch (err) {
     console.error(err);
   } finally {
     Loading.value = false;
   }
 };
-
+const avatarFile = ref(false);
 const getUserDataHandler = async () => {
   try {
     Loading.value = true;
     const resp = await api.get(`/api/users/${props.userId}`);
+    preview.value = resp.data.avatar ? resp.data.avatar : "";
+    avatarFile.value = resp.data.avatar ? resp.data.avatar : "";
     userFormData.value = resp.data;
   } catch (err) {
     console.error(err);
@@ -145,7 +146,7 @@ onMounted(() => {
             </VField>
           </div>
         </div>
-        <div class="column is-6">
+        <div class="column is-3">
           <VField>
             <VLabel>Picture</VLabel>
             <VControl>
@@ -168,6 +169,17 @@ onMounted(() => {
                 @removefile="onRemoveFile"
               />
             </VControl>
+          </VField>
+        </div>
+        <div v-if="preview" class="column is-3">
+          <VField>
+            <VLabel>Preview</VLabel>
+            <VAvatar
+              v-if="preview"
+              :picture="preview"
+              size="xl"
+              alt="Avatar Preview"
+            />
           </VField>
         </div>
         <VField class="column is-6">
@@ -197,11 +209,21 @@ onMounted(() => {
             </VButton>
           </VControl>
         </VField>
-        <VField class="column is-12">
+        <VField class="column is-6">
           <VControl>
             <VSwitchBlock
               v-model="userFormData.is_sentMail"
               label="Send email"
+              color="primary"
+              thin
+            />
+          </VControl>
+        </VField>
+        <VField class="column is-6">
+          <VControl>
+            <VSwitchBlock
+              v-model="userFormData.is_active"
+              label="Active"
               color="primary"
               thin
             />
