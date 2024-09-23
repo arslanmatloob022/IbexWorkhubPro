@@ -1,1 +1,0 @@
-import{u as a}from"./viewWrapper-cd4cd6f9.js";import{e,v as s,y as n,z as r,C as t}from"./index-879cc21e.js";const i={class:"page-content-inner"},p=[t("p",null,"Managers",-1)],m=e({__name:"managers",setup:e=>(a().setPageTitle("Managers"),s({title:"Managers - Ibex"}),(a,e)=>(n(),r("div",i,p)))});export{m as default};
