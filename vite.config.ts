@@ -52,6 +52,9 @@ export default defineConfig({
   /**
    * Define allow to replace string in the code at build time.
    */
+  // build: {
+
+  // },
   define: {
     // VSCODE_TEXTMATE_DEBUG is used in shiki, but it's not defined in the browser
     "process.env.VSCODE_TEXTMATE_DEBUG": "false",
@@ -143,6 +146,9 @@ export default defineConfig({
     // https://vitejs.dev/config/build-options.html#build-assetsinlinelimit
     assetsInlineLimit: 4096 * 2,
     // commonjsOptions: { include: [] },
+    rollupOptions: {
+      external: ["workbox-window"],
+    },
   },
   plugins: [
     /**
