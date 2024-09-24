@@ -139,30 +139,6 @@ const renderCalender = () => {
   calendarOptions.value.events = events;
 };
 
-const changeFilterHandler = () => {
-  console.log("func called", activeFilter.value);
-
-  if (activeFilter.value !== "all") {
-    let data = projects.value.filter(
-      (project) => project.status === activeFilter.value
-    );
-    console.log("local data length", data.length);
-    filteredResources.value = data;
-  } else {
-    filteredResources.value = projects.value;
-  }
-
-  if (query.value) {
-    filteredResources.value = projects.value.filter((project) =>
-      project.title.toLowerCase().includes(query.value.toLowerCase())
-    );
-  }
-
-  calendarOptions.resources = filteredResources.value;
-  console.log(filteredResources.value);
-  console.log(filteredResources.value.length);
-};
-
 const getProjectHandler = async () => {
   try {
     loading.value = true;

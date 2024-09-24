@@ -108,13 +108,6 @@ const projectTasks = ref([
   },
 ]);
 
-const deleteAlertData = ref({
-  icon: "fa fa-warning",
-  alertTitle: "Delete Project Permanently?",
-  alertDescription:
-    "After deleting this Project you will not be able to recover it",
-});
-
 const completionChart = shallowRef({
   height: 180,
   type: "radialBar",
@@ -135,7 +128,7 @@ const completionChart = shallowRef({
       },
     },
   },
-  labels: ["Completion"],
+  labels: ["Progress"],
 });
 
 const completionOptions = shallowRef({
@@ -223,16 +216,6 @@ const getActiveTasks = () => {
   totalActiveTasks.value = activeTasks.length;
 };
 
-const closeTheModals = () => {
-  taskData.value = {
-    title: "",
-    description: "",
-    startDate: "",
-    endDate: "",
-    workers: [],
-    status: "",
-  };
-};
 const getProject = async () => {
   try {
     Loading.value = true;
@@ -275,25 +258,6 @@ const getWorkershandler = async () => {
   }
 };
 
-const addTaskHandler = async () => {
-  try {
-    loading.value = true;
-    let formData = convertToFormData(taskData, []);
-    const resp = await api.post("/api/task/", formData);
-    closeTheModals();
-    // $refs.customModal.closeModal();
-    getProject();
-    getProjectTasks();
-    notyf.green("Task added successfully");
-    console.log("task data", resp);
-  } catch (err) {
-    notyf.error("Something went wrong");
-    console.log(err);
-  } finally {
-    loading.value = false;
-  }
-};
-
 const getProjectTasks = async () => {
   try {
     Loading.value = true;
@@ -304,19 +268,6 @@ const getProjectTasks = async () => {
     Loading.value = false;
   } catch (err) {
     console.log(err);
-  }
-};
-
-const handleFileChange = (event) => {
-  projectData.value.image = event.target.files[0];
-  var input = event.target;
-  if (input.files) {
-    var reader = new FileReader();
-    reader.onload = (e) => {
-      preview.value = e.target.result;
-    };
-    image.value = input.files[0];
-    reader.readAsDataURL(input.files[0]);
   }
 };
 
@@ -343,79 +294,6 @@ const editProject = async () => {
   }
 };
 
-const openProjectForm = (projectId: any) => {
-  isProjectFormOpen.value = true;
-  editProjectId.value = projectId;
-};
-
-const closeProjectForm = () => {
-  getProject();
-  isProjectFormOpen.value = false;
-  editProjectId.value = ""; // Reset the editTaskId after closing
-};
-
-const openTaskForm = (taskId: any = "", projectId: any = "") => {
-  isTaskFormOpen.value = true;
-  editTaskId.value = taskId;
-  currentProjectId.value = projectId;
-};
-
-const closeTaskForm = () => {
-  getProjectTasks();
-  isTaskFormOpen.value = false;
-  editTaskId.value = null; // Reset the editTaskId after closing
-};
-
-const updateTaskStatus = async (taskId: any, taskStatus: any) => {
-  try {
-    const resp = api.patch(`/api/task/${taskId}/`, {
-      status: taskStatus,
-    });
-    taskData.value.status = taskStatus;
-    console.log(resp);
-    notyf.info(`Task set to ${taskStatus} successfully`);
-    getProject();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const deleteTask = async () => {
-  try {
-    loading.value = true;
-    const response = await api.delete(`/api/task/${deleteTaskId.value}/`);
-    console.log(response);
-    // $refs.sweetAlert.closeModal();
-    notyf.success(`Task deleted successfully`);
-    getProjectTasks();
-    loading.value = false;
-  } catch (err) {
-    console.log(err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const updateProjectStatus = async (projectStatus: any) => {
-  try {
-    projectData.value.status = projectStatus;
-    const resp = api.patch(`/api/project/${projectId.value}/`, {
-      status: projectStatus,
-    });
-    getProject();
-    console.log(resp);
-    notyf.green(
-      `Task set to ${
-        projectStatus == "pending" ? "Pre Construction" : projectStatus
-      } successfully`
-    );
-  } catch (err) {
-    console.log(err);
-  } finally {
-    getProject();
-  }
-};
-
 const getTodayTask = async () => {
   try {
     const resp = await api.get(
@@ -429,31 +307,6 @@ const getTodayTask = async () => {
 
 const selectedFileName = ref("");
 
-const handleFileSelect = (event) => {
-  let csvFile = event.target.files[0];
-  uploadTasksSheet(csvFile);
-  selectedFileName.value = csvFile.name;
-};
-
-const removeFile = () => {
-  selectedFileName.value = "";
-  document.getElementById("docpicker").value = "";
-};
-
-const uploadTasksSheet = async (tasksFile: any) => {
-  try {
-    Loading.value = true;
-    const resp = await api.post(`/api/task/bulk-upload/${route.params.id}/`, {
-      file: tasksFile,
-    });
-    notyf.green(`Tasks Will be generated automatically`);
-    console.log(resp);
-    getProject();
-    Loading.value = false;
-  } catch (err) {
-    console.log(err);
-  }
-};
 const getCompletedTasks = (total: any) => {
   projectCompletedTasks.value = total;
 };
@@ -521,7 +374,7 @@ onMounted(() => {
             </p>
           </div>
 
-          <div class="h-hidden-tablet-p">
+          <div>
             <div class="media-flex inverted-text">
               <ApexChart
                 v-if="!Loading"
@@ -529,7 +382,6 @@ onMounted(() => {
                 :height="completionChart.height"
                 :type="completionChart.type"
                 :series="completionChart.series"
-                label="Completion"
                 :options="completionChart"
               />
               <!-- <i aria-hidden="true" class="lnil lnil-crown-alt-1" /> -->

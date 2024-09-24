@@ -34,10 +34,7 @@ const props = defineProps<{
 }>();
 
 const newProjectId = ref(0);
-const isSelectClient = ref(false);
-const isSelectContractor = ref(false);
 const showPassword = ref(false);
-const showContractorFields = ref(false);
 const workwithContractor = ref(false);
 const addwithClient = ref(false);
 const loading = ref(false);
@@ -45,7 +42,6 @@ const image = ref("");
 const allManagers = ref([]);
 const allContractors = ref([]);
 const allClients = ref([]);
-const selectedManagers = ref([]);
 const newId = ref("");
 const preview = ref<any>("");
 const selectedFileName = ref("");
@@ -205,24 +201,6 @@ const handleModalClosed = () => {
   };
 };
 
-const handleFileSelect = (event) => {
-  let csvFile = event.target.files[0];
-  uploadTasksSheet(csvFile);
-  selectedFileName.value = csvFile.name;
-};
-
-const handleDrop = (event) => {
-  event.preventDefault();
-  let csvFile = event.target.files[0];
-  uploadTasksSheet(csvFile);
-  selectedFileName.value = csvFile.name;
-};
-
-const removeFile = () => {
-  selectedFileName.value = "";
-  document.getElementById("docpicker").value = "";
-};
-
 const uploadTasksSheet = async (tasksFile: any) => {
   try {
     const resp = await api.post(
@@ -272,10 +250,6 @@ watch(
     getManagersershandler();
   }
 );
-
-watch(() => props.addwithClient, emptyClient);
-
-watch(() => props.workwithContractor, emptyClient);
 
 onMounted(() => {
   getManagersershandler();

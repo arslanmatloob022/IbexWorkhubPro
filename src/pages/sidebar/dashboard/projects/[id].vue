@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ProjectDetail from "/@src/components/IbexProjects/ProjectDetail.vue";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();

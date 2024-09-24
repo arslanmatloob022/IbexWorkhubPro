@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
-import { title } from "process";
+
 const api = useApi();
 const calendarRef = ref(null);
 
@@ -29,12 +29,6 @@ const selectedWorkerId = ref(0);
 const showWorkerChart = ref(true);
 const isTaskFormOpen = ref<any>(false);
 const editTaskId = ref<any>("");
-const dropdownFilters = ref({
-  all: "all",
-  active: "active",
-  pending: "pending",
-  completed: "completed",
-});
 
 const colors = ref({
   pending: "#8392ab",
@@ -323,23 +317,6 @@ const toggleFullScreen = () => {
   const fullScreenCalender = document.getElementById("fullCalendarView");
 };
 
-const openProjectForm = (projectId = null) => {
-  if (userSession.user.role === "admin") {
-    isProjectFormOpen.value = true;
-  } else if (userSession.user.role === "admin") {
-    editProjectId.value = projectId;
-  } else {
-    notyf.error("You are not allowed to perform this action");
-  }
-};
-
-const closeProjectForm = async () => {
-  isProjectFormOpen.value = false;
-  editProjectId.value = null;
-  await getProjectHandler();
-  renderCalender();
-};
-
 watch(activeFilter, (newValue, oldValue) => {
   changeFilterHandler();
 });
@@ -604,6 +581,10 @@ onMounted(async () => {
   border-width: 1px;
   border-radius: 4px;
   height: 100% !important;
+  padding: 0.6rem !important;
+  p {
+    color: #fff;
+  }
 }
 .fc-event {
   margin-bottom: 0px !important;

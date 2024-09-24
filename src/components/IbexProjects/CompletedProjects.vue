@@ -1,88 +1,20 @@
 <script setup lang="ts">
-import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
-const isProjectFormOpen = ref(false);
-const isProjectCompleted = ref(false);
 const query = ref("");
-const filters = ref("");
-const activeFilter = ref("all");
-const inputFieldValue = ref("");
-const modalTitle = ref("Add New Project");
 const HomeRating = ref(4);
-const managerCount = ref(1);
 const projectIdDeleteTobe = ref(0);
 const projects = ref([]);
 
-const filteredProjects = ref([
-  {
-    title: "",
-    description: "",
-    image: null as File | null,
-    startDate: "",
-    endDate: "",
-    is_active: false,
-    managers: [],
-    client: {
-      id: 0,
-      username: "",
-      email: "",
-      role: "",
-      avatar: "",
-    },
-    contractor: {
-      id: 0,
-      username: "",
-      email: "",
-      role: "",
-      avatar: "",
-    },
-  },
-]);
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
 });
-
-const project = ref({
-  title: "",
-  description: "",
-  image: null as File | null,
-  startDate: "",
-  endDate: "",
-  is_active: false,
-  managers: [],
-  client: {
-    id: 0,
-    username: "",
-    email: "",
-    role: "",
-    avatar: "",
-  },
-  contractor: {
-    id: 0,
-    username: "",
-    email: "",
-    role: "",
-    avatar: "",
-  },
-});
-
-const managers = ref<any>([{ id: 0, avatar: "", email: "", username: "" }]);
-
-const closeProjectModalHandler = () => {
-  project.value.title = "";
-  project.value.description = "";
-  project.value.image = null;
-  project.value.startDate = "";
-  project.value.endDate = "";
-  project.value.managers = [];
-};
 
 const openDeleteAlert = (id: any) => {
   projectIdDeleteTobe.value = id;
@@ -91,30 +23,6 @@ const openDeleteAlert = (id: any) => {
     "As you delete this project you won't be able to recover it again";
   SweetAlertProps.value.btntext = "Delete it";
   SweetAlertProps.value.isSweetAlertOpen = true;
-};
-
-const openCustomModal = () => {
-  closeProjectModalHandler();
-};
-
-const openProjectForm = () => {
-  isProjectFormOpen.value = true;
-};
-
-const closeProjectForm = () => {
-  getProjectHandler();
-  isProjectFormOpen.value = false;
-};
-
-const saveAndClose = () => {
-  // (refs.customModal as any).closeModal();
-};
-
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files) {
-    project.value.image = target.files[0];
-  }
 };
 
 const getProjectHandler = async () => {

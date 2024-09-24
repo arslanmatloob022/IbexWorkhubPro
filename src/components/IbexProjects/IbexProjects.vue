@@ -5,15 +5,10 @@ import { useNotyf } from "/@src/composable/useNotyf";
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
-const isProjectFormOpen = ref(false);
-const isProjectCompleted = ref(false);
 const query = ref("");
 const filters = ref("");
 const activeFilter = ref("all");
-const inputFieldValue = ref("");
-const modalTitle = ref("Add New Project");
 const HomeRating = ref(4);
-const managerCount = ref(1);
 const projectIdDeleteTobe = ref(0);
 const projects = ref([]);
 const SweetAlertProps = ref({
@@ -49,26 +44,6 @@ const filteredProjects = ref([
   },
 ]);
 
-// Define reactive objects
-const ProjectStatuscolor = reactive({
-  pending: "secondary",
-  active: "warning",
-  completed: "success",
-});
-
-const getProjectStatus = reactive({
-  pending: "Pre Construction",
-  active: "Active",
-  completed: "Completed",
-});
-
-const alertData = reactive({
-  icon: "fa fa-warning",
-  alertTitle: "Alert",
-  alertDescription:
-    "After deleting this Project, you will not be able to recover it.",
-});
-
 const project = ref({
   title: "",
   description: "",
@@ -92,8 +67,6 @@ const project = ref({
     avatar: "",
   },
 });
-
-const managers = ref<any>([{ id: 0, avatar: "", email: "", username: "" }]);
 
 // Methods converted to Composition API syntax
 const filterProject = (filterType: string | null) => {
@@ -136,31 +109,6 @@ const openDeleteAlert = (id: any) => {
     "As you delete this project you won't be able to recover it again";
   SweetAlertProps.value.btntext = "Delete it";
   SweetAlertProps.value.isSweetAlertOpen = true;
-};
-
-const openCustomModal = () => {
-  closeProjectModalHandler();
-  // (refs.customModal as any).openModal();
-};
-
-const openProjectForm = () => {
-  isProjectFormOpen.value = true;
-};
-
-const closeProjectForm = () => {
-  getProjectHandler();
-  isProjectFormOpen.value = false;
-};
-
-const saveAndClose = () => {
-  // (refs.customModal as any).closeModal();
-};
-
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files) {
-    project.value.image = target.files[0];
-  }
 };
 
 const getProjectHandler = async () => {

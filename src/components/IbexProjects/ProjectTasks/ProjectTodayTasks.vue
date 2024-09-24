@@ -21,7 +21,7 @@ const projectTodaysTasks = ref<any>([]);
 const getTodayTask = async (refresh: any) => {
   try {
     const resp = await api.get(
-      `/api/task/today-tasks/?project=${route.params.id}`
+      `/api/task/today-tasks/?project=${props.projectId}`
     );
     projectTodaysTasks.value = resp.data.map((item) => ({
       ...item,

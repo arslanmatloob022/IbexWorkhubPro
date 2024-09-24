@@ -1,17 +1,34 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useUserSession } from "/@src/stores/userSession";
-import { users } from "/@src/data/layouts/card-grid-v1";
 
 const api = useApi();
 const notyf = useNotyf();
-const userSession = useUserSession();
-const showPassword = ref(false);
 const filters = ref("");
 const selectedIdToDelete = ref("");
+const valueSingle = ref(0);
+const currentSelectId = ref("");
+const isOpenModal = ref(false);
+const optionsSingle = [
+  "All",
+  "UI/UX Design",
+  "Web Development",
+  "Software Eng.",
+  "Business",
+];
+
+const loading = ref(false);
+const selectedIdToChangeStatus = ref(null);
+const selectedStatus = ref(null);
 
 const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+
+const deleteSweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
@@ -32,9 +49,6 @@ const workersData = ref([
   },
 ]);
 
-const currentSelectId = ref("");
-const isOpenModal = ref(false);
-
 const openUserModal = (id: any = "") => {
   currentSelectId.value = id;
   isOpenModal.value = !isOpenModal.value;
@@ -53,36 +67,6 @@ const filteredData = computed(() => {
   }
 });
 
-const valueSingle = ref(0);
-const optionsSingle = [
-  "All",
-  "UI/UX Design",
-  "Web Development",
-  "Software Eng.",
-  "Business",
-];
-
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};
-
-const loading = ref(false);
-const selectedIdToChangeStatus = ref(null);
-const selectedStatus = ref(null);
-const preview = ref(null);
-const phoneNumber = ref("");
-const userData = ref({
-  username: "",
-  email: "",
-  password: "",
-  status: "",
-  avatar: null,
-  is_sentMail: false,
-  phoneNumber: "",
-});
-const editModeId = ref(0);
-const modalTitle = ref("");
-
 const openStatusAlert = (user: any) => {
   selectedIdToChangeStatus.value = user.id;
   selectedStatus.value = user.is_active;
@@ -98,7 +82,7 @@ const openStatusAlert = (user: any) => {
 
 const openDeleteModal = (worker: any) => {
   selectedIdToDelete.value = worker.id;
-  SweetAlertProps.value = {
+  deleteSweetAlertProps.value = {
     title: `Delete ${worker.username}?`,
     subtitle:
       "After deleting this worker you won't be able to recover it again.",
@@ -318,14 +302,14 @@ onMounted(() => {
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
     />
     <SweetAlert
-      v-if="SweetAlertProps.isSweetAlertOpen"
+      v-if="deleteSweetAlertProps.isSweetAlertOpen"
       :loading="loading"
-      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
-      :title="SweetAlertProps.title"
-      :subtitle="SweetAlertProps.subtitle"
-      :btntext="SweetAlertProps.btntext"
+      :isSweetAlertOpen="deleteSweetAlertProps.isSweetAlertOpen"
+      :title="deleteSweetAlertProps.title"
+      :subtitle="deleteSweetAlertProps.subtitle"
+      :btntext="deleteSweetAlertProps.btntext"
       :onConfirm="deleteWorker"
-      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+      :onCancel="() => (deleteSweetAlertProps.isSweetAlertOpen = false)"
     />
     <AddUpdateUser
       v-if="isOpenModal"

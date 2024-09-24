@@ -73,11 +73,6 @@ const handleFileSelect = (event) => {
   selectedFileName.value = csvFile.name;
 };
 
-const removeFile = () => {
-  selectedFileName.value = "";
-  document.getElementById("docpicker").value = "";
-};
-
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
@@ -114,15 +109,6 @@ const deleteSheetTasks = async () => {
     Loading.value = false;
   }
 };
-
-const valueSingle = ref(0);
-const optionsSingle = [
-  "All Files",
-  "Recently Updated",
-  "My Files",
-  "Team Files",
-  "Deprecated",
-];
 </script>
 
 <template>

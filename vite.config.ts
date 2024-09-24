@@ -146,9 +146,9 @@ export default defineConfig({
     // https://vitejs.dev/config/build-options.html#build-assetsinlinelimit
     assetsInlineLimit: 4096 * 2,
     // commonjsOptions: { include: [] },
-    rollupOptions: {
-      external: ["workbox-window"],
-    },
+    // rollupOptions: {
+    //   external: ["workbox-window"],
+    // },
   },
   plugins: [
     /**

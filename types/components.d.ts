@@ -823,7 +823,7 @@ declare module 'vue' {
     WizardV1Navigation: typeof import('./../src/components/partials/wizard/WizardV1Navigation.vue')['default']
     WorkerActivityLogs: typeof import('./../src/components/pages/networks/workers/WorkerActivityLogs.vue')['default']
     WorkerAnomalies: typeof import('./../src/components/pages/networks/anomalies/WorkerAnomalies.vue')['default']
-    WorkerCalendar: typeof import('./../src/components/IbexProjects/WorkerCalendar.vue')['default']
+    WorkerCalendar: typeof import('./../src/components/IbexWorkerComponents/WorkerCalendar.vue')['default']
     WorkerComments: typeof import('./../src/components/pages/networks/workers/WorkerComments.vue')['default']
     WorkerLicences: typeof import('./../src/components/pages/networks/workers/WorkerLicences.vue')['default']
     WorkerMainSignup: typeof import('./../src/components/pages/WorkerMainSignup.vue')['default']

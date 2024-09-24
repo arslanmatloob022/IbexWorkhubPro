@@ -1,0 +1,1 @@
+import{_ as t}from"./BScertificate-a3316e3b.js";import{e,v as r,y as a,H as i}from"./index-c78e54b8.js";import"./favicon_512x512-95354c31.js";const s=e({__name:"worker-certificate",setup:e=>(r({title:"BS7858 Certificate - Arez"}),(e,r)=>{const s=t;return a(),i(s)})});export{s as default};

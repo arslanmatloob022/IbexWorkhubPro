@@ -207,15 +207,14 @@ const renderCalendar = () => {
   console.log(projects.value);
 
   const events = [];
-  
+
   // Loop through tasks and push events for each task
 
-
   const resources = [];
-  
+
   // Loop through workers and push events related to each worker
-  workers.value.forEach(worker => {
-    tasks.value.forEach(task => {
+  workers.value.forEach((worker) => {
+    tasks.value.forEach((task) => {
       if (task.workers.includes(worker.id)) {
         events.push({
           id: task.id,
@@ -240,9 +239,8 @@ const renderCalendar = () => {
 
   // Combine the events and update the calendar options
   calendarOptions.value.resources = resources;
-  calendarOptions.value.events = [...events];  // Spread the events into a new array
+  calendarOptions.value.events = [...events]; // Spread the events into a new array
 };
-
 
 const changeFilterHandler = () => {
   // console.log("func called", activeFilter.value);
@@ -255,28 +253,26 @@ const changeFilterHandler = () => {
   // } else {
   //   filteredResources.value = projects.value;
   // }
-  let filteredResourcesLocal = [] 
-  let filteredWorkers =[]
+  let filteredResourcesLocal = [];
+  let filteredWorkers = [];
   if (query.value) {
     filteredWorkers = workers.value.filter((worker) =>
       worker.username.toLowerCase().includes(query.value.toLowerCase())
     );
-  }else{
-    filteredWorkers = workers.value
+  } else {
+    filteredWorkers = workers.value;
   }
 
-  filteredWorkers.forEach(element => {
-    filteredResourcesLocal.push(
-      {
+  filteredWorkers.forEach((element) => {
+    filteredResourcesLocal.push({
       id: element.id,
       title: element.username,
-    }
-    )
+    });
   });
 
   calendarOptions.value.resources = filteredResourcesLocal;
 };
-const workers = ref(<any>[])
+const workers = ref(<any>[]);
 const getworkersHandler = async () => {
   try {
     loading.value = true;
@@ -341,26 +337,30 @@ onMounted(async () => {
       <div class="datatable-toolbar">
         <VField elevated>
           <VControl icon="fas fa-search">
-            <VInput type="text" placeholder="Search worker..." v-model="query" @input="changeFilterHandler()"
-              class="" />
+            <VInput
+              type="text"
+              placeholder="Search worker..."
+              v-model="query"
+              @input="changeFilterHandler()"
+              class=""
+            />
           </VControl>
         </VField>
-
-      
       </div>
     </form>
     <FullCalendar :options="calendarOptions">
       <template v-slot:eventContent="arg">
-        <div style="
+        <div
+          style="
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-          ">
+          "
+        >
           <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
             {{ arg.event.title }}
           </p>
-
         </div>
       </template>
     </FullCalendar>
@@ -434,7 +434,7 @@ onMounted(async () => {
   transition: all 0.4s ease-in-out;
 }
 
-.avatars__item>img {
+.avatars__item > img {
   width: 100%;
 }
 </style>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import * as listData from "/@src/data/layouts/flex-list-v2";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
@@ -76,14 +75,6 @@ const SweetAlertProps = ref({
   btntext: "text",
 });
 
-const toggleDropdown = (taskId: any) => {
-  if (currentTask.value === taskId) {
-    currentTask.value = 0;
-  } else {
-    currentTask.value = taskId;
-  }
-};
-
 const closeTheModals = () => {
   taskData.value = {
     title: "",
@@ -103,23 +94,6 @@ const openAlert = (id: any) => {
     btntext: "Yes, Delete",
     isSweetAlertOpen: true,
   };
-};
-
-const addTaskHandler = async () => {
-  try {
-    loading.value = true;
-    let formData = convertToFormData(taskData, []);
-    const resp = await api.post("/api/task/", formData);
-    closeTheModals();
-    getWorkerTasks();
-    notyf.success("Task added successfully");
-    console.log("task data", resp);
-  } catch (err) {
-    notyf.error("Something went wrong");
-    console.log(err);
-  } finally {
-    loading.value = false;
-  }
 };
 
 const getWorkerTasks = async () => {
@@ -193,19 +167,6 @@ const deleteTask = async () => {
     getWorkerTasks();
     SweetAlertProps.value.isSweetAlertOpen = false;
     currentTask.value = 0;
-  } catch (err) {
-    console.log(err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const getWorkershandler = async () => {
-  try {
-    loading.value = true;
-    const response = await api.get("/api/users/by-role/worker/", {});
-    workersData.value = response.data;
-    console.log("data", workersData);
   } catch (err) {
     console.log(err);
   } finally {
