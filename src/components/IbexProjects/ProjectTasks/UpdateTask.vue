@@ -10,6 +10,14 @@ const allWorkers = ref([]);
 const loading = ref(false);
 let selectWorkersSlot = ref<any>([]);
 const selectedWorkers = ref([]);
+const selectSupplierSlotValue = ref();
+const selectSupplierSlotOptions = [
+  {
+    value: "javascript",
+    name: "Javascript",
+    icon: "/images/icons/stacks/js.svg",
+  },
+];
 
 const props = withDefaults(
   defineProps<{
@@ -44,6 +52,7 @@ const taskData = ref({
   costCode: "",
   color: "",
   project: "",
+  priority: "",
   workers: [],
 });
 
@@ -242,7 +251,7 @@ onMounted(() => {
         </div>
 
         <!-- lin manger -->
-        <div class="field column is-6 mb-0">
+        <div class="field column is-3 mb-0">
           <VField>
             <VLabel>Start Date</VLabel>
             <VControl>
@@ -255,7 +264,7 @@ onMounted(() => {
           </VField>
         </div>
 
-        <div class="field column is-6 mb-0">
+        <div class="field column is-3 mb-0">
           <VField>
             <VLabel>End Date</VLabel>
             <VControl>
@@ -269,18 +278,19 @@ onMounted(() => {
         </div>
 
         <!-- external id -->
-        <!-- <div class="field column is-6 mb-0">
+        <div class="field column is-6 mb-0">
           <VField>
-            <VLabel>Color</VLabel>
+            <VLabel>Priority</VLabel>
             <VControl>
-              <VInput
-                type="color"
-                :placeholder="loading ? 'Loading...' : 'End date'"
-                v-model="taskData.color"
-              />
+              <VSelect v-model="taskData.priority">
+                <VOption value=""> Select priority level </VOption>
+                <VOption value="Low"> Low </VOption>
+                <VOption value="Medium"> Medium </VOption>
+                <VOption value="High"> High </VOption>
+              </VSelect>
             </VControl>
           </VField>
-        </div> -->
+        </div>
 
         <div class="field column is-6 mb-0">
           <label>Select workers * </label>

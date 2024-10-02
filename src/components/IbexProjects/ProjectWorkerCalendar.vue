@@ -226,6 +226,7 @@ const renderCalendar = () => {
           color: task.color,
           description: task.description,
           borderColor: colors[task.status],
+          projectInfo: task.projectInfo,
         });
       }
     });
@@ -237,22 +238,11 @@ const renderCalendar = () => {
     });
   });
 
-  // Combine the events and update the calendar options
   calendarOptions.value.resources = resources;
   calendarOptions.value.events = [...events]; // Spread the events into a new array
 };
 
 const changeFilterHandler = () => {
-  // console.log("func called", activeFilter.value);
-
-  // if (activeFilter.value !== "all") {
-  //   let data = projects.value.filter(
-  //     (project) => project.status === activeFilter.value
-  //   );
-  //   filteredResources.value = data;
-  // } else {
-  //   filteredResources.value = projects.value;
-  // }
   let filteredResourcesLocal = [];
   let filteredWorkers = [];
   if (query.value) {
@@ -293,21 +283,6 @@ const getTasksHandler = async () => {
     tasks.value = response.data;
   } catch (err) {
     tasks.value = [];
-  }
-};
-
-const toggleFullScreen = () => {
-  fullWidthView.value = !fullWidthView.value;
-  const fullScreenCalender = document.getElementById("fullCalendarView");
-};
-
-const openProjectForm = (projectId = null) => {
-  if (userSession.user.role === "admin") {
-    isProjectFormOpen.value = true;
-  } else if (userSession.user.role === "admin") {
-    editProjectId.value = projectId;
-  } else {
-    notyf.error("You are not allowed to perform this action");
   }
 };
 
@@ -359,6 +334,7 @@ onMounted(async () => {
           "
         >
           <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
+            ({{ arg.event.extendedProps.projectInfo.title }})
             {{ arg.event.title }}
           </p>
         </div>
@@ -388,8 +364,11 @@ onMounted(async () => {
 <style lang="scss">
 .fc-event.fc-event-draggable {
   margin-right: 1px;
-  border-width: 3px;
   border-radius: 4px;
+  border: none;
+  p {
+    color: #fff;
+  }
 }
 
 .fc-event {

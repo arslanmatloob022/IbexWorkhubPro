@@ -14,17 +14,23 @@ const loading = ref(false);
 
 const ContractorsData = ref([
   {
-    id: "",
-    password: "",
+    id: "bc199abb-e8f3-4074-91c1-a73c182de6aa",
+    active_project: 0,
+    completed_project: 1,
+    cancelled_project: 0,
+    pending_project: 0,
+    password:
+      "pbkdf2_sha256$260000$OczZJ7bosNcSEPl14SwE2W$BE95gFMgOF4gKAvgE5PIfMbSmRXSrPjn0+Th1ox5lOQ=",
     last_login: null,
-    date_joined: "",
-    email: "",
+    date_joined: "2024-05-23T10:14:39.803183Z",
+    email: "ibexbuilderstudios@gmail.com",
     role: "contractor",
     avatar: null,
     is_active: true,
-    phoneNumber: "",
-    username: "",
+    phoneNumber: "23984729370",
+    username: "Patrick",
     is_sentMail: false,
+    supplier: null,
   },
 ]);
 
@@ -57,18 +63,10 @@ const optionsSingle = [
   "Business",
 ];
 
-function getAvatarData(user: any): VAvatarProps {
-  return {
-    picture: user?.avatar,
-    initials: user?.initials,
-    color: user?.color as VAvatarColor,
-  };
-}
-
 const getContractorshandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/users/by-role/contractor/", {});
+    const response = await api.get("/api/users/contractors/", {});
     ContractorsData.value = response.data;
     console.log("data", ContractorsData.value);
   } catch (err) {

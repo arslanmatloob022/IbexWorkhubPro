@@ -1,22 +1,22 @@
 <script lang="ts">
-import type { RouteLocationAsString } from 'unplugin-vue-router'
-import type { PropType } from 'vue'
-import { RouterLink } from 'vue-router/auto'
-import { CssUnitRe } from '/@src/utils/regex'
+import type { RouteLocationAsString } from "unplugin-vue-router";
+import type { PropType } from "vue";
+import { RouterLink } from "vue-router/auto";
+import { CssUnitRe } from "/@src/utils/regex";
 
-import VPlaceload from '../loader/VPlaceload.vue'
+import VPlaceload from "../loader/VPlaceload.vue";
 
-export type VButtonSize = 'medium' | 'big' | 'huge'
+export type VButtonSize = "small" | "medium" | "big" | "huge";
 export type VButtonColor =
-  | 'primary'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'white'
-  | 'dark'
-  | 'light'
-export type VButtonDark = '1' | '2' | '3' | '4' | '5' | '6'
+  | "primary"
+  | "info"
+  | "success"
+  | "warning"
+  | "danger"
+  | "white"
+  | "dark"
+  | "light";
+export type VButtonDark = "1" | "2" | "3" | "4" | "5" | "6";
 
 export default defineComponent({
   props: {
@@ -43,10 +43,10 @@ export default defineComponent({
         if (value.match(CssUnitRe) === null) {
           console.warn(
             `VButton: invalid "${value}" placeload. Should be a valid css unit value.`
-          )
+          );
         }
 
-        return true
+        return true;
       },
     },
     color: {
@@ -57,23 +57,23 @@ export default defineComponent({
         if (
           [
             undefined,
-            'primary',
-            'info',
-            'success',
-            'warning',
-            'danger',
-            'white',
-            'dark',
-            'light',
+            "primary",
+            "info",
+            "success",
+            "warning",
+            "danger",
+            "white",
+            "dark",
+            "light",
           ].indexOf(value) === -1
         ) {
           console.warn(
             `VButton: invalid "${value}" color. Should be primary, info, success, warning, danger, dark, light, white or undefined`
-          )
-          return false
+          );
+          return false;
         }
 
-        return true
+        return true;
       },
     },
     size: {
@@ -81,14 +81,16 @@ export default defineComponent({
       default: undefined,
       validator: (value: VButtonSize) => {
         // The value must match one of these strings
-        if ([undefined, 'medium', 'big', 'huge'].indexOf(value) === -1) {
+        if (
+          [undefined, "small", "medium", "big", "huge"].indexOf(value) === -1
+        ) {
           console.warn(
             `VButton: invalid "${value}" size. Should be big, huge, medium or undefined`
-          )
-          return false
+          );
+          return false;
         }
 
-        return true
+        return true;
       },
     },
     dark: {
@@ -96,14 +98,14 @@ export default defineComponent({
       default: undefined,
       validator: (value: VButtonDark) => {
         // The value must match one of these strings
-        if ([undefined, '1', '2', '3', '4', '5', '6'].indexOf(value) === -1) {
+        if ([undefined, "1", "2", "3", "4", "5", "6"].indexOf(value) === -1) {
           console.warn(
             `VButton: invalid "${value}" dark. Should be 1, 2, 3, 4, 5, 6 or undefined`
-          )
-          return false
+          );
+          return false;
         }
 
-        return true
+        return true;
       },
     },
     rounded: {
@@ -157,80 +159,82 @@ export default defineComponent({
   },
   setup(props, { slots, attrs }) {
     const classes = computed(() => {
-      const defaultClasses = (attrs?.class || []) as string[] | string
+      const defaultClasses = (attrs?.class || []) as string[] | string;
       return [
         defaultClasses,
-        'button',
-        'v-button',
-        props.disabled && 'is-disabled',
-        props.rounded && 'is-rounded',
-        props.bold && 'is-bold',
+        "button",
+        "v-button",
+        props.disabled && "is-disabled",
+        props.rounded && "is-rounded",
+        props.bold && "is-bold",
         props.size && `is-${props.size}`,
-        props.lower && 'is-lower',
-        props.fullwidth && 'is-fullwidth',
-        props.outlined && 'is-outlined',
+        props.lower && "is-lower",
+        props.fullwidth && "is-fullwidth",
+        props.outlined && "is-outlined",
         props.dark && `is-dark-bg-${props.dark}`,
-        props.darkOutlined && 'is-dark-outlined',
-        props.raised && 'is-raised',
-        props.elevated && 'is-elevated',
-        props.loading && !props.placeload && 'is-loading',
+        props.darkOutlined && "is-dark-outlined",
+        props.raised && "is-raised",
+        props.elevated && "is-elevated",
+        props.loading && !props.placeload && "is-loading",
         props.color && `is-${props.color}`,
-        props.light && 'is-light',
-        props.static && 'is-static',
-      ]
-    })
-    const isIconify = computed(() => props.icon && props.icon.indexOf(':') !== -1)
+        props.light && "is-light",
+        props.static && "is-static",
+      ];
+    });
+    const isIconify = computed(
+      () => props.icon && props.icon.indexOf(":") !== -1
+    );
     const isCaretIconify = computed(
-      () => props.iconCaret && props.iconCaret.indexOf(':') !== -1
-    )
+      () => props.iconCaret && props.iconCaret.indexOf(":") !== -1
+    );
 
     const getChildrens = () => {
-      const childrens = []
+      const childrens = [];
 
-      let iconWrapper
+      let iconWrapper;
       if (isIconify.value) {
-        const icon = h('i', {
-          'aria-hidden': true,
-          class: 'iconify',
-          'data-icon': props.icon,
-        })
-        iconWrapper = h('span', { class: 'icon' }, icon)
+        const icon = h("i", {
+          "aria-hidden": true,
+          class: "iconify",
+          "data-icon": props.icon,
+        });
+        iconWrapper = h("span", { class: "icon" }, icon);
       } else if (props.icon) {
-        const icon = h('i', { 'aria-hidden': true, class: props.icon })
-        iconWrapper = h('span', { class: 'icon rtl-reflect' }, icon)
+        const icon = h("i", { "aria-hidden": true, class: props.icon });
+        iconWrapper = h("span", { class: "icon rtl-reflect" }, icon);
       }
 
-      let caretWrapper
+      let caretWrapper;
       if (isCaretIconify.value) {
-        const caret = h('i', {
-          'aria-hidden': true,
-          class: 'iconify',
-          'data-icon': props.iconCaret,
-        })
-        caretWrapper = h('span', { class: 'caret' }, caret)
+        const caret = h("i", {
+          "aria-hidden": true,
+          class: "iconify",
+          "data-icon": props.iconCaret,
+        });
+        caretWrapper = h("span", { class: "caret" }, caret);
       } else if (props.iconCaret) {
-        const caret = h('i', { 'aria-hidden': true, class: props.iconCaret })
-        caretWrapper = h('span', { class: 'caret' }, caret)
+        const caret = h("i", { "aria-hidden": true, class: props.iconCaret });
+        caretWrapper = h("span", { class: "caret" }, caret);
       }
 
       if (iconWrapper) {
-        childrens.push(iconWrapper)
+        childrens.push(iconWrapper);
       }
       if (props.placeload) {
         childrens.push(
           h(VPlaceload, {
             width: props.placeload,
           })
-        )
+        );
       } else {
-        childrens.push(h('span', slots.default?.()))
+        childrens.push(h("span", slots.default?.()));
       }
       if (caretWrapper) {
-        childrens.push(caretWrapper)
+        childrens.push(caretWrapper);
       }
 
-      return childrens
-    }
+      return childrens;
+    };
 
     return () => {
       if (props.to) {
@@ -238,45 +242,45 @@ export default defineComponent({
           RouterLink,
           {
             ...attrs,
-            'aria-hidden': !!props.placeload && true,
+            "aria-hidden": !!props.placeload && true,
             to: props.to,
-            class: ['button', ...classes.value],
+            class: ["button", ...classes.value],
           },
           {
             default: getChildrens,
           }
-        )
+        );
       } else if (props.href) {
         return h(
-          'a',
+          "a",
           {
             ...attrs,
-            'aria-hidden': !!props.placeload && true,
+            "aria-hidden": !!props.placeload && true,
             href: props.href,
             class: classes.value,
           },
           {
             default: getChildrens,
           }
-        )
+        );
       }
 
       return h(
-        'button',
+        "button",
         {
-          type: 'button',
+          type: "button",
           ...attrs,
-          'aria-hidden': !!props.placeload && true,
+          "aria-hidden": !!props.placeload && true,
           disabled: props.disabled,
-          class: ['button', ...classes.value],
+          class: ["button", ...classes.value],
         },
         {
           default: getChildrens,
         }
-      )
-    }
+      );
+    };
   },
-})
+});
 </script>
 
 <style lang="scss">
@@ -398,6 +402,11 @@ export default defineComponent({
     &.is-medium {
       height: 2.5rem;
       font-size: 1rem;
+    }
+
+    &.is-small {
+      height: 2.2rem;
+      font-size: 0.8rem;
     }
 
     &.is-huge {

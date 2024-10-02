@@ -3,6 +3,7 @@ import type { VTagColor } from "/@src/components/base/tags/VTag.vue";
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as listData from "/@src/data/layouts/view-list-v1";
 import { useApi } from "/@src/composable/useAPI";
+import { formatDate } from "/@src/composable/useSupportElement";
 export interface UserData extends VAvatarProps {
   name: string;
   location: string;
@@ -177,18 +178,18 @@ onMounted(() => {
                   <div class="stats">
                     <div class="stat">
                       <span>{{ item.phoneNumber }}</span>
-                      <span>Projects</span>
+                      <span>Phone</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>{{ item.date_joined }}</span>
-                      <span>Replies</span>
+                      <span>{{ formatDate(item.date_joined) }}</span>
+                      <span>Joined</span>
                     </div>
                     <div class="separator" />
                     <div @click="openUserModal(item.id)" class="stat">
-                      <span>{{ item.is_active }}</span>
+                      <span>{{ item.is_active ? "Active" : "In-Active" }}</span>
                       <!-- <span>Posts</span> -->
-                      <span>Edit</span>
+                      <span>Status</span>
                     </div>
                   </div>
 

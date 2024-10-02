@@ -134,18 +134,18 @@ onMounted(() => {
       @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
     >
       <template #brand>
-        <RouterLink to="/" class="navbar-item is-brand">
+        <RouterLink to="/sidebar/dashboard" class="navbar-item is-brand">
           <AnimatedLogo width="38px" height="38px" style="cursor: pointer" />
         </RouterLink>
 
         <div class="brand-end">
-          <NotificationsMobileDropdown />
+          <!-- <NotificationsMobileDropdown /> -->
           <UserProfileDropdown />
         </div>
       </template>
     </MobileNavbar>
 
-    <!-- <MobileSidebar
+    <MobileSidebar
       :is-open="isMobileSideblockOpen"
       @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
     >
@@ -235,10 +235,10 @@ onMounted(() => {
           </a>
         </li>
       </template>
-    </MobileSidebar> -->
+    </MobileSidebar>
 
     <!-- My editing -->
-    <MobileSidebar
+    <!-- <MobileSidebar
       :is-open="isMobileSideblockOpen"
       @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
     >
@@ -322,14 +322,14 @@ onMounted(() => {
           </a>
         </li>
       </template>
-    </MobileSidebar>
+    </MobileSidebar> -->
 
     <!-- Mobile subsidebar links -->
     <Transition name="slide-x">
-      <!-- <LayoutsMobileSubsidebar
+      <LayoutsMobileSubsidebar
         v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
       />
-      <DashboardsMobileSubsidebar
+      <!-- <DashboardsMobileSubsidebar
         v-else-if="
           isMobileSideblockOpen && activeMobileSubsidebar === 'dashboard'
         "
@@ -338,10 +338,10 @@ onMounted(() => {
         v-else-if="
           isMobileSideblockOpen && activeMobileSubsidebar === 'components'
         "
-      /> -->
+      />
       <ElementsMobileSubsidebar
         v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'elements'"
-      />
+      /> -->
     </Transition>
 
     <!-- Desktop navigation -->
@@ -374,7 +374,7 @@ onMounted(() => {
                 border-radius: 12px;
                 cursor: pointer;
               "
-              @click="router.push('/sidebar/networks/dashboard')"
+              @click="router.push('/sidebar/dashboard')"
               src="/logos/ibexwhite.png"
             />
           </div>
@@ -407,7 +407,7 @@ onMounted(() => {
             </RouterLink>
           </li>
 
-          <!-- customers / comopanies -->
+          <!-- customers / companies -->
           <VCollapseLinks
             v-model:open="openSideblockLinks"
             collapse-id="Projects"
@@ -431,7 +431,6 @@ onMounted(() => {
               />
             </template>
 
-            <!-- to="/sidebar/dashboard/settings?tab=about" -->
             <RouterLink
               class="is-submenu"
               to="/sidebar/dashboard/projects"
@@ -489,7 +488,7 @@ onMounted(() => {
           </li>
           <li>
             <RouterLink
-              to="/sidebar/dashboard/sub-contractors"
+              to="/sidebar/dashboard/subcontractors"
               class="single-link"
             >
               <span class="icon">

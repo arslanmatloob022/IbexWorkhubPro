@@ -10,6 +10,7 @@ const props = withDefaults(
   defineProps<{
     projectId?: string;
     straight?: boolean;
+    workerId: string;
   }>(),
   {
     projectId: "",
@@ -17,6 +18,27 @@ const props = withDefaults(
 );
 
 const projectTodaysTasks = ref<any>([]);
+// 032f54b2-9229-4d05-9a2a-eed9eabb9b75/
+
+const getWorkerTodayTask = async (refresh: any) => {
+  try {
+    const resp = await api.get(`/api/task/worker-today/${props.workerId}`);
+    projectTodaysTasks.value = resp.data.map((item) => ({
+      ...item,
+      workers: item.workers.map((worker) => ({
+        ...worker,
+        picture: worker?.avatar,
+        initials: worker?.username?.slice(0, 2).toUpperCase(),
+      })),
+    }));
+    if (refresh) {
+      notyf.green("Tasks list Refreshed");
+    }
+    console.log("data", projectTodaysTasks.value);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const getTodayTask = async (refresh: any) => {
   try {
@@ -41,7 +63,11 @@ const getTodayTask = async (refresh: any) => {
 };
 
 onMounted(() => {
-  getTodayTask(false);
+  if (props.workerId) {
+    getWorkerTodayTask(false);
+  } else {
+    getTodayTask(false);
+  }
 });
 </script>
 
@@ -67,10 +93,11 @@ onMounted(() => {
           class="inner-list-item"
         >
           <template #icon>
-            <VAnimatedCheckbox
-              v-model="topic.is_active"
-              :value="topic.is_active"
-              color="info"
+            <VIconWrap
+              icon="lucide:star"
+              dark-card-bordered
+              dark="5"
+              color="secondary"
             />
           </template>
           <template #action>

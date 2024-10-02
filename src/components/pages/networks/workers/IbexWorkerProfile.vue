@@ -307,23 +307,6 @@ onMounted(async () => {
 
     <div class="columns is-multiline">
       <div class="list-flex-toolbar is-reversed">
-        <VButtons>
-          <!-- <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
-            <input
-              v-model="filters"
-              class="input custom-text-filter"
-              placeholder="Search..."
-            />
-          </VControl> -->
-          <!-- <VButton
-            @click="openTaskForm()"
-            color="primary"
-            icon="fas fa-plus"
-            elevated
-            raised
-            >Task</VButton
-          > -->
-        </VButtons>
         <div class="tabs-inner">
           <div class="tabs is-boxed">
             <ul>
@@ -343,6 +326,15 @@ onMounted(async () => {
                   @keydown.space.prevent="tab = 'calendar'"
                   @click="tab = 'calendar'"
                   ><span>Calendar View</span></a
+                >
+              </li>
+              <li :class="[tab === 'today' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'today'"
+                  @click="tab = 'today'"
+                  ><span>Today Tasks</span></a
                 >
               </li>
               <li class="tab-naver" />
@@ -378,6 +370,9 @@ onMounted(async () => {
             </div>
           </template>
         </FullCalendar>
+      </div>
+      <div v-if="tab == 'today'" class="column is-12">
+        <ProjectTodayTasks :workerId="route.params.id" />
       </div>
     </div>
   </div>

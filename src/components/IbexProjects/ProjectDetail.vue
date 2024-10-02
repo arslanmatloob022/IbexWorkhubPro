@@ -472,7 +472,7 @@ onMounted(() => {
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
                     <VAvatar :picture="manager.avatar" />
                     <template #content>
-                      <UserPopoverContent :user="popovers.user18" />
+                      <UserPopoverContent :user="manager" />
                     </template>
                   </Tippy>
                 </div>
@@ -509,7 +509,7 @@ onMounted(() => {
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
                     <VAvatar :picture="projectData.client.avatar" />
                     <template #content>
-                      <UserPopoverContent :user="popovers.user18" />
+                      <UserPopoverContent :user="projectData.client" />
                     </template>
                   </Tippy>
                 </div>
@@ -566,7 +566,7 @@ onMounted(() => {
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
                     <VAvatar :picture="projectData.contractor.avatar" />
                     <template #content>
-                      <UserPopoverContent :user="popovers.user18" />
+                      <UserPopoverContent :user="projectData.contractor" />
                     </template>
                   </Tippy>
                 </div>

@@ -8,6 +8,14 @@ const api = useApi();
 const preview = ref<any>("");
 const showPassword = ref(false);
 const Loading = ref(false);
+const selectSupplierSlotValue = ref();
+const selectSupplierSlotOptions = ref([
+  {
+    value: "javascript",
+    name: "Javascript",
+    icon: "/images/icons/stacks/js.svg",
+  },
+]);
 
 const props = withDefaults(
   defineProps<{
@@ -43,6 +51,7 @@ const userFormData = ref<any>({
   role: "",
   phoneNumber: "",
   avatar: "",
+  supplier: "",
 });
 
 const handleFileChange = (event) => {
@@ -81,8 +90,15 @@ const addUpdateUserHandler = async () => {
     }
     actionUpdateHandler();
     closeModalHandler();
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    if (
+      err.response?.data?.email &&
+      err.response.data.email.includes("user with this email already exists.")
+    ) {
+      notyf.error("Email already exists. Please use a different email.");
+    } else {
+      notyf.error("An error occurred. Please try again.");
+    }
   } finally {
     Loading.value = false;
   }
@@ -102,11 +118,27 @@ const getUserDataHandler = async () => {
   }
 };
 
+const getSuppliers = async () => {
+  try {
+    const resp = await api.get(`/api/users/by-role-option/supplier/`);
+    selectSupplierSlotOptions.value = resp.data.map((item) => {
+      return {
+        value: item.id,
+        name: item.username,
+        icon: item.avatar,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 onMounted(() => {
   if (props.userId) {
     getUserDataHandler();
   }
   userFormData.value.role = props.userRole;
+  getSuppliers();
 });
 </script>
 <template>
@@ -209,7 +241,7 @@ onMounted(() => {
             </VButton>
           </VControl>
         </VField>
-        <VField class="column is-6">
+        <VField class="column is-3">
           <VControl>
             <VSwitchBlock
               v-model="userFormData.is_sentMail"
@@ -219,7 +251,7 @@ onMounted(() => {
             />
           </VControl>
         </VField>
-        <VField class="column is-6">
+        <VField class="column is-3">
           <VControl>
             <VSwitchBlock
               v-model="userFormData.is_active"
@@ -229,6 +261,32 @@ onMounted(() => {
             />
           </VControl>
         </VField>
+        <VField class="column is-6" v-slot="{ id }">
+          <VControl>
+            <Multiselect
+              v-model="userFormData.supplier"
+              :attrs="{ id }"
+              placeholder="Select a sub-contractor"
+              label="name"
+              :options="selectSupplierSlotOptions"
+              :searchable="true"
+              track-by="name"
+              :max-height="145"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  <img class="select-label-icon" :src="value.icon" alt="" />
+                  {{ value.name }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <img class="select-option-icon" :src="option.icon" alt="" />
+                {{ option.name }}
+              </template>
+            </Multiselect>
+          </VControl>
+        </VField>
+
         <div class="column is-12">
           <VField label="User role">
             <VControl>
@@ -258,7 +316,7 @@ onMounted(() => {
 
               <VRadio
                 v-model="userFormData.role"
-                value="sub-contractor"
+                value="supplier"
                 label="Sub Contractor"
                 name="outlined_radio"
                 color="success"

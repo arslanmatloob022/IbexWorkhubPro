@@ -13,10 +13,8 @@ const { scrollTo } = VueScrollTo;
 const currentStep = ref(0);
 const isLoading = ref(false);
 const currentHelp = ref(-1);
-const controlType = ref("");
-const storageType = ref("");
-const taxType = ref("");
-const taxStatements = ref("");
+const addUserModal = ref(false);
+const selectedRole = ref("");
 
 const props = defineProps<{
   isOpen: {
@@ -35,8 +33,7 @@ const props = defineProps<{
 
 const newProjectId = ref(0);
 const showPassword = ref(false);
-const workwithContractor = ref(false);
-const addwithClient = ref(false);
+const workWithContractor = ref(false);
 const loading = ref(false);
 const image = ref("");
 const allManagers = ref([]);
@@ -44,7 +41,6 @@ const allContractors = ref([]);
 const allClients = ref([]);
 const newId = ref("");
 const preview = ref<any>("");
-const selectedFileName = ref("");
 
 const projectData = ref({
   title: "",
@@ -59,34 +55,19 @@ const projectData = ref({
   managers: [],
   client: null,
   contractor: null,
-  clientInfo: {
-    username: "",
-    email: "",
-    password: "",
+  wifiAvaliabe: false,
+  parkingAvaliable: false,
+  workingOn: {
+    bedrooms: false,
+    kitchen: false,
+    drawing: false,
+    bathroom: false,
+    vanity: false,
+    lawn: false,
+    pool: false,
   },
-  contractorInfo: {
-    username: "",
-    email: "",
-    password: "",
-  },
+  property_features: "",
 });
-
-const emptyClient = () => {
-  if (addwithClient.value == false) {
-    projectData.value.clientInfo.email = "";
-    projectData.value.clientInfo.username = "";
-    projectData.value.clientInfo.password = "";
-  }
-  if (workwithContractor.value == false) {
-    projectData.value.contractorInfo.email = "";
-    projectData.value.contractorInfo.username = "";
-    projectData.value.contractorInfo.password = "";
-  }
-};
-
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};
 
 const handleFileChange = (event) => {
   projectData.value.image = event.target.files[0];
@@ -109,46 +90,7 @@ const onRemoveFile = () => {
 const addNewProject = async () => {
   try {
     loading.value = true;
-    const formData = new FormData();
-
-    // Loop through the project data and append each key-value pair to formData
-    for (const dataKey in projectData.value) {
-      // Skip appending `clientInfo` if `client` exists
-      if (dataKey === "clientInfo" && projectData.value.client) {
-        continue;
-      }
-
-      if (dataKey === "contractorInfo" || dataKey === "clientInfo") {
-        formData.append(dataKey, JSON.stringify(projectData.value[dataKey]));
-      } else if (
-        projectData.value[dataKey] !== "" &&
-        projectData.value[dataKey] !== null
-      ) {
-        if (
-          dataKey === "managers" &&
-          Array.isArray(projectData.value.managers)
-        ) {
-          projectData.value.managers.forEach((manager: any) => {
-            if (manager.id) {
-              formData.append("managers", manager.id);
-            }
-          });
-        } else if (
-          dataKey === "contractor" &&
-          projectData.value.contractor.id
-        ) {
-          formData.append("contractor", projectData.value.contractor.id);
-        } else if (
-          dataKey !== "image" ||
-          typeof projectData.value.image === "object"
-        ) {
-          formData.append(dataKey, projectData.value[dataKey]);
-        }
-      }
-    }
-
-    console.log("form data", formData);
-
+    const formData = convertToFormData(projectData.value, ["image"]);
     if (newId.value) {
       const resp = await api.patch(`/api/project/${newId.value}/`, formData);
       notyf.info("Information added");
@@ -157,6 +99,7 @@ const addNewProject = async () => {
       newId.value = response.data.id;
       notyf.success("Project added successfully");
     }
+    validateStep();
   } catch (err) {
     console.error(err);
     notyf.error("Something went wrong");
@@ -165,22 +108,13 @@ const addNewProject = async () => {
   }
 };
 
-const getManagersershandler = async () => {
+const getManagersHandler = async () => {
   try {
     loading.value = true;
 
     const response = await api.get("/api/users/by-role/manager/", {});
-    const Clientsresponse = await api.get("/api/users/by-role/client/", {});
-    const Contractorsresponse = await api.get(
-      "/api/users/by-role/contractor/",
-      {}
-    );
 
     allManagers.value = response.data;
-    allContractors.value = Contractorsresponse.data;
-    allClients.value = Clientsresponse.data;
-
-    console.log("Clients", allClients.value);
   } catch (err) {
     console.log(err);
   } finally {
@@ -188,17 +122,34 @@ const getManagersershandler = async () => {
   }
 };
 
-const handleModalClosed = () => {
-  projectData.value = {
-    title: "",
-    description: "",
-    startDate: "",
-    endDate: "",
-    status: "",
-    color: "",
-    project: "",
-    managers: [],
-  };
+const getClientHandler = async () => {
+  try {
+    loading.value = true;
+
+    const Clientsresponse = await api.get("/api/users/by-role/client/", {});
+
+    allClients.value = Clientsresponse.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+const getContractorsHandler = async () => {
+  try {
+    loading.value = true;
+
+    const Contractorsresponse = await api.get(
+      "/api/users/by-role/contractor/",
+      {}
+    );
+
+    allContractors.value = Contractorsresponse.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const uploadTasksSheet = async (tasksFile: any) => {
@@ -222,7 +173,6 @@ const validateStep = async () => {
       return;
     }
 
-    addNewProject();
     isLoading.value = true;
     notyf.success("Your information is successfully stored!");
     await sleep(1000);
@@ -230,7 +180,6 @@ const validateStep = async () => {
     router.push("/sidebar/dashboard/projects");
     return;
   }
-  addNewProject();
   isLoading.value = true;
   await sleep(400);
   currentStep.value += 1;
@@ -241,23 +190,38 @@ const validateStep = async () => {
   });
 };
 
+const openUserModal = (role: string) => {
+  selectedRole.value = role;
+  addUserModal.value = true;
+};
+
+const getAddedUser = () => {
+  if (selectedRole.value == "manager") {
+    getManagersHandler();
+  } else if (selectedRole.value == "contractor") {
+    getContractorsHandler();
+  } else {
+    getClientHandler();
+  }
+};
+
 watch(
   () => props.isOpen,
   (newVal) => {
     if (newVal && props.projectId) {
       fetchProjectData(props.projectId);
     }
-    getManagersershandler();
+    getManagersHandler();
   }
 );
 
 onMounted(() => {
-  getManagersershandler();
+  getManagersHandler();
 });
 </script>
 
 <template>
-  <form method="post" novalidate @submit.prevent="validateStep">
+  <form method="post" novalidate @submit.prevent="addNewProject">
     <div class="mobile-steps is-active">
       <ul class="steps has-content-centered is-thin is-horizontal is-short">
         <li :class="[currentStep === 0 && 'is-active']" class="steps-segment">
@@ -507,6 +471,19 @@ onMounted(() => {
             </h3>
 
             <div class="form-section-inner">
+              <VButton
+                style="float: right"
+                color="primary"
+                class="mb-2"
+                light
+                outlined
+                raised
+                dark="4"
+                @click="openUserModal('manager')"
+                size="small"
+                icon="fas fa-plus"
+                >New Manager</VButton
+              >
               <VField>
                 <VControl>
                   <VSelect
@@ -525,31 +502,6 @@ onMounted(() => {
                   </VSelect>
                 </VControl>
               </VField>
-            </div>
-
-            <div class="form-section-output">
-              <div class="output">
-                <i
-                  aria-hidden="true"
-                  class="iconify"
-                  data-icon="feather:user"
-                />
-                <span>Erik Kovalsky</span>
-                <div class="action">
-                  <VIconButton icon="feather:trash-2" />
-                </div>
-              </div>
-              <div class="output">
-                <i
-                  aria-hidden="true"
-                  class="iconify"
-                  data-icon="feather:user"
-                />
-                <span>Elsa Walker</span>
-                <div class="action">
-                  <VIconButton icon="feather:trash-2" />
-                </div>
-              </div>
             </div>
           </div>
         </Transition>
@@ -581,114 +533,38 @@ onMounted(() => {
             </h3>
 
             <div class="form-section-inner fieldset">
-              <VTabs
-                slider
-                selected="team"
-                :tabs="[
-                  { label: 'Select', value: 'team' },
-                  { label: 'Add', value: 'projects' },
-                ]"
+              <VButton
+                style="float: right"
+                color="primary"
+                class="mb-2"
+                light
+                outlined
+                raised
+                dark="4"
+                @click="openUserModal('client')"
+                size="small"
+                icon="fas fa-plus"
+                >New Client</VButton
               >
-                <template #tab="{ activeValue }">
-                  <div v-if="activeValue === 'team'">
-                    <VField>
-                      <VControl>
-                        <VSelect
-                          v-model="projectData.managers"
-                          multiple
-                          required
-                          name="status"
-                          class="is-rounded"
-                        >
-                          <VOption
-                            v-for="item in allClients"
-                            :key="item.id"
-                            :value="item"
-                            >{{ item.username }}
-                          </VOption>
-                        </VSelect>
-                      </VControl>
-                    </VField>
-                  </div>
-                  <div v-else-if="activeValue === 'projects'">
-                    <div class="columns">
-                      <div class="column is-6">
-                        <VField>
-                          <VLabel>Name</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              type="text"
-                              :placeholder="
-                                loading ? 'Loading...' : 'Client name'
-                              "
-                              v-model="projectData.clientInfo.username"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                      <div class="column is-6">
-                        <VField>
-                          <VLabel>Email</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              type="email"
-                              :placeholder="
-                                loading ? 'Loading...' : 'Client email'
-                              "
-                              v-model="projectData.clientInfo.email"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                    </div>
-                    <div class="columns">
-                      <div class="column is-6">
-                        <VField>
-                          <VLabel>Phone</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              type="phone"
-                              :placeholder="
-                                loading ? 'Loading...' : 'Client email'
-                              "
-                              v-model="projectData.clientInfo.phoneNumber"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                      <div class="column is-6">
-                        <VField label="Password" addons>
-                          <VControl expanded>
-                            <VInput
-                              :type="showPassword ? 'text' : 'password'"
-                              class="input"
-                              placeholder="Password"
-                              v-model="projectData.clientInfo.password"
-                            />
-                          </VControl>
-                          <VControl>
-                            <VButton
-                              @click="togglePasswordVisibility"
-                              color="primary"
-                            >
-                              <i
-                                :class="
-                                  showPassword
-                                    ? 'fas fa-eye'
-                                    : 'fas fa-eye-slash'
-                                "
-                              ></i>
-                            </VButton>
-                          </VControl>
-                        </VField>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-              </VTabs>
+              <VField>
+                <VLabel>Select Client</VLabel>
+                <VControl>
+                  <VSelect
+                    v-model="projectData.client"
+                    multiple
+                    required
+                    name="status"
+                    class="is-rounded"
+                  >
+                    <VOption
+                      v-for="item in allClients"
+                      :key="item.id"
+                      :value="item"
+                      >{{ item.username }}
+                    </VOption>
+                  </VSelect>
+                </VControl>
+              </VField>
             </div>
           </div>
         </Transition>
@@ -723,24 +599,31 @@ onMounted(() => {
               <VField horizontal>
                 <VControl>
                   <VSwitchSegment
-                    v-model="workwithContractor"
+                    v-model="workWithContractor"
                     label-true="Yes"
                     label-false="No"
                     color="primary"
                   />
                 </VControl>
               </VField>
-              <VTabs
-                v-if="workwithContractor"
-                slider
-                selected="team"
-                :tabs="[
-                  { label: 'Select', value: 'team' },
-                  { label: 'Create', value: 'projects' },
-                ]"
-              >
-                <template #tab="{ activeValue }">
-                  <VControl v-if="activeValue === 'team'">
+              <div v-if="workWithContractor">
+                <VButton
+                  style="float: right"
+                  color="primary"
+                  class="mb-2"
+                  light
+                  outlined
+                  raised
+                  dark="4"
+                  @click="openUserModal('contractor')"
+                  size="small"
+                  icon="fas fa-plus"
+                  >New Contractor</VButton
+                >
+
+                <VField>
+                  <VLabel>Select Contractor</VLabel>
+                  <VControl>
                     <VSelect
                       v-model="projectData.contractor"
                       name="status"
@@ -754,85 +637,8 @@ onMounted(() => {
                       </VOption>
                     </VSelect>
                   </VControl>
-                  <div v-else-if="activeValue === 'projects'">
-                    <div class="columns">
-                      <div class="column is-6">
-                        <VField>
-                          <VLabel>Name</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              type="text"
-                              :placeholder="
-                                loading ? 'Loading...' : 'Client name'
-                              "
-                              v-model="projectData.contractorInfo.username"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                      <div class="column is-6">
-                        <VField>
-                          <VLabel>Email</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              type="email"
-                              :placeholder="
-                                loading ? 'Loading...' : 'Client email'
-                              "
-                              v-model="projectData.contractorInfo.email"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                    </div>
-                    <div class="columns">
-                      <div class="column is-6">
-                        <VField>
-                          <VLabel>Phone</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              type="phone"
-                              :placeholder="
-                                loading ? 'Loading...' : 'Client email'
-                              "
-                              v-model="projectData.contractorInfo.phoneNumber"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                      <div class="column is-6">
-                        <VField label="Password" addons>
-                          <VControl expanded>
-                            <VInput
-                              :type="showPassword ? 'text' : 'password'"
-                              class="input"
-                              placeholder="Password"
-                              v-model="projectData.contractorInfo.password"
-                            />
-                          </VControl>
-                          <VControl>
-                            <VButton
-                              @click="togglePasswordVisibility"
-                              color="primary"
-                            >
-                              <i
-                                :class="
-                                  showPassword
-                                    ? 'fas fa-eye'
-                                    : 'fas fa-eye-slash'
-                                "
-                              ></i>
-                            </VButton>
-                          </VControl>
-                        </VField>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-              </VTabs>
+                </VField>
+              </div>
             </div>
           </div>
         </Transition>
@@ -844,7 +650,7 @@ onMounted(() => {
             class="form-section is-active"
           >
             <h3 class="form-section-title">
-              <span>Confirmation</span>
+              <span>Additional Information</span>
               <button
                 type="button"
                 class="help-button"
@@ -863,19 +669,22 @@ onMounted(() => {
               </button>
             </h3>
             <div class="form-section-inner">
-              <div class="validation-box">
-                <div class="box-content">
-                  <h3>Excellent</h3>
-                  <p>
-                    Before submitting the form, make sure you've filled all the
-                    required fields. Once submitted, you won't be able to change
-                    the info for this shipment.
-                  </p>
-                </div>
-                <div class="box-illustration">
-                  <img src="/@src/assets/illustrations/plants/1.svg" alt="" />
-                </div>
-              </div>
+              <VField class="is-flex">
+                <VControl raw subcontrol>
+                  <VCheckbox
+                    v-model="projectData.wifi"
+                    label="Wifi Available"
+                    color="primary"
+                  />
+                </VControl>
+                <VControl raw subcontrol>
+                  <VCheckbox
+                    v-model="projectData.parking"
+                    label="Parking Available"
+                    color="primary"
+                  />
+                </VControl>
+              </VField>
             </div>
           </div>
         </Transition>
@@ -1219,6 +1028,13 @@ onMounted(() => {
       </div>
     </div>
   </form>
+  <AddUpdateUser
+    v-if="addUserModal"
+    :isModalOpen="addUserModal"
+    :userRole="selectedRole"
+    @closeModalHandler="addUserModal = false"
+    @update:actionUpdateHandler="getAddedUser"
+  />
 </template>
 
 <style lang="scss">

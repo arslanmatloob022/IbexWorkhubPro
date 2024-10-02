@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as gridData from "/@src/data/layouts/user-grid-v2";
+import { useApi } from "/@src/composable/useAPI";
 
+const api = useApi();
+const loading = ref(false);
 export interface UserData extends VAvatarProps {
   id: number;
   username: string;
@@ -15,25 +18,42 @@ export interface UserData extends VAvatarProps {
   status: string;
   team: VAvatarProps[];
 }
-const loading = ref(false);
 const users = gridData.users as UserData[];
 
 const filters = ref("");
+const clientsList = ref([]);
+
+const getIbexClients = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.get(`/api/users/by-role/client/`);
+    clientsList.value = resp.data;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return users;
+    return clientsList.value;
   } else {
-    return users.filter((item) => {
+    return clientsList.value.filter((item) => {
       return (
         item.username.match(new RegExp(filters.value, "i")) ||
-        item.location.match(new RegExp(filters.value, "i")) ||
-        item.position.match(new RegExp(filters.value, "i")) ||
-        item.badge?.match(new RegExp(filters.value, "i"))
+        item.email.match(new RegExp(filters.value, "i"))
       );
     });
   }
 });
+
+const isOpenModal = ref(false);
+const currentSelectId = ref("");
+const openUserModal = (id: any = "") => {
+  currentSelectId.value = id;
+  isOpenModal.value = !isOpenModal.value;
+};
 
 const valueSingle = ref(0);
 const optionsSingle = [
@@ -43,6 +63,10 @@ const optionsSingle = [
   "Software Eng.",
   "Business",
 ];
+
+onMounted(() => {
+  getIbexClients();
+});
 </script>
 
 <template>
@@ -68,11 +92,11 @@ const optionsSingle = [
             />
           </VControl>
         </VField>
-        <VButton color="primary" raised>
+        <VButton @click="openUserModal()" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
-          <span>Add User</span>
+          <span>Client</span>
         </VButton>
       </div>
     </div>
@@ -108,34 +132,20 @@ const optionsSingle = [
             <div class="grid-item-head">
               <div class="flex-head">
                 <div class="meta">
-                  <span v-if="item.status === 'synced'" class="dark-inverted">
-                    In Sync
+                  <span v-if="item.is_active" class="dark-inverted">
+                    Active
                   </span>
-                  <span v-if="item.status === 'overdue'" class="dark-inverted">
-                    Overdue
+                  <span v-if="!item.is_active" class="dark-inverted">
+                    In-Active
                   </span>
-                  <span v-if="item.status === 'blocked'" class="dark-inverted">
-                    Blocked
-                  </span>
+
                   <span>37 tasks remaining</span>
                 </div>
-                <div
-                  v-if="item.status === 'synced'"
-                  class="status-icon is-success"
-                >
+                <div v-if="item.is_active" class="status-icon is-success">
                   <i aria-hidden="true" class="fas fa-check" />
                 </div>
-                <div
-                  v-if="item.status === 'overdue'"
-                  class="status-icon is-warning"
-                >
+                <div v-if="!item.is_active" class="status-icon is-warning">
                   <i aria-hidden="true" class="fas fa-exclamation" />
-                </div>
-                <div
-                  v-if="item.status === 'blocked'"
-                  class="status-icon is-danger"
-                >
-                  <i aria-hidden="true" class="fas fa-times" />
                 </div>
               </div>
               <div class="buttons">
@@ -162,20 +172,20 @@ const optionsSingle = [
               </div>
             </div>
             <div class="grid-item">
-              <VAvatar :picture="item.picture" :badge="item.badge" size="big" />
+              <VAvatar :picture="item.avatar" :badge="item.badge" size="big" />
               <h3 class="dark-inverted">
-                {{ item.fullName }}
+                {{ item.username }}
               </h3>
-              <p>{{ item.position }}</p>
+              <p>{{ item.role }}</p>
               <div class="people">
-                <VAvatar
+                <!-- <VAvatar
                   v-for="(user, key) in item.team"
                   :key="key"
                   size="small"
                   :color="user.color"
                   :initials="user.initials"
                   :picture="user.picture"
-                />
+                /> -->
               </div>
               <div class="buttons">
                 <button class="button v-button is-dark-outlined">
@@ -205,6 +215,14 @@ const optionsSingle = [
       </TransitionGroup>
     </div>
   </div>
+  <AddUpdateUser
+    v-if="isOpenModal"
+    :is-modal-open="isOpenModal"
+    user-role="client"
+    :user-id="currentSelectId"
+    @update:close-modal-handler="isOpenModal = false"
+    @update:action-update-handler="getIbexClients"
+  />
 </template>
 
 <style lang="scss">

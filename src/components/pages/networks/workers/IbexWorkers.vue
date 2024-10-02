@@ -37,14 +37,20 @@ const deleteSweetAlertProps = ref({
 
 const workersData = ref([
   {
-    username: "",
-    email: "",
+    id: "",
+    active_tasks: 0,
+    completed_tasks: 2,
+    cancelled_tasks: 0,
+    pending_tasks: 13,
     password: "",
-    is_sentMail: false,
-    status: "",
-    role: "worker",
+    last_login: null,
+    date_joined: "",
+    email: "",
+    role: "",
     is_active: true,
     phoneNumber: "",
+    username: "",
+    is_sentMail: false,
     avatar: null as File | null | String,
   },
 ]);
@@ -108,8 +114,16 @@ const deleteWorker = async () => {
 const getWorkershandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/users/by-role/worker/", {});
-    workersData.value = response.data;
+    const response = await api.get("/api/users/workers/", {});
+    workersData.value = response.data.map((item) => {
+      return {
+        ...item,
+        progress:
+          item.active_tasks +
+          item.pending_tasks +
+          item.cancelled_tasks / item.completed_tasks,
+      };
+    });
     console.log("data", workersData.value);
   } catch (err) {
     console.log(err);
@@ -214,7 +228,7 @@ onMounted(() => {
           <div class="card-grid-item">
             <div class="card-grid-item-body">
               <div class="left">
-                <VAvatar size="big" :picture="item.avatar" />
+                <VAvatar size="big" :picture="item?.avatar" />
                 <div class="meta">
                   <span class="dark-inverted">{{ item.username }}</span>
                   <span>{{ item.role }}</span>
@@ -268,10 +282,13 @@ onMounted(() => {
               <div class="left">
                 <div class="progress-stats">
                   <span class="dark-inverted">Progress</span>
-                  <span>60%</span>
+                  <span> {{ item.progress ? item.progress : "0" }}%</span>
                 </div>
                 <div class="progress-bar">
-                  <VProgress size="tiny" :value="60" />
+                  <VProgress
+                    size="tiny"
+                    :value="item.progress ? item.progress : 0"
+                  />
                 </div>
               </div>
               <div class="right">
