@@ -386,6 +386,7 @@ declare module 'vue' {
     PartnerAnomaliesView: typeof import('./../src/components/pages/networks/anomalies/PartnerAnomaliesView.vue')['default']
     PartnerSidebar: typeof import('./../src/layouts/PartnerSidebar.vue')['default']
     PartnerSignup: typeof import('./../src/components/pages/networks/PartnerSignup.vue')['default']
+    PaymentDetails: typeof import('./../src/components/IbexPayments/PaymentDetails.vue')['default']
     PersonalDashboardV1: typeof import('./../src/components/pages/dashboards/personal/PersonalDashboardV1.vue')['default']
     PersonalDashboardV2: typeof import('./../src/components/pages/dashboards/personal/PersonalDashboardV2.vue')['default']
     PersonalDashboardV3: typeof import('./../src/components/pages/dashboards/personal/PersonalDashboardV3.vue')['default']

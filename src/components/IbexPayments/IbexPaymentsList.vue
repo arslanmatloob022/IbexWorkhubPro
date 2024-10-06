@@ -199,7 +199,7 @@ onMounted(() => {
                   v-for="item in filteredData"
                   :key="item.id"
                   class="flex-table-item"
-                  @click="gotoPaymentDetail(item.response.id)"
+                  @click="gotoPaymentDetail(item.id)"
                 >
                   <VFlexTableCell :column="{ media: true, grow: true }">
                     <!-- <VAvatar :picture="item.picture" /> -->
@@ -222,7 +222,13 @@ onMounted(() => {
                   </VFlexTableCell>
                   <VFlexTableCell>
                     <VTag
-                      :color="item.status == 'approved' ? 'primary' : 'info'"
+                      :color="
+                        item.status == 'approved'
+                          ? 'primary'
+                          : item.status == 'cancel'
+                          ? 'danger'
+                          : 'info'
+                      "
                       rounded
                     >
                       {{ item.status }}

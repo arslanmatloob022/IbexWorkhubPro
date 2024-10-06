@@ -23,7 +23,12 @@ const verifyPaymentCancel = async () => {
     isLoading.value = false;
   }
 };
-const gotoIbex = () => {};
+const closeWindow = () => {
+  window.close();
+
+  // If closing the window fails, redirect to Google homepage
+  window.location.href = "https://www.google.com";
+};
 onMounted(() => {
   verifyPaymentCancel();
 });
@@ -60,15 +65,16 @@ onMounted(() => {
           </div>
 
           <div class="buttons">
-            <VButton dark-outlined> Decline </VButton>
             <VButton
               color="primary"
               :loading="isLoading"
               raised
+              size="big"
+              isFullwidth
               tabindex="0"
-              @click="gotoIbex()"
+              @click="closeWindow()"
             >
-              Confirm
+              Close Window
             </VButton>
           </div>
         </div>

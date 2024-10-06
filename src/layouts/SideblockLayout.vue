@@ -546,6 +546,14 @@ onMounted(() => {
               <i class="lnir lnir-paypal" aria-hidden="true"></i>
               <span>Create Payment</span>
             </RouterLink>
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/received-payments"
+              :class="{ active: 'workers-tasks' === route.query.tab }"
+            >
+              <i class="lnir lnir-invest-monitor" aria-hidden="true"></i>
+              <span>All Payments</span>
+            </RouterLink>
 
             <RouterLink
               class="is-submenu"
@@ -554,15 +562,6 @@ onMounted(() => {
             >
               <i class="lnir lnir-diagnosis-alt" aria-hidden="true"></i>
               <span>Approved Payments </span>
-            </RouterLink>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/received-payments"
-              :class="{ active: 'workers-tasks' === route.query.tab }"
-            >
-              <i class="lnir lnir-invest-monitor" aria-hidden="true"></i>
-              <span>Received Payments</span>
             </RouterLink>
 
             <!-- <RouterLink

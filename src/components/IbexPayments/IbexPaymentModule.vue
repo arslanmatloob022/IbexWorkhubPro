@@ -9,6 +9,7 @@ const notyf = useNotyf();
 const linkData = ref({
   amount: 0,
   description: "",
+  client: "",
 });
 const paymentsLoading = ref(false);
 const paymentsDetails = ref({
@@ -129,6 +130,10 @@ const getPaymentsDetail = async () => {
   } finally {
     paymentsLoading.value = false;
   }
+};
+
+const clearLinks = () => {
+  PayPalLinkData.value.resp.links = [];
 };
 onMounted(() => {
   getClientHandler();
@@ -379,7 +384,7 @@ onMounted(() => {
                 <VField class="is-image-select has-curved-images">
                   <VControl>
                     <Multiselect
-                      v-model="selectSlotValue"
+                      v-model="linkData.client"
                       placeholder="Select a client"
                       label="name"
                       :max-height="145"
@@ -545,47 +550,19 @@ onMounted(() => {
                     : "Link not generated yet"
                 }}
               </p>
-              <!-- <div class="level is-mobile">
-                <div class="level-left" />
-                <div class="level-right">
-                  <div class="level-item">
-                    <a class="action-link" tabindex="0">Confirm</a>
-                  </div>
-                </div>
+              <!-- <div class="submit-wrap">
+                <VButton
+                  @click="clearLinks"
+                  color="warning"
+                  size="big"
+                  fullwidth
+                  :loading="linkLoading"
+                  raised
+                  bold
+                >
+                  Clear all information
+                </VButton>
               </div> -->
-            </div>
-
-            <div
-              class="dashboard-card"
-              data-toggle="popover"
-              data-pop-mode="hover"
-              data-pop-width="220"
-              data-pop-title="Level 3"
-              data-pop-content="Awesome! You're already a level 3 customer. Keep up for more."
-              data-pop-position="auto"
-              data-pop-icon="lnil lnil-crown-alt-1"
-              data-pop-iconbg="green"
-            >
-              <div class="title-wrap">
-                <h3 class="dark-inverted">Overall Progress</h3>
-                <span class="title-meta dark-inverted">Lvl 3</span>
-              </div>
-
-              <div class="progress-wrap m-b-10 m-t-10">
-                <VProgress size="tiny" :value="65" />
-              </div>
-              <p class="context-text">
-                This is your Vuero customer level. Reach out higher levels to
-                unlock achievements, special gifts, and more.
-              </p>
-              <div class="level is-mobile">
-                <div class="level-left" />
-                <div class="level-right">
-                  <div class="level-item">
-                    <a class="action-link" tabindex="0">Details</a>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

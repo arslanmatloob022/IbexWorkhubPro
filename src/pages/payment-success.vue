@@ -24,7 +24,11 @@ const verifyPaymentSuccess = async () => {
   }
 };
 
-const gotoIbex = () => {};
+const gotoIbex = () => {
+  window.close();
+  // If closing the window fails, redirect to Google homepage
+  window.location.href = "https://www.google.com";
+};
 onMounted(() => {
   verifyPaymentSuccess();
 });
@@ -60,7 +64,6 @@ onMounted(() => {
           </div>
 
           <div class="buttons">
-            <VButton dark-outlined> Decline </VButton>
             <VButton
               color="primary"
               :loading="isLoading"
@@ -68,7 +71,7 @@ onMounted(() => {
               tabindex="0"
               @click="gotoIbex()"
             >
-              Confirm
+              Close Window
             </VButton>
           </div>
         </div>
@@ -86,7 +89,7 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 540px;
+    max-width: 740px;
     min-height: 560px;
     margin: 0 auto;
 

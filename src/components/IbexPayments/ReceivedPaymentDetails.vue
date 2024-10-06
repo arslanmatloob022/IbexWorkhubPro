@@ -12,38 +12,37 @@ const api = useApi();
 const route = useRoute();
 const isLoading = ref(false);
 const paymentDetail = ref({
-  id: "PAYID-M4AYYRI79S03224PL6984306",
+  id: "PAYID-M4BF44I2Y949776H29175308",
   intent: "sale",
   state: "approved",
-  cart: "26364984DR191781U",
+  cart: "7CB39354499642142",
   payer: {
     payment_method: "paypal",
-    status: "VERIFIED",
+    status: "UNVERIFIED",
     payer_info: {
-      email: "sb-25w9f33151841@business.example.com",
-      first_name: "John",
-      last_name: "Doe",
-      payer_id: "JAZD2UFNA7XYN",
+      email: "julio@gmail.com",
+      first_name: "Julio",
+      last_name: "Adams",
+      payer_id: "WHRSNDB5FP7Q4",
       shipping_address: {
-        recipient_name: "John Doe",
-        line1: "1 Main St",
-        city: "San Jose",
-        state: "CA",
-        postal_code: "95131",
+        recipient_name: "Julio Adams",
+        line1: "157 / C-Block, Main Boulevard, Guldasht Town",
+        city: "Lahore",
+        state: "AL",
+        postal_code: "54000",
         country_code: "US",
       },
-      phone: "4087663998",
+      phone: "7203395598",
       country_code: "US",
-      business_name: "Test Store",
     },
   },
   transactions: [
     {
       amount: {
-        total: "500.00",
+        total: "94.00",
         currency: "USD",
         details: {
-          subtotal: "500.00",
+          subtotal: "94.00",
           shipping: "0.00",
           insurance: "0.00",
           handling_fee: "0.00",
@@ -55,27 +54,28 @@ const paymentDetail = ref({
         merchant_id: "6G3AKS3EQZELQ",
         email: "sb-jcewl33176163@business.example.com",
       },
-      description: "string",
+      description: "success",
+      soft_descriptor: "PAYPAL *TEST STORE",
       item_list: {
         shipping_address: {
-          recipient_name: "John Doe",
-          line1: "1 Main St",
-          city: "San Jose",
-          state: "CA",
-          postal_code: "95131",
+          recipient_name: "Julio Adams",
+          line1: "157 / C-Block, Main Boulevard, Guldasht Town",
+          city: "Lahore",
+          state: "AL",
+          postal_code: "54000",
           country_code: "US",
         },
       },
       related_resources: [
         {
           sale: {
-            id: "7PE02361PC523373W",
+            id: "85377044MH420592J",
             state: "completed",
             amount: {
-              total: "500.00",
+              total: "94.00",
               currency: "USD",
               details: {
-                subtotal: "500.00",
+                subtotal: "94.00",
                 shipping: "0.00",
                 insurance: "0.00",
                 handling_fee: "0.00",
@@ -88,39 +88,41 @@ const paymentDetail = ref({
             protection_eligibility_type:
               "ITEM_NOT_RECEIVED_ELIGIBLE,UNAUTHORIZED_PAYMENT_ELIGIBLE",
             transaction_fee: {
-              value: "17.94",
+              value: "3.77",
               currency: "USD",
             },
-            parent_payment: "PAYID-M4AYYRI79S03224PL6984306",
-            create_time: "2024-10-05T19:18:38Z",
-            update_time: "2024-10-05T19:18:38Z",
+            receipt_id: "1959624121915991",
+            parent_payment: "PAYID-M4BF44I2Y949776H29175308",
+            create_time: "2024-10-06T10:25:03Z",
+            update_time: "2024-10-06T10:25:03Z",
             links: [
               {
-                href: "https://api.sandbox.paypal.com/v1/payments/sale/7PE02361PC523373W",
+                href: "https://api.sandbox.paypal.com/v1/payments/sale/85377044MH420592J",
                 rel: "self",
                 method: "GET",
               },
               {
-                href: "https://api.sandbox.paypal.com/v1/payments/sale/7PE02361PC523373W/refund",
+                href: "https://api.sandbox.paypal.com/v1/payments/sale/85377044MH420592J/refund",
                 rel: "refund",
                 method: "POST",
               },
               {
-                href: "https://api.sandbox.paypal.com/v1/payments/payment/PAYID-M4AYYRI79S03224PL6984306",
+                href: "https://api.sandbox.paypal.com/v1/payments/payment/PAYID-M4BF44I2Y949776H29175308",
                 rel: "parent_payment",
                 method: "GET",
               },
             ],
+            soft_descriptor: "PAYPAL *TEST STORE",
           },
         },
       ],
     },
   ],
-  create_time: "2024-10-05T18:58:13Z",
-  update_time: "2024-10-05T19:18:38Z",
+  create_time: "2024-10-06T09:54:57Z",
+  update_time: "2024-10-06T10:25:03Z",
   links: [
     {
-      href: "https://api.sandbox.paypal.com/v1/payments/payment/PAYID-M4AYYRI79S03224PL6984306",
+      href: "https://api.sandbox.paypal.com/v1/payments/payment/PAYID-M4BF44I2Y949776H29175308",
       rel: "self",
       method: "GET",
     },
@@ -147,7 +149,7 @@ const copyLink = (link: any) => {
 const getPaymentDetail = async () => {
   try {
     isLoading.value = true;
-    const resp = await api.get(`/api/paypal/payment/${route.params.id}/`);
+    const resp = await api.get(`/api/payment/${route.params.id}/`);
     paymentDetail.value = resp.data;
   } catch (err) {
     console.log(err);
