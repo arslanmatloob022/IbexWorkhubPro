@@ -3,7 +3,15 @@ import sleep from "/@src/utils/sleep";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { popovers } from "/@src/data/users/userPopovers";
 import { useApi } from "/@src/composable/useAPI";
+import { useViewWrapper } from "/@src/stores/viewWrapper";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+const viewWrapper = useViewWrapper();
+viewWrapper.setPageTitle("Payment");
 
+useHead(() => ({
+  title: "Payment",
+}));
 const api = useApi();
 const notyf = useNotyf();
 const router = useRouter();
