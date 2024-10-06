@@ -17,20 +17,50 @@ const props = withDefaults(
   }
 );
 
-const projectTodaysTasks = ref<any>([]);
+const projectTodaysTasks = ref<any>({
+  tasks: [
+    {
+      id: "1a82e8dc-496e-45be-a5f6-1b202abdadc8",
+      workers: [
+        {
+          id: "fe8b01ec-1f56-4ecd-886e-31defc4a96a1",
+          username: "Others",
+          email: "others@gmail.com",
+          role: "worker",
+          avatar:
+            "https://res.cloudinary.com/dcqeugna3/image/upload/v1/media/static/users_avatars/logo1_pfu1ge",
+        },
+      ],
+      color: "#2c3e50",
+      title: "Fifth title",
+      description: "Description",
+      startDate: "2024-10-02",
+      endDate: "2024-10-16",
+      status: "active",
+      is_active: false,
+      updated: "2024-10-05T05:29:28.348706Z",
+      created: "2024-10-05T05:29:28.348727Z",
+      costCode: "Code",
+      quantity: "Quanityt",
+      unit: "Unit",
+      fileName: null,
+      note: null,
+      priority: "Medium",
+      project: "e7f43430-677e-4b23-b420-fca1fe4310f2",
+    },
+  ],
+  stats: {
+    active: 1,
+    completed: 1,
+    pending: 1,
+  },
+});
 // 032f54b2-9229-4d05-9a2a-eed9eabb9b75/
 
 const getWorkerTodayTask = async (refresh: any) => {
   try {
-    const resp = await api.get(`/api/task/worker-today/${props.workerId}`);
-    projectTodaysTasks.value = resp.data.map((item) => ({
-      ...item,
-      workers: item.workers.map((worker) => ({
-        ...worker,
-        picture: worker?.avatar,
-        initials: worker?.username?.slice(0, 2).toUpperCase(),
-      })),
-    }));
+    const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
+    projectTodaysTasks.value = resp.data;
     if (refresh) {
       notyf.green("Tasks list Refreshed");
     }
@@ -86,7 +116,7 @@ onMounted(() => {
     <div class="inner-list">
       <div>
         <VBlock
-          v-for="topic in projectTodaysTasks"
+          v-for="topic in projectTodaysTasks.tasks"
           :key="topic.id"
           center
           lighter

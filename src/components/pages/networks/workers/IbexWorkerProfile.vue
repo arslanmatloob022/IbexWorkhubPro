@@ -187,10 +187,24 @@ const showFullView = () => {
   fullWidthView.value = !fullWidthView.value;
 };
 
+const workerTasksStats = ref({});
+const getWorkerTodayTask = async () => {
+  try {
+    const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
+    workerTasksStats.value = resp.data.stats;
+    if (refresh) {
+      notyf.green("Tasks list Refreshed");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 onMounted(async () => {
   await getWorkerHandler();
   await getTasksHandler();
   renderCalendar();
+  getWorkerTodayTask();
 });
 </script>
 
@@ -239,7 +253,9 @@ onMounted(async () => {
               <i aria-hidden="true" class="fas fa-weight" />
             </VIconBox>
             <h4>
-              <span class="dark-inverted">604</span>
+              <span class="dark-inverted">{{
+                workerTasksStats.active ? workerTasksStats.active : 0
+              }}</span>
               <!-- <span>lbs</span> -->
             </h4>
           </div>
@@ -256,7 +272,9 @@ onMounted(async () => {
               <i aria-hidden="true" class="fas fa-tint" />
             </VIconBox>
             <h4>
-              <span class="dark-inverted">114</span>
+              <span class="dark-inverted">{{
+                workerTasksStats.pending ? workerTasksStats.pending : 0
+              }}</span>
               <!-- <span>Active</span> -->
             </h4>
           </div>
@@ -273,7 +291,9 @@ onMounted(async () => {
               <i aria-hidden="true" class="fas fa-heart" />
             </VIconBox>
             <h4>
-              <span class="dark-inverted">112</span>
+              <span class="dark-inverted">{{
+                workerTasksStats.completed ? workerTasksStats.completed : 0
+              }}</span>
               <!-- <span>Bpm</span> -->
             </h4>
           </div>

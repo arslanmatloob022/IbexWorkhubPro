@@ -515,8 +515,70 @@ onMounted(() => {
             </RouterLink>
           </li>
 
-          <!-- Settings -->
           <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="payments"
+            class="collapse-wrap"
+          >
+            <!-- :class="[isOpen && 'active']" -->
+            <template #header>
+              <div class="icon">
+                <i class="lnir lnir-bank" aria-hidden="true"></i>
+              </div>
+              <span>Finance</span>
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/create-payment"
+              :class="{ active: 'projects' === route.query.tab }"
+            >
+              <i class="lnir lnir-paypal" aria-hidden="true"></i>
+              <span>Create Payment</span>
+            </RouterLink>
+
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/approved-payments"
+              :class="{ active: 'manage-projects' === route.query.tab }"
+            >
+              <i class="lnir lnir-diagnosis-alt" aria-hidden="true"></i>
+              <span>Approved Payments </span>
+            </RouterLink>
+
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/received-payments"
+              :class="{ active: 'workers-tasks' === route.query.tab }"
+            >
+              <i class="lnir lnir-invest-monitor" aria-hidden="true"></i>
+              <span>Received Payments</span>
+            </RouterLink>
+
+            <!-- <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/completed-projects"
+              :class="{
+                active: 'pre-construction' === route.query.tab,
+              }"
+            >
+              <i class="lnir lnir-list" aria-hidden="true"></i>
+              <span>Completed Projects</span>
+            </RouterLink> -->
+          </VCollapseLinks>
+
+          <!-- Settings -->
+          <!-- <VCollapseLinks
             v-model:open="openSideblockLinks"
             collapse-id="report"
           >
@@ -576,7 +638,7 @@ onMounted(() => {
               <i class="lnil lnil-users" />
               <span>Controllers</span>
             </RouterLink>
-          </VCollapseLinks>
+          </VCollapseLinks> -->
         </template>
 
         <template #bottom-links>
@@ -625,11 +687,7 @@ onMounted(() => {
                   border-radius: 12px;
                   display: block;
                 "
-                :src="
-                  company.loggedCompany.compnayLogo
-                    ? company.loggedCompany.compnayLogo
-                    : '/images/logos/smallicon.svg'
-                "
+                src="/logos/ibexwhite.png"
               />
             </div>
 

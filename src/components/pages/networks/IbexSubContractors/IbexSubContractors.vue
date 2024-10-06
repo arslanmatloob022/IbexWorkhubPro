@@ -7,13 +7,16 @@ const notyf = useNotyf();
 const suppliers = ref([]);
 const filters = ref("");
 const openUserModal = ref(false);
-
+const Loading = ref(false);
 const getSuppliers = async () => {
   try {
+    Loading.value = true;
     const resp = await api.get(`/api/users/by-role-option/supplier/`, {});
     suppliers.value = resp.data;
   } catch (err) {
     console.log(err);
+  } finally {
+    Loading.value = false;
   }
 };
 
@@ -67,7 +70,7 @@ onMounted(() => {
       <!--List-->
       <div class="list-view list-view-v1">
         <VPlaceholderPage
-          v-if="filteredData.length == 0"
+          v-if="filteredData.length == 0 && !Loading"
           title="We couldn't find any matching results."
           subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
@@ -88,7 +91,8 @@ onMounted(() => {
           </template>
         </VPlaceholderPage>
 
-        <div class="list-view-inner">
+        <div></div>
+        <div v-if="!Loading" class="list-view-inner">
           <TransitionGroup name="list-complete" tag="div">
             <div
               v-if="filteredData.length != 0"
@@ -151,6 +155,7 @@ onMounted(() => {
             </div>
           </TransitionGroup>
         </div>
+        <PlaceloadV1 v-if="Loading" />
       </div>
 
       <VFlexPagination

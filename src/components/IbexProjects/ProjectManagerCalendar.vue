@@ -321,6 +321,11 @@ watch(activeFilter, (newValue, oldValue) => {
   changeFilterHandler();
 });
 
+const getCalendarData = async () => {
+  await getProjectHandler(), await getTasksHandler();
+  renderCalender();
+};
+
 onMounted(async () => {
   await Promise.all([getProjectHandler(), getTasksHandler()]);
 
@@ -561,11 +566,7 @@ onMounted(async () => {
       :projectID="projectID"
       :startDate="startDate"
       :endDate="endDate"
-      @update:OnSuccess="
-        () => {
-          getProjectHandler(), getTasksHandler();
-        }
-      "
+      @update:OnSuccess="getCalendarData"
       @update:modalHandler="
         () => {
           isTaskFormOpen = false;

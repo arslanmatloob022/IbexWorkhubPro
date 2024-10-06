@@ -8,7 +8,7 @@ const loading = ref(false);
 const themeColors = useThemeColors();
 
 const completionOptions = shallowRef({
-  height: 295,
+  height: 695,
   type: "pie",
   series: [],
   colors: [
@@ -26,7 +26,7 @@ const completionOptions = shallowRef({
         chart: {
           width: 315,
           toolbar: {
-            show: false,
+            show: true,
           },
         },
         legend: {
@@ -67,7 +67,7 @@ onMounted(() => {
   <div class="dashboard-card">
     <div class="card-head">
       <h3 class="dark-inverted">Task Completion</h3>
-      <a class="action-link" tabindex="0">Reports</a>
+      <!-- <a class="action-link" tabindex="0">Reports</a> -->
     </div>
     <ApexChart
       v-if="!loading"

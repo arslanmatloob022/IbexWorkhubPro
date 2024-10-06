@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { convertToFormData } from "/@src/composable/useSupportElement";
 import ApexChart from "vue3-apexcharts";
-import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
@@ -18,10 +18,8 @@ const { oxygenChartOptions } = useOxygenChart();
 const { progressChartOptions } = useProgressChart();
 const userSession = useUserSession();
 const edit_mode = ref(false);
-const isUploading = ref(false);
 const api = useApi();
 const notyf = useNotyf();
-const user_action = ref("update");
 const FormData = ref({});
 const CustomUserData = ref({
   id: "",
@@ -36,6 +34,178 @@ const CustomUserData = ref({
   username: "",
   is_sentMail: 0,
 });
+const selectedIdToChangeStatus = ref(null);
+const selectedStatus = ref(true);
+const showPassword = ref(false);
+const loading = ref(false);
+const preview = ref<any>(null);
+const editpreview = ref<any>(null);
+const selectedIdToDelete = ref(0);
+const linkLoading = ref(false);
+const openPasswordChangeModal = ref(false);
+
+const adminsData = ref([]);
+
+// Form Data
+const userData = ref({
+  id: 0,
+  username: "",
+  email: "",
+  is_active: true,
+  phoneNumber: "",
+  avatar: null,
+});
+
+const adminFormData = ref({
+  username: "",
+  email: "",
+  password: "",
+  status: "",
+  role: "admin",
+  phoneNumber: "",
+  avatar: null,
+});
+
+const Password = ref({
+  newPassword: "",
+  confirmPassword: "",
+});
+
+const PayPalLinkData = ref({
+  success: false,
+  msg: "",
+  approved_url: "",
+});
+
+// Methods
+const closeAdminModal = () => {
+  adminFormData.value = {
+    username: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+    avatar: null,
+  };
+};
+
+const openStatusAlert = (user: any) => {
+  selectedIdToChangeStatus.value = user.id;
+  selectedStatus.value = user.is_active;
+};
+
+const copyLinkToClipBoard = (url: any) => {
+  navigator.clipboard
+    .writeText(url)
+    .then(() => {
+      notyf.success("Link Copied");
+    })
+    .catch((err) => {
+      notyf.success("Something Went Wrong");
+    });
+};
+
+const createPayPalLink = async () => {
+  try {
+    linkLoading.value = true;
+    const response = await api.post("/api/paypal/create-link/", {});
+    PayPalLinkData.value = response.data;
+    notyf.success("link Created");
+  } catch (err) {
+    notyf.success("Something went wrong");
+  } finally {
+    linkLoading.value = false;
+  }
+};
+
+const changeUserStatus = async () => {
+  try {
+    const resp = await api.patch(
+      `/api/users/${selectedIdToChangeStatus.value}/`,
+      {
+        is_active: !selectedStatus.value,
+      }
+    );
+    getManagershandler();
+    notyf.success("Manager set active successfully");
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const closePasswordModal = () => {
+  Password.value.newPassword = "";
+  Password.value.confirmPassword = "";
+};
+
+const getManagershandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/admin/", {});
+    adminsData.value = response.data;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const deletAdmin = async () => {
+  try {
+    loading.value = true;
+    await api.delete(`/api/users/${selectedIdToDelete.value}/`);
+    getManagershandler();
+    notyf.success("tianager");
+  } catch (err) {
+    notyf.success("something went wrong");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  userData.value.avatar = file;
+  adminFormData.value.avatar = file;
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.value = e.target.result;
+      editpreview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const addNewAdmin = async () => {
+  try {
+    loading.value = true;
+    let formData = convertToFormData(adminFormData.value, ["avatar"]);
+    const response = await api.post("/api/users/", formData);
+    notyf.success("  Admin Added");
+    getManagershandler();
+    closeAdminModal();
+  } catch (err) {
+    notyf.success("tiomething went wrong");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const editselfProfile = async () => {
+  try {
+    loading.value = true;
+    let formData = convertToFormData(userData.value, ["avatar"]);
+    const resp = await api.patch(`/api/users/${userData.value.id}/`, formData);
+
+    userSession.setUser(resp.data);
+    notyf.success("tirofile updated");
+  } catch (err) {
+    notyf.success("tiomething went wrong");
+  } finally {
+    loading.value = false;
+  }
+};
 
 CustomUserData.value = userSession.user;
 console.log(userSession.user);
@@ -80,6 +250,11 @@ const updateProfile = async () => {
     });
   }
 };
+// Lifecycle Hooks
+onMounted(() => {
+  userData.value = userSession.user;
+  getManagershandler();
+});
 </script>
 
 <template>
@@ -96,28 +271,34 @@ const updateProfile = async () => {
         />
       </div>
       <div class="header-meta">
-        <h3>Today's Summary</h3>
-        <p>Monitor your activity and keep improving your weak points.</p>
+        <h3>{{ CustomUserData.username }}</h3>
+        <p>({{ CustomUserData.role }})</p>
         <div class="summary-stats">
           <div class="summary-stat">
-            <span>900 kcal</span>
-            <span>Burnt today</span>
+            <span>{{ CustomUserData.email }}</span>
+            <span>Email</span>
           </div>
           <div class="summary-stat">
-            <span>2300 kcal</span>
-            <span>Eaten today</span>
+            <span>{{ CustomUserData.phoneNumber }}</span>
+            <span>Phone</span>
           </div>
           <div class="summary-stat">
-            <span>10,864</span>
-            <span>Steps walked</span>
+            <span>{{
+              CustomUserData.is_sentMail ? "Active" : "In-active"
+            }}</span>
+            <span>Email Notification</span>
           </div>
           <div class="summary-stat">
-            <span>2% fat</span>
-            <span>Burnt today</span>
+            <span>Edit</span>
+            <span>Profile</span>
           </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>8.4 km</span>
-            <span>distance today</span>
+          <div class="summary-stat">
+            <span
+              @click="openPasswordChangeModal = !openPasswordChangeModal"
+              class="cu-pointer"
+              >Change</span
+            >
+            <span>Password</span>
           </div>
         </div>
       </div>
@@ -133,7 +314,7 @@ const updateProfile = async () => {
             </VIconBox>
             <h4>
               <span class="dark-inverted">114/90</span>
-              <span>Min/Max</span>
+              <span @click="createPayPalLink()">Min/Max</span>
             </h4>
           </div>
           <h3 class="dark-inverted">Blood</h3>
@@ -494,6 +675,12 @@ const updateProfile = async () => {
       </div>
     </div>
   </div>
+  <ChangePasswordModal
+    v-if="openPasswordChangeModal"
+    :isModalOpen="openPasswordChangeModal"
+    :userId="userSession.user.id"
+    @update:close-modal-handler="openPasswordChangeModal = false"
+  />
 </template>
 
 <style lang="scss">

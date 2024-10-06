@@ -13,10 +13,6 @@ const loading = ref(false);
 const isProjectFormOpen = ref(false);
 const editProjectId = ref("");
 const fullWidthView = ref(false);
-const activeFilter = ref("all");
-const query = ref("");
-const tasks = ref([]);
-const filteredResources = ref([]);
 const projects = ref([]);
 
 const colors = ref({
@@ -154,28 +150,6 @@ const getProjectHandler = async () => {
   }
 };
 
-const toggleFullScreen = () => {
-  fullWidthView.value = !fullWidthView.value;
-  const fullScreenCalender = document.getElementById("fullCalendarView");
-};
-
-const openProjectForm = (projectId = null) => {
-  if (userSession.user.role === "admin") {
-    isProjectFormOpen.value = true;
-  } else if (userSession.user.role === "admin") {
-    editProjectId.value = projectId;
-  } else {
-    notyf.error("You are not allowed to perform this action");
-  }
-};
-
-const closeProjectForm = async () => {
-  isProjectFormOpen.value = false;
-  editProjectId.value = null;
-  await getProjectHandler();
-  renderCalender();
-};
-
 onMounted(async () => {
   await getProjectHandler();
   renderCalender();
@@ -204,28 +178,46 @@ onMounted(async () => {
             </span>
             <span> -- tasks ({{ arg.event.extendedProps.total_tasks }})</span>
           </div>
+
           <div class="avatars">
             <div
               class="avatars__item"
               v-for="worker in arg.event.extendedProps.managers"
               :key="worker.id"
             >
-              <img v-if="worker.avatar" :src="worker.avatar" alt="" />
-              <div
-                v-else
-                style="
-                  width: 100%;
-                  height: 100%;
-                  background-color: #292f3c;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
-              >
-                <h6 class="mb-0" style="color: white">
-                  {{ worker.username ? worker.username.slice(0, 2) : "AA" }}
-                </h6>
-              </div>
+              <Tippy>
+                <img v-if="worker.avatar" :src="worker.avatar" alt="" />
+                <div
+                  v-else
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    background-color: #292f3c;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <h6 class="mb-0" style="color: white">
+                    {{ worker.username ? worker.username.slice(0, 2) : "AA" }}
+                  </h6>
+                </div>
+                <template #content>
+                  <div class="v-popover-content is-text">
+                    <div class="popover-head">
+                      <VAvatar :picture="worker.avatar" size="small" />
+                      <h4 class="dark-inverted">
+                        {{ worker.username ? worker.username : "" }}
+                      </h4>
+                    </div>
+                    <div class="popover-body">
+                      <p>
+                        {{ arg.event?.title }}
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </Tippy>
             </div>
           </div>
         </div>
@@ -236,11 +228,19 @@ onMounted(async () => {
 <style lang="scss">
 .fc-event.fc-event-draggable {
   margin-right: 1px;
-  border-width: 3px;
+  border-width: 1px;
   border-radius: 4px;
+  height: 100% !important;
+  padding: 0.2rem !important;
+  p {
+    color: #fff;
+  }
+  span {
+    color: #fff;
+  }
 }
 .fc-event {
-  margin-bottom: 6px !important;
+  margin-bottom: 0px !important;
 }
 </style>
 <style lang="scss" scoped>
@@ -254,7 +254,7 @@ onMounted(async () => {
 .fc-h-event {
   border-width: thick !important;
   border-radius: 2px !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 1px !important;
 }
 
 .avatars {
@@ -270,8 +270,9 @@ onMounted(async () => {
 }
 
 .avatars__item {
-  background-color: #596376;
-  border: 1px solid white;
+  background-color: #2aac8e !important;
+  background: #2aac8e !important;
+  border: 1px solid #2aac8e;
   border-radius: 100%;
   color: #ffffff;
   display: block;

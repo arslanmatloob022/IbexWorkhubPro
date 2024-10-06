@@ -261,7 +261,11 @@ onMounted(() => {
             />
           </VControl>
         </VField>
-        <VField class="column is-6" v-slot="{ id }">
+        <VField
+          v-if="props.userRole == 'worker'"
+          class="column is-6"
+          v-slot="{ id }"
+        >
           <VControl>
             <Multiselect
               v-model="userFormData.supplier"

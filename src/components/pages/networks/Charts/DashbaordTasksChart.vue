@@ -13,7 +13,7 @@ const completionOptions = shallowRef({
     height: 295,
     type: "area",
     toolbar: {
-      show: false,
+      show: true,
     },
   },
   colors: [themeColors.accent, themeColors.info, themeColors.primary],
@@ -60,7 +60,7 @@ onMounted(() => {
   <div class="dashboard-card">
     <div class="card-head">
       <h3 class="dark-inverted">Task Completion</h3>
-      <a class="action-link" tabindex="0">Reports</a>
+      <!-- <a class="action-link" tabindex="0">Reports</a> -->
     </div>
     <ApexChart
       v-if="!loading"

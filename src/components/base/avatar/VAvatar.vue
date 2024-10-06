@@ -1,5 +1,12 @@
 <script setup lang="ts">
-export type VAvatarSize = "small" | "medium" | "large" | "big" | "xl" | "xxl";
+export type VAvatarSize =
+  | "xs"
+  | "small"
+  | "medium"
+  | "large"
+  | "big"
+  | "xl"
+  | "xxl";
 export type VAvatarColor =
   | "primary"
   | "success"
@@ -326,6 +333,63 @@ const onceImageErroredHandler = (event: Event) => {
   img {
     display: block;
     border-radius: var(--radius-rounded);
+  }
+
+  &.is-xs {
+    max-width: 24px;
+    min-width: 24px;
+    max-height: 24px;
+
+    &.has-dot {
+      &::after {
+        content: "";
+        top: 0;
+        inset-inline-end: 0;
+        height: 6px;
+        width: 6px;
+        border-width: 1.4px;
+      }
+
+      &.has-dot-squared {
+        &::after {
+          top: -2px;
+          inset-inline-end: -2px;
+        }
+      }
+    }
+
+    .avatar {
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+
+      &.is-squared {
+        border-radius: 8px !important;
+      }
+
+      &.is-fake,
+      &.is-more {
+        width: 24px;
+        min-width: 24px;
+        height: 24px;
+
+        .inner {
+          width: 22px;
+          min-width: 22px;
+          height: 22px;
+        }
+
+        span {
+          font-size: 0.85rem;
+        }
+      }
+    }
+
+    .badge {
+      border-width: 1px;
+      width: 8px;
+      height: 8px;
+    }
   }
 
   &.is-small {

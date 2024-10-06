@@ -93,14 +93,15 @@ const editTaskHandler = async () => {
       formData.append("schedule_mode", "false");
       formData.append("project", `${props.projectID}`);
       await api.post(`/api/task/`, formData);
+      emit("update:OnSuccess", null);
       notyf.success("Task added successfully");
     } else {
       formData.append("schedule_mode", "false");
       await api.patch(`/api/task/${taskData.value.id}/`, formData);
       notyf.success("Task updated successfully");
+      emit("update:OnSuccess", null);
     }
     closeModalHandler();
-    emit("update:OnSuccess", null);
   } catch (err) {
     notyf.error("Something went wrong");
     console.log(err);

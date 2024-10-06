@@ -125,9 +125,7 @@ const getManagersHandler = async () => {
 const getClientHandler = async () => {
   try {
     loading.value = true;
-
     const Clientsresponse = await api.get("/api/users/by-role/client/", {});
-
     allClients.value = Clientsresponse.data;
   } catch (err) {
     console.log(err);

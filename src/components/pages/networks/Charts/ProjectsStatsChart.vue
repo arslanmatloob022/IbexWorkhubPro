@@ -2,7 +2,6 @@
 import { useThemeColors } from "/@src/composable/useThemeColors";
 import ApexChart from "vue3-apexcharts";
 import { useApi } from "/@src/composable/useAPI";
-import { asPercent } from "/@src/utils/apex-formatters";
 
 const api = useApi();
 const loading = ref(false);
@@ -13,11 +12,11 @@ const completionOptions = ref({
     {
       name: "Projects",
       data: [],
-      //   data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2],
     },
   ],
   height: 280,
   type: "bar",
+
   options: {
     chart: {
       toolbar: {
@@ -74,7 +73,6 @@ const completionOptions = ref({
       },
       labels: {
         show: false,
-        // formatter: asPercent,
       },
     },
     colors: [themeColors.primary, themeColors.secondary, themeColors.orange],
@@ -107,7 +105,6 @@ onMounted(() => {
   <div class="dashboard-card">
     <div class="card-head">
       <h3 class="dark-inverted">Projects Stats</h3>
-      <!-- <a class="action-link" tabindex="0">Reports</a> -->
     </div>
     <ApexChart
       v-if="!loading"
