@@ -382,6 +382,8 @@ declare module 'vue-router/auto/routes' {
     '/sidebar/networks/industry': RouteRecordInfo<'/sidebar/networks/industry', '/sidebar/networks/industry', Record<never, never>, Record<never, never>>,
     '/sidebar/networks/team-members': RouteRecordInfo<'/sidebar/networks/team-members', '/sidebar/networks/team-members', Record<never, never>, Record<never, never>>,
     '/sidebar/partner': RouteRecordInfo<'/sidebar/partner', '/sidebar/partner', Record<never, never>, Record<never, never>>,
+    '/sidebar/payment-cancel': RouteRecordInfo<'/sidebar/payment-cancel', '/sidebar/payment-cancel', Record<never, never>, Record<never, never>>,
+    '/sidebar/payment-success': RouteRecordInfo<'/sidebar/payment-success', '/sidebar/payment-success', Record<never, never>, Record<never, never>>,
     '/sidebar/profile': RouteRecordInfo<'/sidebar/profile', '/sidebar/profile', Record<never, never>, Record<never, never>>,
     '/sidebar/profile/': RouteRecordInfo<'/sidebar/profile/', '/sidebar/profile', Record<never, never>, Record<never, never>>,
     '/starters/navbar-blank-page-1': RouteRecordInfo<'/starters/navbar-blank-page-1', '/starters/navbar-blank-page-1', Record<never, never>, Record<never, never>>,
