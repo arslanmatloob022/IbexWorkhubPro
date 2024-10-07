@@ -302,7 +302,7 @@ onMounted(() => {
           <div class="column is-6">
             <div class="dashboard-card is-contacts">
               <div class="title-wrap">
-                <h3 class="dark-inverted">Send money to</h3>
+                <h3 class="dark-inverted">Create link</h3>
               </div>
 
               <div class="people-wrap">
@@ -523,7 +523,7 @@ onMounted(() => {
                   </VButton>
                 </VControl>
               </VField>
-              <VField label="Check Status Link" addons>
+              <!-- <VField label="Check Status Link" addons>
                 <VControl expanded>
                   <VInput
                     type="text"
@@ -541,7 +541,7 @@ onMounted(() => {
                     Verify
                   </VButton>
                 </VControl>
-              </VField>
+              </VField> -->
 
               <p class="context-text">
                 {{
