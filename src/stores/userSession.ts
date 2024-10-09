@@ -2,14 +2,74 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useStorage } from "@vueuse/core";
 
-export type UserData = Record<string, any> | null;
+// Define the user type to enforce proper structure
+export interface User {
+  id: string;
+  password: string;
+  last_login: string;
+  date_joined: string;
+  email: string;
+  role: string;
+  avatar: string;
+  is_active: string;
+  phoneNumber: string;
+  username: string;
+  is_sentMail: number;
+}
 
 export const useUserSession = defineStore("userSession", () => {
-  const token = useStorage("token", "");
-  const code = useStorage("code", "");
+  const token = useStorage("token", ""); // Store token in localStorage
+  const code = useStorage("code", ""); // Store code in localStorage
 
-  const user = ref(
-    {
+  // Ref for user data with a default empty structure
+  const user = ref<User>({
+    id: "",
+    password: "",
+    last_login: "",
+    date_joined: "",
+    email: "",
+    role: "",
+    avatar: "",
+    is_active: "",
+    phoneNumber: "",
+    username: "",
+    is_sentMail: 0,
+  });
+
+  const loading = ref(true);
+
+  // Computed property to check if the user is logged in
+  const isLoggedIn = computed(
+    () => token.value !== undefined && token.value !== ""
+  );
+
+  // Set user data
+  function setUser(newUser: User) {
+    user.value = newUser;
+  }
+
+  // Set token
+  function setToken(newToken: string) {
+    token.value = newToken;
+  }
+
+  // Set code
+  function setCode(newCode: string) {
+    code.value = newCode;
+  }
+
+  // Set loading state
+  function setLoading(newLoading: boolean) {
+    loading.value = newLoading;
+  }
+
+  // Logout the user and clear the data
+  async function logoutUser() {
+    console.log("User logout function called");
+    token.value = ""; // Use empty string instead of undefined
+    code.value = ""; // Use empty string instead of undefined
+    // Reset user to an empty object structure
+    user.value = {
       id: "",
       password: "",
       last_login: "",
@@ -21,36 +81,8 @@ export const useUserSession = defineStore("userSession", () => {
       phoneNumber: "",
       username: "",
       is_sentMail: 0,
-    } || undefined
-  );
-  const loading = ref(true);
-
-  const isLoggedIn = computed(
-    () => token.value !== undefined && token.value !== ""
-  );
-
-  function setUser(newUser: any) {
-    user.value = newUser;
-  }
-
-  function setToken(newToken: string) {
-    token.value = newToken;
-  }
-  function setCode(newCode: string) {
-    code.value = newCode;
-  }
-
-  function setLoading(newLoading: boolean) {
-    loading.value = newLoading;
-  }
-
-  async function logoutUser() {
-    console.log("user logout fun caled");
-    token.value = undefined;
-    code.value = undefined;
-    user.value = undefined;
-    isLoggedIn.value = false;
-    window.localStorage.setItem("token", "");
+    };
+    window.localStorage.setItem("token", ""); // Explicitly clear the token from localStorage
   }
 
   return {
@@ -67,13 +99,7 @@ export const useUserSession = defineStore("userSession", () => {
   } as const;
 });
 
-/**
- * Pinia supports Hot Module replacement so you can edit your stores and
- * interact with them directly in your app without reloading the page.
- *
- * @see https://pinia.esm.dev/cookbook/hot-module-replacement.html
- * @see https://vitejs.dev/guide/api-hmr.html
- */
+// Enable hot module replacement
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useUserSession, import.meta.hot));
 }

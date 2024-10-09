@@ -11,6 +11,6 @@ useHead({
 
 <template>
   <div class="">
-    <IbexWorkerProfile />
+    <SubContractorProfile />
   </div>
 </template>

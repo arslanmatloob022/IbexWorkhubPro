@@ -14,12 +14,10 @@ const Password = ref({
 const props = withDefaults(
   defineProps<{
     isModalOpen?: boolean;
-    userRole?: string;
     userId?: string;
   }>(),
   {
     isModalOpen: false,
-    userRole: "",
     userId: "",
   }
 );
@@ -55,7 +53,9 @@ const changePassword = async () => {
   }
 };
 
-onMounted(() => {});
+onMounted(() => {
+  console.log("in modal", props.isModalOpen);
+});
 </script>
 <template>
   <VModal

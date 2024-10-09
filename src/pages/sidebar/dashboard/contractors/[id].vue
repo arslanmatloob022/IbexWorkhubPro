@@ -1,16 +1,25 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+  isPartnerAllowed: false
+  isManagerAllowed: true
+  isContractorAllowed: true
+  isWorkerAllowed: false
+  isClientAllowed: false
+</route>
 <script setup lang="ts">
-import { useViewWrapper } from '/@src/stores/viewWrapper'
+import { useViewWrapper } from "/@src/stores/viewWrapper";
 
-const viewWrapper = useViewWrapper()
-viewWrapper.setPageTitle('Partner Info')
+const viewWrapper = useViewWrapper();
+viewWrapper.setPageTitle("Contractor Info");
 
 useHead({
-  title: 'Partners - Arez',
-})
+  title: "Contractor - Ibex",
+});
 </script>
 
 <template>
   <div class="">
-    <SupplierProfile/>
+    <ContractorProfile />
   </div>
 </template>

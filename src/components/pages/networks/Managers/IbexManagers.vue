@@ -1,57 +1,47 @@
 <script setup lang="ts">
-import type { VTagColor } from "/@src/components/base/tags/VTag.vue";
-import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import * as listData from "/@src/data/layouts/view-list-v1";
 import { useApi } from "/@src/composable/useAPI";
 import { formatDate } from "/@src/composable/useSupportElement";
-export interface UserData extends VAvatarProps {
-  name: string;
-  location: string;
-  role: string;
-  roleColor: VTagColor;
-  medias: {
-    avatar: string;
-    flag: string;
-  };
-  stats: {
-    projects: number;
-    replies: number;
-    posts: number;
-  };
-  teams: VAvatarProps[];
-}
-
+import { useNotyf } from "/@src/composable/useNotyf";
+const notyf = useNotyf();
 const api = useApi();
 const isOpenModal = ref(false);
+const loading = ref(false);
 const currentSelectId = ref("");
-const users = listData.users as UserData[];
+const userId = ref("");
+const filters = ref("");
+const isPasswordModalOpen = ref(false);
+const router = useRouter();
 const managersData = ref([
   {
-    id: "08653904-4a13-47b4-b045-9546c10a1b2b",
-    password:
-      "pbkdf2_sha256$260000$ZzDsvIbubU7GpPIHfbgkK6$lEWkAp4a7xWZfFjASFBYtWiX6BbhWmD9w78Lany7Jq4=",
+    id: "",
+    password: "",
     last_login: null,
-    date_joined: "2024-08-29T15:40:17.430723Z",
-    email: "juan@ibexbuilderstudios.com",
-    role: "manager",
+    date_joined: "",
+    email: "",
+    role: "",
     avatar: null,
     is_active: true,
-    phoneNumber: "5484651464",
-    username: "Juan",
+    phoneNumber: "",
+    username: "",
     is_sentMail: false,
   },
 ]);
-const userData = ref({
-  username: "",
-  email: "",
-  status: "active",
-
-  role: "manager",
-  phoneNumber: "",
-  avatar: null as File | null | String,
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
 });
 
-const loading = ref(false);
+const OpenDeleteSweetAlert = (id: any) => {
+  currentSelectId.value = id;
+  SweetAlertProps.value = {
+    title: "Are you sure?",
+    subtitle: "You will not be able to recover this Manager again!",
+    btntext: "Yes, Delete it",
+    isSweetAlertOpen: true,
+  };
+};
 
 const getManagershandler = async () => {
   try {
@@ -70,7 +60,6 @@ const openUserModal = (id: any = "") => {
   currentSelectId.value = id;
   isOpenModal.value = !isOpenModal.value;
 };
-const filters = ref("");
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -84,7 +73,28 @@ const filteredData = computed(() => {
     });
   }
 });
-console.log(filteredData.value);
+const openPasswordModal = (id: any) => {
+  userId.value = id;
+  isPasswordModalOpen.value = true;
+};
+
+const deleteUser = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.delete(`/api/users/${currentSelectId.value}/`);
+    getManagershandler();
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    notyf.success("Manager deleted successfully");
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const gotoManagerProfile = (id: any) => {
+  router.push(`/sidebar/dashboard/managers/${id}`);
+};
 
 onMounted(() => {
   getManagershandler();
@@ -157,9 +167,13 @@ onMounted(() => {
               class="list-view-item"
             >
               <div class="list-view-item-inner">
-                <VAvatar :picture="item.avatar" size="large" />
+                <VAvatar
+                  @click="gotoManagerProfile(item.id)"
+                  :picture="item.avatar"
+                  size="large"
+                />
                 <!-- :badge="item.medias.flag" -->
-                <div class="meta-left">
+                <div @click="gotoManagerProfile(item.id)" class="meta-left">
                   <h3>{{ item.username }}</h3>
                   <span>
                     <i
@@ -203,7 +217,72 @@ onMounted(() => {
                   </div> -->
 
                   <!--Dropdown-->
-                  <ListViewV1Dropdown />
+                  <VDropdown icon="feather:more-vertical" spaced right>
+                    <template #content>
+                      <a
+                        role="menuitem"
+                        @click="gotoManagerProfile(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-user-alt" />
+                        </div>
+                        <div class="meta">
+                          <span>Profile</span>
+                          <span>View profile</span>
+                        </div>
+                      </a>
+
+                      <a
+                        role="menuitem"
+                        @click="
+                          () => {
+                            isOpenModal = true;
+                            currentSelectId = item.id;
+                          }
+                        "
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i class="lnil lnil-pencil" aria-hidden="true"></i>
+                        </div>
+                        <div class="meta">
+                          <span>Edit</span>
+                          <span>Edit Manager info</span>
+                        </div>
+                      </a>
+
+                      <a
+                        @click="openPasswordModal(item.id)"
+                        role="menuitem"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i class="lnil lnil-code" aria-hidden="true"></i>
+                        </div>
+                        <div class="meta">
+                          <span>Password</span>
+                          <span>Change user password</span>
+                        </div>
+                      </a>
+
+                      <hr class="dropdown-divider" />
+
+                      <a
+                        role="menuitem"
+                        @click="OpenDeleteSweetAlert(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-trash" />
+                        </div>
+                        <div class="meta">
+                          <span>Delete</span>
+                          <span>Delete this user permanently</span>
+                        </div>
+                      </a>
+                    </template>
+                  </VDropdown>
                 </div>
               </div>
             </div>
@@ -227,6 +306,22 @@ onMounted(() => {
     :user-id="currentSelectId"
     @update:close-modal-handler="isOpenModal = false"
     @update:action-update-handler="getManagershandler"
+  />
+  <ChangePasswordModal
+    v-if="isPasswordModalOpen"
+    :isModalOpen="isPasswordModalOpen"
+    :userId="userId"
+    @update:closeModalHandler="isPasswordModalOpen = false"
+  />
+  <SweetAlert
+    v-if="SweetAlertProps.isSweetAlertOpen"
+    :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+    :title="SweetAlertProps.title"
+    :loading="false"
+    :subtitle="SweetAlertProps.subtitle"
+    :btntext="SweetAlertProps.btntext"
+    :onConfirm="deleteUser"
+    :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
   />
 </template>
 

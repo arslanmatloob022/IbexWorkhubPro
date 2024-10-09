@@ -1,3 +1,13 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+  isPartnerAllowed: true
+  isManagerAllowed: true
+  isContractorAllowed: false
+  isWorkerAllowed: false
+  isClientAllowed: false
+</route>
+
 <script setup lang="ts">
 import ProjectDetail from "/@src/components/IbexProjects/ProjectDetail.vue";
 import { useViewWrapper } from "/@src/stores/viewWrapper";

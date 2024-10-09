@@ -1,3 +1,13 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+  isPartnerAllowed: false
+  isManagerAllowed: false
+  isContractorAllowed: false
+  isWorkerAllowed: false
+  isClientAllowed: false
+</route>
+
 <script lang="ts" setup>
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 const viewWrapper = useViewWrapper();

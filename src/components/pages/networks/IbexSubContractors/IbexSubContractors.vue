@@ -7,6 +7,11 @@ const notyf = useNotyf();
 const suppliers = ref([]);
 const filters = ref("");
 const openUserModal = ref(false);
+const selectedUserId = ref("");
+const isOpenModal = ref(false);
+const userId = ref("");
+const isPasswordModalOpen = ref(false);
+const currentSelectId = ref("");
 const Loading = ref(false);
 const getSuppliers = async () => {
   try {
@@ -32,6 +37,14 @@ const filteredData = computed(() => {
     });
   }
 });
+const router = useRouter();
+const gotoSubContrctorProfile = (id: any) => {
+  router.push(`/sidebar/dashboard/subcontractors/${id}`);
+};
+const openPasswordModal = (id: any) => {
+  userId.value = id;
+  isPasswordModalOpen.value = true;
+};
 
 onMounted(() => {
   getSuppliers();
@@ -91,7 +104,6 @@ onMounted(() => {
           </template>
         </VPlaceholderPage>
 
-        <div></div>
         <div v-if="!Loading" class="list-view-inner">
           <TransitionGroup name="list-complete" tag="div">
             <div
@@ -101,8 +113,15 @@ onMounted(() => {
               class="list-view-item"
             >
               <div class="list-view-item-inner">
-                <VAvatar :picture="item?.avatar" size="large" />
-                <div class="meta-left">
+                <VAvatar
+                  @click="gotoSubContrctorProfile(item.id)"
+                  :picture="item?.avatar"
+                  size="large"
+                />
+                <div
+                  @click="gotoSubContrctorProfile(item.id)"
+                  class="meta-left"
+                >
                   <h3>{{ item?.username }}</h3>
                   <span>
                     <i
@@ -149,7 +168,77 @@ onMounted(() => {
                     <span>in Team</span>
                   </div>
 
-                  <ListViewV1Dropdown />
+                  <VDropdown icon="feather:more-vertical" spaced right>
+                    <template #content>
+                      <a
+                        role="menuitem"
+                        @click="gotoSubContrctorProfile(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-user-alt" />
+                        </div>
+                        <div class="meta">
+                          <span>Profile</span>
+                          <span>View profile</span>
+                        </div>
+                      </a>
+
+                      <a
+                        role="menuitem"
+                        @click="
+                          () => {
+                            isOpenModal = true;
+                            currentSelectId = item.id;
+                          }
+                        "
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i class="lnil lnil-pencil" aria-hidden="true"></i>
+                        </div>
+                        <div class="meta">
+                          <span>Edit</span>
+                          <span>Edit Manager info</span>
+                        </div>
+                      </a>
+
+                      <a
+                        @click="openPasswordModal(item.id)"
+                        role="menuitem"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i class="lnil lnil-code" aria-hidden="true"></i>
+                        </div>
+                        <div class="meta">
+                          <span>Password</span>
+                          <span>Change user password</span>
+                        </div>
+                      </a>
+
+                      <hr class="dropdown-divider" />
+
+                      <a
+                        role="menuitem"
+                        @click="
+                          () => {
+                            isOpenModal = true;
+                            currentSelectId = item.id;
+                          }
+                        "
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-trash" />
+                        </div>
+                        <div class="meta">
+                          <span>Delete</span>
+                          <span>Delete this user permanently</span>
+                        </div>
+                      </a>
+                    </template>
+                  </VDropdown>
                 </div>
               </div>
             </div>
@@ -170,8 +259,15 @@ onMounted(() => {
       v-if="openUserModal"
       :isModalOpen="openUserModal"
       userRole="supplier"
+      :userId="selectedUserId"
       @update:close-modal-handler="openUserModal = false"
       @update:action-update-handler="getSuppliers"
+    />
+    <ChangePasswordModal
+      v-if="isPasswordModalOpen"
+      :isModalOpen="isPasswordModalOpen"
+      :userId="userId"
+      @update:closeModalHandler="isPasswordModalOpen = false"
     />
   </div>
 </template>

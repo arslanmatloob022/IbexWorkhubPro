@@ -8,6 +8,7 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 const api = useApi();
 const notyf = useNotyf();
+const router = useRouter();
 const filters = ref("");
 
 const loading = ref(false);
@@ -76,6 +77,10 @@ const getContractorshandler = async () => {
   }
 };
 
+const gotoContrctorProfile = (id: any) => {
+  router.push(`/sidebar/dashboard/contractors/${id}`);
+};
+
 onMounted(() => {
   getContractorshandler();
 });
@@ -98,7 +103,7 @@ onMounted(() => {
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
-          <span>Add User</span>
+          <span>Contractor</span>
         </VButton>
       </VButtons>
     </div>
@@ -144,7 +149,10 @@ onMounted(() => {
               />
             </div>
             <div class="buttons">
-              <button class="button v-button is-dark-outlined">
+              <button
+                @click="gotoContrctorProfile(item.id)"
+                class="button v-button is-dark-outlined"
+              >
                 <span class="icon">
                   <i
                     aria-hidden="true"
@@ -154,15 +162,14 @@ onMounted(() => {
                 </span>
                 <span>Profile</span>
               </button>
-              <button class="button v-button is-dark-outlined">
+              <button
+                @click="openUserModal(item.id)"
+                class="button v-button is-dark-outlined"
+              >
                 <span class="icon">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:message-circle"
-                  />
+                  <VIcon icon="lucide:pen-tool" />
                 </span>
-                <span>Talk</span>
+                <span>Edit</span>
               </button>
             </div>
           </div>
