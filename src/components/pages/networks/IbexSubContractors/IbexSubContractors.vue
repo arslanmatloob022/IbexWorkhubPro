@@ -4,7 +4,22 @@ import { useNotyf } from "/@src/composable/useNotyf";
 
 const api = useApi();
 const notyf = useNotyf();
-const suppliers = ref([]);
+const suppliers = ref([
+  {
+    id: "53ac9fe2-e187-456a-a1e0-77d6c3c3d715",
+    total_workers: 0,
+    last_login: null,
+    date_joined: "2024-10-02T17:18:03.032660Z",
+    email: "supplier@ibex.com",
+    role: "supplier",
+    avatar:
+      "https://res.cloudinary.com/dcqeugna3/image/upload/v1/media/static/users_avatars/Screenshot_from_2024-09-26_12-00-53_vrfqiv",
+    is_active: true,
+    phoneNumber: "03007626555",
+    username: "Second Test",
+    is_sentMail: false,
+  },
+]);
 const filters = ref("");
 const openUserModal = ref(false);
 const selectedUserId = ref("");
@@ -16,7 +31,7 @@ const Loading = ref(false);
 const getSuppliers = async () => {
   try {
     Loading.value = true;
-    const resp = await api.get(`/api/users/by-role-option/supplier/`, {});
+    const resp = await api.get(`/api/users/suppliers/`, {});
     suppliers.value = resp.data;
   } catch (err) {
     console.log(err);
@@ -124,18 +139,14 @@ onMounted(() => {
                 >
                   <h3>{{ item?.username }}</h3>
                   <span>
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:map-pin"
-                    />
+                    <i aria-hidden="true" class="fas fa-envelope mr-1" />
                     <span>{{ item?.email }}</span>
                   </span>
                 </div>
                 <div class="meta-right">
                   <div class="tags">
                     <VTag
-                      :label="item?.role"
+                      :label="item?.role.replace(/^\w/, (c) => c.toUpperCase())"
                       color="success"
                       rounded
                       elevated
@@ -144,29 +155,40 @@ onMounted(() => {
 
                   <div class="stats">
                     <div class="stat">
-                      <span>33</span>
-                      <span>Projects</span>
+                      <span
+                        ><i
+                          v-if="item.is_sentMail"
+                          class="primary-text fas fa-check-circle"
+                          aria-hidden="true"
+                        ></i>
+                        <i
+                          v-else
+                          class="danger-text fas fa-circle"
+                          aria-hidden="true"
+                        ></i>
+                      </span>
+                      <span>Email Notify</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>33</span>
-                      <span>Replies</span>
+                      <span>{{ item.phoneNumber }}</span>
+                      <span>Phone</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>33</span>
-                      <span>Posts</span>
+                      <span>{{ item.total_workers }}</span>
+                      <span>Workers</span>
                     </div>
                   </div>
 
-                  <div class="network">
-                    <!-- <VAvatarStack
+                  <!-- <div class="network">
+                    <VAvatarStack
                       :avatars="item.teams"
                       :limit="3"
                       size="small"
-                    /> -->
+                    />
                     <span>in Team</span>
-                  </div>
+                  </div> -->
 
                   <VDropdown icon="feather:more-vertical" spaced right>
                     <template #content>
@@ -188,8 +210,8 @@ onMounted(() => {
                         role="menuitem"
                         @click="
                           () => {
-                            isOpenModal = true;
                             currentSelectId = item.id;
+                            openUserModal = true;
                           }
                         "
                         class="dropdown-item is-media"
@@ -259,7 +281,7 @@ onMounted(() => {
       v-if="openUserModal"
       :isModalOpen="openUserModal"
       userRole="supplier"
-      :userId="selectedUserId"
+      :userId="currentSelectId"
       @update:close-modal-handler="openUserModal = false"
       @update:action-update-handler="getSuppliers"
     />

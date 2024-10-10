@@ -18,6 +18,10 @@ const SweetAlertProps = ref({
   btntext: "text",
 });
 
+const props = defineProps<{
+  contractorId?: string;
+}>();
+
 const filteredProjects = ref([
   {
     title: "",
@@ -54,31 +58,6 @@ const filteredProjects = ref([
   },
 ]);
 
-const project = ref({
-  title: "",
-  description: "",
-  image: null as File | null,
-  startDate: "",
-  endDate: "",
-  is_active: false,
-  managers: [],
-  client: {
-    id: 0,
-    username: "",
-    email: "",
-    role: "",
-    avatar: "",
-  },
-  contractor: {
-    id: 0,
-    username: "",
-    email: "",
-    role: "",
-    avatar: "",
-  },
-});
-
-// Methods converted to Composition API syntax
 const filterProject = (filterType: string | null) => {
   if (query.value && filterType == null) {
     activeFilter.value = "all";
@@ -103,15 +82,6 @@ const filterProject = (filterType: string | null) => {
   }
 };
 
-const closeProjectModalHandler = () => {
-  project.value.title = "";
-  project.value.description = "";
-  project.value.image = null;
-  project.value.startDate = "";
-  project.value.endDate = "";
-  project.value.managers = [];
-};
-
 const openDeleteAlert = (id: any) => {
   projectIdDeleteTobe.value = id;
   SweetAlertProps.value.title = "Delete Project";
@@ -121,14 +91,18 @@ const openDeleteAlert = (id: any) => {
   SweetAlertProps.value.isSweetAlertOpen = true;
 };
 
-const getProjectHandler = async () => {
+const getContractorsProjectHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/project/my-projects-or-admin/", {});
-    projects.value = response.data;
-    filteredProjects.value = response.data.filter((project) => {
-      return project.status !== "completed";
-    });
+    const response = await api.get(
+      `/api/project/${props.contractorId}/contractor-projects/`,
+      {}
+    );
+    // projects.value = response.data;
+    filteredProjects.value = response.data;
+    // .filter((project) => {
+    //   return project.status !== "completed";
+    // });
   } catch (err) {
     console.log(err);
   } finally {
@@ -140,12 +114,12 @@ const deleteProject = async () => {
   try {
     loading.value = true;
     await api.delete(`/api/project/${projectIdDeleteTobe.value}/`);
-    getProjectHandler();
+    getContractorsProjectHandler();
     notyf.success("Project has been deleted");
   } catch (err) {
     console.log(err);
   } finally {
-    getProjectHandler();
+    getContractorsProjectHandler();
     loading.value = false;
   }
 };
@@ -153,7 +127,7 @@ const deleteProject = async () => {
 // Lifecycle hook
 onMounted(() => {
   // setTooltip();
-  getProjectHandler();
+  getContractorsProjectHandler();
 });
 
 const filteredData = computed(() => {
@@ -533,13 +507,13 @@ const filteredData = computed(() => {
             span {
               font-size: 0.85rem;
               font-family: var(--font-alt);
-              // color: var(--dark-text);
+              //   color: var(--dark-text);
             }
 
             i {
               font-size: 1.2rem;
               margin-inline-end: 6px;
-              // color: var(--light-text);
+              //   color: var(--light-text);
             }
           }
         }

@@ -122,7 +122,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="is-relative tabs-wrapper is-slider is-squared">
+  <PlaceloadV1 v-if="paymentsLoading" />
+  <div v-else class="is-relative tabs-wrapper is-slider is-squared">
     <div class="page-content-inner">
       <div class="list-flex-toolbar is-reversed">
         <VControl icon="feather:search">

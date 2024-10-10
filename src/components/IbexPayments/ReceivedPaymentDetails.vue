@@ -164,7 +164,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="action-page-wrapper action-page-v2">
+  <PlaceloadV1 v-if="isLoading" />
+
+  <div v-else class="action-page-wrapper action-page-v2">
     <div class="wrapper-outer">
       <div class="wrapper-inner">
         <div class="action-box">

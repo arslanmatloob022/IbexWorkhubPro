@@ -186,7 +186,12 @@ onMounted(() => {
                 </div>
                 <div class="meta-right">
                   <div class="tags">
-                    <VTag :label="item.role" color="warning" rounded elevated />
+                    <VTag
+                      :label="item.role.replace(/^\w/, (c) => c.toUpperCase())"
+                      color="warning"
+                      rounded
+                      elevated
+                    />
                   </div>
 
                   <div class="stats">

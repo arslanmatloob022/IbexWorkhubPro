@@ -242,7 +242,10 @@ onMounted(() => {
                     channel="Linkedin"
                     class="social-link"
                   >
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    <i
+                      class="success-text fas fa-check-circle"
+                      aria-hidden="true"
+                    ></i>
                   </a>
                   <a
                     v-else
@@ -250,14 +253,17 @@ onMounted(() => {
                     channel="Linkedin"
                     class="social-link"
                   >
-                    <i class="fas fa-ban" aria-hidden="true"></i>
+                    <i class="fas fa-ban warning-text" aria-hidden="true"></i>
                   </a>
                   <a
                     v-if="item.is_sentMail"
                     channel="Twitter"
                     class="social-link"
                   >
-                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    <i
+                      class="fas fa-envelope warning-text"
+                      aria-hidden="true"
+                    ></i>
                   </a>
 
                   <a
@@ -265,14 +271,14 @@ onMounted(() => {
                     @click="openUserModal(item.id)"
                     class="social-link"
                   >
-                    <i aria-hidden="true" class="fas fa-edit" />
+                    <i aria-hidden="true" class="fas fa-edit info-text" />
                   </a>
                   <a
                     channel="Dribbble"
                     @click="openDeleteModal(item)"
                     class="social-link"
                   >
-                    <i aria-hidden="true" class="fas fa-trash" />
+                    <i aria-hidden="true" class="fas fa-trash danger-text" />
                   </a>
                 </div>
               </div>
@@ -412,7 +418,7 @@ onMounted(() => {
             border-radius: 50%;
             border: 1px solid var(--fade-grey-dark-3);
             margin: 0 4px;
-            color: var(--primary);
+            // color: var(--primary);
             box-shadow: var(--light-box-shadow);
             transition: all 0.3s; // transition-all test
 

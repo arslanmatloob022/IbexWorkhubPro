@@ -246,7 +246,9 @@ onMounted(async () => {
     </div>
 
     <div class="columns is-multiline is-flex-tablet-p">
-      <!--Tile-->
+      <div class="column is-12">
+        <ContractorProjects :contractor-id="route.params.id" />
+      </div>
     </div>
   </div>
 </template>

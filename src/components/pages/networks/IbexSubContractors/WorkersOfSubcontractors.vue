@@ -2,26 +2,63 @@
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 
+import type { VTagColor } from "/@src/components/base/tags/VTag.vue";
+import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
+import * as listData from "/@src/data/layouts/view-list-v1";
+
+export interface UserData extends VAvatarProps {
+  id: string;
+  active_tasks: number;
+  completed_tasks: number;
+  cancelled_tasks: number;
+  pending_tasks: number;
+  password: string;
+  last_login: string;
+  date_joined: string;
+  email: string;
+  role: string;
+  avatar: string;
+  is_active: true;
+  phoneNumber: string | number;
+  username: string;
+  is_sentMail: boolean;
+  supplier: string;
+}
+
+const props = defineProps<{
+  supplierId?: string;
+}>();
+
 const api = useApi();
 const notyf = useNotyf();
-const suppliers = ref([]);
-const filters = ref("");
-const openUserModal = ref(false);
+const loading = ref(false);
+const users = ref<UserData>({
+  id: "a49047a4-13c5-4d63-9015-c2dc2df9e877",
+  active_tasks: 0,
+  completed_tasks: 0,
+  cancelled_tasks: 0,
+  pending_tasks: 0,
+  password:
+    "pbkdf2_sha256$260000$EARzFotcnn91r0exIETwhW$cVT0EgRS3AZuWD4wTPzuWSq1CxNYd5a8oycatOQzpfA=",
+  last_login: "",
+  date_joined: "2024-10-07T18:17:28.297351Z",
+  email: "testworker@ibexbuilderstudios.com",
+  role: "worker",
+  avatar: "",
+  is_active: true,
+  phoneNumber: "123456789",
+  username: "Test Worker",
+  is_sentMail: true,
+  supplier: "d39eb0db-5e47-4942-bb93-0f978262aaae",
+});
 
-const getSuppliers = async () => {
-  try {
-    const resp = await api.get(`/api/users/by-role-option/supplier/`);
-    suppliers.value = resp.data;
-  } catch (err) {
-    console.log(err);
-  }
-};
+const filters = ref("");
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return suppliers.value;
+    return users.value;
   } else {
-    return suppliers.value.filter((item) => {
+    return users.value.filter((item) => {
       return (
         item.username.match(new RegExp(filters.value, "i")) ||
         item.email.match(new RegExp(filters.value, "i"))
@@ -29,14 +66,30 @@ const filteredData = computed(() => {
     });
   }
 });
+console.log(filteredData.value);
+
+const getSupplierWorkers = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.get(
+      `/api/users/workers/?supplier=${props.supplierId}`
+    );
+    users.value = resp.data;
+  } catch (Err) {
+    console.log(Err);
+  } finally {
+    loading.value = false;
+  }
+};
 
 onMounted(() => {
-  getSuppliers;
+  getSupplierWorkers();
 });
 </script>
 
 <template>
-  <div>
+  <PlaceloadV1 v-if="loading" />
+  <div v-else>
     <div class="list-view-toolbar">
       <VField>
         <VControl icon="feather:search">
@@ -54,14 +107,7 @@ onMounted(() => {
       </div>
 
       <div class="buttons">
-        <VButton
-          @click="openUserModal = !openUserModal"
-          color="primary"
-          icon="fas fa-plus"
-          elevated
-        >
-          Contractors
-        </VButton>
+        <VButton color="primary" icon="fas fa-plus" elevated> Worker </VButton>
       </div>
     </div>
 
@@ -101,6 +147,7 @@ onMounted(() => {
             >
               <div class="list-view-item-inner">
                 <VAvatar :picture="item.avatar" size="large" />
+                <!-- :badge="item.medias.flag" -->
                 <div class="meta-left">
                   <h3>{{ item.username }}</h3>
                   <span>
@@ -114,23 +161,23 @@ onMounted(() => {
                 </div>
                 <div class="meta-right">
                   <div class="tags">
-                    <VTag :label="item.role" color="success" rounded elevated />
+                    <VTag :label="item.role" color="info" rounded elevated />
                   </div>
 
                   <div class="stats">
                     <div class="stat">
-                      <span>33</span>
-                      <span>Projects</span>
+                      <span>{{ item.is_active ? "Active" : "In-Active" }}</span>
+                      <span>Status</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>33</span>
-                      <span>Replies</span>
+                      <span>{{ item.active_tasks }}</span>
+                      <span>Active tasks</span>
                     </div>
                     <div class="separator" />
                     <div class="stat">
-                      <span>33</span>
-                      <span>Posts</span>
+                      <span>{{ item.pending_tasks }}</span>
+                      <span>Pending tasks</span>
                     </div>
                   </div>
 
@@ -144,7 +191,7 @@ onMounted(() => {
                   </div> -->
 
                   <!--Dropdown-->
-                  <ListViewV1Dropdown />
+                  <!-- <ListViewV1Dropdown /> -->
                 </div>
               </div>
             </div>
@@ -161,12 +208,6 @@ onMounted(() => {
       />
     </div>
   </div>
-  <AddUpdateUser
-    v-if="openUserModal"
-    :isModalOpen="openUserModal"
-    userRole="supplier"
-    @update:close-modal-handler="openUserModal = false"
-  />
 </template>
 
 <style lang="scss">
