@@ -62,28 +62,28 @@ export default definePlugin(async ({ router, pinia }) => {
     }
 
     // Check user role permissions based on meta tags
-    const role = userSession.user.role;
+    // const role = userSession.user.role;
 
-    const roleMetaMapping = {
-      supplier: "isPartnerAllowed",
-      manager: "isManagerAllowed",
-      contractor: "isContractorAllowed",
-      worker: "isWorkerAllowed",
-      client: "isClientAllowed",
-    };
+    // const roleMetaMapping = {
+    //   supplier: "isPartnerAllowed",
+    //   manager: "isManagerAllowed",
+    //   contractor: "isContractorAllowed",
+    //   worker: "isWorkerAllowed",
+    //   client: "isClientAllowed",
+    // };
 
-    const metaKey = roleMetaMapping[role];
+    // const metaKey = roleMetaMapping[role];
 
-    if (
-      metaKey &&
-      (to.meta[metaKey] === false || to.meta[metaKey] === undefined)
-    ) {
-      return {
-        name: "/auth/login",
-        query: { redirect: to.fullPath },
-      };
-    }
-    console.log("dfghjlkkl", to.meta); // To see if the meta fields are correctly set
+    // if (
+    //   metaKey &&
+    //   (to.meta[metaKey] === false || to.meta[metaKey] === undefined)
+    // ) {
+    //   return {
+    //     name: "/auth/login",
+    //     query: { redirect: to.fullPath },
+    //   };
+    // }
+    console.log("constant yaml", to.meta); // To see if the meta fields are correctly set
   });
 
   // router.beforeEach((to) => {

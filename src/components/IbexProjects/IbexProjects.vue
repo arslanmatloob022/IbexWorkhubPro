@@ -103,15 +103,6 @@ const filterProject = (filterType: string | null) => {
   }
 };
 
-const closeProjectModalHandler = () => {
-  project.value.title = "";
-  project.value.description = "";
-  project.value.image = null;
-  project.value.startDate = "";
-  project.value.endDate = "";
-  project.value.managers = [];
-};
-
 const openDeleteAlert = (id: any) => {
   projectIdDeleteTobe.value = id;
   SweetAlertProps.value.title = "Delete Project";
@@ -150,9 +141,7 @@ const deleteProject = async () => {
   }
 };
 
-// Lifecycle hook
 onMounted(() => {
-  // setTooltip();
   getProjectHandler();
 });
 

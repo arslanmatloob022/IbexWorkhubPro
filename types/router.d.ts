@@ -270,6 +270,7 @@ declare module 'vue-router/auto/routes' {
     '/sidebar/dashboard/managers/[id]': RouteRecordInfo<'/sidebar/dashboard/managers/[id]', '/sidebar/dashboard/managers/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/sidebar/dashboard/partner-anomalies': RouteRecordInfo<'/sidebar/dashboard/partner-anomalies', '/sidebar/dashboard/partner-anomalies', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboard/placement/': RouteRecordInfo<'/sidebar/dashboard/placement/', '/sidebar/dashboard/placement', Record<never, never>, Record<never, never>>,
+    '/sidebar/dashboard/profile': RouteRecordInfo<'/sidebar/dashboard/profile', '/sidebar/dashboard/profile', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboard/projects/': RouteRecordInfo<'/sidebar/dashboard/projects/', '/sidebar/dashboard/projects', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboard/projects/[id]': RouteRecordInfo<'/sidebar/dashboard/projects/[id]', '/sidebar/dashboard/projects/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/sidebar/dashboard/projects/add-project': RouteRecordInfo<'/sidebar/dashboard/projects/add-project', '/sidebar/dashboard/projects/add-project', Record<never, never>, Record<never, never>>,

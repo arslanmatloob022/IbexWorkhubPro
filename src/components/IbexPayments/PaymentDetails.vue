@@ -1,3 +1,12 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+  isManagerAllowed: false
+  # isPartnerAllowed: false
+  # isContractorAllowed: false
+  # isWorkerAllowed: false
+  # isClientAllowed: false
+</route>
 <script setup lang="ts">
 import sleep from "/@src/utils/sleep";
 import { useNotyf } from "/@src/composable/useNotyf";

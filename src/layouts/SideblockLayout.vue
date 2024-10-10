@@ -564,6 +564,14 @@ onMounted(() => {
               <span>Approved Payments </span>
             </RouterLink>
           </VCollapseLinks>
+          <li>
+            <RouterLink to="/sidebar/dashboard/profile" class="single-link">
+              <span class="icon">
+                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
+              ></span>
+              Profile
+            </RouterLink>
+          </li>
         </template>
 
         <template #bottom-links>

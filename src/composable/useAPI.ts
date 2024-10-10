@@ -22,18 +22,17 @@ function createApi(): CustomAxiosInstance {
     return config;
   });
 
-  // axiosInstance.interceptors.response.use(
-  //   (response) => response,
-  //   (error: AxiosError) => {
-  //     if (error.response?.status === 401 || error.response?.status === 403) {
-  //       console.log("logout user");
-  //       userSession.logoutUser();
-  //       router.push("/auth/login");
-  //     }
-  //     notyf.error("Unauthorized Request !");
-  //     return Promise.reject(error);
-  //   }
-  // );
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        userSession.logoutUser();
+        router.push("/auth/login");
+      }
+      notyf.error("Unauthorized Request !");
+      return Promise.reject(error);
+    }
+  );
 
   return axiosInstance as CustomAxiosInstance;
 }

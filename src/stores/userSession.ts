@@ -22,19 +22,24 @@ export const useUserSession = defineStore("userSession", () => {
   const code = useStorage("code", ""); // Store code in localStorage
 
   // Ref for user data with a default empty structure
-  const user = ref<User>({
-    id: "",
-    password: "",
-    last_login: "",
-    date_joined: "",
-    email: "",
-    role: "",
-    avatar: "",
-    is_active: "",
-    phoneNumber: "",
-    username: "",
-    is_sentMail: 0,
-  });
+  const user = ref<User>(
+    JSON.parse(
+      localStorage.getItem("user") ||
+        JSON.stringify({
+          id: "",
+          password: "",
+          last_login: "",
+          date_joined: "",
+          email: "",
+          role: "",
+          avatar: "",
+          is_active: false,
+          phoneNumber: "",
+          username: "",
+          is_sentMail: 0,
+        })
+    )
+  );
 
   const loading = ref(true);
 
@@ -46,6 +51,7 @@ export const useUserSession = defineStore("userSession", () => {
   // Set user data
   function setUser(newUser: User) {
     user.value = newUser;
+    console.log("user data in store", user.value);
   }
 
   // Set token

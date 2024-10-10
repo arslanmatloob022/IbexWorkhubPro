@@ -45,8 +45,9 @@ const handleLogin = async () => {
       loginSuccess();
     } catch (error) {
       isLoading.value = false;
-      console.log("errr", error);
       notyf.error("Invalid Credentials, Sign In");
+    } finally {
+      isLoading.value = false;
     }
   }
 };

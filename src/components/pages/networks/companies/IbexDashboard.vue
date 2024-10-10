@@ -1,11 +1,11 @@
 <route lang="yaml">
 meta:
   requiresAuth: true
-  isPartnerAllowed: false
-  isManagerAllowed: false
-  isContractorAllowed: false
-  isWorkerAllowed: false
-  isClientAllowed: false
+  isManagerAllowed: true
+  # isPartnerAllowed: false
+  # isContractorAllowed: false
+  # isWorkerAllowed: false
+  # isClientAllowed: false
 </route>
 
 <script setup lang="ts">
@@ -25,7 +25,7 @@ import { formatDateTime } from "/@src/composable/useSupportElement";
 const { progressGaugeOptions, onprogressGaugeReady } = useProgressChart();
 const { interviewsOptions } = useInterviewsChart();
 const api = useApi();
-const themeColors = useThemeColors();
+const route = useRoute();
 const userStack = userData.userStack as VAvatarProps[];
 const loading = ref(false);
 const dashboardStats = ref({
