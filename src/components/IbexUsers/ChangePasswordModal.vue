@@ -75,7 +75,7 @@ onMounted(() => {
             <VInput
               required
               v-model="Password.newPassword"
-              type="password"
+              :type="showPassword ? 'text' : 'password'"
               placeholder="New Password"
             />
           </VControl>

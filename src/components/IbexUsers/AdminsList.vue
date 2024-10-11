@@ -4,6 +4,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as gridData from "/@src/data/layouts/tile-grid-v1";
+import ChangePasswordModal from "./ChangePasswordModal.vue";
 
 export interface UserData extends VAvatarProps {
   username: string;
@@ -93,6 +94,12 @@ const deleteAdminHandler = async () => {
 const openUserModal = (id: any = "") => {
   currentSelectId.value = id;
   isOpenModal.value = !isOpenModal.value;
+};
+
+const openPasswordModal = ref(false);
+const openChangePasswordModal = (id: any) => {
+  currentSelectId.value = id;
+  openPasswordModal.value = true;
 };
 
 const openDeleteModal = (admin: any) => {
@@ -188,7 +195,11 @@ onMounted(() => {
                     </div>
                   </a>
 
-                  <a href="#" role="menuitem" class="dropdown-item is-media">
+                  <a
+                    @click="openChangePasswordModal(item.id)"
+                    role="menuitem"
+                    class="dropdown-item is-media"
+                  >
                     <div class="icon">
                       <i aria-hidden="true" class="lnil lnil-share" />
                     </div>
@@ -237,6 +248,13 @@ onMounted(() => {
       :btntext="SweetAlertProps.btntext"
       :onConfirm="deleteAdminHandler"
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <ChangePasswordModal
+      v-if="openPasswordModal"
+      :isModalOpen="openPasswordModal"
+      :userId="currentSelectId"
+      @update:closeModalHandler="openPasswordModal = false"
+      @update:actionUpdateHandler="getAdminshandler"
     />
   </div>
 </template>

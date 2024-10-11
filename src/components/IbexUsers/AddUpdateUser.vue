@@ -225,7 +225,12 @@ onMounted(() => {
             />
           </VControl>
         </VField>
-        <VField class="column is-6" label="Password" addons>
+        <VField
+          v-if="!props.userId"
+          class="column is-6"
+          label="Password"
+          addons
+        >
           <VControl expanded>
             <VInput
               v-model="userFormData.password"
@@ -241,7 +246,7 @@ onMounted(() => {
             </VButton>
           </VControl>
         </VField>
-        <VField class="column is-3">
+        <VField :class="props.userId ? 'mt-5' : ''" class="column is-3">
           <VControl>
             <VSwitchBlock
               v-model="userFormData.is_sentMail"
@@ -251,7 +256,7 @@ onMounted(() => {
             />
           </VControl>
         </VField>
-        <VField class="column is-3">
+        <VField :class="props.userId ? 'mt-5' : ''" class="column is-3">
           <VControl>
             <VSwitchBlock
               v-model="userFormData.is_active"

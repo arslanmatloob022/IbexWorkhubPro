@@ -1,0 +1,1 @@
+import{e as a,y as s,z as e,V as t,O as r}from"./index-8bd914ed.js";const m=a({__name:"MinimalLayout",props:{theme:{default:"darker"}},setup(a){const m=a;return(a,o)=>(s(),e("div",{class:r(["minimal-wrapper",[m.theme]])},[t(a.$slots,"default")],2))}});export{m as _};

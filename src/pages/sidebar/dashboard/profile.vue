@@ -3,43 +3,88 @@ import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
+import { useViewWrapper } from "/@src/stores/viewWrapper";
+import { useI18n } from "vue-i18n";
+const viewWrapper = useViewWrapper();
+viewWrapper.setPageTitle("Profile");
+useHead(() => ({
+  title: "Profile Ibex-User  ",
+}));
 
+const { t } = useI18n();
 const api = useApi();
 const notyf = useNotyf();
 const userSession = useUserSession();
 const selectedIdToDelete = ref("");
 const isOpenModal = ref(false);
+const openPasswordModal = ref(false);
+const currentSelectId = ref("");
+const Loading = ref(false);
+const userFormData = ref<any>({
+  username: "",
+  email: "",
+  password: "",
+  is_sentMail: false,
+  status: "",
+  role: "",
+  phoneNumber: "",
+  avatar: "",
+  supplier: "",
+});
+
+const openChangePasswordModal = (id: any) => {
+  currentSelectId.value = id;
+  openPasswordModal.value = true;
+};
+
+const getUserDataHandler = async () => {
+  try {
+    Loading.value = true;
+    const resp = await api.get(`/api/users/${userSession.user.id}`);
+    userFormData.value = resp.data;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    Loading.value = false;
+  }
+};
 
 onMounted(() => {
   console.log("user data ", userSession.user);
+  if (userSession.user.id) {
+    getUserDataHandler();
+  }
 });
 </script>
 
 <template>
   <div class="profile-wrapper">
     <div class="profile-header has-text-centered">
-      <VAvatar size="xl" :picture="userSession.user.avatar" />
+      <VAvatar size="xl" :picture="userFormData.avatar" />
 
       <h3 class="title is-4 is-narrow is-thin">
-        {{ userSession?.user?.username }}
+        {{ userFormData?.username }}
       </h3>
       <p class="light-text">
-        {{ userSession?.user?.email ? userSession?.user?.email : "" }}
+        {{ userFormData?.email ? userFormData?.email : "" }}
       </p>
       <div class="profile-stats">
         <div class="profile-stat">
           <!-- <i aria-hidden="true" class="lnil lnil-users-alt" /> -->
-          <span>{{ userSession.user.role }}</span>
+          <span>{{ userFormData?.role }}</span>
         </div>
         <div class="separator" />
         <div class="profile-stat">
           <i aria-hidden="true" class="lnil lnil-phone" />
-          <span>{{ userSession.user.phoneNumber }}</span>
+          <span>{{ userFormData?.phoneNumber }}</span>
         </div>
         <div class="separator" />
         <div class="socials">
           <a @click="isOpenModal = !isOpenModal"
             ><i aria-hidden="true" class="fas fa-edit"
+          /></a>
+          <a @click="openChangePasswordModal(userFormData.id)"
+            ><i aria-hidden="true" class="fas fa-lock"
           /></a>
         </div>
       </div>
@@ -47,7 +92,7 @@ onMounted(() => {
 
     <div class="profile-body">
       <div class="columns">
-        <div class="column is-8">
+        <div v-if="userSession.user.role == 'admin'" class="column is-8">
           <AdminsList class="mb-3" />
 
           <!-- <div class="profile-card">
@@ -552,6 +597,14 @@ onMounted(() => {
       user-role="admin"
       :user-id="userSession.user.id"
       @update:close-modal-handler="isOpenModal = false"
+      @update:action-update-handler="getUserDataHandler"
+    />
+    <ChangePasswordModal
+      v-if="openPasswordModal"
+      :isModalOpen="openPasswordModal"
+      :userId="currentSelectId"
+      @update:closeModalHandler="openPasswordModal = false"
+      @update:actionUpdateHandler="getUserDataHandler"
     />
   </div>
 </template>

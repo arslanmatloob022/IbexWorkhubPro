@@ -1,18 +1,8 @@
 <script setup lang="ts">
-import ApexChart from "vue3-apexcharts";
 import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-
-import { useEnergyChart } from "/@src/data/dashboards/lifestyle-v3/energyChart";
-import { useOverallChart } from "/@src/data/dashboards/lifestyle-v3/overallChart";
-import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
-import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
-import { followersList } from "/@src/data/widgets/ui/followers";
-import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
 
 const notyf = useNotyf();
 const api = useApi();
@@ -21,15 +11,6 @@ const events = ref<any>([]);
 const router = useRouter();
 const tab = ref("cards");
 
-const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
-  usePersonalScoreGauge();
-const { energyChartOptions } = useEnergyChart();
-const { overallChartOptions } = useOverallChart();
-const { oxygenChartOptions } = useOxygenChart();
-const { progressChartOptions } = useProgressChart();
-
-const modalTitle = ref("Edit Worker Profile");
-const editPreview = ref(null);
 const workerData = ref({
   id: "",
   password: "",
@@ -183,15 +164,18 @@ const getWorkerHandler = async () => {
     console.log(err);
   }
 };
+
 const showFullView = () => {
   fullWidthView.value = !fullWidthView.value;
 };
 
+const openEditUserModal = (id: any = "") => {};
+
 const workerTasksStats = ref({});
-const getWorkerTodayTask = async () => {
+const getWorkerTodayTask = async (refresh: boolean = false) => {
   try {
-    const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
-    workerTasksStats.value = resp.data.stats;
+    const resp = await api.get(`/api/task/worker-today/${route.params.id}/`);
+    workerTasksStats.value = resp.data;
     if (refresh) {
       notyf.green("Tasks list Refreshed");
     }
@@ -215,7 +199,14 @@ onMounted(async () => {
         <VAvatar size="xl" squared :picture="workerData.avatar" alt="" />
       </div>
       <div class="header-meta">
-        <h3>{{ workerData?.username }}</h3>
+        <h3>
+          {{ workerData?.username }}
+          <i
+            @click="openEditUserModal(workerData.id)"
+            class="fas fa-pencil-alt ml-2"
+            aria-hidden="true"
+          ></i>
+        </h3>
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
           <div class="summary-stat">
@@ -254,13 +245,15 @@ onMounted(async () => {
             </VIconBox>
             <h4>
               <span class="dark-inverted">{{
-                workerTasksStats.active ? workerTasksStats.active : 0
+                workerTasksStats?.stats?.pending +
+                workerTasksStats?.stats?.active +
+                workerTasksStats?.stats?.active
               }}</span>
               <!-- <span>lbs</span> -->
             </h4>
           </div>
           <h3 class="dark-inverted">Total Tasks</h3>
-          <p>Total number of tasks assigned to the Worker</p>
+          <p>Number of tasks assigned within 30 Days duration</p>
         </div>
       </div>
 
@@ -273,8 +266,11 @@ onMounted(async () => {
             </VIconBox>
             <h4>
               <span class="dark-inverted">{{
-                workerTasksStats.pending ? workerTasksStats.pending : 0
+                workerTasksStats?.stats?.active
+                  ? workerTasksStats?.stats?.active
+                  : 0
               }}</span>
+
               <!-- <span>Active</span> -->
             </h4>
           </div>
@@ -292,16 +288,15 @@ onMounted(async () => {
             </VIconBox>
             <h4>
               <span class="dark-inverted">{{
-                workerTasksStats.completed ? workerTasksStats.completed : 0
+                workerTasksStats?.stats?.pending
+                  ? workerTasksStats?.stats?.pending
+                  : 0
               }}</span>
               <!-- <span>Bpm</span> -->
             </h4>
           </div>
           <h3 class="dark-inverted">Pending Tasks</h3>
-          <p>
-            Tasks that are pending and worker need to done after activating the
-            status
-          </p>
+          <p>Tasks that are pending and worker need to done.</p>
         </div>
       </div>
 
@@ -310,11 +305,15 @@ onMounted(async () => {
         <div class="health-tile">
           <div class="tile-head">
             <VIconBox color="primary">
-              <i aria-hidden="true" class="fas fa-pump-medical" />
+              <i aria-hidden="true" class="fas fa-weight" />
             </VIconBox>
             <h4>
-              <span class="dark-inverted">14</span>
-              <!-- <span>units</span> -->
+              <span class="dark-inverted">{{
+                workerTasksStats?.stats?.completed
+                  ? workerTasksStats?.stats?.completed
+                  : 0
+              }}</span>
+              <!-- <span>lbs</span> -->
             </h4>
           </div>
           <h3 class="dark-inverted">Completed Tasks</h3>

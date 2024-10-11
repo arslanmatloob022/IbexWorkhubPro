@@ -1,1 +1,0 @@
-import{L as s,y as a,z as e,V as o}from"./index-ed878baa.js";const r={class:"placeload-wrap is-flex"};const t=s({},[["render",function(s,t){return a(),e("div",r,[o(s.$slots,"default")])}]]);export{t as _};
