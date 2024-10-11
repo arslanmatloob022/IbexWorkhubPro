@@ -1,3 +1,13 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+  isManagerAllowed: true
+  # isPartnerAllowed: false
+  # isContractorAllowed: false
+  # isWorkerAllowed: false
+  # isClientAllowed: false
+</route>
+
 <script setup lang="ts">
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 import { useI18n } from "vue-i18n";

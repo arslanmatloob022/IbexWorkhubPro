@@ -60,6 +60,56 @@ export default definePlugin(async ({ router, pinia }) => {
         query: { redirect: to.fullPath },
       };
     }
+    if (
+      (to.meta.isManagerAllowed == false &&
+        userSession.user.role === "manager") ||
+      !userSession.isLoggedIn
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      (to.meta.isContractorAllowed == false &&
+        userSession.user.role === "contractor") ||
+      !userSession.isLoggedIn
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      (to.meta.isSupplierAllowed == false &&
+        userSession.user.role === "supplier") ||
+      !userSession.isLoggedIn
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      (to.meta.isWorkerAllowed == false &&
+        userSession.user.role === "worker") ||
+      !userSession.isLoggedIn
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      (to.meta.isClientAllowed == false &&
+        userSession.user.role === "client") ||
+      !userSession.isLoggedIn
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
 
     // Check user role permissions based on meta tags
     // const role = userSession.user.role;
@@ -83,7 +133,7 @@ export default definePlugin(async ({ router, pinia }) => {
     //     query: { redirect: to.fullPath },
     //   };
     // }
-    console.log("constant yaml", to.meta); // To see if the meta fields are correctly set
+    console.log("dfghjlkkl", to.meta); // To see if the meta fields are correctly set
   });
 
   // router.beforeEach((to) => {
