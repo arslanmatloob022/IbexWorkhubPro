@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import ApexChart from "vue3-apexcharts";
-import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useEnergyChart } from "/@src/data/dashboards/lifestyle-v3/energyChart";
-import { useOverallChart } from "/@src/data/dashboards/lifestyle-v3/overallChart";
-import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
-import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
 import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
+import { useUserSession } from "/@src/stores/userSession";
 
+const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
 const events = ref<any>([]);
 const router = useRouter();
 const tab = ref("cards");
+const openPasswordModal = ref(false);
 
 const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
   usePersonalScoreGauge();
@@ -163,7 +160,9 @@ const getTasksHandler = async () => {
 const getContractorDetailHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/users/${route.params.id}`);
+    const response = await api.get(
+      `/api/users/${route.params.id ? route.params.id : userSession.user.id}`
+    );
     workerData.value = response.data;
     // renderCalendar();
   } catch (err) {
@@ -204,14 +203,22 @@ onMounted(async () => {
         <VAvatar size="xl" squared :picture="workerData.avatar" alt="" />
       </div>
       <div class="header-meta">
-        <h3>{{ loading ? "Loading..." : workerData?.username }}</h3>
+        <h3>
+          {{ loading ? "Loading..." : workerData?.username }}
+          <i
+            @click="openPasswordModal = true"
+            class="lnir lnir-lock"
+            aria-hidden="true"
+          ></i>
+        </h3>
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
           <div class="summary-stat">
-            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
             <span>Role</span>
+            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
           </div>
           <div class="summary-stat">
+            <span>Status</span>
             <span>{{
               loading
                 ? "Loading..."
@@ -219,9 +226,9 @@ onMounted(async () => {
                 ? "Active"
                 : " In-Active"
             }}</span>
-            <span>Status</span>
           </div>
           <div class="summary-stat">
+            <span>Phone</span>
             <span>{{
               loading
                 ? "Loading..."
@@ -229,27 +236,62 @@ onMounted(async () => {
                 ? workerData?.phoneNumber
                 : "N/A"
             }}</span>
-            <span>Phone</span>
           </div>
           <div class="summary-stat">
-            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
             <span>Email</span>
+            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
           </div>
           <div class="summary-stat h-hidden-tablet-p">
+            <span>Email Notification</span>
             <span>{{
               loading ? "Loading..." : workerData.is_sentMail ? "On" : "Off"
             }}</span>
-            <span>Email Notification</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="columns is-multiline is-flex-tablet-p">
+    <div class="columns is-multiline is-flex-tablet-p profile-wrapper">
+      <!-- <div class="column is-4 profile-body">
+        <div class="profile-card">
+          <div class="profile-card-section no-padding">
+            <div class="section-title">
+              <h4>Information</h4>
+              <VControl>
+                <VSwitchBlock color="success" checked />
+              </VControl>
+            </div>
+            <div class="section-content">
+              <div class="network-notifications">
+                <h3 class="dark-inverted">Phone</h3>
+                <p class="mb-3 py-0 px-0">
+                  {{
+                    workerData?.phoneNumber ? workerData?.phoneNumber : "N/A"
+                  }}
+                </p>
+                <h3 class="dark-inverted">Email</h3>
+                <p class="mb-3 py-0 px-0">
+                  {{ workerData?.email ? workerData?.email : "N/A" }}
+                </p>
+                <h3 class="dark-inverted">Email Notification</h3>
+                <p class="mb-3 py-0 px-0">
+                  {{ workerData?.is_sentMail ? "On" : "Off" }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
       <div class="column is-12">
         <ContractorProjects :contractor-id="route.params.id" />
       </div>
     </div>
+    <ChangePasswordModal
+      v-if="openPasswordModal"
+      :isModalOpen="openPasswordModal"
+      :userId="route.params.id"
+      @update:closeModalHandler="openPasswordModal = false"
+    />
   </div>
 </template>
 
@@ -484,6 +526,662 @@ onMounted(async () => {
     .illustration-header {
       .header-image {
         width: 250px;
+      }
+    }
+  }
+}
+</style>
+<style lang="scss">
+@import "/@src/scss/abstracts/all";
+@import "/@src/scss/components/profile-stats";
+
+.is-navbar {
+  .profile-wrapper {
+    margin-top: 30px;
+  }
+}
+
+.profile-wrapper {
+  max-width: 1040px;
+  margin: 0 auto;
+
+  .profile-header {
+    text-align: center;
+
+    > img {
+      display: block;
+      margin: 0 auto;
+      max-width: 300px;
+    }
+
+    .v-avatar {
+      margin: 0 auto 12px;
+    }
+
+    .anim-icon {
+      margin-bottom: 12px;
+    }
+
+    .title {
+      margin-bottom: 6px;
+    }
+
+    p {
+      font-size: 1rem;
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.3;
+    }
+  }
+
+  .profile-body {
+    padding: 10px 0 20px;
+
+    .profile-card {
+      @include vuero-s-card;
+
+      padding: 30px;
+
+      &:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      .profile-card-section {
+        padding-bottom: 20px;
+
+        &:not(:last-child) {
+          margin-bottom: 20px;
+          border-bottom: 1px solid var(--fade-grey-dark-4);
+        }
+
+        &.no-padding {
+          padding-bottom: 0;
+        }
+
+        .section-title {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+
+          h4 {
+            font-family: var(--font-alt);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--dark-text);
+            margin-inline-end: 6px;
+          }
+
+          i {
+            color: var(--primary);
+          }
+
+          .action-link {
+            position: relative;
+            top: -2px;
+            margin-inline-start: auto;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+          }
+
+          .control {
+            margin-inline-start: auto;
+
+            .form-switch {
+              transform: scale(0.8);
+            }
+          }
+        }
+
+        .section-content {
+          .description {
+            font-size: 0.95rem;
+          }
+
+          .experience-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            margin-inline-start: -8px;
+            margin-inline-end: -8px;
+
+            .experience-item {
+              display: flex;
+              align-items: center;
+              width: calc(50% - 16px);
+              margin: 8px;
+
+              img {
+                display: block;
+                width: 50px;
+                min-width: 50px;
+                height: 50px;
+                border-radius: var(--radius-rounded);
+                border: 1px solid var(--fade-grey-dark-4);
+              }
+
+              .meta {
+                margin-inline-start: 10px;
+
+                > span {
+                  font-family: var(--font);
+                  display: block;
+
+                  &:first-child {
+                    font-family: var(--font-alt);
+                    font-weight: 600;
+                    color: var(--dark-text);
+                    font-size: 0.85rem;
+                  }
+
+                  &:nth-child(2),
+                  &:nth-child(3) {
+                    font-size: 0.85rem;
+                    color: var(--light-text);
+
+                    i {
+                      position: relative;
+                      top: -2px;
+                      font-size: 4px;
+                      margin: 0 6px;
+                    }
+                  }
+
+                  &:nth-child(3) {
+                    color: var(--primary);
+                  }
+
+                  span {
+                    display: inline-block;
+                  }
+                }
+              }
+            }
+          }
+
+          .languages-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            margin-inline-start: -8px;
+            margin-inline-end: -8px;
+
+            .languages-item {
+              display: flex;
+              align-items: center;
+              width: calc(50% - 16px);
+              margin: 8px;
+
+              .icon-wrap {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 50px;
+                min-width: 50px;
+                height: 50px;
+
+                img {
+                  position: absolute;
+                  top: 50%;
+                  inset-inline-start: 50%;
+                  transform: translate(-50%, -50%);
+                  display: block;
+                  width: 32px;
+                  min-width: 32px;
+                  height: 32px;
+                  border-radius: var(--radius-rounded);
+                  border: 1px solid var(--fade-grey-dark-4);
+                }
+              }
+
+              .meta {
+                margin-inline-start: 10px;
+
+                > span {
+                  display: block;
+                  font-family: var(--font);
+
+                  &:first-child {
+                    font-family: var(--font-alt);
+                    font-weight: 600;
+                    color: var(--dark-text);
+                    font-size: 0.9rem;
+                  }
+
+                  &:nth-child(2) {
+                    font-size: 0.85rem;
+                    color: var(--light-text);
+                  }
+
+                  span {
+                    display: inline-block;
+                  }
+                }
+              }
+            }
+          }
+
+          .skills-wrapper {
+            .skills-item {
+              display: flex;
+              align-items: center;
+
+              &:not(:last-child) {
+                margin-bottom: 16px;
+              }
+
+              .icon-wrap {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 42px;
+                min-width: 42px;
+                height: 42px;
+                border-radius: var(--radius-rounded);
+                border: 1px solid var(--primary);
+
+                &.has-icon {
+                  background: var(--fade-grey-light-2);
+                  border: 1px solid var(--fade-grey-dark-3);
+                  color: var(--light-text);
+
+                  i {
+                    font-size: 1.4rem;
+                  }
+                }
+
+                img {
+                  display: block;
+                  width: 34px;
+                  min-width: 34px;
+                  height: 34px;
+                  border-radius: var(--radius-rounded);
+                  border: 1px solid var(--fade-grey-dark-4);
+                }
+
+                .count {
+                  position: absolute;
+                  bottom: 0;
+                  inset-inline-end: -4px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 22px;
+                  height: 22px;
+                  border-radius: var(--radius-rounded);
+                  background: var(--white);
+                  border: 1px solid var(--primary);
+
+                  span {
+                    font-family: var(--font);
+                    font-weight: 500;
+                    font-size: 0.75rem;
+                  }
+                }
+              }
+
+              .skill-info {
+                font-family: var(--font);
+                margin-inline-start: 12px;
+                line-height: 1.3;
+
+                span {
+                  display: block;
+
+                  &:first-child {
+                    font-family: var(--font-alt);
+                    font-weight: 600;
+                    color: var(--dark-text);
+                    font-size: 0.9rem;
+                  }
+
+                  &:nth-child(2) {
+                    font-size: 0.9rem;
+                    color: var(--light-text);
+                  }
+                }
+              }
+
+              .people {
+                margin-inline-start: auto;
+                display: flex;
+                justify-content: flex-end;
+
+                .v-avatar {
+                  margin: 0 4px;
+                }
+              }
+            }
+          }
+
+          .recommendations-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            margin-inline-start: -8px;
+            margin-inline-end: -8px;
+
+            .recommendations-item {
+              width: calc(50% - 16px);
+              margin: 8px;
+              background: var(--fade-grey-light-3);
+              text-align: center;
+              padding: 30px 20px;
+              border-radius: var(--radius);
+
+              > .v-avatar {
+                display: block;
+                margin: 0 auto 8px;
+              }
+
+              h3 {
+                font-size: 1rem;
+                font-family: var(--font-alt);
+                font-weight: 600;
+                color: var(--dark-text);
+                margin-bottom: 8px;
+              }
+
+              p {
+                font-size: 0.85rem;
+                margin-bottom: 16px;
+              }
+
+              .meta {
+                span {
+                  display: block;
+
+                  &:first-child {
+                    font-weight: 600;
+                    font-family: var(--font-alt);
+                    font-size: 0.95rem;
+                    color: var(--primary);
+                  }
+
+                  &:nth-child(2) {
+                    font-size: 0.9rem;
+                    color: var(--light-text);
+                  }
+                }
+              }
+            }
+          }
+
+          .network-notifications {
+            h3 {
+              font-family: var(--font-alt);
+              font-size: 0.9rem;
+              margin-bottom: 6px;
+            }
+
+            p {
+              font-size: 0.9rem;
+              max-width: 480px;
+            }
+          }
+
+          .tools-wrapper {
+            padding-top: 12px;
+
+            .tools-item {
+              display: flex;
+              align-items: center;
+              margin-bottom: 16px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+
+              .icon-wrap {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 50px;
+                min-width: 50px;
+                height: 50px;
+
+                img {
+                  position: absolute;
+                  top: 50%;
+                  inset-inline-start: 50%;
+                  transform: translate(
+                    calc(var(--transform-direction) * -50%),
+                    -50%
+                  );
+                  display: block;
+                  width: 32px;
+                  min-width: 32px;
+                  height: 32px;
+                  border-radius: var(--radius-rounded);
+                  border: 1px solid transparent;
+                }
+              }
+
+              .meta {
+                margin-inline-start: 10px;
+
+                > span {
+                  display: block;
+                  font-family: var(--font);
+
+                  &:first-child {
+                    font-family: var(--font-alt);
+                    font-weight: 600;
+                    color: var(--dark-text);
+                    font-size: 0.9rem;
+                  }
+
+                  &:nth-child(2) {
+                    font-size: 0.85rem;
+                    color: var(--light-text);
+                  }
+
+                  span {
+                    display: inline-block;
+                  }
+                }
+              }
+            }
+          }
+
+          .people-wrapper {
+            padding-top: 12px;
+
+            .people-item {
+              display: flex;
+              align-items: center;
+              margin-bottom: 16px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+
+              .meta {
+                margin-inline-start: 10px;
+
+                > span {
+                  display: block;
+                  font-family: var(--font);
+
+                  &:first-child {
+                    font-family: var(--font-alt);
+                    font-weight: 600;
+                    color: var(--dark-text);
+                    font-size: 0.9rem;
+                  }
+
+                  &:nth-child(2) {
+                    font-size: 0.85rem;
+                    color: var(--light-text);
+                  }
+
+                  span {
+                    display: inline-block;
+                  }
+                }
+              }
+            }
+          }
+
+          .more-button {
+            padding-top: 16px;
+
+            .button {
+              min-width: 180px;
+              font-family: var(--font);
+              text-transform: uppercase;
+              font-size: 0.8rem;
+              font-weight: 500;
+              margin: 0 auto;
+              color: var(--light-text);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.is-dark {
+  .profile-wrapper {
+    .profile-header {
+      .v-avatar {
+        .badge {
+          border-color: var(--dark-sidebar-light-6);
+        }
+      }
+    }
+
+    .profile-body {
+      .profile-card {
+        @include vuero-card--dark;
+
+        .profile-card-section {
+          border-color: var(--dark-sidebar-light-12);
+
+          .section-title {
+            h4 {
+              color: var(--dark-dark-text);
+            }
+
+            i {
+              color: var(--primary);
+            }
+          }
+
+          .section-content {
+            .icon-wrap {
+              > img {
+                border-color: var(--dark-sidebar-light-12) !important;
+              }
+            }
+
+            .experience-wrapper {
+              .experience-item {
+                > img {
+                  border-color: var(--dark-sidebar-light-12);
+                }
+
+                .meta {
+                  > span {
+                    &:nth-child(3) {
+                      color: var(--primary);
+                    }
+                  }
+                }
+              }
+            }
+
+            .skills-wrapper {
+              .skills-item {
+                .icon-wrap {
+                  border-color: var(--primary) !important;
+
+                  &.has-icon,
+                  &.has-img {
+                    background: var(--dark-sidebar-light-2) !important;
+                    border-color: var(--dark-sidebar-light-12) !important;
+                  }
+                }
+
+                .people {
+                  .v-avatar {
+                    &:last-child {
+                      .is-fake {
+                        background: var(--dark-sidebar-light-2);
+                        border: 1px solid var(--dark-sidebar-light-12);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            .recommendations-wrapper {
+              .recommendations-item {
+                background: var(--dark-sidebar-light-2);
+                border-color: var(--dark-sidebar-light-12);
+
+                .meta {
+                  span {
+                    &:first-child {
+                      color: var(--primary);
+                    }
+                  }
+                }
+              }
+            }
+
+            .more-button {
+              .button {
+                background: var(--dark-sidebar-light-2);
+                border-color: var(--dark-sidebar-light-12);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .icon-wrap,
+  .icon-wrap.is-placeholder {
+    background: var(--dark-sidebar-light-2) !important;
+    border-color: var(--dark-sidebar-light-12) !important;
+  }
+}
+
+@media only screen and (width <= 767px) {
+  .profile-wrapper {
+    .profile-body {
+      .profile-card {
+        padding: 20px;
+
+        .profile-card-section {
+          .section-content {
+            .experience-wrapper,
+            .languages-wrapper,
+            .recommendations-wrapper {
+              .experience-item,
+              .languages-item,
+              .recommendations-item {
+                width: calc(100% - 16px);
+              }
+            }
+
+            .skills-wrapper {
+              .skills-item {
+                .people {
+                  .v-avatar {
+                    &:not(:last-child) {
+                      display: none !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

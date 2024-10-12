@@ -57,16 +57,10 @@ const projectData = ref({
   contractor: null,
   wifiAvaliabe: false,
   parkingAvaliable: false,
-  workingOn: {
-    bedrooms: false,
-    kitchen: false,
-    drawing: false,
-    bathroom: false,
-    vanity: false,
-    lawn: false,
-    pool: false,
-  },
-  property_features: "",
+  property_features: [
+    { name: "wash room", quantity: 20 },
+    { name: "kitchen", quantity: 2 },
+  ],
 });
 
 const handleFileChange = (event) => {
@@ -90,7 +84,10 @@ const onRemoveFile = () => {
 const addNewProject = async () => {
   try {
     loading.value = true;
-    const formData = convertToFormData(projectData.value, ["image"]);
+    const formData = convertToFormData(projectData.value, [
+      "image",
+      "workingOn",
+    ]);
     if (newId.value) {
       const resp = await api.patch(`/api/project/${newId.value}/`, formData);
       notyf.info("Information added");
@@ -111,9 +108,7 @@ const addNewProject = async () => {
 const getManagersHandler = async () => {
   try {
     loading.value = true;
-
     const response = await api.get("/api/users/by-role/manager/", {});
-
     allManagers.value = response.data;
   } catch (err) {
     console.log(err);

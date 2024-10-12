@@ -330,7 +330,6 @@ onMounted(async () => {
   await Promise.all([getProjectHandler(), getTasksHandler()]);
 
   renderCalender();
-  console.log("projects", calendarOptions.value);
   showWorkerChart.value = true;
 });
 </script>

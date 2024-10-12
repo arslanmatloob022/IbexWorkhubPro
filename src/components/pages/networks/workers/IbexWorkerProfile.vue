@@ -3,14 +3,17 @@ import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { useUserSession } from "/@src/stores/userSession";
 
+const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
 const events = ref<any>([]);
 const router = useRouter();
 const tab = ref("cards");
-
+const userId = ref("");
+const isPasswordModalOpen = ref(false);
 const workerData = ref({
   id: "",
   password: "",
@@ -140,11 +143,18 @@ const changeFilterHandler = () => {
   calendarOptions.value.events = filteredEvents.value;
 };
 
+const openPasswordModal = (id: any) => {
+  userId.value = id;
+  isPasswordModalOpen.value = true;
+};
+
 // Method to get tasks for a worker
 const getTasksHandler = async () => {
   try {
     const response = await api.get(
-      `/api/task/${route.params.id}/worker-tasks/`
+      `/api/task/${
+        route.params.id ? route.params.id : userSession.user.id
+      }/worker-tasks/`
     );
     tasks.value = response.data;
     console.log("worker tasks", tasks.value);
@@ -156,7 +166,9 @@ const getTasksHandler = async () => {
 const getWorkerHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/users/${route.params.id}`);
+    const response = await api.get(
+      `/api/users/${route.params.id ? route.params.id : userSession.user.id}`
+    );
     workerData.value = response.data;
     loading.value = false;
     // renderCalendar();
@@ -174,7 +186,11 @@ const openEditUserModal = (id: any = "") => {};
 const workerTasksStats = ref({});
 const getWorkerTodayTask = async (refresh: boolean = false) => {
   try {
-    const resp = await api.get(`/api/task/worker-today/${route.params.id}/`);
+    const resp = await api.get(
+      `/api/task/worker-today/${
+        route.params.id ? route.params.id : userSession.user.id
+      }/`
+    );
     workerTasksStats.value = resp.data;
     if (refresh) {
       notyf.green("Tasks list Refreshed");
@@ -187,8 +203,8 @@ const getWorkerTodayTask = async (refresh: boolean = false) => {
 onMounted(async () => {
   await getWorkerHandler();
   await getTasksHandler();
-  renderCalendar();
   getWorkerTodayTask();
+  renderCalendar();
 });
 </script>
 
@@ -229,7 +245,17 @@ onMounted(async () => {
           </div>
           <div class="summary-stat h-hidden-tablet-p">
             <span>{{ workerData.is_sentMail ? "On" : "Off" }}</span>
-            <span>Email Notification</span>
+            <span>Mail notify </span>
+          </div>
+          <div class="summary-stat h-hidden-tablet-p">
+            <span
+              ><i
+                @click="openPasswordModal(workerData.id)"
+                class="fas fa-lock"
+                aria-hidden="true"
+              ></i
+            ></span>
+            <span>Password </span>
           </div>
         </div>
       </div>
@@ -394,6 +420,12 @@ onMounted(async () => {
         <ProjectTodayTasks :workerId="route.params.id" />
       </div>
     </div>
+    <ChangePasswordModal
+      v-if="isPasswordModalOpen"
+      :isModalOpen="isPasswordModalOpen"
+      :userId="userId"
+      @update:closeModalHandler="isPasswordModalOpen = false"
+    />
   </div>
 </template>
 

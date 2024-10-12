@@ -45,7 +45,7 @@ const handleLogin = async () => {
       loginSuccess();
     } catch (error) {
       isLoading.value = false;
-      notyf.error("Invalid Credentials, Sign In");
+      // notyf.error("Invalid Credentials, Sign In");
     } finally {
       isLoading.value = false;
     }
@@ -54,11 +54,17 @@ const handleLogin = async () => {
 
 const loginSuccess = () => {
   console.log("inside login success");
-  isLoading.value = false;
-  notyf.success(`Welcome back, ${userSession.user.username}`);
   layoutSwitcher.setDynamicLayoutId("sideblock-default");
-  if (userSession.user.id) {
+  notyf.success(`Welcome back, ${userSession.user.username}`);
+  isLoading.value = false;
+  if (userSession.user.role == "admin") {
     router.push("/sidebar/dashboard");
+  } else if (userSession.user.role == "worker") {
+    router.push("/sidebar/worker/tasks");
+  } else if (userSession.user.role == "manager") {
+    router.push("/sidebar/manager/projects");
+  } else if (userSession.user.role == "contractor") {
+    router.push("/sidebar/contractor/projects");
   }
 };
 

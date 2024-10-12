@@ -3,6 +3,8 @@ import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
+import { useUserSession } from "/@src/stores/userSession";
+
 export interface ProjectData {
   id: number;
   name: string;
@@ -17,7 +19,7 @@ export interface ProjectData {
 const api = useApi();
 const notyf = useNotyf();
 const startDate = ref("");
-
+const userSession = useUserSession();
 const props = withDefaults(
   defineProps<{
     projectID?: string;
@@ -36,7 +38,7 @@ const emits = defineEmits<{
 }>();
 
 const filters = ref("");
-const tab = ref("active");
+const tab = ref("all");
 const currentTask = ref(0);
 const loading = ref(false);
 const isTaskFormOpen = ref(false);
@@ -99,7 +101,11 @@ const openAlert = (id: any) => {
 const getWorkerTasks = async () => {
   try {
     loading.value = true;
-    const resp = await api.get(`/api/task/${props.workerId}/worker-tasks/`);
+    const resp = await api.get(
+      `/api/task/${
+        props.workerId ? props.workerId : userSession.user.id
+      }/worker-tasks/`
+    );
     workerTasks.value = resp.data;
     console.log(resp.data);
     loading.value = false;
@@ -208,6 +214,39 @@ const filteredCompletedData = computed(() => {
   }
 });
 
+const filteredActiveData = computed(() => {
+  if (!filters.value) {
+    return workerTasks.value.filter((tasks) => tasks.status == "active");
+  } else {
+    const filterRe = new RegExp(filters.value, "i");
+
+    return workerTasks.value.filter((item) => {
+      return (
+        item.status == "active" &&
+        (item.title.match(filterRe) ||
+          item.description.match(filterRe) ||
+          item.status.match(filterRe))
+      );
+    });
+  }
+});
+const filteredPendingData = computed(() => {
+  if (!filters.value) {
+    return workerTasks.value.filter((tasks) => tasks.status == "pending");
+  } else {
+    const filterRe = new RegExp(filters.value, "i");
+
+    return workerTasks.value.filter((item) => {
+      return (
+        item.status == "pending" &&
+        (item.title.match(filterRe) ||
+          item.description.match(filterRe) ||
+          item.status.match(filterRe))
+      );
+    });
+  }
+});
+
 onMounted(() => {
   getWorkerTasks();
 });
@@ -236,21 +275,39 @@ onMounted(() => {
       <div class="tabs-inner">
         <div class="tabs">
           <ul>
+            <li :class="[tab === 'all' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'all'"
+                @click="tab = 'all'"
+                ><span>All</span></a
+              >
+            </li>
             <li :class="[tab === 'active' && 'is-active']">
               <a
                 tabindex="0"
                 role="button"
                 @keydown.space.prevent="tab = 'active'"
                 @click="tab = 'active'"
-                ><span>All</span></a
+                ><span>Active</span></a
               >
             </li>
-            <li :class="[tab === 'closed' && 'is-active']">
+            <li :class="[tab === 'pending' && 'is-active']">
               <a
                 tabindex="0"
                 role="button"
-                @keydown.space.prevent="tab = 'closed'"
-                @click="tab = 'closed'"
+                @keydown.space.prevent="tab = 'pending'"
+                @click="tab = 'pending'"
+                ><span>Pending</span></a
+              >
+            </li>
+            <li :class="[tab === 'completed' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'completed'"
+                @click="tab = 'completed'"
                 ><span>Completed</span></a
               >
             </li>
@@ -262,7 +319,7 @@ onMounted(() => {
 
     <div class="flex-list-wrapper flex-list-v2">
       <!--Active Tab-->
-      <div v-if="tab === 'active'" class="tab-content is-active">
+      <div v-if="tab === 'all'" class="tab-content is-active">
         <div class="all-projects">
           <!-- <ProjectsToolbar /> -->
 
@@ -444,8 +501,311 @@ onMounted(() => {
         </div>
       </div>
 
-      <!--inactive Tab-->
-      <div v-else-if="tab === 'closed'" class="tab-content is-active">
+      <!--active Tab-->
+      <div v-else-if="tab === 'active'" class="tab-content is-active">
+        <div class="all-projects">
+          <!-- <ProjectsToolbar /> -->
+
+          <div
+            v-if="filteredActiveData.length"
+            class="columns is-multiline projects-card-grid"
+          >
+            <!--Project-->
+            <div v-for="item in filteredActiveData" class="column is-6">
+              <div class="grid-item">
+                <div class="top-section">
+                  <div class="head">
+                    <h3>{{ item.title }}</h3>
+                    <!--Dropdown-->
+                    <VDropdown icon="feather:more-vertical" spaced right>
+                      <template #content>
+                        <a
+                          @click="updateTaskStatus(item.id, 'active')"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-eye" />
+                          </div>
+                          <div class="meta">
+                            <span>Active</span>
+                            <span>Start work on this task</span>
+                          </div>
+                        </a>
+
+                        <a
+                          @click="updateTaskStatus(item.id, 'pending')"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                          </div>
+                          <div class="meta">
+                            <span>Pending</span>
+                            <span>Waiting to work on</span>
+                          </div>
+                        </a>
+
+                        <a
+                          @click="updateTaskStatus(item.id, 'completed')"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                          </div>
+                          <div class="meta">
+                            <span>Completed</span>
+                            <span>Mark task as completed</span>
+                          </div>
+                        </a>
+
+                        <hr class="dropdown-divider" />
+                        <a
+                          @click="openTaskForm(item.id)"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                          </div>
+                          <div class="meta">
+                            <span>Edit</span>
+                            <span>Edit Task detail</span>
+                          </div>
+                        </a>
+
+                        <a
+                          @click="openAlert(item.id)"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-archive" />
+                          </div>
+                          <div class="meta">
+                            <span>Delete </span>
+                            <span>Delete this task</span>
+                          </div>
+                        </a>
+                      </template>
+                    </VDropdown>
+                  </div>
+                  <div class="body">
+                    <p>
+                      {{ item.description }}
+                    </p>
+                  </div>
+                </div>
+                <div class="bottom-section">
+                  <div class="foot-block">
+                    <h4 class="heading">Worker(s)</h4>
+                    <div class="developers">
+                      <VAvatar
+                        v-for="worker in item.workers"
+                        :picture="worker.avatar"
+                        size="small"
+                        color="primary"
+                        v-tooltip.rounded.info="`${worker.username}`"
+                        :initials="
+                          worker.avatar ? '' : worker.username.slice(0, 2)
+                        "
+                      />
+                    </div>
+                  </div>
+                  <div class="foot-block">
+                    <h4 class="heading">Start date</h4>
+                    <p>{{ item.startDate }}</p>
+                  </div>
+                  <div class="foot-block">
+                    <h4 class="heading">End date</h4>
+                    <p>{{ item.endDate }}</p>
+                  </div>
+                  <div class="foot-block">
+                    <h4 class="heading">Status</h4>
+                    <p>{{ item.status }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Empty placeholder-->
+          <VPlaceholderPage
+            v-else
+            title="No closed projects."
+            subtitle="Looks like you don't have any closed project yet. When you'll
+                start closing off projects, they will be showing up in here."
+          >
+            <template #image>
+              <img
+                class="light-image is-larger"
+                src="/@src/assets/illustrations/placeholders/projects.svg"
+                alt=""
+              />
+              <img
+                class="dark-image is-larger"
+                src="/@src/assets/illustrations/placeholders/projects-dark.svg"
+                alt=""
+              />
+            </template>
+          </VPlaceholderPage>
+        </div>
+      </div>
+      <!--active Tab-->
+      <div v-else-if="tab === 'pending'" class="tab-content is-active">
+        <div class="all-projects">
+          <!-- <ProjectsToolbar /> -->
+
+          <div
+            v-if="filteredPendingData.length"
+            class="columns is-multiline projects-card-grid"
+          >
+            <!--Project-->
+            <div v-for="item in filteredPendingData" class="column is-6">
+              <div class="grid-item">
+                <div class="top-section">
+                  <div class="head">
+                    <h3>{{ item.title }}</h3>
+                    <!--Dropdown-->
+                    <VDropdown icon="feather:more-vertical" spaced right>
+                      <template #content>
+                        <a
+                          @click="updateTaskStatus(item.id, 'active')"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-eye" />
+                          </div>
+                          <div class="meta">
+                            <span>Active</span>
+                            <span>Start work on this task</span>
+                          </div>
+                        </a>
+
+                        <a
+                          @click="updateTaskStatus(item.id, 'pending')"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                          </div>
+                          <div class="meta">
+                            <span>Pending</span>
+                            <span>Waiting to work on</span>
+                          </div>
+                        </a>
+
+                        <a
+                          @click="updateTaskStatus(item.id, 'completed')"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                          </div>
+                          <div class="meta">
+                            <span>Completed</span>
+                            <span>Mark task as completed</span>
+                          </div>
+                        </a>
+
+                        <hr class="dropdown-divider" />
+                        <a
+                          @click="openTaskForm(item.id)"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                          </div>
+                          <div class="meta">
+                            <span>Edit</span>
+                            <span>Edit Task detail</span>
+                          </div>
+                        </a>
+
+                        <a
+                          @click="openAlert(item.id)"
+                          role="menuitem"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i aria-hidden="true" class="lnil lnil-archive" />
+                          </div>
+                          <div class="meta">
+                            <span>Delete </span>
+                            <span>Delete this task</span>
+                          </div>
+                        </a>
+                      </template>
+                    </VDropdown>
+                  </div>
+                  <div class="body">
+                    <p>
+                      {{ item.description }}
+                    </p>
+                  </div>
+                </div>
+                <div class="bottom-section">
+                  <div class="foot-block">
+                    <h4 class="heading">Worker(s)</h4>
+                    <div class="developers">
+                      <VAvatar
+                        v-for="worker in item.workers"
+                        :picture="worker.avatar"
+                        size="small"
+                        color="primary"
+                        v-tooltip.rounded.info="`${worker.username}`"
+                        :initials="
+                          worker.avatar ? '' : worker.username.slice(0, 2)
+                        "
+                      />
+                    </div>
+                  </div>
+                  <div class="foot-block">
+                    <h4 class="heading">Start date</h4>
+                    <p>{{ item.startDate }}</p>
+                  </div>
+                  <div class="foot-block">
+                    <h4 class="heading">End date</h4>
+                    <p>{{ item.endDate }}</p>
+                  </div>
+                  <div class="foot-block">
+                    <h4 class="heading">Status</h4>
+                    <p>{{ item.status }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Empty placeholder-->
+          <VPlaceholderPage
+            v-else
+            title="No closed projects."
+            subtitle="Looks like you don't have any closed project yet. When you'll
+                start closing off projects, they will be showing up in here."
+          >
+            <template #image>
+              <img
+                class="light-image is-larger"
+                src="/@src/assets/illustrations/placeholders/projects.svg"
+                alt=""
+              />
+              <img
+                class="dark-image is-larger"
+                src="/@src/assets/illustrations/placeholders/projects-dark.svg"
+                alt=""
+              />
+            </template>
+          </VPlaceholderPage>
+        </div>
+      </div>
+
+      <!--completed Tab-->
+      <div v-else-if="tab === 'completed'" class="tab-content is-active">
         <div class="all-projects">
           <!-- <ProjectsToolbar /> -->
 

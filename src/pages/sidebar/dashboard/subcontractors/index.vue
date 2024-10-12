@@ -10,8 +10,6 @@ useHead({
 </script>
 <template>
   <div>
-    <!-- <IbexSupplier /> -->
-    <!-- the -->
     <IbexSubContractors />
   </div>
 </template>

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Partner Profile");
+viewWrapper.setPageTitle("Contractor Profile");
 useHead({
-  title: "Partner - Arez",
+  title: "Contractor - Ibex",
 });
 </script>
 <template>
   <div class="page-content-inner">
-    <SupplierProfile />
+    <ContractorProfile />
   </div>
 </template>
 <style lang="scss"></style>

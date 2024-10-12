@@ -9,7 +9,9 @@ import { useOverallChart } from "/@src/data/dashboards/lifestyle-v3/overallChart
 import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
 import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
 import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
+import { useUserSession } from "/@src/stores/userSession";
 
+const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
@@ -160,10 +162,12 @@ const getTasksHandler = async () => {
   }
 };
 
-const getContractorDetailHandler = async () => {
+const getManagerDetailHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/users/${route.params.id}`);
+    const response = await api.get(
+      `/api/users/${route.params.id ? route.params.id : userSession.user.id}`
+    );
     workerData.value = response.data;
     // renderCalendar();
   } catch (err) {
@@ -190,7 +194,7 @@ const getWorkerTodayTask = async () => {
 };
 
 onMounted(async () => {
-  await getContractorDetailHandler();
+  await getManagerDetailHandler();
   //   await getTasksHandler();
   //   renderCalendar();
   //   getWorkerTodayTask();
@@ -246,7 +250,7 @@ onMounted(async () => {
     </div>
 
     <div class="columns is-multiline is-flex-tablet-p">
-      <!--Tile-->
+      <ManagerProjects />
     </div>
   </div>
 </template>

@@ -20,6 +20,6 @@ useHead({
 
 <template>
   <div class="">
-    <ContractorProfile />
+    <ManagerProfile />
   </div>
 </template>

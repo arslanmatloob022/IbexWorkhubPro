@@ -2,6 +2,9 @@
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
+import { useUserSession } from "/@src/stores/userSession";
+
+const userSession = useUserSession();
 const api = useApi();
 const notyf = useNotyf();
 const route = useRoute();
@@ -57,6 +60,20 @@ const projectTodaysTasks = ref<any>({
 });
 // 032f54b2-9229-4d05-9a2a-eed9eabb9b75/
 
+const getLoggedWorkerTodayTask = async (refresh: any) => {
+  try {
+    const resp = await api.get(
+      `/api/task/worker-today/${userSession.user.id}/`
+    );
+    projectTodaysTasks.value = resp.data;
+    if (refresh) {
+      notyf.green("Tasks list Refreshed");
+    }
+    console.log("data", projectTodaysTasks.value);
+  } catch (err) {
+    console.log(err);
+  }
+};
 const getWorkerTodayTask = async (refresh: any) => {
   try {
     const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
@@ -95,6 +112,8 @@ const getTodayTask = async (refresh: any) => {
 onMounted(() => {
   if (props.workerId) {
     getWorkerTodayTask(false);
+  } else if (userSession.user.role == "worker") {
+    getLoggedWorkerTodayTask(false);
   } else {
     getTodayTask(false);
   }
