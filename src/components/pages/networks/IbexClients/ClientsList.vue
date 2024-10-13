@@ -3,6 +3,7 @@ import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as gridData from "/@src/data/layouts/user-grid-v2";
 import { useApi } from "/@src/composable/useAPI";
 
+const router = useRouter();
 const api = useApi();
 const loading = ref(false);
 const isOpenModal = ref(false);
@@ -60,6 +61,10 @@ const openUserModal = (id: any = "") => {
 const openPasswordModal = (id: any = "") => {
   currentSelectId.value = id;
   isPasswordOpenModal.value = !isPasswordOpenModal.value;
+};
+
+const gotoClient = (id: any = "") => {
+  router.push(`/sidebar/dashboard/clients/${id}`);
 };
 
 const valueSingle = ref(0);
@@ -183,7 +188,7 @@ onMounted(() => {
               <h3 class="dark-inverted">
                 {{ item.username }}
               </h3>
-              <p>{{ item.role }}</p>
+              <p style="text-transform: capitalize">{{ item.role }}</p>
               <div class="people">
                 <!-- <VAvatar
                   v-for="(user, key) in item.team"
@@ -195,7 +200,10 @@ onMounted(() => {
                 /> -->
               </div>
               <div class="buttons">
-                <button class="button v-button is-dark-outlined">
+                <button
+                  @click="gotoClient(item.id)"
+                  class="button v-button is-dark-outlined"
+                >
                   <span class="icon">
                     <i
                       aria-hidden="true"

@@ -52,7 +52,7 @@ async function logout() {
           "
         >
           <span>{{ userSession.user && userSession.user.username }} </span>
-          <span style="color: var(--light-text)">{{
+          <span style="color: var(--light-text); text-transform: capitalize">{{
             userSession.user && userSession.user.role
           }}</span>
         </div>
@@ -72,7 +72,7 @@ async function logout() {
         </div>
       </RouterLink>
 
-      <a href="#" role="menuitem" class="dropdown-item is-media">
+      <!-- <a href="#" role="menuitem" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-briefcase" />
         </div>
@@ -80,8 +80,8 @@ async function logout() {
           <span>Projects</span>
           <span>All my projects</span>
         </div>
-      </a>
-
+      </a> -->
+      <!-- 
       <a href="#" role="menuitem" class="dropdown-item is-media">
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-users-alt"></i>
@@ -90,9 +90,9 @@ async function logout() {
           <span>Team</span>
           <span>Manage your team</span>
         </div>
-      </a>
+      </a> -->
 
-      <hr class="dropdown-divider" />
+      <!-- <hr class="dropdown-divider" />
 
       <a
         role="menuitem"
@@ -112,7 +112,7 @@ async function logout() {
         </div>
       </a>
 
-      <hr class="dropdown-divider" />
+      <hr class="dropdown-divider" /> -->
 
       <div class="dropdown-item is-button">
         <VButton

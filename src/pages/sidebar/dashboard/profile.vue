@@ -13,9 +13,7 @@ useHead(() => ({
 
 const { t } = useI18n();
 const api = useApi();
-const notyf = useNotyf();
 const userSession = useUserSession();
-const selectedIdToDelete = ref("");
 const isOpenModal = ref(false);
 const openPasswordModal = ref(false);
 const currentSelectId = ref("");
@@ -71,7 +69,9 @@ onMounted(() => {
       <div class="profile-stats">
         <div class="profile-stat">
           <!-- <i aria-hidden="true" class="lnil lnil-users-alt" /> -->
-          <span>{{ userFormData?.role }}</span>
+          <span style="text-transform: capitalize">{{
+            userFormData?.role
+          }}</span>
         </div>
         <div class="separator" />
         <div class="profile-stat">

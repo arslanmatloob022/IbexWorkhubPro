@@ -226,28 +226,29 @@ onMounted(async () => {
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
           <div class="summary-stat">
-            <span>{{ workerData?.role }}</span>
             <span>Role</span>
+            <span>{{ workerData?.role }}</span>
           </div>
           <div class="summary-stat">
-            <span>{{ workerData?.is_active ? "Active" : " In-Active" }}</span>
             <span>Status</span>
+            <span>{{ workerData?.is_active ? "Active" : " In-Active" }}</span>
           </div>
           <div class="summary-stat">
+            <span>Phone</span>
             <span>{{
               workerData?.phoneNumber ? workerData?.phoneNumber : "N/A"
             }}</span>
-            <span>Phone</span>
           </div>
           <div class="summary-stat">
-            <span>{{ workerData?.email }}</span>
             <span>Email</span>
+            <span>{{ workerData?.email }}</span>
           </div>
           <div class="summary-stat h-hidden-tablet-p">
-            <span>{{ workerData.is_sentMail ? "On" : "Off" }}</span>
             <span>Mail notify </span>
+            <span>{{ workerData.is_sentMail ? "On" : "Off" }}</span>
           </div>
           <div class="summary-stat h-hidden-tablet-p">
+            <span>Password </span>
             <span
               ><i
                 @click="openPasswordModal(workerData.id)"
@@ -255,7 +256,6 @@ onMounted(async () => {
                 aria-hidden="true"
               ></i
             ></span>
-            <span>Password </span>
           </div>
         </div>
       </div>

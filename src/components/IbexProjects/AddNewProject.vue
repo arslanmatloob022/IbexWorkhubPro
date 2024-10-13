@@ -32,7 +32,6 @@ const props = defineProps<{
 }>();
 
 const newProjectId = ref(0);
-const showPassword = ref(false);
 const workWithContractor = ref(false);
 const loading = ref(false);
 const image = ref("");
@@ -57,11 +56,15 @@ const projectData = ref({
   contractor: null,
   wifiAvaliabe: false,
   parkingAvaliable: false,
-  property_features: [
-    { name: "wash room", quantity: 20 },
-    { name: "kitchen", quantity: 2 },
-  ],
+  property_features: [],
 });
+
+const property_features = ref([
+  { name: "Bedrooms", quantity: 0 },
+  { name: "Bathrooms", quantity: 0 },
+  { name: "Kitchen", quantity: 0 },
+  { name: "Drawing", quantity: 0 },
+]);
 
 const handleFileChange = (event) => {
   projectData.value.image = event.target.files[0];
@@ -84,10 +87,14 @@ const onRemoveFile = () => {
 const addNewProject = async () => {
   try {
     loading.value = true;
-    const formData = convertToFormData(projectData.value, [
-      "image",
-      "workingOn",
-    ]);
+    if (Array.isArray(property_features.value)) {
+      projectData.value.property_features = JSON.stringify(
+        property_features.value
+      );
+    }
+
+    const formData = convertToFormData(projectData.value, ["image"]);
+
     if (newId.value) {
       const resp = await api.patch(`/api/project/${newId.value}/`, formData);
       notyf.info("Information added");
@@ -189,6 +196,7 @@ const openUserModal = (role: string) => {
 };
 
 const getAddedUser = () => {
+  addUserModal.value = false;
   if (selectedRole.value == "manager") {
     getManagersHandler();
   } else if (selectedRole.value == "contractor") {
@@ -210,11 +218,13 @@ watch(
 
 onMounted(() => {
   getManagersHandler();
+  getClientHandler();
+  getContractorsHandler();
 });
 </script>
 
 <template>
-  <form method="post" novalidate @submit.prevent="addNewProject">
+  <form method="post" @submit.prevent="addNewProject">
     <div class="mobile-steps is-active">
       <ul class="steps has-content-centered is-thin is-horizontal is-short">
         <li :class="[currentStep === 0 && 'is-active']" class="steps-segment">
@@ -552,7 +562,7 @@ onMounted(() => {
                     <VOption
                       v-for="item in allClients"
                       :key="item.id"
-                      :value="item"
+                      :value="item.id"
                       >{{ item.username }}
                     </VOption>
                   </VSelect>
@@ -614,7 +624,7 @@ onMounted(() => {
                   >New Contractor</VButton
                 >
 
-                <VField>
+                <VField class="m-b-50">
                   <VLabel>Select Contractor</VLabel>
                   <VControl>
                     <VSelect
@@ -625,7 +635,7 @@ onMounted(() => {
                       <VOption
                         v-for="item in allContractors"
                         :key="item.id"
-                        :value="item"
+                        :value="item.id"
                         >{{ item.username }}
                       </VOption>
                     </VSelect>
@@ -675,6 +685,17 @@ onMounted(() => {
                     v-model="projectData.parking"
                     label="Parking Available"
                     color="primary"
+                  />
+                </VControl>
+              </VField>
+              <VField> </VField>
+              <VField v-for="(item, index) in property_features" :key="index">
+                <VLabel>{{ item.name }}</VLabel>
+                <VControl>
+                  <VInput
+                    v-model="item.quantity"
+                    type="text"
+                    :placeholder="item.name"
                   />
                 </VControl>
               </VField>

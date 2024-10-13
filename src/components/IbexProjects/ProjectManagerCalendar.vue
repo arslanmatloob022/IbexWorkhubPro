@@ -67,7 +67,7 @@ const calendarOptions = ref({
   // resourceGroupField: 'project',
   resources: [],
   eventDrop: (info: any) => {
-    // eventChangeHandler(info);
+    eventChangeHandler(info);
     info.revert();
   },
   eventResize: (info: any) => {
@@ -173,6 +173,9 @@ const editTask = async (id: any, start: any, end: any) => {
     });
 
     notyf.success("Task updated successfully");
+    await getProjectHandler();
+    await getTasksHandler();
+    renderCalender();
   } catch (err) {
     notyf.error("Something went wrong");
     console.log(err);
@@ -365,7 +368,7 @@ onMounted(async () => {
                 :class="activeFilter == 'all' ?? 'is-active'"
               >
                 <div class="icon">
-                  <i class="lnil lnil-coins" />
+                  <i class="lnil lnil-menu" aria-hidden="true"></i>
                 </div>
                 <div class="meta">
                   <span>All</span>
@@ -384,7 +387,7 @@ onMounted(async () => {
                 class="dropdown-item is-media"
               >
                 <div class="icon">
-                  <i class="lnil lnil-dollar-up" />
+                  <i class="lnil lnil-play" aria-hidden="true"></i>
                 </div>
                 <div class="meta">
                   <span>Active</span>
@@ -402,7 +405,7 @@ onMounted(async () => {
                 class="dropdown-item is-media"
               >
                 <div class="icon">
-                  <i class="lnil lnil-bank" />
+                  <i class="lnil lnil-alarm-clock" aria-hidden="true"></i>
                 </div>
                 <div class="meta">
                   <span>Pending</span>
@@ -421,7 +424,7 @@ onMounted(async () => {
                 class="dropdown-item is-media"
               >
                 <div class="icon">
-                  <i class="lnil lnil-wallet-alt-1" />
+                  <i class="lnil lnil-round-box-check" aria-hidden="true"></i>
                 </div>
                 <div class="meta">
                   <span>Completed</span>
@@ -431,9 +434,9 @@ onMounted(async () => {
             </template>
           </VDropdown>
 
-          <VButton elevated raised color="dark" @click="toggleFullScreen()">
+          <!-- <VButton elevated raised color="dark" @click="toggleFullScreen()">
             <i :class="fullWidthView ? 'fa fa-compress' : 'fa fa-expand'"></i>
-          </VButton>
+          </VButton> -->
         </VButtons>
       </div>
     </form>

@@ -196,14 +196,14 @@ onMounted(() => {
 
                   <div class="stats">
                     <div class="stat">
-                      <span>{{ item.phoneNumber }}</span>
-                      <span>Phone</span>
+                      <span>{{ item.is_sentMail ? "On " : "Off" }}</span>
+                      <span>Email notify</span>
                     </div>
-                    <div class="separator" />
+                    <!-- <div class="separator" />
                     <div class="stat">
                       <span>{{ formatDate(item.date_joined) }}</span>
                       <span>Joined</span>
-                    </div>
+                    </div> -->
                     <div class="separator" />
                     <div @click="openUserModal(item.id)" class="stat">
                       <span>{{ item.is_active ? "Active" : "In-Active" }}</span>

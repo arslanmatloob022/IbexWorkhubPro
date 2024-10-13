@@ -252,36 +252,6 @@ onMounted(async () => {
     </div>
 
     <div class="columns is-multiline is-flex-tablet-p profile-wrapper">
-      <!-- <div class="column is-4 profile-body">
-        <div class="profile-card">
-          <div class="profile-card-section no-padding">
-            <div class="section-title">
-              <h4>Information</h4>
-              <VControl>
-                <VSwitchBlock color="success" checked />
-              </VControl>
-            </div>
-            <div class="section-content">
-              <div class="network-notifications">
-                <h3 class="dark-inverted">Phone</h3>
-                <p class="mb-3 py-0 px-0">
-                  {{
-                    workerData?.phoneNumber ? workerData?.phoneNumber : "N/A"
-                  }}
-                </p>
-                <h3 class="dark-inverted">Email</h3>
-                <p class="mb-3 py-0 px-0">
-                  {{ workerData?.email ? workerData?.email : "N/A" }}
-                </p>
-                <h3 class="dark-inverted">Email Notification</h3>
-                <p class="mb-3 py-0 px-0">
-                  {{ workerData?.is_sentMail ? "On" : "Off" }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div class="column is-12">
         <ContractorProjects
           :contractor-id="

@@ -1,13 +1,7 @@
 <script setup lang="ts">
-import ApexChart from "vue3-apexcharts";
-import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useEnergyChart } from "/@src/data/dashboards/lifestyle-v3/energyChart";
-import { useOverallChart } from "/@src/data/dashboards/lifestyle-v3/overallChart";
-import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
-import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
 import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
 import { useUserSession } from "/@src/stores/userSession";
 import ClientProjects from "./projects/ClientProjects.vue";
@@ -20,8 +14,6 @@ const events = ref<any>([]);
 const router = useRouter();
 const tab = ref("cards");
 
-const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
-  usePersonalScoreGauge();
 const clientData = ref({
   id: "",
   password: "",
@@ -96,48 +88,6 @@ const sendTasksMailToWorker = async () => {
   }
 };
 
-const renderCalendar = () => {
-  events.value = tasks.value.map((task) => ({
-    id: task.id,
-    resourceId: task.project.id,
-    start: task.startDate,
-    end: task.endDate,
-    title: task.title,
-    color: task.color,
-    description: task.description,
-    workers: task.workers,
-    borderColor: colors[task.status],
-    status: task.status,
-  }));
-
-  projects.value = tasks.value.map((task) => ({
-    id: task.project.id,
-    start: task.project.startDate,
-    end: task.project.endDate,
-    title: task.project.title,
-    address: task.project.address,
-    status: task.project.status,
-    color: colors[task.project.status],
-  }));
-
-  filteredResources.value = projects.value;
-  filteredEvents.value = events.value;
-
-  // Update the reactive calendar options object properly
-  calendarOptions.value = {
-    ...calendarOptions.value, // Keep other properties intact
-    resources: filteredResources.value, // Assign resources in a reactive manner
-    events: filteredEvents.value, // Assign events in a reactive manner
-  };
-
-  console.log(
-    "tasks",
-    calendarOptions.value.events,
-    "resources",
-    calendarOptions.value.resources
-  );
-};
-
 const getClientDetailHandler = async () => {
   try {
     loading.value = true;
@@ -150,9 +100,6 @@ const getClientDetailHandler = async () => {
   } finally {
     loading.value = false;
   }
-};
-const showFullView = () => {
-  fullWidthView.value = !fullWidthView.value;
 };
 
 onMounted(async () => {
@@ -209,9 +156,11 @@ onMounted(async () => {
     </div>
 
     <div class="columns is-multiline is-flex-tablet-p">
-      <ClientProjects
-        :clientId="route.params.id ? route.params.id : userSession.user.id"
-      />
+      <div class="column is-12">
+        <ClientProjects
+          :clientId="route.params.id ? route.params.id : userSession.user.id"
+        />
+      </div>
     </div>
   </div>
 </template>

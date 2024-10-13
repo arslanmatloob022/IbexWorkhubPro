@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useViewWrapper } from '/@src/stores/viewWrapper'
+import { useViewWrapper } from "/@src/stores/viewWrapper";
 
-const viewWrapper = useViewWrapper()
-viewWrapper.setPageTitle('Companies Info')
+const viewWrapper = useViewWrapper();
+viewWrapper.setPageTitle("Client Info");
 
 useHead({
-  title: 'Companies - Arez',
-})
+  title: "Client - Ibex",
+});
 </script>
 
 <template>
   <div class="">
-    <CompaniesDetails/>
+    <ClientProfile />
   </div>
 </template>

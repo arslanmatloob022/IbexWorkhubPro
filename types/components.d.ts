@@ -117,6 +117,8 @@ declare module 'vue' {
     CircularMenu: typeof import('./../src/components/partials/circular-menu/CircularMenu.vue')['default']
     CKEditorBasicDocumentation: typeof import('./../documentation/plugins/ckeditor/CKEditor-basic-documentation.md')['default']
     ClientOnly: typeof import('./../src/components/ClientOnly.vue')['default']
+    ClientProfile: typeof import('./../src/components/pages/networks/IbexClients/ClientProfile.vue')['default']
+    ClientProjects: typeof import('./../src/components/pages/networks/IbexClients/ClientProjects.vue')['default']
     ClientSidebar: typeof import('./../src/layouts/ClientSidebar.vue')['default']
     ClientsList: typeof import('./../src/components/pages/networks/IbexClients/ClientsList.vue')['default']
     CloudContainer: typeof import('./../src/components/partials/lifestyle/CloudContainer.vue')['default']
