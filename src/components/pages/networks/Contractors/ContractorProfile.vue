@@ -283,7 +283,11 @@ onMounted(async () => {
         </div>
       </div> -->
       <div class="column is-12">
-        <ContractorProjects :contractor-id="route.params.id" />
+        <ContractorProjects
+          :contractor-id="
+            route.params.id ? route.params.id : userSession.user.id
+          "
+        />
       </div>
     </div>
     <ChangePasswordModal

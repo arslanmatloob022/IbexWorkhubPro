@@ -166,7 +166,7 @@ onMounted(() => {
             />
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a
             aria-label="Display layout content"
             :class="[activeMobileSubsidebar === 'layout' && 'is-active']"
@@ -210,7 +210,7 @@ onMounted(() => {
               data-icon="feather:message-circle"
             />
           </RouterLink>
-        </li>
+        </li> -->
       </template>
 
       <template #bottom-links>
@@ -326,13 +326,12 @@ onMounted(() => {
 
     <!-- Mobile subsidebar links -->
     <Transition name="slide-x">
-      <LayoutsMobileSubsidebar
-        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
+      <CustomNonAdminMobileSidebar
+        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'dashboard'"
       />
-      <!-- <DashboardsMobileSubsidebar
-        v-else-if="
-          isMobileSideblockOpen && activeMobileSubsidebar === 'dashboard'
-        "
+      <!--
+      <LayoutsMobileSubsidebar
+        v-else-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
       />
       <ComponentsMobileSubsidebar
         v-else-if="

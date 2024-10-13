@@ -5,6 +5,10 @@ import { useApi } from "/@src/composable/useAPI";
 
 const api = useApi();
 const loading = ref(false);
+const isOpenModal = ref(false);
+const isPasswordOpenModal = ref(false);
+const currentSelectId = ref("");
+
 export interface UserData extends VAvatarProps {
   id: number;
   username: string;
@@ -48,11 +52,14 @@ const filteredData = computed(() => {
   }
 });
 
-const isOpenModal = ref(false);
-const currentSelectId = ref("");
 const openUserModal = (id: any = "") => {
   currentSelectId.value = id;
   isOpenModal.value = !isOpenModal.value;
+};
+
+const openPasswordModal = (id: any = "") => {
+  currentSelectId.value = id;
+  isPasswordOpenModal.value = !isPasswordOpenModal.value;
 };
 
 const valueSingle = ref(0);
@@ -135,11 +142,10 @@ onMounted(() => {
                   <span v-if="item.is_active" class="dark-inverted">
                     Active
                   </span>
-                  <span v-if="!item.is_active" class="dark-inverted">
-                    In-Active
-                  </span>
-
-                  <span>37 tasks remaining</span>
+                  <span v-else class="dark-inverted"> In-Active </span>
+                  <span>{{
+                    item.is_sentMail ? "Mail notify on" : "Mail notify off"
+                  }}</span>
                 </div>
                 <div v-if="item.is_active" class="status-icon is-success">
                   <i aria-hidden="true" class="fas fa-check" />
@@ -152,22 +158,23 @@ onMounted(() => {
                 <button class="button v-button is-dark-outlined">
                   <span class="icon">
                     <i
+                      v-if="item.is_sentMail"
                       aria-hidden="true"
                       class="iconify"
                       data-icon="feather:check-circle"
                     />
+                    <VIcon v-else icon="lucide:alert-octagon" />
                   </span>
-                  <span>Tasks</span>
+                  <span>Email</span>
                 </button>
-                <button class="button v-button is-dark-outlined">
+                <button
+                  @click="openPasswordModal(item.id)"
+                  class="button v-button is-dark-outlined"
+                >
                   <span class="icon">
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:file"
-                    />
+                    <VIcon icon="lucide:lock" />
                   </span>
-                  <span>Files</span>
+                  <span>Password</span>
                 </button>
               </div>
             </div>
@@ -198,15 +205,18 @@ onMounted(() => {
                   </span>
                   <span>Profile</span>
                 </button>
-                <button class="button v-button is-dark-outlined">
+                <button
+                  @click="openUserModal(item.id)"
+                  class="button v-button is-dark-outlined"
+                >
                   <span class="icon">
                     <i
                       aria-hidden="true"
                       class="iconify"
-                      data-icon="feather:message-circle"
+                      data-icon="feather:pen-tool"
                     />
                   </span>
-                  <span>Talk</span>
+                  <span>Edit</span>
                 </button>
               </div>
             </div>
@@ -215,6 +225,12 @@ onMounted(() => {
       </TransitionGroup>
     </div>
   </div>
+  <ChangePasswordModal
+    v-if="isPasswordOpenModal"
+    :isModalOpen="isPasswordOpenModal"
+    :userId="currentSelectId"
+    @update:closeModalHandler="isPasswordOpenModal = false"
+  />
   <AddUpdateUser
     v-if="isOpenModal"
     :is-modal-open="isOpenModal"

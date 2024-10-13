@@ -19,7 +19,7 @@ const SweetAlertProps = ref({
 });
 
 const props = defineProps<{
-  contractorId?: string;
+  managerID?: string;
 }>();
 
 const filteredProjects = ref([
@@ -94,7 +94,10 @@ const openDeleteAlert = (id: any) => {
 const getContractorsProjectHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/project/my-projects-or-admin/`, {});
+    const response = await api.get(
+      `/api/project/projects/?manager=${props.managerID}`,
+      {}
+    );
     // projects.value = response.data;
     filteredProjects.value = response.data;
     // .filter((project) => {

@@ -10,6 +10,7 @@ import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
 import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
 import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
 import { useUserSession } from "/@src/stores/userSession";
+import ManagerProjectsList from "/@src/pages/sidebar/manager/projects/ManagerProjectsList.vue";
 
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -137,31 +138,6 @@ const renderCalendar = () => {
   );
 };
 
-const changeFilterHandler = () => {
-  if (activeFilter.value !== "all") {
-    const data = events.value.filter(
-      (event) => event.status === activeFilter.value
-    );
-    filteredEvents.value = data;
-  } else {
-    filteredEvents.value = events.value;
-  }
-  calendarOptions.value.events = filteredEvents.value;
-};
-
-// Method to get tasks for a worker
-const getTasksHandler = async () => {
-  try {
-    const response = await api.get(
-      `/api/task/${route.params.id}/worker-tasks/`
-    );
-    tasks.value = response.data;
-    console.log("worker tasks", tasks.value);
-  } catch (err) {
-    tasks.value = [];
-  }
-};
-
 const getManagerDetailHandler = async () => {
   try {
     loading.value = true;
@@ -180,24 +156,8 @@ const showFullView = () => {
   fullWidthView.value = !fullWidthView.value;
 };
 
-const workerTasksStats = ref({});
-const getWorkerTodayTask = async () => {
-  try {
-    const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
-    workerTasksStats.value = resp.data.stats;
-    if (refresh) {
-      notyf.green("Tasks list Refreshed");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 onMounted(async () => {
   await getManagerDetailHandler();
-  //   await getTasksHandler();
-  //   renderCalendar();
-  //   getWorkerTodayTask();
 });
 </script>
 
@@ -212,10 +172,11 @@ onMounted(async () => {
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
           <div class="summary-stat">
-            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
             <span>Role</span>
+            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
           </div>
           <div class="summary-stat">
+            <span>Status</span>
             <span>{{
               loading
                 ? "Loading..."
@@ -223,9 +184,9 @@ onMounted(async () => {
                 ? "Active"
                 : " In-Active"
             }}</span>
-            <span>Status</span>
           </div>
           <div class="summary-stat">
+            <span>Phone</span>
             <span>{{
               loading
                 ? "Loading..."
@@ -233,24 +194,27 @@ onMounted(async () => {
                 ? workerData?.phoneNumber
                 : "N/A"
             }}</span>
-            <span>Phone</span>
           </div>
           <div class="summary-stat">
-            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
             <span>Email</span>
+            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
           </div>
           <div class="summary-stat h-hidden-tablet-p">
+            <span>Email Notification</span>
             <span>{{
               loading ? "Loading..." : workerData.is_sentMail ? "On" : "Off"
             }}</span>
-            <span>Email Notification</span>
           </div>
         </div>
       </div>
     </div>
 
     <div class="columns is-multiline is-flex-tablet-p">
-      <ManagerProjects />
+      <ManagerProjectsList v-if="userSession.user.role == 'manager'" />
+      <ManagerProjects
+        v-else
+        :managerID="route.params.id ? route.params.id : userSession.user.id"
+      />
     </div>
   </div>
 </template>

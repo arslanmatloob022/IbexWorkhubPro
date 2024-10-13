@@ -2,6 +2,9 @@
 import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { useUserSession } from "/@src/stores/userSession";
+
+const userSession = useUserSession();
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
@@ -115,7 +118,10 @@ const openDeleteAlert = (id: any) => {
 const getProjectHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/project/my-projects-or-admin/", {});
+    const response = await api.get(
+      `/api/project/projects/?manager=${userSession.user.id}`,
+      {}
+    );
     projects.value = response.data;
     filteredProjects.value = response.data.filter((project) => {
       return project.status !== "completed";

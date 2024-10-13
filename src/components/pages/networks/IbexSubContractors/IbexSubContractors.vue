@@ -90,7 +90,7 @@ onMounted(() => {
           icon="fas fa-plus"
           elevated
         >
-          Contractors
+          Subcontractors
         </VButton>
       </div>
     </div>

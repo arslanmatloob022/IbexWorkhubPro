@@ -167,14 +167,14 @@ const filteredData = computed(() => {
         </VControl>
       </VField>
 
-      <div class="tabs-inner">
+      <!-- <div class="tabs-inner">
         <VButton
           color="primary"
           to="/sidebar/dashboard/projects/add-project"
           elevated
           >Add Project</VButton
         >
-      </div>
+      </div> -->
     </div>
 
     <div class="page-content-inner">
@@ -351,7 +351,7 @@ const filteredData = computed(() => {
                 <div class="meta-right">
                   <div class="buttons">
                     <VButton
-                      :to="`/sidebar/dashboard/projects/${item.id}`"
+                      :to="`/sidebar/contractor/projects/${item.id}`"
                       light
                     >
                       View Details

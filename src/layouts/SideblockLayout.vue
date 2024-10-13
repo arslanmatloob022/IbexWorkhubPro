@@ -166,7 +166,7 @@ onMounted(() => {
             />
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a
             aria-label="Display layout content"
             :class="[activeMobileSubsidebar === 'layout' && 'is-active']"
@@ -210,12 +210,12 @@ onMounted(() => {
               data-icon="feather:message-circle"
             />
           </RouterLink>
-        </li>
+        </li> -->
       </template>
 
       <template #bottom-links>
         <li>
-          <a
+          <!-- <a
             aria-label="Display search panel"
             tabindex="0"
             role="button"
@@ -223,9 +223,11 @@ onMounted(() => {
             @click="panels.setActive('search')"
           >
             <i aria-hidden="true" class="iconify" data-icon="feather:search" />
-          </a>
+          
+          </a> -->
+          <AnimatedLogo />
         </li>
-        <li>
+        <!-- <li>
           <a aria-label="View settings" href="#">
             <i
               aria-hidden="true"
@@ -233,7 +235,7 @@ onMounted(() => {
               data-icon="feather:settings"
             />
           </a>
-        </li>
+        </li> -->
       </template>
     </MobileSidebar>
 
@@ -326,14 +328,13 @@ onMounted(() => {
 
     <!-- Mobile subsidebar links -->
     <Transition name="slide-x">
+      <CustomAdminMobileSidebar
+        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'dashboard'"
+      />
       <LayoutsMobileSubsidebar
-        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
+        v-else-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
       />
-      <!-- <DashboardsMobileSubsidebar
-        v-else-if="
-          isMobileSideblockOpen && activeMobileSubsidebar === 'dashboard'
-        "
-      />
+      <!--
       <ComponentsMobileSubsidebar
         v-else-if="
           isMobileSideblockOpen && activeMobileSubsidebar === 'components'

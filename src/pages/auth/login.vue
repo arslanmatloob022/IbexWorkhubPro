@@ -65,6 +65,8 @@ const loginSuccess = () => {
     router.push("/sidebar/manager/projects");
   } else if (userSession.user.role == "contractor") {
     router.push("/sidebar/contractor/projects");
+  } else if (userSession.user.role == "client") {
+    router.push("/sidebar/client/projects");
   }
 };
 
@@ -111,25 +113,15 @@ useHead({
   <div class="modern-login">
     <div class="underlay h-hidden-mobile h-hidden-tablet-p" />
     <div class="columns is-gapless is-vcentered">
-      <div class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p">
+      <div
+        style="background-image: url(&quot;/IbexImages/ibexnight.png&quot;)"
+        class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p"
+      >
         <div class="hero is-fullheight is-image">
           <div class="hero-body">
             <div class="container">
               <div class="columns">
-                <div class="column">
-                  <img
-                    v-if="darkmode.isDark"
-                    class="hero-image"
-                    src="/logos/ibexwhite.png"
-                    alt=""
-                  />
-                  <img
-                    v-else
-                    class="hero-image"
-                    src="/logos/IBEXDark.png"
-                    alt=""
-                  />
-                </div>
+                <div class="column"></div>
               </div>
             </div>
           </div>
