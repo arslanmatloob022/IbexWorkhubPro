@@ -58,9 +58,9 @@ onMounted(() => {
           </h3>
 
           <div class="sender-message is-dark-card-bordered is-dark-bg-4">
-            <h4 class="dark-inverted">Payment Message</h4>
-            <p>
-              Thank you for your payment! We are pleased to inform you that your
+   
+            <p style="font-size: 20px; font-weight: 500;">
+              Thank you for your payment! We are pleased to inform you that your 
               transaction has been successfully completed. Your support helps us
               at Ibex Builders Studios continue to provide top-quality services.
               You will soon receive a confirmation email with the details of

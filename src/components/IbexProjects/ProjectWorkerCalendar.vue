@@ -2,35 +2,18 @@
 import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import { useUserSession } from "/@src/stores/userSession";
-import { useNotyf } from "/@src/composable/useNotyf";
+
 import { useApi } from "/@src/composable/useAPI";
 const api = useApi();
-const userSession = useUserSession();
-const notyf = useNotyf();
 const loading = ref(false);
-const isProjectFormOpen = ref(false);
-const editProjectId = ref("");
-const fullWidthView = ref(false);
-const activeFilter = ref("all");
 const query = ref("");
 const tasks = ref([]);
-const filteredResources = ref([]);
 const projects = ref([]);
-const projectID = ref<any>(0);
-const selectedWorkerName = ref("");
-const startDate = ref<any>("");
+
+// const selectedWorkerName = ref("");
 const selectedWorkerId = ref(0);
 const showWorkerChart = ref(true);
-const isTaskFormOpen = ref<any>(false);
-const editTaskId = ref<any>(0);
-const dropdownFilters = ref({
-  all: "all",
-  active: "active",
-  pending: "pending",
-  completed: "completed",
-});
+
 
 const colors = ref({
   pending: "#8392ab",
@@ -69,69 +52,8 @@ const calendarOptions = ref({
   resourceAreaHeaderContent: "Workers",
   resources: [],
   resourceId: selectedWorkerId.value,
-  // eventDrop: (info: any) => {
-  //   console.log(info.event);
-  //   eventChangeHandler(info);
-  //   // info.revert();
-  // },
-  // eventResize: (info: any) => {
-  //   eventChangeHandler(info);
-  // },
-  // dateClick: (info: any) => {
-  //   if (userSession.user.role === "contractor") {
-  //     return;
-  //   }
-  //   if (
-  //     userSession.user.role === "manager" &&
-  //     !info.resource.extendedProps.managers.includes(userSession.user.id)
-  //   ) {
-  //     return;
-  //   }
-  //   editTaskId.value = 0;
-  //   projectID.value = info.resource.id;
-  //   startDate.value = info.dateStr;
-  //   isTaskFormOpen.value = true;
-  // },
+  
 });
-
-// const eventChangeHandler = (info: any) => {
-//   console.warn("inside func");
-//   console.log("inside ", userSession.user.role);
-
-//   if (userSession.user.role === "contractor") {
-//     console.log("inside ", userSession.user.role);
-//     info.revert();
-//     return;
-//   } else if (userSession.user.role === "manager") {
-//     if (!info.event.extendedProps.managers.includes(userSession.user.id)) {
-//       info.revert();
-
-//       notyf.error(
-//         "You can modify the task only for the projects for which you are a manager."
-//       );
-//       return;
-//     }
-//   }
-
-//   let start = info.event.startStr;
-//   let end = info.event.end.toISOString().substring(0, 10);
-//   console.log("resource ids", info.event._def.resourceIds[0]);
-
-//   if (info.event.extendedProps.project != info.event._def.resourceIds[0]) {
-//     info.revert();
-//     return;
-//   }
-
-//   if (
-//     !confirm(
-//       `Are you sure you want to update the project ${info.event.title} date from ${start} to ${end}?`
-//     )
-//   ) {
-//     info.revert();
-//   } else {
-//     editTask(info.event.id, start, end);
-//   }
-// };
 
 const addOneDayToDate = (dateString: any) => {
   let date = new Date(dateString);
@@ -139,82 +61,20 @@ const addOneDayToDate = (dateString: any) => {
   return date.toISOString().slice(0, 10);
 };
 
-// const workerImageClick = (worker: any) => {
-//   window.location.hash = "";
-//   selectedWorkerId.value = worker.id;
-//   selectedWorkerName.value = worker.username;
-//   window.location.hash = "workerCalendar";
-// };
 
-// const eventClick = (info: any) => {
-//   console.log(info.event);
-//   if (userSession.user.role === "contractor") {
-//     return;
-//   }
-//   if (userSession.user.role === "manager") {
-//     if (!info.event.extendedProps.managers.includes(userSession.user.id)) {
-//       notyf.error(
-//         "You can modify the task only for the projects for which you are a manager"
-//       );
-//       return;
-//     }
-//   }
-//   startDate.value = "";
-//   isTaskFormOpen.value = true;
-//   projectID.value = 0;
-//   editTaskId.value = info.event.id;
-// };
-
-// const editTask = async (id: any, start: any, end: any) => {
-//   try {
-//     await api.patch(`/api/task/${id}/`, {
-//       startDate: start,
-//       endDate: end,
-//       schedule_mode: false,
-//       // schedule_mode: store.state.isScheduleMode,
-//     });
-
-//     notyf.success("Task updated successfully");
-//   } catch (err) {
-//     notyf.error("Something went wrong");
-//     console.log(err);
-//   }
-// };
-
-// const editProject = async (id: any, start: any, end: any) => {
-//   try {
-//     let resp = await api.patch(`/api/project/${id}/`, {
-//       startDate: start,
-//       endDate: end,
-//     });
-//     console.log(resp);
-//     notyf.success("Project updated successfully");
-//   } catch (err) {
-//     notyf.error("Something went wrong");
-//     console.log(err);
-//   }
-// };
-
-// const getManagersById = (id: any) => {
-//   const project = projects.value.find((project) => project.id === id);
-//   if (project) {
-//     return project.managers;
-//   } else {
-//     return [];
-//   }
-// };
 const renderCalendar = () => {
   console.log(projects.value);
 
   const events = [];
-
+  
   // Loop through tasks and push events for each task
 
-  const resources = [];
 
+  const resources = [];
+  
   // Loop through workers and push events related to each worker
-  workers.value.forEach((worker) => {
-    tasks.value.forEach((task) => {
+  workers.value.forEach(worker => {
+    tasks.value.forEach(task => {
       if (task.workers.includes(worker.id)) {
         events.push({
           id: task.id,
@@ -226,7 +86,6 @@ const renderCalendar = () => {
           color: task.color,
           description: task.description,
           borderColor: colors[task.status],
-          projectInfo: task.projectInfo,
         });
       }
     });
@@ -238,31 +97,45 @@ const renderCalendar = () => {
     });
   });
 
+  // Combine the events and update the calendar options
   calendarOptions.value.resources = resources;
-  calendarOptions.value.events = [...events]; // Spread the events into a new array
+  calendarOptions.value.events = [...events];  // Spread the events into a new array
 };
 
+
 const changeFilterHandler = () => {
-  let filteredResourcesLocal = [];
-  let filteredWorkers = [];
+  // console.log("func called", activeFilter.value);
+
+  // if (activeFilter.value !== "all") {
+  //   let data = projects.value.filter(
+  //     (project) => project.status === activeFilter.value
+  //   );
+  //   filteredResources.value = data;
+  // } else {
+  //   filteredResources.value = projects.value;
+  // }
+  let filteredResourcesLocal = [] 
+  let filteredWorkers =[]
   if (query.value) {
     filteredWorkers = workers.value.filter((worker) =>
       worker.username.toLowerCase().includes(query.value.toLowerCase())
     );
-  } else {
-    filteredWorkers = workers.value;
+  }else{
+    filteredWorkers = workers.value
   }
 
-  filteredWorkers.forEach((element) => {
-    filteredResourcesLocal.push({
+  filteredWorkers.forEach(element => {
+    filteredResourcesLocal.push(
+      {
       id: element.id,
       title: element.username,
-    });
+    }
+    )
   });
 
   calendarOptions.value.resources = filteredResourcesLocal;
 };
-const workers = ref(<any>[]);
+const workers = ref(<any>[])
 const getworkersHandler = async () => {
   try {
     loading.value = true;
@@ -286,16 +159,8 @@ const getTasksHandler = async () => {
   }
 };
 
-// const closeProjectForm = async () => {
-//   isProjectFormOpen.value = false;
-//   editProjectId.value = null;
-//   await getProjectHandler();
-//   renderCalender();
-// };
 
-// watch(activeFilter, (newValue, oldValue) => {
-//   changeFilterHandler();
-// });
+
 
 onMounted(async () => {
   await Promise.all([getworkersHandler(), getTasksHandler()]);
@@ -312,31 +177,26 @@ onMounted(async () => {
       <div class="datatable-toolbar">
         <VField elevated>
           <VControl icon="fas fa-search">
-            <VInput
-              type="text"
-              placeholder="Search worker..."
-              v-model="query"
-              @input="changeFilterHandler()"
-              class=""
-            />
+            <VInput type="text" placeholder="Search worker..." v-model="query" @input="changeFilterHandler()"
+              class="" />
           </VControl>
         </VField>
+
+      
       </div>
     </form>
     <FullCalendar :options="calendarOptions">
       <template v-slot:eventContent="arg">
-        <div
-          style="
+        <div style="
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-          "
-        >
+          ">
           <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
-            ({{ arg.event.extendedProps.projectInfo.title }})
             {{ arg.event.title }}
           </p>
+
         </div>
       </template>
     </FullCalendar>
@@ -364,11 +224,8 @@ onMounted(async () => {
 <style lang="scss">
 .fc-event.fc-event-draggable {
   margin-right: 1px;
+  border-width: 3px;
   border-radius: 4px;
-  border: none;
-  p {
-    color: #fff;
-  }
 }
 
 .fc-event {
@@ -413,7 +270,7 @@ onMounted(async () => {
   transition: all 0.4s ease-in-out;
 }
 
-.avatars__item > img {
+.avatars__item>img {
   width: 100%;
 }
 </style>
