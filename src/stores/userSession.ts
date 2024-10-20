@@ -36,7 +36,7 @@ export const useUserSession = defineStore("userSession", () => {
           is_active: false,
           phoneNumber: "",
           username: "",
-          is_sentMail: 0,
+          is_sentMail: false,
         })
     )
   );
@@ -65,14 +65,19 @@ export const useUserSession = defineStore("userSession", () => {
   );
 
   // Set user data
-  function setUser(newUser: any) {
+  function setUser(newUser: User) {
     user.value = newUser;
+
+    // Convert the user object to a JSON string before storing it in localStorage
+    localStorage.setItem("user", JSON.stringify(newUser));
+
     console.log("user data in store", user.value);
   }
 
   // Set token
   function setToken(newToken: string) {
     token.value = newToken;
+    localStorage.setItem("token", JSON.stringify(newToken));
   }
 
   // Set code
@@ -104,6 +109,8 @@ export const useUserSession = defineStore("userSession", () => {
       username: "",
       is_sentMail: false,
     };
+    // localStorage.removeItem("token");
+    window.localStorage.removeItem("user");
     window.localStorage.setItem("token", ""); // Explicitly clear the token from localStorage
   }
 
