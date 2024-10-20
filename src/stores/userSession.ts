@@ -41,6 +41,22 @@ export const useUserSession = defineStore("userSession", () => {
     )
   );
 
+  // const user = ref(
+  //   {
+  //     id: "",
+  //     password: "",
+  //     last_login: "",
+  //     date_joined: "",
+  //     email: "",
+  //     role: "",
+  //     avatar: "",
+  //     is_active: false,
+  //     phoneNumber: "",
+  //     username: "",
+  //     is_sentMail: false,
+  //   } || undefined
+  // );
+
   const loading = ref(true);
 
   // Computed property to check if the user is logged in
@@ -49,7 +65,7 @@ export const useUserSession = defineStore("userSession", () => {
   );
 
   // Set user data
-  function setUser(newUser: User) {
+  function setUser(newUser: any) {
     user.value = newUser;
     console.log("user data in store", user.value);
   }
@@ -83,10 +99,10 @@ export const useUserSession = defineStore("userSession", () => {
       email: "",
       role: "",
       avatar: "",
-      is_active: "",
+      is_active: false,
       phoneNumber: "",
       username: "",
-      is_sentMail: 0,
+      is_sentMail: false,
     };
     window.localStorage.setItem("token", ""); // Explicitly clear the token from localStorage
   }

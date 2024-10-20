@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import ApexChart from "vue3-apexcharts";
-
-import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import { useTeamEfficiencyChart } from "/@src/data/dashboards/personal-v2/teamEfficiencyChart";
-import { popovers } from "/@src/data/users/userPopovers";
-import * as usersData from "/@src/data/dashboards/personal-v2/users";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
@@ -19,23 +14,15 @@ const tab = ref("detail");
 
 const Loading = ref(false);
 const showAddClient = ref(false);
-const isTaskFormOpen = ref(false);
 const showAddContractor = ref(false);
-const isProjectFormOpen = ref(false);
 const loading = ref(false);
 const clientsList = ref([]);
 const contarctorList = ref([]);
 const selectedManagers = ref([]);
-const deleteTaskId = ref(0);
 const projectCompletedTasks = ref<any>(0);
 const projectActiveTasks = ref<any>(0);
-const editTaskId = ref("");
-const currentProjectId = ref("");
-const sheetNameDeleteTobe = ref("");
 const preview = ref("");
-const image = ref("");
 const projectId = ref("");
-const editProjectId = ref("");
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
 const Taskstatus = ref([
   { value: "active", name: "Active" },
@@ -341,6 +328,15 @@ onMounted(() => {
           <div class="user-meta is-dark-bordered-12">
             <h3 class="title is-4 is-narrow is-bold">
               {{ projectData.title ? projectData.title : "N/A" }}
+              <i
+                @click="
+                  router.push(
+                    `/sidebar/dashboard/projects/add-project/?id=${projectData.id}`
+                  )
+                "
+                class="fas fa-pencil-alt"
+                aria-hidden="true"
+              ></i>
             </h3>
             <p class="light-text">
               Current status:

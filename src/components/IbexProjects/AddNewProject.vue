@@ -10,6 +10,7 @@ const router = useRouter();
 const notyf = useNotyf();
 const { scrollTo } = VueScrollTo;
 
+const route = useRoute();
 const currentStep = ref(0);
 const isLoading = ref(false);
 const currentHelp = ref(-1);
@@ -52,19 +53,19 @@ const projectData = ref({
   color: "",
   project: "",
   managers: [],
-  client: null,
-  contractor: null,
+  client: "",
+  contractor: "",
   wifiAvaliabe: false,
   parkingAvaliable: false,
-  property_features: [],
+  // property_features: [],
 });
 
-const property_features = ref([
-  { name: "Bedrooms", quantity: 0 },
-  { name: "Bathrooms", quantity: 0 },
-  { name: "Kitchen", quantity: 0 },
-  { name: "Drawing", quantity: 0 },
-]);
+// const property_features = ref([
+//   { name: "Bedrooms", quantity: 0 },
+//   { name: "Bathrooms", quantity: 0 },
+//   { name: "Kitchen", quantity: 0 },
+//   { name: "Drawing", quantity: 0 },
+// ]);
 
 const handleFileChange = (event) => {
   projectData.value.image = event.target.files[0];
@@ -87,21 +88,27 @@ const onRemoveFile = () => {
 const addNewProject = async () => {
   try {
     loading.value = true;
-    if (Array.isArray(property_features.value)) {
-      projectData.value.property_features = JSON.stringify(
-        property_features.value
-      );
-    }
+    // if (Array.isArray(property_features.value)) {
+    //   projectData.value.property_features = JSON.stringify(
+    //     property_features.value
+    //   );
+    // }
 
+    delete projectData.value.property_features;
     const formData = convertToFormData(projectData.value, ["image"]);
 
-    if (newId.value) {
-      const resp = await api.patch(`/api/project/${newId.value}/`, formData);
+    if (route.query.id) {
+      const resp = await api.patch(`/api/project/${route.query.id}/`, formData);
       notyf.info("Information added");
     } else {
-      const response = await api.post("/api/project/", formData);
-      newId.value = response.data.id;
-      notyf.success("Project added successfully");
+      if (newId.value) {
+        const resp = await api.patch(`/api/project/${newId.value}/`, formData);
+        notyf.info("Information added");
+      } else {
+        const response = await api.post("/api/project/", formData);
+        newId.value = response.data.id;
+        notyf.success("Project added successfully");
+      }
     }
     validateStep();
   } catch (err) {
@@ -206,20 +213,28 @@ const getAddedUser = () => {
   }
 };
 
-watch(
-  () => props.isOpen,
-  (newVal) => {
-    if (newVal && props.projectId) {
-      fetchProjectData(props.projectId);
-    }
-    getManagersHandler();
+const fetchProjectData = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/project/${route.query.id}`);
+    projectData.value = response.data;
+    projectData.value.client = response?.data?.client?.id;
+    projectData.value.contractor = response?.data?.contractor?.id;
+    projectData.value.managers[0] = response?.data?.managers[0]?.id;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
   }
-);
+};
 
 onMounted(() => {
   getManagersHandler();
   getClientHandler();
   getContractorsHandler();
+  if (route.query.id) {
+    fetchProjectData();
+  }
 });
 </script>
 
@@ -682,14 +697,14 @@ onMounted(() => {
                 </VControl>
                 <VControl raw subcontrol>
                   <VCheckbox
-                    v-model="projectData.parking"
+                    v-model="projectData.parkingAvaliable"
                     label="Parking Available"
                     color="primary"
                   />
                 </VControl>
               </VField>
               <VField> </VField>
-              <VField v-for="(item, index) in property_features" :key="index">
+              <!-- <VField v-for="(item, index) in property_features" :key="index">
                 <VLabel>{{ item.name }}</VLabel>
                 <VControl>
                   <VInput
@@ -698,7 +713,7 @@ onMounted(() => {
                     :placeholder="item.name"
                   />
                 </VControl>
-              </VField>
+              </VField> -->
             </div>
           </div>
         </Transition>
