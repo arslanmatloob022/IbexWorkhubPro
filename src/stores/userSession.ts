@@ -11,10 +11,10 @@ export interface User {
   email: string;
   role: string;
   avatar: string;
-  is_active: string;
+  is_active: boolean;
   phoneNumber: string;
   username: string;
-  is_sentMail: number;
+  is_sentMail: boolean;
 }
 
 export const useUserSession = defineStore("userSession", () => {
