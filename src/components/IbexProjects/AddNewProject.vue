@@ -5,6 +5,7 @@ import sleep from "/@src/utils/sleep";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 
+const route = useRoute();
 const api = useApi();
 const router = useRouter();
 const notyf = useNotyf();
@@ -35,13 +36,19 @@ const newProjectId = ref(0);
 const workWithContractor = ref(false);
 const loading = ref(false);
 const image = ref("");
-const allManagers = ref([]);
+const allManagers = ref([
+  {
+    id: "",
+    username: "",
+  },
+]);
 const allContractors = ref([]);
 const allClients = ref([]);
 const newId = ref("");
 const preview = ref<any>("");
 
 const projectData = ref({
+  id: "",
   title: "",
   description: "",
   startDate: "",
@@ -95,12 +102,15 @@ const addNewProject = async () => {
 
     const formData = convertToFormData(projectData.value, ["image"]);
 
-    if (newId.value) {
-      const resp = await api.patch(`/api/project/${newId.value}/`, formData);
+    if (projectData.value.id) {
+      const resp = await api.patch(
+        `/api/project/${projectData.value.id}/`,
+        formData
+      );
       notyf.info("Information added");
     } else {
       const response = await api.post("/api/project/", formData);
-      newId.value = response.data.id;
+      projectData.value.id = response.data.id;
       notyf.success("Project added successfully");
     }
     validateStep();
@@ -206,20 +216,30 @@ const getAddedUser = () => {
   }
 };
 
-watch(
-  () => props.isOpen,
-  (newVal) => {
-    if (newVal && props.projectId) {
-      fetchProjectData(props.projectId);
+const getProjectDetail = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.get(`/api/project/${route.query.id}/`);
+    projectData.value = resp.data;
+    projectData.value.client = resp.data?.client?.id;
+    projectData.value.contractor = resp.data?.contractor?.id;
+    if (resp.data?.managers && resp.data.managers.length > 0) {
+      projectData.value.managers[0] = resp.data.managers[0].id;
     }
-    getManagersHandler();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
   }
-);
+};
 
 onMounted(() => {
   getManagersHandler();
   getClientHandler();
   getContractorsHandler();
+  if (route.query.id) {
+    getProjectDetail();
+  }
 });
 </script>
 
@@ -487,7 +507,7 @@ onMounted(() => {
                 icon="fas fa-plus"
                 >New Manager</VButton
               >
-              <VField>
+              <VField label="Select Manager *">
                 <VControl>
                   <VSelect
                     v-model="projectData.managers"
@@ -555,7 +575,6 @@ onMounted(() => {
                   <VSelect
                     v-model="projectData.client"
                     multiple
-                    required
                     name="status"
                     class="is-rounded"
                   >
@@ -688,7 +707,7 @@ onMounted(() => {
                   />
                 </VControl>
               </VField>
-              <VField> </VField>
+              <!-- <VField> </VField>
               <VField v-for="(item, index) in property_features" :key="index">
                 <VLabel>{{ item.name }}</VLabel>
                 <VControl>
@@ -698,7 +717,7 @@ onMounted(() => {
                     :placeholder="item.name"
                   />
                 </VControl>
-              </VField>
+              </VField> -->
             </div>
           </div>
         </Transition>
@@ -709,7 +728,7 @@ onMounted(() => {
               type="submit"
               color="primary"
               bold
-              :loading="isLoading"
+              :loading="isLoading || loading"
               tabindex="0"
             >
               Continue
@@ -758,7 +777,7 @@ onMounted(() => {
             <a href="#" class="steps-marker" />
             <div class="steps-content">
               <p class="step-number">STEP 2</p>
-              <p class="step-info">Shipment Owner</p>
+              <p class="step-info">Assign Manager</p>
             </div>
           </li>
           <li
@@ -777,7 +796,7 @@ onMounted(() => {
             <a href="#" class="steps-marker" />
             <div class="steps-content">
               <p class="step-number">STEP 3</p>
-              <p class="step-info">Shipment Taxes</p>
+              <p class="step-info">Select Client</p>
             </div>
           </li>
           <li
@@ -796,7 +815,7 @@ onMounted(() => {
             <a href="#" class="steps-marker" />
             <div class="steps-content">
               <p class="step-number">STEP 4</p>
-              <p class="step-info">Options</p>
+              <p class="step-info">Select Contractor</p>
             </div>
           </li>
           <li
@@ -815,7 +834,7 @@ onMounted(() => {
             <a href="#" class="steps-marker" />
             <div class="steps-content">
               <p class="step-number">STEP 5</p>
-              <p class="step-info">Validation</p>
+              <p class="step-info">Additional info</p>
             </div>
           </li>
         </ul>
@@ -834,12 +853,7 @@ onMounted(() => {
               <i aria-hidden="true" class="iconify" data-icon="feather:x" />
             </button>
             <h3>General Information</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quod
-              proximum fuit non vidit. Quantum Aristoxeni ingenium consumptum
-              videmus in musicis? An eiusdem modi? Quae similitudo in genere
-              etiam humano apparet.
-            </p>
+            <p>Enter all the core information about the Project or Job</p>
             <div class="list-wrap">
               <ul>
                 <li>
@@ -848,7 +862,7 @@ onMounted(() => {
                     class="iconify"
                     data-icon="feather:check"
                   />
-                  <span>Some nice list item</span>
+                  <span>Enter title</span>
                 </li>
                 <li>
                   <i
@@ -856,7 +870,7 @@ onMounted(() => {
                     class="iconify"
                     data-icon="feather:check"
                   />
-                  <span>Some nice list item</span>
+                  <span>Start and end date</span>
                 </li>
                 <li>
                   <i
@@ -864,7 +878,7 @@ onMounted(() => {
                     class="iconify"
                     data-icon="feather:check"
                   />
-                  <span>Some nice list item</span>
+                  <span>Address and description</span>
                 </li>
               </ul>
             </div>
@@ -882,32 +896,9 @@ onMounted(() => {
             >
               <i aria-hidden="true" class="iconify" data-icon="feather:x" />
             </button>
-            <h3>Shipment Owner</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quod
-              proximum fuit non vidit. Quantum Aristoxeni ingenium consumptum
-              videmus in musicis? An eiusdem modi? Quae similitudo in genere.
-            </p>
-            <div class="list-wrap">
-              <ul>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-              </ul>
-            </div>
+            <h3>Manager Info</h3>
+            <p>Select a manager that will manage the project/job</p>
+            <!--  -->
           </div>
           <div
             v-if="currentHelp === 2"
@@ -922,41 +913,8 @@ onMounted(() => {
             >
               <i aria-hidden="true" class="iconify" data-icon="feather:x" />
             </button>
-            <h3>Shipment Taxes</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quod
-              proximum fuit non vidit. Quantum Aristoxeni ingenium consumptum
-              videmus in musicis? An eiusdem modi? Quae similitudo in genere
-              etiam humano apparet.
-            </p>
-            <div class="list-wrap">
-              <ul>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-              </ul>
-            </div>
+            <h3>Client Info</h3>
+            <p>Select a client for whom you're working in this project</p>
           </div>
           <div
             v-if="currentHelp === 3"
@@ -971,32 +929,11 @@ onMounted(() => {
             >
               <i aria-hidden="true" class="iconify" data-icon="feather:x" />
             </button>
-            <h3>Options</h3>
+            <h3>Contractor</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quod
-              proximum fuit non vidit. Quantum Aristoxeni ingenium consumptum
-              videmus in musicis? An eiusdem modi? Quae similitudo in genere.
+              If you're going to work with contractor then select one contractor
+              from the list
             </p>
-            <div class="list-wrap">
-              <ul>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-              </ul>
-            </div>
           </div>
           <div
             v-if="currentHelp === 4"
@@ -1011,32 +948,11 @@ onMounted(() => {
             >
               <i aria-hidden="true" class="iconify" data-icon="feather:x" />
             </button>
-            <h3>Validation</h3>
+            <h3>Additional Information</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quod
-              proximum fuit non vidit. Quantum Aristoxeni ingenium consumptum
-              videmus in musicis? An eiusdem modi? Quae similitudo in genere.
+              Enter additional information about the job so the workers can get
+              more aware of the things
             </p>
-            <div class="list-wrap">
-              <ul>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-                <li>
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                  <span>Some nice list item</span>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>

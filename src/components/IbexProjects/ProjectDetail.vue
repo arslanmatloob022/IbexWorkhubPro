@@ -341,6 +341,17 @@ onMounted(() => {
           <div class="user-meta is-dark-bordered-12">
             <h3 class="title is-4 is-narrow is-bold">
               {{ projectData.title ? projectData.title : "N/A" }}
+              <VIcon
+                class="cu-pointer"
+                @click="
+                  () => {
+                    router.push(
+                      `/sidebar/dashboard/projects/add-project/?id=${projectData.id}`
+                    );
+                  }
+                "
+                icon="lucide:edit"
+              />
             </h3>
             <p class="light-text">
               Current status:

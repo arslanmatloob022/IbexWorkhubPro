@@ -48,27 +48,21 @@ onMounted(() => {
     <div class="wrapper-inner">
       <div class="action-box">
         <div class="box-content">
-          <VAvatar
-            size="big"
-            picture="/logos/IbexFaviconDark.png"
-            badge="/icons/paypal.png"
-          />
+          <VAvatar size="xxl" picture="/logos/IbexFaviconDark.png" />
 
           <h3 class="dark-inverted">
-            <span class="is-dark-primary">Payment successful!</span>
+            <span class="is-dark-primary" style="font-size: 25px"
+              >Payment successful!</span
+            >
           </h3>
 
           <div class="sender-message is-dark-card-bordered is-dark-bg-4">
-            <h4 class="dark-inverted">Payment Message</h4>
-            <p>
+            <p style="font-size: 18px; font-weight: 500">
               Thank you for your payment! We are pleased to inform you that your
               transaction has been successfully completed. Your support helps us
               at Ibex Builders Studios continue to provide top-quality services.
-              You will soon receive a confirmation email with the details of
-              your transaction. If you have any questions or need further
-              assistance, feel free to reach out to our support team. We
-              appreciate your trust in us and look forward to working with you
-              on your project! Best regards, The Ibex Builders Studios Team
+              We appreciate your trust in us and look forward to working with
+              you on your project! Best regards, The Ibex Builders Studios Team
             </p>
           </div>
 
@@ -120,7 +114,7 @@ onMounted(() => {
           h3 {
             font-family: var(--font-alt);
             font-weight: 600;
-            max-width: 320px;
+            max-width: 620px;
             margin: 0 auto 16px;
 
             span {
@@ -132,7 +126,7 @@ onMounted(() => {
             text-align: inset-inline-start;
             padding: 20px;
             border: 1px solid var(--fade-grey-dark-3);
-            max-width: 360px;
+            max-width: 660px;
             margin: 0 auto;
             border-radius: var(--radius-large);
             box-shadow: var(--light-box-shadow);

@@ -235,9 +235,9 @@ const filteredData = computed(() => {
                 <div class="meta-left">
                   <h3>
                     <span>{{ item.title }}</span>
-                    <VRangeRating v-model="HomeRating" class="is-inline">
+                    <!-- <VRangeRating v-model="HomeRating" class="is-inline">
                       <i class="fas fa-star" aria-hidden="true" />
-                    </VRangeRating>
+                    </VRangeRating> -->
                   </h3>
                   <p>
                     <i
@@ -287,35 +287,25 @@ const filteredData = computed(() => {
                   </span>
 
                   <div class="icon-list">
-                    <span>
-                      <i
-                        aria-hidden="true"
-                        :class="
-                          item.parkingAvaliable ? 'primary-text' : 'danger-text'
-                        "
-                        class="lnil lnil-car"
-                      />
-                      <span
-                        :class="
-                          item.parkingAvaliable ? 'primary-text' : 'danger-text'
-                        "
-                        >Parking</span
-                      >
+                    <span
+                      :style="{
+                        color: item.parkingAvaliable
+                          ? `var(--primary)`
+                          : `var(--danger)`,
+                      }"
+                    >
+                      <i aria-hidden="true" class="lnil lnil-car" />
+                      <span>Parking</span>
                     </span>
-                    <span>
-                      <i
-                        aria-hidden="true"
-                        :class="
-                          item.wifiAvaliabe ? 'primary-text' : 'danger-text'
-                        "
-                        class="lnil lnil-signal"
-                      />
-                      <span
-                        :class="
-                          item.wifiAvaliabe ? 'primary-text' : 'danger-text'
-                        "
-                        >Wifi</span
-                      >
+                    <span
+                      :style="{
+                        color: item.wifiAvaliabe
+                          ? `var(--primary)`
+                          : `var(--danger)`,
+                      }"
+                    >
+                      <i aria-hidden="true" class="lnil lnil-signal" />
+                      <span>Wifi</span>
                     </span>
                     <!-- <span class="text-danger danger-text">
                       <i

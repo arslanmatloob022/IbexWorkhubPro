@@ -2,7 +2,7 @@
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Add New Project");
+viewWrapper.setPageTitle("Add Project");
 
 useHead({
   title: "Add project - Ibex",

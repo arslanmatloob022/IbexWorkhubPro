@@ -1,7 +1,7 @@
 <route lang="yaml">
 meta:
   requiresAuth: true
-  isManagerAllowed: false
+  # isManagerAllowed: false
   # isPartnerAllowed: false
   # isContractorAllowed: false
   # isWorkerAllowed: false
