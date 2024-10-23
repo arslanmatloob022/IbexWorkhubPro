@@ -1,1 +1,0 @@
-import{e as s,y as a,z as o,V as t,O as d}from"./index-bc6f32ee.js";const e=s({__name:"VTags",props:{addons:{type:Boolean}},setup(s){const e=s;return(s,n)=>(a(),o("div",{class:d(["tags",[e.addons&&"has-addons"]])},[t(s.$slots,"default")],2))}});export{e as _};
