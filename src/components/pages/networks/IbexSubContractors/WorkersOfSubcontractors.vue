@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-
-import type { VTagColor } from "/@src/components/base/tags/VTag.vue";
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import * as listData from "/@src/data/layouts/view-list-v1";
 
 export interface UserData extends VAvatarProps {
   id: string;
@@ -33,27 +30,25 @@ const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
 const users = ref<UserData>({
-  id: "a49047a4-13c5-4d63-9015-c2dc2df9e877",
+  id: "",
   active_tasks: 0,
   completed_tasks: 0,
   cancelled_tasks: 0,
   pending_tasks: 0,
-  password:
-    "pbkdf2_sha256$260000$EARzFotcnn91r0exIETwhW$cVT0EgRS3AZuWD4wTPzuWSq1CxNYd5a8oycatOQzpfA=",
+  password: "",
   last_login: "",
-  date_joined: "2024-10-07T18:17:28.297351Z",
-  email: "testworker@ibexbuilderstudios.com",
-  role: "worker",
+  date_joined: "",
+  email: "",
+  role: "",
   avatar: "",
   is_active: true,
-  phoneNumber: "123456789",
-  username: "Test Worker",
+  phoneNumber: "",
+  username: "",
   is_sentMail: true,
-  supplier: "d39eb0db-5e47-4942-bb93-0f978262aaae",
+  supplier: "",
 });
 
 const filters = ref("");
-
 const filteredData = computed(() => {
   if (!filters.value) {
     return users.value;
@@ -67,6 +62,10 @@ const filteredData = computed(() => {
   }
 });
 console.log(filteredData.value);
+const openAddWorkerModal = ref(false);
+const addWorkerSupplier = () => {
+  openAddWorkerModal.value = true;
+};
 
 const getSupplierWorkers = async () => {
   try {
@@ -107,7 +106,14 @@ onMounted(() => {
       </div>
 
       <div class="buttons">
-        <VButton color="primary" icon="fas fa-plus" elevated> Worker </VButton>
+        <VButton
+          color="primary"
+          @click="addWorkerSupplier"
+          icon="fas fa-plus"
+          elevated
+        >
+          Worker
+        </VButton>
       </div>
     </div>
 
@@ -208,6 +214,14 @@ onMounted(() => {
       />
     </div>
   </div>
+  <AddUpdateUser
+    v-if="openAddWorkerModal"
+    :isModalOpen="openAddWorkerModal"
+    :supplierId="props.supplierId"
+    userRole="worker"
+    @update:closeModalHandler="openAddWorkerModal = false"
+    @update:actionUpdateHandler="getSupplierWorkers"
+  />
 </template>
 
 <style lang="scss">

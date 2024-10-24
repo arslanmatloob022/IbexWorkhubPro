@@ -11,6 +11,8 @@ const api = useApi();
 const route = useRoute();
 const events = ref<any>([]);
 const router = useRouter();
+const currentSelectedId = ref("");
+const openUserUpdateModal = ref(false);
 const tab = ref("cards");
 const userId = ref("");
 const isPasswordModalOpen = ref(false);
@@ -181,7 +183,10 @@ const showFullView = () => {
   fullWidthView.value = !fullWidthView.value;
 };
 
-const openEditUserModal = (id: any = "") => {};
+const openEditUserModal = (id: any = "") => {
+  currentSelectedId.value = id;
+  openUserUpdateModal.value = true;
+};
 
 const workerTasksStats = ref({});
 const getWorkerTodayTask = async (refresh: boolean = false) => {
@@ -219,7 +224,7 @@ onMounted(async () => {
           {{ workerData?.username }}
           <i
             @click="openEditUserModal(workerData.id)"
-            class="fas fa-pencil-alt ml-2"
+            class="fas fa-pencil-alt ml-2 cu-pointer"
             aria-hidden="true"
           ></i>
         </h3>
@@ -252,7 +257,7 @@ onMounted(async () => {
             <span
               ><i
                 @click="openPasswordModal(workerData.id)"
-                class="fas fa-lock"
+                class="fas fa-lock cu-pointer"
                 aria-hidden="true"
               ></i
             ></span>
@@ -267,7 +272,7 @@ onMounted(async () => {
         <div class="health-tile">
           <div class="tile-head">
             <VIconBox color="primary">
-              <i aria-hidden="true" class="fas fa-weight" />
+              <i class="fas fa-clipboard-list" aria-hidden="true"></i>
             </VIconBox>
             <h4>
               <span class="dark-inverted">{{
@@ -310,7 +315,7 @@ onMounted(async () => {
         <div class="health-tile">
           <div class="tile-head">
             <VIconBox color="primary">
-              <i aria-hidden="true" class="fas fa-heart" />
+              <i class="fas fa-clipboard" aria-hidden="true"></i>
             </VIconBox>
             <h4>
               <span class="dark-inverted">{{
@@ -331,8 +336,8 @@ onMounted(async () => {
         <div class="health-tile">
           <div class="tile-head">
             <VIconBox color="primary">
-              <i aria-hidden="true" class="fas fa-weight" />
-            </VIconBox>
+              <i class="fas fa-clipboard-check" aria-hidden="true"></i
+            ></VIconBox>
             <h4>
               <span class="dark-inverted">{{
                 workerTasksStats?.stats?.completed
@@ -425,6 +430,14 @@ onMounted(async () => {
       :isModalOpen="isPasswordModalOpen"
       :userId="userId"
       @update:closeModalHandler="isPasswordModalOpen = false"
+    />
+    <AddUpdateUser
+      v-if="openUserUpdateModal"
+      :isModalOpen="openUserUpdateModal"
+      :userId="currentSelectedId"
+      userRole="worker"
+      @update:closeModalHandler="openUserUpdateModal = false"
+      @update:actionUpdateHandler="getWorkerHandler"
     />
   </div>
 </template>

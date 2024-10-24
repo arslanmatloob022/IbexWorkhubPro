@@ -174,7 +174,7 @@ onMounted(() => {
       </VControl>
 
       <div class="buttons">
-        <VField class="h-hidden-mobile">
+        <!-- <VField class="h-hidden-mobile">
           <VControl>
             <Multiselect
               v-model="valueSingle"
@@ -183,7 +183,7 @@ onMounted(() => {
               placeholder="Select an option"
             />
           </VControl>
-        </VField>
+        </VField> -->
         <VButton @click="openUserModal()" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />

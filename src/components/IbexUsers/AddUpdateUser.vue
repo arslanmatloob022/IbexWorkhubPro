@@ -22,11 +22,13 @@ const props = withDefaults(
     isModalOpen?: boolean;
     userRole?: string;
     userId?: string;
+    supplierId?: string;
   }>(),
   {
     isModalOpen: false,
     userRole: "",
     userId: "",
+    supplierId: "",
   }
 );
 
@@ -80,6 +82,9 @@ const onRemoveFile = () => {
 const addUpdateUserHandler = async () => {
   try {
     Loading.value = true;
+    if (props.supplierId) {
+      userFormData.value.supplier = props.supplierId;
+    }
     const formData = convertToFormData(userFormData.value, ["avatar"]);
     if (props.userId) {
       const resp = await api.patch(`/api/users/${props.userId}/`, formData);
@@ -139,6 +144,9 @@ onMounted(() => {
   }
   userFormData.value.role = props.userRole;
   getSuppliers();
+  if (props.supplierId) {
+    userFormData.value.supplier = props.supplierId;
+  }
 });
 </script>
 <template>
@@ -350,3 +358,15 @@ onMounted(() => {
     </template>
   </VModal>
 </template>
+<style lang="scss" scoped>
+.select-option-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 4px;
+}
+.select-label-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 4px;
+}
+</style>

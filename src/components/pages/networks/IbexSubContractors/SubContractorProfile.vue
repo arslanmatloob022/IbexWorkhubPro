@@ -1,21 +1,13 @@
 <script setup lang="ts">
-import ApexChart from "vue3-apexcharts";
-import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useEnergyChart } from "/@src/data/dashboards/lifestyle-v3/energyChart";
-import { useOverallChart } from "/@src/data/dashboards/lifestyle-v3/overallChart";
-import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
-import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
 import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
 
 const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
 const events = ref<any>([]);
-const router = useRouter();
-const tab = ref("cards");
 
 const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
   usePersonalScoreGauge();
