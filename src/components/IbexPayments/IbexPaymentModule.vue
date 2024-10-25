@@ -154,11 +154,12 @@ onMounted(() => {
                         </div>
                         <div class="control is-expanded">
                           <input
-                            v-model="linkData.amount"
                             required
-                            min="2"
+                            type="text"
                             class="input"
-                            type="number"
+                            v-model="linkData.amount"
+                            min="0"
+                            step="any"
                             placeholder="Amount of money"
                           />
                         </div>
@@ -176,7 +177,7 @@ onMounted(() => {
                     </div> -->
                   <!-- </div> -->
                   <div class="field">
-                    <label>Description *</label>
+                    <label>Description* (Job Name, Invoice Number etc)</label>
                     <VField>
                       <VControl>
                         <VTextarea
@@ -184,7 +185,7 @@ onMounted(() => {
                           v-model="linkData.description"
                           class="is-primary-focus"
                           rows="2"
-                          placeholder="Description..."
+                          placeholder="Job Name: , Invoice Number:  "
                         />
                       </VControl>
                     </VField>
