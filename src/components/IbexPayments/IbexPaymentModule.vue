@@ -4,23 +4,14 @@ import { useApi } from "/@src/composable/useAPI";
 import { useIncomeHistoryChart } from "/@src/data/dashboards/banking-v1/incomeHistoryChart";
 import { popovers } from "/@src/data/users/userPopovers";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { convertToFormData } from "/@src/composable/useSupportElement";
 const api = useApi();
 const notyf = useNotyf();
-const linkData = ref({
-  amount: "",
-  description: "",
-  client: "",
-  type: "Stripe",
-});
 const paymentsLoading = ref(false);
-const paymentsDetails = ref({
-  payments: [],
-  count: 0,
-});
-
 const createdLink = ref("");
 const selectSlotOptions = ref([]);
 const loading = ref(false);
+const showAddItem = ref(false);
 const linkLoading = ref(false);
 
 const optionsSingle = [
@@ -29,6 +20,29 @@ const optionsSingle = [
   "Last 3 months",
   "Last 6 months",
 ];
+const linkData = ref({
+  payment_method: "us_bank_account",
+  description: "",
+  client: "",
+  enableTax: false,
+  itemsList: [],
+});
+
+const itemsList = ref({
+  title: "",
+  amount: 0,
+  quantity: 0,
+});
+
+const addItem = () => {
+  linkData.value.itemsList.push(itemsList.value);
+  console.log("data", linkData.value);
+  itemsList.value = {
+    title: "",
+    amount: 0,
+    quantity: 0,
+  };
+};
 
 const getClientHandler = async () => {
   try {
@@ -49,8 +63,6 @@ const getClientHandler = async () => {
 };
 
 const copyLink = (link: any) => {
-  // const linkToCopy = PayPalLinkData.value.approved_url;
-
   if (link) {
     navigator.clipboard
       .writeText(link)
@@ -68,11 +80,9 @@ const copyLink = (link: any) => {
 const createPayPalLink = async () => {
   try {
     linkLoading.value = true;
-    const response = await api.post("/api/paypal/stripe-session/", {
-      amount: linkData.value.amount,
-      description: linkData.value.description,
-      client: linkData.value.client,
-    });
+    const payload = convertToFormData(linkData.value, [""]);
+    payload.append("itemsList", JSON.stringify(linkData.value.itemsList));
+    const response = await api.post("/api/paypal/stripe-session-new/", payload);
     createdLink.value = response.data.url;
     notyf.success("link Created");
   } catch (err) {
@@ -138,44 +148,17 @@ onMounted(() => {
                       </Multiselect>
                     </VControl>
                   </VField>
+
                   <!-- <div class="columns is-multiple"> -->
-                  <div class="field column is-12">
-                    <label>Amount *</label>
-                    <div class="field has-addons">
-                      <div class="field-addon-body">
-                        <div class="control">
-                          <span class="select currency-select">
-                            <select>
-                              <option>$</option>
-                              <!-- <option>£</option>
-                            <option>€</option> -->
-                            </select>
-                          </span>
-                        </div>
-                        <div class="control is-expanded">
-                          <input
-                            required
-                            type="text"
-                            class="input"
-                            v-model="linkData.amount"
-                            min="0"
-                            step="any"
-                            placeholder="Amount of money"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- <div class="field mt-2 cloumn is-2">
-                      <VField>
-                        <VLabel for="">Type</VLabel>
-                        <VSelect v-model="linkData.type">
-                          <VOption value="Stripe">Stripe</VOption>
-                          <VOption value="PayPal">PayPal</VOption>
-                        </VSelect>
-                      </VField>
-                    </div> -->
-                  <!-- </div> -->
+                  <!-- <div class="field column is-12"> -->
+                  <VField class="field column is-12 p-0">
+                    <VLabel for="">Pay by</VLabel>
+                    <VSelect v-model="linkData.payment_method">
+                      <VOption value="us_bank_account">US Bank Account</VOption>
+                      <VOption value="card">Credit Card</VOption>
+                      <VOption value="both">Any</VOption>
+                    </VSelect>
+                  </VField>
                   <div class="field">
                     <label>Description* (Job Name, Invoice Number etc)</label>
                     <VField>
@@ -191,10 +174,103 @@ onMounted(() => {
                     </VField>
                   </div>
 
-                  <div class="submit-wrap mt-5">
+                  <!-- </div> -->
+                  <!-- <VField class="field column is-12 p-0">
+                    <VControl>
+                      <button
+                        @click="showAddItem = !showAddItem"
+                        type="button"
+                        class="input-button"
+                      >
+                        <i
+                          aria-hidden="true"
+                          class="iconify"
+                          data-icon="feather:plus"
+                        />
+                        <span>Add Item</span>
+                      </button>
+                    </VControl>
+                  </VField> -->
+
+                  <!-- v-if="showAddItem" -->
+                  <form action="post" @submit.prevent="addItem">
+                    <VField>
+                      <VLabel>Title</VLabel>
+                      <VControl>
+                        <VInput
+                          required
+                          v-model="itemsList.title"
+                          type="text"
+                          placeholder="Item title"
+                        />
+                      </VControl>
+                    </VField>
+
+                    <div class="column is-12">
+                      <div class="columns is-multiple">
+                        <VField class="field column is-6 p-0">
+                          <VLabel>Amount in ($)</VLabel>
+                          <VControl>
+                            <VInput
+                              required
+                              v-model="itemsList.amount"
+                              type="text"
+                              placeholder="Amount in $"
+                            />
+                          </VControl>
+                        </VField>
+
+                        <VField class="field column is-6 p-0">
+                          <VLabel>Quantity</VLabel>
+                          <VControl>
+                            <VInput
+                              v-model="itemsList.quantity"
+                              type="text"
+                              placeholder="Quantity"
+                            />
+                          </VControl>
+                        </VField>
+                      </div>
+                    </div>
+
                     <VButton
                       type="submit"
                       color="info"
+                      size="big"
+                      fullwidth
+                      :loading="linkLoading"
+                      raised
+                      bold
+                    >
+                      Add Item
+                    </VButton>
+                  </form>
+
+                  <!-- </div> -->
+                  <div class="column is-12">
+                    <div
+                      class="mb-2"
+                      v-for="(item, index) in linkData.itemsList"
+                    >
+                      <p class="is-bold">
+                        <span>{{ index + 1 }}. </span>
+                        <span>{{ item.title }}</span>
+                      </p>
+                      <p>
+                        <span>Amount: ${{ item.amount }} </span>
+                        <br />
+                        <span
+                          >Quantity:
+                          {{ item.quantity ? item.quantity : "" }}</span
+                        >
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="submit-wrap mt-5">
+                    <VButton
+                      type="submit"
+                      color="primary"
                       size="big"
                       fullwidth
                       :loading="linkLoading"
@@ -299,6 +375,51 @@ onMounted(() => {
 
 <style lang="scss">
 @import "/@src/scss/abstracts/all";
+
+.input-button {
+  height: 40px;
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 0.65rem;
+  // background: var(--widget-grey-dark-3);
+  display: flex;
+  align-items: center;
+  padding-inline-start: calc(0.75em - 1px);
+  padding-inline-end: calc(0.75em - 1px);
+  padding-top: 0;
+  padding-bottom: 0;
+  color: var(--dark-text);
+  cursor: pointer;
+  transition:
+    color 0.3s,
+    background-color 0.3s,
+    border 0.3s,
+    box-shadow 0.3s;
+
+  &:focus-visible {
+    outline-offset: var(--accessibility-focus-outline-offset);
+    outline-width: var(--accessibility-focus-outline-width);
+    outline-style: var(--accessibility-focus-outline-style);
+    outline-color: var(--accessibility-focus-outline-color);
+  }
+
+  &:hover {
+    background: var(--white);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    box-shadow: var(--light-box-shadow);
+  }
+
+  svg {
+    height: 18px;
+    width: 16px;
+  }
+
+  span {
+    font-family: var(--font);
+    margin-inline-start: 0.75rem;
+  }
+}
 
 .banking-dashboard-v1 {
   .columns {
@@ -488,7 +609,7 @@ onMounted(() => {
     &.is-contacts {
       display: flex;
       flex-direction: column;
-      height: 372px;
+      height: fit-content;
 
       .people-wrap {
         .people {

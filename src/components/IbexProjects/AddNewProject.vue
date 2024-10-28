@@ -707,17 +707,6 @@ onMounted(() => {
                   />
                 </VControl>
               </VField>
-              <!-- <VField> </VField>
-              <VField v-for="(item, index) in property_features" :key="index">
-                <VLabel>{{ item.name }}</VLabel>
-                <VControl>
-                  <VInput
-                    v-model="item.quantity"
-                    type="text"
-                    :placeholder="item.name"
-                  />
-                </VControl>
-              </VField> -->
             </div>
           </div>
         </Transition>

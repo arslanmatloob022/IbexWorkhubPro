@@ -2,37 +2,37 @@
 import { useApi } from "/@src/composable/useAPI";
 import { formatDateTime } from "/@src/composable/useSupportElement";
 import { useNotyf } from "/@src/composable/useNotyf";
+const selectedPayID = ref("");
+const loading = ref(false);
 const notyf = useNotyf();
 const api = useApi();
 const router = useRouter();
 const paymentsLoading = ref(false);
 const paymentsList = ref([
   {
-    id: "792d596a-beb6-4045-8852-574a544de0a2",
+    id: "",
     client_info: {
-      id: "64d52243-a2f7-48ec-a4af-46e4ec81d6d8",
-      username: "Krystal",
-      email: "krystal@ibexbuilderstudios.com",
-      role: "admin",
-      avatar:
-        "https://res.cloudinary.com/dcqeugna3/image/upload/v1/media/static/users_avatars/confident-2362133_1280-removebg-preview_vkihy1",
+      id: "",
+      username: "",
+      email: "",
+      role: "",
+      avatar: "",
     },
     description: "",
     checkoutLink: "",
     type: "",
     created_by_info: {
-      id: "64d52243-a2f7-48ec-a4af-46e4ec81d6d8",
-      username: "Krystal",
-      email: "krystal@ibexbuilderstudios.com",
-      role: "admin",
-      avatar:
-        "https://res.cloudinary.com/dcqeugna3/image/upload/v1/media/static/users_avatars/confident-2362133_1280-removebg-preview_vkihy1",
+      id: "",
+      username: "",
+      email: "",
+      role: "",
+      avatar: "",
     },
-    amount: 10.0,
+    amount: 0.0,
 
-    status: "created",
-    created_at: "2024-10-06T06:59:43.151276Z",
-    created_by: "64d52243-a2f7-48ec-a4af-46e4ec81d6d8",
+    status: "",
+    created_at: "",
+    created_by: "",
     client: null,
   },
 ]);
@@ -41,27 +41,34 @@ const filters = ref("");
 const tab = ref("paid");
 
 const columns = {
-  description: "Description",
+  description: {
+    label: "Description",
+    grow: true,
+    media: true,
+  },
   picture: {
     label: "Created by",
     grow: true,
     media: true,
   },
-  amount: "Amount",
+  amount: {
+    label: "Amount",
+    align: "center",
+  },
   client: {
     label: "Client",
+    align: "center",
     grow: true,
-    media: true,
   },
 
   status: "Status",
   team: {
     label: "Method",
   },
-  // actions: {
-  //   label: "Actions",
-  //   align: "end",
-  // },
+  actions: {
+    label: "Actions",
+    align: "end",
+  },
 } as const;
 
 const filteredData = computed(() => {
@@ -81,7 +88,7 @@ const filteredData = computed(() => {
   }
 });
 
-const getPaymentsDetail = async () => {
+const getPaymentsList = async () => {
   try {
     paymentsLoading.value = true;
     const resp = await api.get(`/api/paypal/`);
@@ -90,6 +97,37 @@ const getPaymentsDetail = async () => {
     console.log(err);
   } finally {
     paymentsLoading.value = false;
+  }
+};
+
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+
+const openDeleteAlert = (id: any) => {
+  selectedPayID.value = id;
+  SweetAlertProps.value = {
+    title: "Are you sure?",
+    subtitle: "You will not be able to recover this Payment again!",
+    btntext: "Yes, Delete it",
+    isSweetAlertOpen: true,
+  };
+};
+
+const deletePayment = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.delete(`/api/paypal/${selectedPayID.value}/`);
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    notyf.success("Payment deleted successfully");
+    getPaymentsList();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
   }
 };
 const gotoPaymentDetail = (id: any) => {
@@ -106,8 +144,6 @@ const moveToDetail = (item: any) => {
   }
 };
 const copyLink = (link: any) => {
-  // const linkToCopy = PayPalLinkData.value.approved_url;
-
   if (link) {
     navigator.clipboard
       .writeText(link)
@@ -122,7 +158,7 @@ const copyLink = (link: any) => {
   }
 };
 onMounted(() => {
-  getPaymentsDetail();
+  getPaymentsList();
 });
 </script>
 
@@ -138,36 +174,9 @@ onMounted(() => {
             placeholder="Search..."
           />
         </VControl>
-
-        <!-- <div class="tabs-inner">
-          <div class="tabs">
-            <ul>
-              <li :class="[tab === 'paid' && 'is-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'paid'"
-                  @click="tab = 'paid'"
-                  ><span>Paid</span></a
-                >
-              </li>
-              <li :class="[tab === 'pending' && 'is-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'pending'"
-                  @click="tab = 'pending'"
-                  ><span>Pending</span></a
-                >
-              </li>
-              <li class="tab-naver" />
-            </ul>
-          </div>
-        </div> -->
       </div>
 
       <div class="flex-list-v2">
-        <!--List Empty Search Placeholder -->
         <VPlaceholderPage
           v-if="filteredData.length === 0"
           title="We couldn't find any matching results."
@@ -246,7 +255,7 @@ onMounted(() => {
                     >
                   </VFlexTableCell>
 
-                  <VFlexTableCell :column="{ media: true, grow: true }">
+                  <VFlexTableCell>
                     <!-- <VAvatar :picture="item.picture" /> -->
                     <div>
                       <span class="item-name dark-inverted"
@@ -289,9 +298,14 @@ onMounted(() => {
                       size="medium"
                     ></VAvatar>
                   </VFlexTableCell>
-                  <!-- <VFlexTableCell :column="{ align: 'end' }">
-                    <ProjectListDropdown />
-                  </VFlexTableCell> -->
+                  <VFlexTableCell :column="{ align: 'end' }">
+                    <VIconWrap
+                      @click="openDeleteAlert(item.id)"
+                      color="danger"
+                      class="cu-pointer"
+                      icon="lucide:trash"
+                    />
+                  </VFlexTableCell>
                 </div>
                 <!-- public/icons/stripe-48.png -->
               </TransitionGroup>
@@ -309,6 +323,16 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :loading="false"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="deletePayment"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
   </div>
 </template>
 
