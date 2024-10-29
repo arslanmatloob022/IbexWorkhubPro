@@ -217,21 +217,24 @@ onMounted(() => {
                   </form>
 
                   <!-- </div> -->
-                  <div class="column is-12">
-                    <div class="mb-2" v-for="(item, index) in itemsList">
-                      <p class="is-bold">
-                        <span>{{ index + 1 }}. </span>
-                        <span>{{ item.title }}</span>
-                      </p>
+                  <div class="column is-12 p-0 mt-2">
+                    <div
+                      class="amount-item mb-2"
+                      v-for="(item, index) in itemsList"
+                    >
                       <p>
-                        <span>Amount: ${{ item.amount }} </span>
+                        <span>{{ index + 1 }}. </span>
+                        <span class="is-bold">{{ item.title }}</span>
                         <br />
-                        <span
-                          >Quantity:
-                          {{ item.quantity ? item.quantity : "" }}</span
-                        >
+                        <span>Amount: ${{ item.amount }} </span>
                       </p>
-                      <p @click="removeItem(index)">Remove</p>
+
+                      <VIconWrap
+                        @click="removeItem(index)"
+                        color="danger"
+                        class="cu-pointer"
+                        icon="lucide:trash"
+                      />
                     </div>
                   </div>
 
@@ -291,6 +294,16 @@ onMounted(() => {
 
 <style lang="scss">
 @import "/@src/scss/abstracts/all";
+
+.amount-item {
+  background-color: #fff;
+  border-radius: 6px;
+  border: 1px solid #77777753;
+  padding: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .input-button {
   height: 40px;
