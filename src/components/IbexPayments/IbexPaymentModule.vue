@@ -24,24 +24,26 @@ const linkData = ref({
   payment_method: "us_bank_account",
   description: "",
   client: "",
-  enableTax: false,
-  itemsList: [],
 });
 
-const itemsList = ref({
+const listItem = ref({
   title: "",
   amount: 0,
-  quantity: 0,
+  quantity: 1,
 });
 
+const itemsList = ref([]);
+
 const addItem = () => {
-  linkData.value.itemsList.push(itemsList.value);
-  console.log("data", linkData.value);
-  itemsList.value = {
+  itemsList.value.push(listItem.value);
+  listItem.value = {
     title: "",
     amount: 0,
-    quantity: 0,
+    quantity: 1,
   };
+};
+const removeItem = (index: any) => {
+  linkData.value.itemsList.splice(index, 1); // Removes the item at the specified index
 };
 
 const getClientHandler = async () => {
@@ -81,12 +83,13 @@ const createPayPalLink = async () => {
   try {
     linkLoading.value = true;
     const payload = convertToFormData(linkData.value, [""]);
-    payload.append("itemsList", JSON.stringify(linkData.value.itemsList));
+    payload.append("itemsList", JSON.stringify(itemsList.value));
+    payload.append("enableTax", "False");
     const response = await api.post("/api/paypal/stripe-session-new/", payload);
     createdLink.value = response.data.url;
     notyf.success("link Created");
   } catch (err) {
-    notyf.success("Something went wrong");
+    notyf.error("Something went wrong");
   } finally {
     linkLoading.value = false;
   }
@@ -159,7 +162,7 @@ onMounted(() => {
                       <VOption value="both">Any</VOption>
                     </VSelect>
                   </VField>
-                  <div class="field">
+                  <!-- <div class="field">
                     <label>Description* (Job Name, Invoice Number etc)</label>
                     <VField>
                       <VControl>
@@ -172,66 +175,33 @@ onMounted(() => {
                         />
                       </VControl>
                     </VField>
-                  </div>
+                  </div> -->
 
-                  <!-- </div> -->
-                  <!-- <VField class="field column is-12 p-0">
-                    <VControl>
-                      <button
-                        @click="showAddItem = !showAddItem"
-                        type="button"
-                        class="input-button"
-                      >
-                        <i
-                          aria-hidden="true"
-                          class="iconify"
-                          data-icon="feather:plus"
-                        />
-                        <span>Add Item</span>
-                      </button>
-                    </VControl>
-                  </VField> -->
-
-                  <!-- v-if="showAddItem" -->
                   <form action="post" @submit.prevent="addItem">
                     <VField>
                       <VLabel>Title</VLabel>
                       <VControl>
                         <VInput
                           required
-                          v-model="itemsList.title"
+                          v-model="listItem.title"
                           type="text"
                           placeholder="Item title"
                         />
                       </VControl>
                     </VField>
 
-                    <div class="column is-12">
-                      <div class="columns is-multiple">
-                        <VField class="field column is-6 p-0">
-                          <VLabel>Amount in ($)</VLabel>
-                          <VControl>
-                            <VInput
-                              required
-                              v-model="itemsList.amount"
-                              type="text"
-                              placeholder="Amount in $"
-                            />
-                          </VControl>
-                        </VField>
-
-                        <VField class="field column is-6 p-0">
-                          <VLabel>Quantity</VLabel>
-                          <VControl>
-                            <VInput
-                              v-model="itemsList.quantity"
-                              type="text"
-                              placeholder="Quantity"
-                            />
-                          </VControl>
-                        </VField>
-                      </div>
-                    </div>
+                    <VField class="field column is-12 p-0">
+                      <VLabel>Amount in ($)</VLabel>
+                      <VControl>
+                        <VInput
+                          required
+                          v-model="listItem.amount"
+                          type="number"
+                          step="0"
+                          placeholder="Amount in $"
+                        />
+                      </VControl>
+                    </VField>
 
                     <VButton
                       type="submit"
@@ -248,10 +218,7 @@ onMounted(() => {
 
                   <!-- </div> -->
                   <div class="column is-12">
-                    <div
-                      class="mb-2"
-                      v-for="(item, index) in linkData.itemsList"
-                    >
+                    <div class="mb-2" v-for="(item, index) in itemsList">
                       <p class="is-bold">
                         <span>{{ index + 1 }}. </span>
                         <span>{{ item.title }}</span>
@@ -264,6 +231,7 @@ onMounted(() => {
                           {{ item.quantity ? item.quantity : "" }}</span
                         >
                       </p>
+                      <p @click="removeItem(index)">Remove</p>
                     </div>
                   </div>
 
@@ -289,26 +257,6 @@ onMounted(() => {
               <div class="title-wrap">
                 <h3 class="dark-inverted">Payment links</h3>
               </div>
-              <!-- <VField label="Checkout link" addons>
-                <VControl expanded>
-                  <VInput
-                    type="text"
-                    v-model="createdLink"
-                    class="input"
-                    placeholder="link..."
-                  />
-                </VControl>
-                <VControl>
-                  <VButton
-                    @click="copyLink(createdLink)"
-                    class="cu-pointer"
-                    color="primary"
-                    icon="fas fa-envelope"
-                  >
-                    Send
-                  </VButton>
-                </VControl>
-              </VField> -->
               <VField label="Checkout link" addons>
                 <VControl expanded>
                   <VInput
@@ -329,42 +277,10 @@ onMounted(() => {
                   </VButton>
                 </VControl>
               </VField>
-              <!-- <VField label="Check Status Link" addons>
-                <VControl expanded>
-                  <VInput
-                    type="text"
-                    v-model="PayPalLinkData.resp.links[0].href"
-                    class="input"
-                    placeholder="Approved link..."
-                  />
-                </VControl>
-                <VControl>
-                  <VButton
-                    icon="fas fa-refresh"
-                    class="cu-pointer"
-                    color="primary"
-                  >
-                    Verify
-                  </VButton>
-                </VControl>
-              </VField> -->
 
               <p class="context-text" v-if="createdLink">
                 payment link has been successfully created
               </p>
-              <!-- <div class="submit-wrap">
-                <VButton
-                  @click="clearLinks"
-                  color="warning"
-                  size="big"
-                  fullwidth
-                  :loading="linkLoading"
-                  raised
-                  bold
-                >
-                  Clear all information
-                </VButton>
-              </div> -->
             </div>
           </div>
         </div>
@@ -767,7 +683,7 @@ onMounted(() => {
       }
 
       &.is-contacts {
-        height: 400px;
+        height: fit-content;
       }
 
       .context-text {
