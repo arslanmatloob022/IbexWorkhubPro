@@ -30,7 +30,7 @@ const handleLogin = async () => {
     isLoading.value = true;
     try {
       const response = await axios.post(
-        "https://vecel-practice.vercel.app/api/auth/login/",
+        "https://api.ibexworkhub.com/api/auth/login/",
         {
           email: Email.value,
           password: Password.value,

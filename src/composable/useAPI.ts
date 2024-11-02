@@ -10,7 +10,7 @@ let api: CustomAxiosInstance | null = null;
 
 function createApi(): CustomAxiosInstance {
   const axiosInstance = axios.create({
-    baseURL: "https://vecel-practice.vercel.app/",
+    baseURL: "https://api.ibexworkhub.com/",
     headers: {
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
