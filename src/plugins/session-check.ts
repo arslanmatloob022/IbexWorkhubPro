@@ -37,15 +37,15 @@ export default definePlugin(async ({ router, pinia }) => {
     try {
       // Do api request call to retreive user profile.
       // Note that the api is provided with json-server
-      // const response = await api.get("/v3/api/account/get_user_from_token");
-      // const user = response.data[0];
+      const response = await api.get("/api/auth/validate-user/");
+      const user = response.data[0];
       // if (user.company) {
       //   await company.loadCompany(user.company);
       // }
 
       layoutSwitcher.setDynamicLayoutId("sideblock-default");
 
-      // userSession.setUser(user);
+      userSession.setUser(user);
     } catch (err) {
       // delete stored token if it fails
       userSession.logoutUser();

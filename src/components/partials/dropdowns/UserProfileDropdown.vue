@@ -59,7 +59,7 @@ async function logout() {
       </div>
 
       <RouterLink
-        to="/sidebar/profile"
+        to="/sidebar/dashboard/profile"
         role="menuitem"
         class="dropdown-item is-media"
       >
