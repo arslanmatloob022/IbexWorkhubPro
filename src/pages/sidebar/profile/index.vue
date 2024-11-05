@@ -18,7 +18,6 @@ useHead({
     <Teleport to="[data-teleport-bg]">
       <div class="lifestyle-dashboard-bg has-top-nav" />
     </Teleport>
-
     <AdminProfile class="has-navbar-spacing" />
   </div>
 </template>
