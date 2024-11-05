@@ -35,16 +35,9 @@ export default definePlugin(async ({ router, pinia }) => {
   // 1. Check token validity at app startup
   if (userSession.isLoggedIn) {
     try {
-      // Do api request call to retreive user profile.
-      // Note that the api is provided with json-server
       const response = await api.get("/api/auth/validate-user/");
-      const user = response.data[0];
-      // if (user.company) {
-      //   await company.loadCompany(user.company);
-      // }
-
+      const user = response.data;
       layoutSwitcher.setDynamicLayoutId("sideblock-default");
-
       userSession.setUser(user);
     } catch (err) {
       // delete stored token if it fails
