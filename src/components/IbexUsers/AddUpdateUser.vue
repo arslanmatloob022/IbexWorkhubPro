@@ -153,7 +153,7 @@ onMounted(() => {
   <VModal
     is="form"
     :open="props.isModalOpen"
-    :title="props.userId ? 'Update user' : 'Add user'"
+    :title="props.userId ? `Update ${props.userRole}` : `Add ${props.userRole}`"
     size="big"
     actions="right"
     @submit.prevent="addUpdateUserHandler"
@@ -304,7 +304,7 @@ onMounted(() => {
           </VControl>
         </VField>
 
-        <div class="column is-12">
+        <!-- <div class="column is-12">
           <VField label="User role">
             <VControl>
               <VRadio
@@ -348,7 +348,7 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-        </div>
+        </div> -->
       </div>
     </template>
     <template #action>

@@ -45,7 +45,7 @@ const handleLogin = async () => {
       loginSuccess();
     } catch (error) {
       isLoading.value = false;
-      // notyf.error("Invalid Credentials, Sign In");
+      notyf.error("Invalid Credentials, Sign In");
     } finally {
       isLoading.value = false;
     }
@@ -113,15 +113,22 @@ useHead({
   <div class="modern-login">
     <div class="underlay h-hidden-mobile h-hidden-tablet-p" />
     <div class="columns is-gapless is-vcentered">
-      <div
-        style="background-image: url(&quot;/IbexImages/ibexnight.png&quot;)"
-        class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p"
-      >
+      <!-- style="background-image: url(&quot;/IbexImages/ibexnight.png&quot;)" -->
+      <div class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p">
         <div class="hero is-fullheight is-image">
           <div class="hero-body">
             <div class="container">
               <div class="columns">
-                <div class="column"></div>
+                <div class="column">
+                  <img
+                    :src="
+                      darkmode.isDark
+                        ? '/logos/ibexwhite.png'
+                        : '/logos/IbexFaviconDark.png'
+                    "
+                    alt=""
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -167,10 +174,10 @@ useHead({
               <h2>Sign In</h2>
               <p>Welcome back to your account.</p>
             </div>
-            <div class="form-text" :class="[step === 'login' && 'is-hidden']">
+            <!-- <div class="form-text" :class="[step === 'login' && 'is-hidden']">
               <h2>Recover Account</h2>
               <p>Reset your account password.</p>
-            </div>
+            </div> -->
             <form
               method="post"
               novalidate
@@ -241,7 +248,7 @@ useHead({
 
               <VField>
                 <VControl class="is-flex">
-                  <VLabel raw class="remember-toggle">
+                  <!-- <VLabel raw class="remember-toggle">
                     <VInput raw type="checkbox" />
 
                     <span class="toggler">
@@ -260,8 +267,8 @@ useHead({
                         />
                       </span>
                     </span>
-                  </VLabel>
-                  <VLabel raw class="remember-me"> Remember Me </VLabel>
+                  </VLabel> -->
+                  <!-- <VLabel raw class="remember-me"> Remember Me </VLabel> -->
                   <a
                     tabindex="0"
                     role="button"
@@ -287,9 +294,9 @@ useHead({
                   Confirm
                 </VButton>
                 <span>
-                  Or
-                  <RouterLink to="/auth/signup-1">Create</RouterLink>
-                  an account.
+                  To
+                  <!-- <RouterLink to="/auth/signup-1">Create</RouterLink> -->
+                  go to the account.
                 </span>
               </div>
             </form>

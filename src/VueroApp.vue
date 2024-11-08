@@ -60,7 +60,7 @@ useHead(() => ({
     {
       name: "description",
       content:
-        "Ibex WorkHub: a platform of Ibex Builders Studios where we manage the real estate building tasks and all others processes including assigning jobs to Managers, Workers, Contractors and Sub-contractors. We also look after the Jobs status and also updates our clients every moment",
+        "Ibex WorkHub is a comprehensive, USA-based platform by Ibex Builders Studios that streamlines real estate project management and automates essential processes for efficient building and property development. Our platform allows for seamless task assignment to Managers, Workers, Contractors, and Sub-contractors, enabling real-time updates on project status and job progress. With Ibex WorkHub, clients receive live notifications on project milestones and task completion, ensuring transparency and maximizing operational efficiency in real estate management. This enhanced solution delivers consistent updates to keep our clients informed every step of the way, making Ibex WorkHub the trusted choice for end-to-end property development management.",
     },
     // Open Graph
     {
