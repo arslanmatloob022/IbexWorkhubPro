@@ -92,7 +92,7 @@ onMounted(() => {
 
     <div class="profile-body">
       <div class="columns">
-        <div v-if="userSession.user.role == 'admin'" class="column is-8">
+        <div v-if="userSession.user.role == 'admin'" class="column is-12">
           <AdminsList class="mb-3" />
 
           <!-- <div class="profile-card">
@@ -415,9 +415,8 @@ onMounted(() => {
             </div>
           </div> -->
         </div>
-        <div class="column is-4">
-          <!--Notifications-->
-          <div class="profile-card">
+        <!-- <div class="column is-4"> -->
+        <!-- <div class="profile-card">
             <div class="profile-card-section no-padding">
               <div class="section-title">
                 <h4>Notifications</h4>
@@ -437,7 +436,6 @@ onMounted(() => {
             </div>
           </div>
 
-          <!--Tools-->
           <div class="profile-card">
             <div class="profile-card-section no-padding">
               <div class="section-title">
@@ -449,7 +447,6 @@ onMounted(() => {
               </div>
               <div class="section-content">
                 <div class="tools-wrapper">
-                  <!--Tool-->
                   <div class="tools-item">
                     <VIconWrap picture="/images/icons/stacks/illustrator.svg">
                       <template #after>
@@ -470,7 +467,6 @@ onMounted(() => {
                     </div>
                   </div>
 
-                  <!--Tool-->
                   <div class="tools-item">
                     <VIconWrap picture="/demo/photos/brands/jira.svg">
                       <template #after>
@@ -491,7 +487,6 @@ onMounted(() => {
                     </div>
                   </div>
 
-                  <!--Tool-->
                   <div class="tools-item">
                     <VIconWrap picture="/demo/photos/brands/office.svg">
                       <template #after>
@@ -514,10 +509,10 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <!--Recent Views-->
-          <!-- <div class="profile-card">
+        <!--Recent Views-->
+        <!-- <div class="profile-card">
             <div class="profile-card-section no-padding">
               <div class="section-title">
                 <h4>Recent Views</h4>
@@ -588,7 +583,7 @@ onMounted(() => {
               </div>
             </div>
           </div> -->
-        </div>
+        <!-- </div> -->
       </div>
     </div>
     <AddUpdateUser

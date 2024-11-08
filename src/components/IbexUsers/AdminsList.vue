@@ -172,12 +172,12 @@ onMounted(() => {
               <VAvatar
                 :picture="item.avatar"
                 color="primary"
-                :initials="item.username"
+                :initials="item.username.slice(0, 2)"
                 size="medium"
               />
               <div class="meta">
                 <span class="dark-inverted">{{ item.username }}</span>
-                <span>{{ item.role }}</span>
+                <span style="text-transform: capitalize">{{ item.role }}</span>
               </div>
               <VDropdown icon="feather:more-vertical" spaced right>
                 <template #content>
