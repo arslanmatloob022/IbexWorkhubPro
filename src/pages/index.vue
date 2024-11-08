@@ -1,459 +1,895 @@
 <script setup lang="ts">
-import packageJson from "../../package.json";
+import { onBeforeMount } from "vue";
+import { useDarkmode } from "/@src/stores/darkmode";
+import { useUserSession } from "/@src/stores/userSession";
+import { useNotyf } from "/@src/composable/useNotyf";
+import { useApi } from "/@src/composable/useAPI";
+import axios from "axios";
+import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
+
+const layoutSwitcher = useLayoutSwitcher();
+type StepId = "login" | "forgot-password" | "show-message";
+const step = ref<StepId>("login");
+const isLoading = ref(false);
+const darkmode = useDarkmode();
 const router = useRouter();
-type TabId = "elements" | "components" | "forms" | "plugins";
-const activeTab = ref<TabId>("elements");
+const route = useRoute();
+const notyf = useNotyf();
+const api = useApi();
+const userSession = useUserSession();
+let is_superuser = false;
+const redirect = route.query.redirect as string;
+const Email = ref("");
+const Password = ref("");
+const userEmail = ref("");
+const isShow = ref(false);
+const showMailMessage = ref(false);
+const showErrorMessage = ref(false);
+const handleLogin = async () => {
+  if (!isLoading.value) {
+    isLoading.value = true;
+    try {
+      const response = await axios.post(
+        "https://api.ibexworkhub.com/api/auth/login/",
+        {
+          email: Email.value,
+          password: Password.value,
+        }
+      );
+      console.log("resp", response.data);
+
+      const token = response.data.token;
+      const user = response.data.user;
+      userSession.setToken(token);
+      userSession.setUser(user);
+      loginSuccess();
+    } catch (error) {
+      isLoading.value = false;
+      // notyf.error("Invalid Credentials, Sign In");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+};
+
+const loginSuccess = () => {
+  console.log("inside login success");
+  layoutSwitcher.setDynamicLayoutId("sideblock-default");
+  notyf.success(`Welcome back, ${userSession.user.username}`);
+  isLoading.value = false;
+  if (userSession.user.role == "admin") {
+    router.push("/sidebar/dashboard");
+  } else if (userSession.user.role == "worker") {
+    router.push("/sidebar/worker/tasks");
+  } else if (userSession.user.role == "manager") {
+    router.push("/sidebar/manager/projects");
+  } else if (userSession.user.role == "contractor") {
+    router.push("/sidebar/contractor/projects");
+  } else if (userSession.user.role == "client") {
+    router.push("/sidebar/client/projects");
+  }
+};
+
+const sendResetPasswordEmail = async (useremail: string) => {
+  try {
+    isLoading.value = true;
+    const response = await api.post("/v3/api/account/auth/forget-password/", {
+      email: useremail,
+    });
+    showMailMessage.value = true;
+  } catch (error) {
+    showErrorMessage.value = true;
+    notyf.error("Please enter your valid email address");
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const toggleIsShow = () => {
+  isShow.value = !isShow.value;
+};
+
+onMounted(() => {});
+
+onBeforeMount(() => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  console.log("urlDAta", window.location.search);
+  const token = urlParams.get("token");
+
+  if (token) {
+    userSession.setToken(token);
+  } else {
+    console.log("Invalid token");
+  }
+});
 
 useHead({
-  title: "Ibex - Real Estate Builders",
-});
-onBeforeMount(() => {
-  router.push("/auth/login");
+  title: "Login - Ibex",
 });
 </script>
 
 <template>
-  <div>
-    <MinimalLayout theme="light">
-      <div class="landing-page-wrapper">
-        <!-- Hero and Navbar -->
-        <div id="vuero-landing " class="hero is-fullheight is-active">
-          <!-- Navbar partial -->
-          <LandingNavigation />
-
-          <div class="hero-body has-text-centered">
-            <div class="container" id="home">
-              <h1 class="title is-1 is-bold dark-white is-leading">
-                <span>Ibex</span>
-                Improve visibility and control over your security staff.
-              </h1>
-              <h3 class="subtitle is-4">
-                Reduce risk and increase profitability by effectively managing
-                and tracking your security crew in real-time and integrating
-                time and labour with invoicing and payroll in one security
-                workforce management software package.
-              </h3>
-
-              <div class="buttons mb-2">
-                <VButton href="#" color="primary" rounded>
-                  Book a Demo
-                </VButton>
-              </div>
-
-              <div class="trusted-by mb-4">
-                <span>Trusted by <span>2000+ customers</span></span>
-                <div class="rating">
-                  <i class="iconify" data-icon="uiw:star-on" />
-                  <i class="iconify" data-icon="uiw:star-on" />
-                  <i class="iconify" data-icon="uiw:star-on" />
-                  <i class="iconify" data-icon="uiw:star-on" />
-                  <i class="iconify" data-icon="uiw:star-on" />
-                </div>
-              </div>
-              <div class="hero-mockup-wrap">
-                <div class="hero-mockup" style="background-color: transparent">
-                  <img
-                    class="light-image-block-l"
-                    src="https://arez.io/images/banner/single-welcome.webp"
-                    alt=""
-                  />
-                  <img
-                    class="dark-image-block-l"
-                    src="https://arez.io/images/banner/single-welcome.webp"
-                    alt=""
-                  />
-                </div>
-                <div class="hero-mockup-gradient" />
+  <div class="modern-login">
+    <div class="underlay h-hidden-mobile h-hidden-tablet-p" />
+    <div class="columns is-gapless is-vcentered">
+      <div
+        style="background-image: url(&quot;/IbexImages/ibexnight.png&quot;)"
+        class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p"
+      >
+        <div class="hero is-fullheight is-image">
+          <div class="hero-body">
+            <div class="container">
+              <div class="columns">
+                <div class="column"></div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!--Stacks Section-->
-        <div id="arez-features" class="section">
-          <div class="container">
-            <!--Title-->
-            <div class="section-title has-text-centered">
-              <h2 class="title is-2">Amazing Features</h2>
-              <h4>
-                Front Line Efficiency Integrated with Back Office Intelligence.
-              </h4>
-            </div>
-
-            <!--Boxed Features-->
-            <div class="boxed-features">
-              <div class="flex-card light-bordered hover-inset">
-                <div class="flex-cell is-bordered">
-                  <i aria-hidden="true" class="lnil lnil-toolbox" />
-                  <h3>Verification of SIA license</h3>
-                  <p>
-                    Verify SIA license and checks SIA validity directly with the
-                    SIA database.
-                  </p>
-                </div>
-                <div class="flex-cell is-bordered">
-                  <i aria-hidden="true" class="lnil lnil-display-alt" />
-                  <h3>BS7858 employment checks</h3>
-                  <p>
-                    Verify employment checks and securely manage employees
-                    documents.
-                  </p>
-                </div>
-                <div class="flex-cell is-bordered">
-                  <i aria-hidden="true" class="lnil lnil-moon" />
-                  <h3>Register new employees</h3>
-                  <p>
-                    Register unlimited new employees into your team and
-                    collaborate as much as you need.
-                  </p>
-                </div>
-                <div class="flex-cell is-bordered no-border-edge">
-                  <i aria-hidden="true" class="lnil lnil-rocket" />
-                  <h3>Active Support</h3>
-                  <p>Our support helps you solve any issues you have</p>
-                </div>
-                <div class="flex-cell">
-                  <i aria-hidden="true" class="lnil lnil-code" />
-                  <h3>Employee reports</h3>
-                  <p>
-                    Download realtime employees reports with multiple filters.
-                  </p>
-                </div>
-                <div class="flex-cell">
-                  <i aria-hidden="true" class="lnil lnil-plug" />
-                  <h3>Complete & incomplete profiles</h3>
-                  <p>
-                    Display completed and incomplete employees profiles with
-                    employees documents.
-                  </p>
-                </div>
-                <div class="flex-cell">
-                  <i class="lnil lnil-switch" aria-hidden="true" />
-                  <h3>RTL Support</h3>
-                  <p>
-                    Vuero supports RTL layouts. Configure it in less than a
-                    minute.
-                  </p>
-                </div>
-                <div class="flex-cell no-border-edge">
-                  <i aria-hidden="true" class="lnil lnil-file-name" />
-                  <h3>Reminder expired SIA license</h3>
-                  <p>
-                    Determine in advance if employee SIA is about to expiry in
-                    next 2 weeks.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!--CTA-->
-            <div
-              class="cta-block"
-              style="flex-direction: column; align-items: flex-start; gap: 30px"
-            >
-              <div class="head-text">
-                <h3>Register of Certificate Holders</h3>
-                <p>
-                  Once a certificate has been issued, details about the
-                  certificate holder are recorded in a register and made
-                  available to the public. Establishing and maintaining a record
-                  is required under Section 12 of the Private Security Industry
-                  Act. You will be able to search the register on the date of
-                  the birth field if it is known to you, but this information
-                  will not be made available from any obtained result. When a
-                  result is obtained by entering the date of birth, it can be
-                  taken as confirmation that the date entered is correct. The
-                  address of an individual will not be made public.
-                </p>
-              </div>
-              <div class="head-action">
-                <div class="buttons">
-                  <a
-                    href="http://go.cssninja.io/buy-vuero"
-                    class="button v-button is-primary is-rounded is-elevated action-button"
-                  >
-                    Find by certificate
-                  </a>
-                  <a
-                    target="_blank"
-                    href="https://go.cssninja.io/discord"
-                    class="button chat-button"
-                  >
-                    Chat with us
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="arez-services" class="section">
-          <div class="container">
-            <div class="columns is-vcentered">
-              <div class="column is-6 is-offset-3 has-text-centered">
-                <!--Title-->
-                <div class="section-title has-text-centered p-b-40">
-                  <h2 class="title is-3">AREZ Services</h2>
-                  <h4>
-                    Every annual contract is designed to support unlimited
-                    collaboration for everyone on your project — with fixed,
-                    predictable pricing from day one.
-                  </h4>
-                </div>
-              </div>
-            </div>
-            <div
-              class="columns is-vcentered component-features is-flex-tablet-p"
-            >
-              <div class="column is-4">
-                <!-- Side icon box -->
-                <div class="media-flex">
-                  <div class="left-icon">
-                    <i aria-hidden="true" class="lnil lnil-construction" />
-                  </div>
-                  <div class="flex-meta">
-                    <h4>Unlimited users</h4>
-                    <p>
-                      Grow your team and collaborate as much as you need. We'll
-                      never charge you for adding more users to AREZ.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="column is-4">
-                <!-- Side icon box -->
-                <div class="media-flex">
-                  <div class="left-icon">
-                    <i aria-hidden="true" class="lnil lnil-code" />
-                  </div>
-                  <div class="flex-meta">
-                    <h4>Unlimited data</h4>
-                    <p>
-                      Never run out of sheets, data or document storage with
-                      plans designed to support even the most complex projects.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="column is-4">
-                <!-- Side icon box -->
-                <div class="media-flex">
-                  <div class="left-icon">
-                    <i aria-hidden="true" class="lnil lnil-color-palette" />
-                  </div>
-                  <div class="flex-meta">
-                    <h4>24/7 Support</h4>
-                    <p>
-                      Say goodbye to downtime with a free, direct line to live
-                      technical support for everyone on your project.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="columns is-vcentered component-features is-flex-tablet-p"
-            >
-              <div class="column is-4">
-                <!-- Side icon box -->
-                <div class="media-flex">
-                  <div class="left-icon">
-                    <i aria-hidden="true" class="lnil lnil-color-palette" />
-                  </div>
-                  <div class="flex-meta">
-                    <h4>Enterprise-grade security</h4>
-                    <p>
-                      Exceeds global requirements for data safety, security and
-                      privacy without sacrificing performance and ease of use.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="column is-4">
-                <!-- Side icon box -->
-                <div class="media-flex">
-                  <div class="left-icon">
-                    <i aria-hidden="true" class="lnil lnil-color-palette" />
-                  </div>
-                  <div class="flex-meta">
-                    <h4>100% Customer satisfaction</h4>
-                    <p>
-                      Get help from real, in-house Customer Success experts
-                      whose only metric of success is your success.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="column is-4">
-                <!-- Side icon box -->
-                <div class="media-flex">
-                  <div class="left-icon">
-                    <i aria-hidden="true" class="lnil lnil-color-palette" />
-                  </div>
-                  <div class="flex-meta">
-                    <h4>Cloud-based platform</h4>
-                    <p>
-                      Ditch on-premise servers. AREZ's cloud-based
-                      infrastructure will help you grow wherever you go.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!--CTA-->
-            <!-- <p class="p-t-40 p-b-40 has-text-centered">
-            <a
-              href="http://go.cssninja.io/buy-vuero"
-              class="button v-button is-rounded is-primary is-elevated is-bold is-huge"
-            >
-              Buy Now
-            </a>
-          </p> -->
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="container">
-            <!--Title-->
-            <div class="section-title has-text-centered pt-40">
-              <h2 class="title is-3">Benefits of AREZ</h2>
-              <h4>Improve Security Workforce Operations with AREZ.</h4>
-            </div>
-
-            <div class="customers-choice p-t-40 p-b-40">
-              <!-- Feature -->
-              <div class="columns is-vcentered side-feature">
-                <div class="column is-5 is-offset-1 has-text-centered">
-                  <img
-                    class="light-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-4.svg"
-                    alt=""
-                  />
-                  <img
-                    class="dark-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-4-dark.svg"
-                    alt=""
-                  />
-                </div>
-                <div class="column is-5">
-                  <h2 class="title m-b-10 is-centered-tablet-portrait">
-                    SIA validity checks
-                  </h2>
-                  <p
-                    class="section-feature-description is-centered-tablet-portrait"
-                  >
-                    Live SIA validity checks directly with the SIA database,
-                    with the AREZ AI system identifying anomalies in profiles.
-                    e.g. the Arez will determine in advance if an officer's SIA
-                    is about to expire within two weeks.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Feature -->
-              <div class="columns is-vcentered side-feature">
-                <div
-                  class="column is-5 has-text-centered h-hidden-desktop h-hidden-tablet-p"
-                >
-                  <img
-                    class="light-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-5.svg"
-                    alt=""
-                  />
-                  <img
-                    class="dark-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-5-dark.svg"
-                    alt=""
-                  />
-                </div>
-                <div class="column is-5 is-offset-1">
-                  <h2 class="title m-b-10 is-centered-tablet-portrait">
-                    Right to work
-                  </h2>
-                  <p
-                    class="section-feature-description is-centered-tablet-portrait"
-                  >
-                    Arez.io is software that simplifies security screening
-                    checks, reducing the time, effort and cost of vetting
-                    officers by up to 10X. In addition, Arez's simple workflow
-                    automates the verification of SIA licenses, identity checks,
-                    documentation checks and storage in the cloud, employment
-                    history, and reference checks, which is flexible enough to
-                    meet your company's requirements.
-                  </p>
-                </div>
-                <div class="column is-5 has-text-centered h-hidden-mobile">
-                  <img
-                    class="light-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-5.svg"
-                    alt=""
-                  />
-                  <img
-                    class="dark-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-5-dark.svg"
-                    alt=""
-                  />
-                </div>
-              </div>
-
-              <!-- Feature -->
-              <div class="columns is-vcentered side-feature">
-                <div class="column is-5 is-offset-1 has-text-centered">
-                  <img
-                    class="light-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-6.svg"
-                    alt=""
-                  />
-                  <img
-                    class="dark-image-l featured-image"
-                    src="/@src/assets/illustrations/landing/feature-6-dark.svg"
-                    alt=""
-                  />
-                </div>
-                <div class="column is-5">
-                  <h2 class="title m-b-10 is-centered-tablet-portrait">
-                    Proof of identity
-                  </h2>
-                  <p
-                    class="section-feature-description is-centered-tablet-portrait"
-                  >
-                    The Arez.io AI system allows you to continually maintain the
-                    quality of your staff and help with the audit processes,
-                    where companies are regularly audited against BS7858
-                    requirements to become approved and maintain approval.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="cta-wrapper">
-              <div class="cta-title">
-                <h3>Subscribe To Newsletter</h3>
-                <a href="http://go.cssninja.io/buy-vuero" class="custom-button">
-                  <img src="/images/icons/logos/envato.svg" alt="" />
-                  <span>Subscribe</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <LandingFooter />
-
-        <!-- Back To Top Button -->
-        <div id="backtotop">
-          <a href="#" aria-label="back to top">
-            <i aria-hidden="true" class="fas fa-angle-up" />
-          </a>
         </div>
       </div>
-    </MinimalLayout>
+      <div style="z-index: 99999" class="column is-4 is-relative">
+        <div class="top-tools">
+          <RouterLink to="/auth/login" class="top-logo">
+            <AnimatedLogo style="width: 38px; height: 38px" />
+            <h3
+              style="
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin-left: 1rem;
+                color: #777;
+              "
+            >
+              <span style="color: #2aac8e; font-size: 1.9rem">Ibex</span>
+              WorkHub
+            </h3>
+          </RouterLink>
+
+          <label
+            class="dark-mode"
+            tabindex="0"
+            role="button"
+            @keydown.space.prevent="
+              (e) => (e.target as HTMLLabelElement).click()
+            "
+          >
+            <input
+              data-cy="dark-mode-toggle"
+              type="checkbox"
+              :checked="!darkmode.isDark"
+              @change="darkmode.onChange"
+            />
+            <span />
+          </label>
+        </div>
+        <div class="is-form">
+          <div class="is-form-inner">
+            <div class="form-text" :class="[step !== 'login' && 'is-hidden']">
+              <h2>Sign In</h2>
+              <p>Welcome back to your account.</p>
+            </div>
+            <div class="form-text" :class="[step === 'login' && 'is-hidden']">
+              <h2>Recover Account</h2>
+              <p>Reset your account password.</p>
+            </div>
+            <form
+              method="post"
+              novalidate
+              data-cy="login-form"
+              :class="[step !== 'login' && 'is-hidden']"
+              class="login-wrapper"
+              @submit.prevent="handleLogin"
+            >
+              <VField>
+                <VControl icon="lnil lnil-envelope autv-icon">
+                  <VLabel class="auth-label"> Email Address </VLabel>
+                  <VInput
+                    v-model="Email"
+                    data-cy="email-input"
+                    type="email"
+                    autocomplete="current-password"
+                  />
+                </VControl>
+              </VField>
+              <VField>
+                <VControl
+                  icon="lnil lnil-lock-alt autv-icon"
+                  style="position: relative"
+                >
+                  <span
+                    style="
+                      position: absolute;
+                      z-index: 9999;
+                      right: 1rem;
+                      top: 1.4rem;
+                    "
+                    v-show="!isShow"
+                    @click="toggleIsShow"
+                  >
+                    <i
+                      class="iconify"
+                      data-icon="feather:eye"
+                      aria-hidden="true"
+                      style="font-size: 1.5rem; color: #888"
+                    ></i>
+                  </span>
+                  <span
+                    style="
+                      position: absolute;
+                      z-index: 9999;
+                      right: 1rem;
+                      top: 1.4rem;
+                    "
+                    v-show="isShow"
+                    @click="toggleIsShow"
+                  >
+                    <i
+                      class="iconify"
+                      data-icon="feather:eye-off"
+                      aria-hidden="true"
+                      style="font-size: 1.5rem; color: #888"
+                    ></i>
+                  </span>
+                  <VLabel class="auth-label">Password</VLabel>
+                  <VInput
+                    v-model="Password"
+                    data-cy="password-input"
+                    :type="isShow ? 'text' : 'password'"
+                    autocomplete="current-password"
+                  />
+                </VControl>
+              </VField>
+
+              <VField>
+                <VControl class="is-flex">
+                  <VLabel raw class="remember-toggle">
+                    <VInput raw type="checkbox" />
+
+                    <span class="toggler">
+                      <span class="active">
+                        <i
+                          aria-hidden="true"
+                          class="iconify"
+                          data-icon="feather:check"
+                        />
+                      </span>
+                      <span class="inactive">
+                        <i
+                          aria-hidden="true"
+                          class="iconify"
+                          data-icon="feather:circle"
+                        />
+                      </span>
+                    </span>
+                  </VLabel>
+                  <VLabel raw class="remember-me"> Remember Me </VLabel>
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="step = 'forgot-password'"
+                    @click="step = 'forgot-password'"
+                  >
+                    Forgot Password?
+                  </a>
+                </VControl>
+              </VField>
+
+              <div class="button-wrap has-help">
+                <VButton
+                  id="login-button"
+                  :loading="isLoading"
+                  color="primary"
+                  type="submit"
+                  size="big"
+                  rounded
+                  raised
+                  bold
+                >
+                  Confirm
+                </VButton>
+                <span>
+                  Or
+                  <RouterLink to="/auth/signup-1">Create</RouterLink>
+                  an account.
+                </span>
+              </div>
+            </form>
+            <!-- email sender -->
+            <form
+              method="post"
+              novalidate
+              :class="[step !== 'forgot-password' && 'is-hidden']"
+              class="login-wrapper"
+              @submit.prevent
+            >
+              <p class="recover-text" v-if="!showMailMessage">
+                Enter your email and click on the confirm button to reset your
+                password. We'll send you an email detailing the steps to
+                complete the procedure.
+              </p>
+              <VMessage
+                v-if="showMailMessage"
+                color="primary"
+                class="is-flex"
+                closable
+                @close="showMailMessage = false"
+              >
+                A password reset request has been sent to your email. Please
+                check your inbox to change your password.
+              </VMessage>
+              <VMessage
+                v-if="showErrorMessage"
+                color="danger"
+                class="is-flex mt-4"
+                closable
+                @close="showErrorMessage = false"
+              >
+                Please enter valid email address.
+              </VMessage>
+
+              <VField>
+                <VControl icon="lnil lnil-envelope autv-icon">
+                  <VLabel class="auth-label"> Email Address </VLabel>
+                  <VInput
+                    type="email"
+                    v-model="userEmail"
+                    autocomplete="current-password"
+                  />
+                </VControl>
+              </VField>
+
+              <VField>
+                <VControl class="is-flex">
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="step = 'login'"
+                    @click="step = 'login'"
+                  >
+                    Login ?
+                  </a>
+                </VControl>
+              </VField>
+
+              <div class="button-wrap">
+                <!-- <VButton color="white" size="big" lower rounded @click="step = 'login'">
+                                    Cancel
+                                </VButton> -->
+
+                <VButton
+                  :loading="isLoading"
+                  color="primary"
+                  size="big"
+                  type="submit"
+                  lower
+                  rounded
+                  solid
+                  @click="sendResetPasswordEmail(userEmail)"
+                >
+                  Confirm
+                </VButton>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
-@import "/@src/scss/abstracts/all";
-@import "/@src/scss/_demo/landing";
+<style lang="scss" scoped>
+.modern-login {
+  position: relative;
+  background: var(--white);
+  min-height: 100vh;
+
+  .column {
+    &.is-relative {
+      position: relative;
+    }
+  }
+
+  .hero {
+    &.has-background-image {
+      position: relative;
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        inset-inline-start: 0;
+        width: 100%;
+        height: 100%;
+        background: #5d4298 !important;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .underlay {
+    display: block;
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    width: 66.6%;
+    height: 100%;
+    background: #fdfdfd;
+    z-index: 0;
+  }
+
+  .top-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    margin-bottom: 5rem;
+
+    .dark-mode {
+      transform: scale(0.6);
+      z-index: 2;
+    }
+
+    .top-logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+
+      img {
+        display: block;
+        width: 100%;
+        max-width: 50px;
+        margin: 0 auto;
+      }
+
+      svg {
+        height: 50px;
+        width: 50px;
+      }
+    }
+  }
+
+  .is-image {
+    position: relative;
+    border-inline-end: 1px solid var(--fade-grey);
+
+    .hero-image {
+      position: relative;
+      z-index: 2;
+      display: block;
+      margin: -80px auto 0;
+      max-width: 60%;
+      width: 60%;
+    }
+  }
+
+  .is-form {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto;
+
+    form {
+      animation: fadeInLeft 0.5s;
+    }
+
+    .form-text {
+      padding: 0 20px;
+      animation: fadeInLeft 0.5s;
+
+      h2 {
+        font-family: var(--font-alt);
+        font-weight: 400;
+        font-size: 2rem;
+        color: var(--primary);
+      }
+
+      p {
+        color: var(--muted-grey);
+        margin-top: 10px;
+      }
+    }
+
+    .recover-text {
+      font-size: 0.9rem;
+      color: var(--dark-text);
+    }
+
+    .login-wrapper {
+      padding: 30px 20px;
+
+      .control {
+        position: relative;
+        width: 100%;
+        margin-top: 16px;
+
+        .input {
+          padding-top: 14px;
+          height: 60px;
+          border-radius: 10px;
+          padding-inline-start: 55px;
+          transition: all 0.3s; // transition-all test
+
+          &:focus {
+            background: var(--fade-grey-light-6);
+            border-color: var(--placeholder);
+
+            ~ .auth-label,
+            ~ .autv-icon i {
+              color: var(--muted-grey);
+            }
+          }
+        }
+
+        .error-text {
+          color: var(--danger);
+          font-size: 0.8rem;
+          display: none;
+          padding: 2px 6px;
+        }
+
+        .auth-label {
+          position: absolute;
+          top: 6px;
+          inset-inline-start: 55px;
+          font-size: 0.8rem;
+          color: var(--dark-text);
+          font-weight: 500;
+          z-index: 2;
+          transition: all 0.3s; // transition-all test
+        }
+
+        .autv-icon,
+        :deep(.autv-icon) {
+          position: absolute;
+          top: 0;
+          inset-inline-start: 0;
+          height: 60px;
+          width: 60px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 24px;
+          color: var(--placeholder);
+          transition: all 0.3s;
+        }
+
+        &.has-validation {
+          .validation-icon {
+            position: absolute;
+            top: 0;
+            inset-inline-end: 0;
+            height: 60px;
+            width: 60px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+
+            .icon-wrapper {
+              height: 20px;
+              width: 20px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-radius: var(--radius-rounded);
+
+              svg {
+                height: 10px;
+                width: 10px;
+                stroke-width: 3px;
+                color: var(--white);
+              }
+            }
+
+            &.is-success {
+              .icon-wrapper {
+                background: var(--success);
+              }
+            }
+
+            &.is-error {
+              .icon-wrapper {
+                background: var(--danger);
+              }
+            }
+          }
+
+          &.has-success {
+            .validation-icon {
+              &.is-success {
+                display: flex;
+              }
+
+              &.is-error {
+                display: none;
+              }
+            }
+          }
+
+          &.has-error {
+            .input {
+              border-color: var(--danger);
+            }
+
+            .error-text {
+              display: block;
+            }
+
+            .validation-icon {
+              &.is-error {
+                display: flex;
+              }
+
+              &.is-success {
+                display: none;
+              }
+            }
+          }
+        }
+
+        &.is-flex {
+          display: flex;
+          align-items: center;
+
+          a {
+            display: block;
+            margin-inline-start: auto;
+            color: var(--muted-grey);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+
+            &:hover,
+            &:focus {
+              color: var(--primary);
+            }
+          }
+
+          .remember-me {
+            font-size: 0.9rem;
+            color: var(--muted-grey);
+            font-weight: 500;
+          }
+        }
+      }
+
+      .button-wrap {
+        margin: 40px 0;
+
+        &.has-help {
+          display: flex;
+          align-items: center;
+
+          > span {
+            margin-inline-start: 12px;
+            font-family: var(--font);
+
+            a {
+              color: var(--primary);
+              font-weight: 500;
+              padding: 0 2px;
+            }
+          }
+        }
+
+        .button {
+          height: 46px;
+          width: 140px;
+          margin-inline-start: 6px;
+
+          &:first-child {
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.remember-toggle {
+  width: 65px;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 22px;
+  user-select: none;
+  transform: scale(0.9);
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+
+    &:checked ~ .toggler {
+      border-color: var(--primary);
+
+      .active,
+      .inactive {
+        transform: translateX(calc(var(--transform-direction) * 100%))
+          rotate(360deg);
+      }
+
+      .active {
+        opacity: 1;
+      }
+
+      .inactive {
+        opacity: 0;
+      }
+    }
+  }
+
+  .toggler {
+    position: relative;
+    display: block;
+    height: 34px;
+    width: 61px;
+    border: 2px solid var(--placeholder);
+    border-radius: 100px;
+    transition: all 0.3s; // transition-all test
+
+    .active,
+    .inactive {
+      position: absolute;
+      top: 2px;
+      inset-inline-start: 2px;
+      height: 26px;
+      width: 26px;
+      border-radius: var(--radius-rounded);
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform: translateX(calc(var(--transform-direction) * 0))
+        rotate(calc(var(--transform-direction) * 0));
+      transition: all 0.3s ease;
+
+      svg {
+        color: var(--white);
+        height: 14px;
+        width: 14px;
+        stroke-width: 3px;
+      }
+    }
+
+    .inactive {
+      background: var(--placeholder);
+      border-color: var(--placeholder);
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .active {
+      background: var(--primary);
+      border-color: var(--primary);
+      opacity: 0;
+      z-index: 0;
+    }
+  }
+}
+
+@media only screen and (width <=767px) {
+  .modern-login {
+    .top-logo {
+      top: 30px;
+    }
+
+    .dark-mode {
+      top: 36px;
+      inset-inline-end: 44px;
+    }
+
+    .is-form {
+      padding-top: 100px;
+    }
+  }
+}
+
+@media only screen and (width >=768px) and (width <=1024px) and (orientation: portrait) {
+  .modern-login {
+    .top-logo {
+      svg {
+        height: 60px;
+        width: 60px;
+      }
+    }
+
+    .dark-mode {
+      top: -58px;
+      inset-inline-end: 30%;
+    }
+
+    .columns {
+      display: flex;
+      height: 100vh;
+    }
+  }
+}
+
+/* ==========================================================================
+Dark mode
+========================================================================== */
+
+.is-dark {
+  .modern-login {
+    background: var(--dark-sidebar);
+
+    .underlay {
+      background: var(--dark-sidebar-light-10);
+    }
+
+    .is-image {
+      border-color: var(--dark-sidebar-light-10);
+    }
+
+    .is-form {
+      .form-text {
+        h2 {
+          color: var(--primary);
+        }
+      }
+
+      .login-wrapper {
+        .control {
+          &.is-flex {
+            a:hover {
+              color: var(--primary);
+            }
+          }
+
+          .input {
+            background: var(--dark-sidebar-light-4);
+
+            &:focus {
+              border-color: var(--primary);
+
+              ~ .autv-icon {
+                i {
+                  color: var(--primary);
+                }
+              }
+            }
+          }
+
+          .auth-label {
+            color: var(--light-text);
+          }
+        }
+
+        .button-wrap {
+          &.has-help {
+            span {
+              color: var(--light-text);
+
+              a {
+                color: var(--primary);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .remember-toggle {
+    input {
+      &:checked + .toggler {
+        border-color: var(--primary);
+
+        > span {
+          background: var(--primary);
+        }
+      }
+    }
+
+    .toggler {
+      border-color: var(--dark-sidebar-light-12);
+
+      > span {
+        background: var(--dark-sidebar-light-12);
+      }
+    }
+  }
+}
 </style>

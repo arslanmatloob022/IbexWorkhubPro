@@ -133,6 +133,7 @@ const deleteProject = async () => {
     await api.delete(`/api/project/${projectIdDeleteTobe.value}/`);
     getProjectHandler();
     notyf.success("Project has been deleted");
+    SweetAlertProps.value.isSweetAlertOpen = false;
   } catch (err) {
     console.log(err);
   } finally {

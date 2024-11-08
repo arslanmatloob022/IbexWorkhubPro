@@ -60,7 +60,7 @@ useHead(() => ({
     {
       name: "description",
       content:
-        "Vuero is more than a dashboard template, it is design system built with Vue, Bulma and Typescript. It ships with more than 200+ demo pages and a components.",
+        "Ibex WorkHub: a platform of Ibex Builders Studios where we manage the real estate building tasks and all others processes including assigning jobs to Managers, Workers, Contractors and Sub-contractors. We also look after the Jobs status and also updates our clients every moment",
     },
     // Open Graph
     {

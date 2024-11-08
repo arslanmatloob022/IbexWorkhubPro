@@ -66,12 +66,12 @@ const projectData = ref({
   property_features: [],
 });
 
-const property_features = ref([
-  { name: "Bedrooms", quantity: 0 },
-  { name: "Bathrooms", quantity: 0 },
-  { name: "Kitchen", quantity: 0 },
-  { name: "Drawing", quantity: 0 },
-]);
+// const property_features = ref([
+//   { name: "Bedrooms", quantity: 0 },
+//   { name: "Bathrooms", quantity: 0 },
+//   { name: "Kitchen", quantity: 0 },
+//   { name: "Drawing", quantity: 0 },
+// ]);
 
 const handleFileChange = (event) => {
   projectData.value.image = event.target.files[0];
@@ -94,12 +94,16 @@ const onRemoveFile = () => {
 const addNewProject = async () => {
   try {
     loading.value = true;
-    if (Array.isArray(property_features.value)) {
-      projectData.value.property_features = JSON.stringify(
-        property_features.value
-      );
-    }
+    // if (Array.isArray(property_features.value)) {
+    //   projectData.value.property_features = JSON.stringify(
+    //     property_features.value
+    //   );
+    // }
 
+    if (!projectData.value.contractor) {
+      delete projectData.value.contractor;
+    }
+    delete projectData.value.property_features;
     const formData = convertToFormData(projectData.value, ["image"]);
 
     if (projectData.value.id) {
@@ -694,14 +698,14 @@ onMounted(() => {
               <VField class="is-flex">
                 <VControl raw subcontrol>
                   <VCheckbox
-                    v-model="projectData.wifi"
+                    v-model="projectData.wifiAvaliabe"
                     label="Wifi Available"
                     color="primary"
                   />
                 </VControl>
                 <VControl raw subcontrol>
                   <VCheckbox
-                    v-model="projectData.parking"
+                    v-model="projectData.parkingAvaliable"
                     label="Parking Available"
                     color="primary"
                   />
