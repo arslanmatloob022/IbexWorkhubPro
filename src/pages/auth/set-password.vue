@@ -14,31 +14,29 @@ const route = useRoute();
 const notyf = useNotyf();
 const api = useApi();
 const Password = ref("");
-const confirmPassword =ref("")
-const token = ref('');
-const email = ref('');
+const confirmPassword = ref("");
+const token = ref("");
+const email = ref("");
 const handleSubmit = async () => {
   if (!isLoading.value) {
-    if(Password.value!=confirmPassword.value)
-    {
+    if (Password.value != confirmPassword.value) {
       notyf.error("Both password and confirm password  must be matched");
-      return
+      return;
     }
     isLoading.value = true;
     try {
-      const response = await api.post("/v3/api/account/auth/set-password/", {
+      const response = await api.post("/api/auth/set-password/", {
         email: email.value,
         password: Password.value,
-        token:token.value,
-        confirm_password: confirmPassword.value
-
+        token: token.value,
+        confirm_password: confirmPassword.value,
       });
 
       onSuccess();
     } catch (error) {
       isLoading.value = false;
       notyf.dismissAll();
-      notyf.error("Inavlid link or expired, password update");
+      notyf.error("Invalid link or expired, password update");
     }
   }
 };
@@ -46,27 +44,25 @@ const onSuccess = () => {
   isLoading.value = false;
   notyf.dismissAll();
   notyf.success("Password updated successfully");
-  router.push("/auth/login")
-
+  router.push("/auth/login");
 };
 
 onMounted(() => {
-    token.value = route.query.token;
-    email.value = route.query.email;
+  token.value = route.query.token;
+  email.value = route.query.email;
   // handleSubmit()
 });
 
 useHead({
-  title: "Reset Password - Arez",
+  title: "Reset Password - Ibex",
 });
 
 const ShowPassword = ref(false);
 const passwordFieldType = ref("Password");
-const switchVisibility =()=>{
-  passwordFieldType.value = passwordFieldType.value === "Password"? "text" : "Password";
-}
-
-
+const switchVisibility = () => {
+  passwordFieldType.value =
+    passwordFieldType.value === "Password" ? "text" : "Password";
+};
 </script>
 
 <template>
@@ -93,7 +89,7 @@ const switchVisibility =()=>{
       <div class="column is-4 is-relative">
         <div class="top-tools">
           <RouterLink to="/" class="top-logo">
-            <div style="width:12rem; height:12rem;">
+            <div style="width: 12rem; height: 12rem">
               <AnimatedLogo width="38px" height="38px" />
             </div>
           </RouterLink>
@@ -130,7 +126,6 @@ const switchVisibility =()=>{
             </div> -->
             <form
               method="post"
-              
               data-cy="login-form"
               :class="[step !== 'login' && 'is-hidden']"
               class="login-wrapper"
@@ -397,8 +392,8 @@ const switchVisibility =()=>{
             background: var(--fade-grey-light-6);
             border-color: var(--placeholder);
 
-            ~ .auth-label,Suppliers
-            ~ .autv-icon i {
+            ~ .auth-label,
+            Suppliers ~ .autv-icon i {
               color: var(--muted-grey);
             }
           }

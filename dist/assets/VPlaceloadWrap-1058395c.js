@@ -1,1 +1,0 @@
-import{R as s,B as a,C as e,Y as o}from"./index-d9ebeddb.js";const r={class:"placeload-wrap is-flex"};const t=s({},[["render",function(s,t){return a(),e("div",r,[o(s.$slots,"default")])}]]);export{t as _};

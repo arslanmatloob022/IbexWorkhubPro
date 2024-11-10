@@ -73,7 +73,7 @@ const loginSuccess = () => {
 const sendResetPasswordEmail = async (useremail: string) => {
   try {
     isLoading.value = true;
-    const response = await api.post("/v3/api/account/auth/forget-password/", {
+    const response = await api.post("/api/account/auth/forget-password/", {
       email: useremail,
     });
     showMailMessage.value = true;
