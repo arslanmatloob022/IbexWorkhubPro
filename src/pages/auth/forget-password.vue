@@ -76,6 +76,7 @@ const switchVisibility = () => {
               <div class="columns">
                 <div class="column">
                   <img
+                    style="height: 460px"
                     class="hero-image"
                     src="/@src/assets/illustrations/login/station.svg"
                     alt=""

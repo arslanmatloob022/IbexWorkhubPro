@@ -103,6 +103,9 @@ const addNewProject = async () => {
     if (!projectData.value.contractor) {
       delete projectData.value.contractor;
     }
+    if (!projectData.value.client) {
+      delete projectData.value.client;
+    }
     delete projectData.value.property_features;
     const formData = convertToFormData(projectData.value, ["image"]);
 

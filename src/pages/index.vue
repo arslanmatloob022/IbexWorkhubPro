@@ -120,7 +120,7 @@ useHead({
       >
         <div style="overflow: hidden" class="hero is-image">
           <img
-            style="transform: translateY(-19%)"
+            style="transform: translateY(-6%); height: 460px; width: auto"
             :src="
               darkmode.isDark
                 ? '/logos/ibexwhite.png'
