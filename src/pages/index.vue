@@ -73,7 +73,7 @@ const loginSuccess = () => {
 const sendResetPasswordEmail = async (useremail: string) => {
   try {
     isLoading.value = true;
-    const response = await api.post("/api/account/auth/forget-password/", {
+    const response = await api.post("/api/auth/forget-password/", {
       email: useremail,
     });
     showMailMessage.value = true;
@@ -114,27 +114,33 @@ useHead({
     <div class="underlay h-hidden-mobile h-hidden-tablet-p" />
     <div class="columns is-gapless is-vcentered">
       <!-- style="background-image: url(&quot;/IbexImages/ibexnight.png&quot;)" -->
-      <div class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p">
-        <div class="hero is-fullheight is-image">
-          <div class="hero-body">
+      <div
+        style="overflow: hidden"
+        class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p"
+      >
+        <div style="overflow: hidden" class="hero is-image">
+          <img
+            style="transform: translateY(-19%)"
+            :src="
+              darkmode.isDark
+                ? '/logos/ibexwhite.png'
+                : '/logos/IbexFaviconDark.png'
+            "
+            alt=""
+          />
+          <!-- <div class="hero-body">
             <div class="container">
               <div class="columns">
-                <div class="column">
-                  <img
-                    :src="
-                      darkmode.isDark
-                        ? '/logos/ibexwhite.png'
-                        : '/logos/IbexFaviconDark.png'
-                    "
-                    alt=""
-                  />
-                </div>
+                <div class="column is-10"></div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
-      <div style="z-index: 99999" class="column is-4 is-relative">
+      <div
+        style="z-index: 99999; overflow: hidden"
+        class="column is-4 is-relative"
+      >
         <div class="top-tools">
           <RouterLink to="/auth/login" class="top-logo">
             <AnimatedLogo style="width: 38px; height: 38px" />

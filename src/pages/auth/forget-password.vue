@@ -14,31 +14,29 @@ const route = useRoute();
 const notyf = useNotyf();
 const api = useApi();
 const Password = ref("");
-const confirmPassword =ref("")
-const token = ref('');
-const email = ref('');
+const confirmPassword = ref("");
+const token = ref("");
+const email = ref("");
 const handleSubmit = async () => {
   if (!isLoading.value) {
-    if(Password.value!=confirmPassword.value)
-    {
+    if (Password.value != confirmPassword.value) {
       notyf.error("Both password and confirm password  must be matched");
-      return
+      return;
     }
     isLoading.value = true;
     try {
-      const response = await api.post("/v3/api/account/auth/set-password/", {
+      const response = await api.post("/api/auth/set-password/", {
         email: email.value,
         password: Password.value,
-        token:token.value,
-        confirm_password: confirmPassword.value
-
+        token: token.value,
+        confirm_password: confirmPassword.value,
       });
 
       onSuccess();
     } catch (error) {
       isLoading.value = false;
       notyf.dismissAll();
-      notyf.error("Inavlid or expired link, password update");
+      notyf.error("Invalid or expired link, password update");
     }
   }
 };
@@ -46,27 +44,25 @@ const onSuccess = () => {
   isLoading.value = false;
   notyf.dismissAll();
   notyf.success("Password updated successfully");
-  router.push("/")
-
+  router.push("/");
 };
 
 onMounted(() => {
-    token.value = route.query.token;
-    email.value = route.query.email;
+  token.value = route.query.token;
+  email.value = route.query.email;
   // handleSubmit()
 });
 
 useHead({
-  title: "Reset Password - Arez",
+  title: "Reset Password - Ibex",
 });
 
 const ShowPassword = ref(false);
 const passwordFieldType = ref("Password");
-const switchVisibility =()=>{
-  passwordFieldType.value = passwordFieldType.value === "Password"? "text" : "Password";
-}
-
-
+const switchVisibility = () => {
+  passwordFieldType.value =
+    passwordFieldType.value === "Password" ? "text" : "Password";
+};
 </script>
 
 <template>
@@ -120,7 +116,6 @@ const switchVisibility =()=>{
             </div>
             <form
               method="post"
-              
               data-cy="login-form"
               :class="[step !== 'login' && 'is-hidden']"
               class="login-wrapper"
@@ -177,8 +172,7 @@ const switchVisibility =()=>{
                 </VButton>
               </div>
             </form>
-
-           </div>
+          </div>
         </div>
       </div>
     </div>
