@@ -118,9 +118,17 @@ useHead({
         style="overflow: hidden"
         class="column is-relative is-8 h-hidden-mobile h-hidden-tablet-p"
       >
-        <div style="overflow: hidden" class="hero is-image">
+        <div
+          style="
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+          class="hero is-image"
+        >
           <img
-            style="transform: translateY(-6%); height: 460px; width: auto"
+            style="transform: translateY(-6%); width: 700px; height: auto"
             :src="
               darkmode.isDark
                 ? '/logos/ibexwhite.png'
