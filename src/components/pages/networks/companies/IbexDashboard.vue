@@ -10,23 +10,11 @@ meta:
 
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
-import { useThemeColors } from "/@src/composable/useThemeColors";
-import { useCompany } from "/@src/stores/company";
 import { ref, onMounted, shallowRef, watch } from "vue";
 
-import ApexChart from "vue3-apexcharts";
-
-import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import { useInterviewsChart } from "/@src/data/dashboards/personal-v3/interviewsChart";
-import { useProgressChart } from "/@src/data/dashboards/personal-v3/progressChart";
-import * as userData from "/@src/data/dashboards/personal-v3/users";
 import { formatDateTime } from "/@src/composable/useSupportElement";
 
-const { progressGaugeOptions, onprogressGaugeReady } = useProgressChart();
-const { interviewsOptions } = useInterviewsChart();
 const api = useApi();
-const route = useRoute();
-const userStack = userData.userStack as VAvatarProps[];
 const loading = ref(false);
 const dashboardStats = ref({
   all_project: 0,
@@ -86,7 +74,7 @@ onMounted(() => {
                     <VBlock
                       :title="
                         dashboardStats?.all_project
-                          ? dashboardStats.all_project
+                          ? dashboardStats.all_project.toString()
                           : '0'
                       "
                       subtitle="All Projects"
@@ -105,7 +93,7 @@ onMounted(() => {
                     <VBlock
                       :title="
                         dashboardStats?.active_projects
-                          ? dashboardStats?.active_projects
+                          ? dashboardStats?.active_projects.toString()
                           : '0'
                       "
                       subtitle="Active Projects"
@@ -124,7 +112,7 @@ onMounted(() => {
                     <VBlock
                       :title="
                         dashboardStats?.pending_projects
-                          ? dashboardStats?.pending_projects
+                          ? dashboardStats?.pending_projects.toString()
                           : '0'
                       "
                       subtitle="Pre Construction"
@@ -143,7 +131,7 @@ onMounted(() => {
                     <VBlock
                       :title="
                         dashboardStats?.completed_projects
-                          ? dashboardStats?.completed_projects
+                          ? dashboardStats?.completed_projects.toString()
                           : '0'
                       "
                       subtitle="Completed"
@@ -162,7 +150,7 @@ onMounted(() => {
                     <VBlock
                       :title="
                         dashboardStats?.managers
-                          ? dashboardStats?.managers
+                          ? dashboardStats?.managers.toString()
                           : '0'
                       "
                       subtitle="Managers"
@@ -183,7 +171,9 @@ onMounted(() => {
                   <div class="dashboard-card">
                     <VBlock
                       :title="
-                        dashboardStats?.workers ? dashboardStats?.workers : '0'
+                        dashboardStats?.workers
+                          ? dashboardStats?.workers.toString()
+                          : '0'
                       "
                       subtitle="Workers"
                       center
@@ -201,7 +191,7 @@ onMounted(() => {
                     <VBlock
                       :title="
                         dashboardStats?.contractors
-                          ? dashboardStats?.contractors
+                          ? dashboardStats?.contractors.toString()
                           : '0'
                       "
                       subtitle="Contractors"
@@ -219,7 +209,9 @@ onMounted(() => {
                   <div class="dashboard-card">
                     <VBlock
                       :title="
-                        dashboardStats?.clients ? dashboardStats?.clients : '0'
+                        dashboardStats?.clients
+                          ? dashboardStats?.clients.toString()
+                          : '0'
                       "
                       subtitle="Clients"
                       center

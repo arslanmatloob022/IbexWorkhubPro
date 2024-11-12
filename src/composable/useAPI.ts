@@ -1,16 +1,21 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
-const router = useRouter();
-const notyf = useNotyf();
+import { useRouter } from "vue-router"; // Move useRouter import here
+
 const { VITE_API_BASE_URL } = import.meta.env;
+
 interface CustomAxiosInstance extends AxiosInstance {}
-const userSession = useUserSession();
+
 let api: CustomAxiosInstance | null = null;
 
 function createApi(): CustomAxiosInstance {
+  const userSession = useUserSession();
+  const router = useRouter(); // Initialize router within createApi function
+  const notyf = useNotyf(); // Initialize notyf within createApi function
+
   const axiosInstance = axios.create({
-    baseURL: "https://api.ibexworkhub.com/",
+    baseURL: VITE_API_BASE_URL || "https://api.ibexworkhub.com/",
     headers: {
       Accept: "application/json",
       "Content-Type": "multipart/form-data",

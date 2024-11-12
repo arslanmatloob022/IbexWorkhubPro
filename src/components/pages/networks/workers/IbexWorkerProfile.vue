@@ -188,6 +188,13 @@ const openEditUserModal = (id: any = "") => {
   openUserUpdateModal.value = true;
 };
 
+const taskData = ref({});
+const taskDetailModal = ref(false);
+const openTaskDetail = (task: any) => {
+  taskData.value = task;
+  taskDetailModal.value = true;
+};
+
 const workerTasksStats = ref({});
 const getWorkerTodayTask = async (refresh: boolean = false) => {
   try {
@@ -404,19 +411,26 @@ onMounted(async () => {
                 flex-wrap: wrap;
                 align-items: center;
                 justify-content: space-between;
+                padding: 6px;
               "
             >
               <p
-                style="font-weight: 600; margin-bottom: 0px; padding-left: 10px"
+                @click="openTaskDetail(arg.event.extendedProps)"
+                style="
+                  font-weight: 600;
+                  margin-bottom: 0px;
+                  padding-left: 10px;
+                  color: #f1f1f1;
+                "
               >
                 {{ arg.event.title }}
               </p>
-              <div>
-                <p style="margin-top: 8px; padding-right: 10px">
-                  {{ new Date(arg.event.start).toDateString() }} to
-                  {{ new Date(arg.event.end).toDateString() }}
-                </p>
-              </div>
+              <!-- <div> -->
+              <p style="padding-right: 10px; color: #f1f1f1">
+                {{ new Date(arg.event.start).toDateString() }} to
+                {{ new Date(arg.event.end).toDateString() }}
+              </p>
+              <!-- </div> -->
             </div>
           </template>
         </FullCalendar>
@@ -440,6 +454,35 @@ onMounted(async () => {
       @update:actionUpdateHandler="getWorkerHandler"
     />
   </div>
+  <VModal
+    v-if="taskDetailModal"
+    :open="taskDetailModal"
+    title="Task Info"
+    actions="center"
+    @close="taskDetailModal = false"
+  >
+    <template #content>
+      <p>
+        Workers:<span
+          v-if="taskData?.workers?.length"
+          v-for="worker in taskData?.workers"
+          >{{ worker.username }}
+        </span>
+      </p>
+      <p>
+        Description :{{ taskData?.description ? taskData?.description : "N/A" }}
+      </p>
+      <p>Unit :{{ taskData?.unit ? taskData?.unit : "N/A" }}</p>
+      <p>Status :{{ taskData?.status ? taskData?.status : "N/A" }}</p>
+      <p>Note :{{ taskData?.note ? taskData?.note : "N/A" }}</p>
+    </template>
+    <template #action>
+      <VButton style="display: none" color="primary" raised> Confirm </VButton>
+    </template>
+    <template #cancel>
+      <VButton @click="taskDetailModal = false" raised> Close </VButton>
+    </template>
+  </VModal>
 </template>
 
 <style lang="scss">

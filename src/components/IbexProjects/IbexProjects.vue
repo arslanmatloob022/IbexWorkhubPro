@@ -34,7 +34,6 @@ const filteredProjects = ref([
     parkingAvaliable: false,
     property_features: null,
     uploaded_files: [],
-    contractor: "",
     is_active: false,
     managers: [],
     client: {
@@ -82,8 +81,9 @@ const project = ref({
 const filterProject = (filterType: string | null) => {
   if (query.value && filterType == null) {
     activeFilter.value = "all";
-    filteredProjects.value = projects.value.filter((project) =>
-      project.title.toLowerCase().includes(query.value.toLowerCase())
+    filteredProjects.value = projects.value.filter(
+      (project) =>
+        project?.title.toLowerCase().includes(query.value.toLowerCase())
     );
     return;
   } else if (!query.value && filterType == null) {
@@ -95,7 +95,7 @@ const filterProject = (filterType: string | null) => {
   activeFilter.value = filterType;
   if (activeFilter.value != "all") {
     const data = projects.value.filter(
-      (project) => project.status == activeFilter.value
+      (project) => project?.status == activeFilter.value
     );
     filteredProjects.value = data;
   } else {
@@ -117,7 +117,7 @@ const getProjectHandler = async () => {
     loading.value = true;
     const response = await api.get("/api/project/my-projects-or-admin/", {});
     projects.value = response.data;
-    filteredProjects.value = response.data.filter((project) => {
+    filteredProjects.value = response.data.filter((project: any) => {
       return project.status !== "completed";
     });
   } catch (err) {
@@ -137,7 +137,7 @@ const deleteProject = async () => {
   } catch (err) {
     console.log(err);
   } finally {
-    getProjectHandler();
+    // getProjectHandler();
     loading.value = false;
   }
 };
@@ -388,7 +388,7 @@ const filteredData = computed(() => {
         <div
           id="inactive-items-tab"
           class="tab-content"
-          :class="[activeTab === 'inactive' && 'is-active']"
+          v-if="filteredProjects.length < 1"
         >
           <div class="list-view-inner">
             <!--Empty placeholder-->

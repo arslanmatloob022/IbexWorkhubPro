@@ -13,10 +13,7 @@ const calendarRef = ref(null);
 const userSession = useUserSession();
 const notyf = useNotyf();
 const loading = ref(false);
-const isProjectFormOpen = ref(false);
-const editProjectId = ref("");
 const fullWidthView = ref(false);
-const taskDetailModal = ref(false);
 const activeFilter = ref("all");
 const query = ref("");
 const tasks = ref([]);
@@ -258,8 +255,6 @@ const renderCalender = () => {
       children: taskResources, // Tasks as child resources
     };
   });
-  console.log("proejrct rources");
-  console.log(projectResources);
   // Assign resources and events to calendar options
   calendarOptions.value.resources = projectResources;
   calendarOptions.value.events = allEvents;
@@ -292,10 +287,9 @@ const getProjectHandler = async () => {
   try {
     loading.value = true;
     console.log("inside all projects func");
-    const response = await api.get("/api/project/projects", {});
+    const response = await api.get("/api/project/projects/", {});
     projects.value = response.data;
     filteredResources.value = response.data;
-    console.log("scratch projects", projects.value);
     loading.value = false;
   } catch (err) {
     console.error(err);
@@ -307,7 +301,7 @@ const getProjectHandler = async () => {
 const getTasksHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/task", {});
+    const response = await api.get("/api/task/", {});
     tasks.value = response.data;
   } catch (err) {
     tasks.value = [];
@@ -326,16 +320,25 @@ watch(activeFilter, (newValue, oldValue) => {
 });
 
 const getCalendarData = async () => {
-  await getProjectHandler(), await getTasksHandler();
-  renderCalender();
+  await Promise.all([getProjectHandler(), getTasksHandler()]);
+
+  await renderCalender();
 };
 
 onMounted(async () => {
-  await Promise.all([getProjectHandler(), getTasksHandler()]);
-
-  renderCalender();
+  await getCalendarData();
   showWorkerChart.value = true;
 });
+
+// const getCalendarData = async () => {
+//   await getProjectHandler(), await getTasksHandler();
+//   await renderCalender();
+// };
+
+// onMounted(async () => {
+//   await getCalendarData();
+//   showWorkerChart.value = true;
+// });
 </script>
 
 <template>
@@ -366,7 +369,7 @@ onMounted(async () => {
                   }
                 "
                 class="dropdown-item is-media"
-                :class="activeFilter == 'all' ?? 'is-active'"
+                :class="activeFilter == 'all' ? 'is-active' : ''"
               >
                 <div class="icon">
                   <i class="lnil lnil-menu" aria-hidden="true"></i>
@@ -384,7 +387,7 @@ onMounted(async () => {
                     activeFilter = 'active';
                   }
                 "
-                :class="activeFilter == 'active' ?? 'is-active'"
+                :class="activeFilter == 'active' ? 'is-active' : ''"
                 class="dropdown-item is-media"
               >
                 <div class="icon">
@@ -402,7 +405,7 @@ onMounted(async () => {
                     activeFilter = 'pending';
                   }
                 "
-                :class="activeFilter == 'pending' ?? 'is-active'"
+                :class="activeFilter == 'pending' ? 'is-active' : ''"
                 class="dropdown-item is-media"
               >
                 <div class="icon">
@@ -421,7 +424,7 @@ onMounted(async () => {
                     activeFilter = 'completed';
                   }
                 "
-                :class="activeFilter == 'completed' ?? 'is-active'"
+                :class="activeFilter == 'completed' ? 'is-active' : ''"
                 class="dropdown-item is-media"
               >
                 <div class="icon">
@@ -453,7 +456,7 @@ onMounted(async () => {
               color: black;
             "
           >
-            project: {{ arg.event.title }}
+            Job: {{ arg.event.title }}
           </p>
 
           <div
@@ -505,7 +508,7 @@ onMounted(async () => {
                         </h4>
                       </div>
                       <div class="popover-body">
-                        <p>{{ arg.event?.title }}asas</p>
+                        <p>{{ arg.event?.title }}</p>
                       </div>
                     </div>
                   </template>
@@ -575,20 +578,6 @@ onMounted(async () => {
         }
       "
     />
-
-    <VModal
-      v-if="taskDetailModal"
-      :open="taskDetailModal"
-      actions="center"
-      @close="taskDetailModal = false"
-    >
-      <template #content>
-        <p>{{ taskDetail }}</p>
-      </template>
-      <template #action>
-        <VButton color="primary" raised> Confirm </VButton>
-      </template>
-    </VModal>
   </div>
 </template>
 <style lang="scss">

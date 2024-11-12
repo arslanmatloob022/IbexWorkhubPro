@@ -61,8 +61,9 @@ const filteredProjects = ref([
 const filterProject = (filterType: string | null) => {
   if (query.value && filterType == null) {
     activeFilter.value = "all";
-    filteredProjects.value = projects.value.filter((project) =>
-      project.title.toLowerCase().includes(query.value.toLowerCase())
+    filteredProjects.value = projects.value.filter(
+      (project) =>
+        project?.title?.toLowerCase().includes(query.value.toLowerCase())
     );
     return;
   } else if (!query.value && filterType == null) {
@@ -74,7 +75,7 @@ const filterProject = (filterType: string | null) => {
   activeFilter.value = filterType;
   if (activeFilter.value != "all") {
     const data = projects.value.filter(
-      (project) => project.status == activeFilter.value
+      (project) => project?.status == activeFilter.value
     );
     filteredProjects.value = data;
   } else {

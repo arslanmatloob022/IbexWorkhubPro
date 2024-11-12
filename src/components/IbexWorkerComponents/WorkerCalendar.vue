@@ -241,17 +241,17 @@ onMounted(async () => {
     <template #content>
       <p>
         Workers:<span
-          v-if="taskData.workers.length"
-          v-for="worker in taskData.workers"
+          v-if="taskData?.workers?.length"
+          v-for="worker in taskData?.workers"
           >{{ worker.username }}
         </span>
       </p>
       <p>
-        Description :{{ taskData.description ? taskData.description : "N/A" }}
+        Description :{{ taskData?.description ? taskData?.description : "N/A" }}
       </p>
-      <p>Unit :{{ taskData.unit ? taskData.unit : "N/A" }}</p>
-      <p>Status :{{ taskData.status ? taskData.status : "N/A" }}</p>
-      <p>Note :{{ taskData.note ? taskData.note : "N/A" }}</p>
+      <p>Unit :{{ taskData?.unit ? taskData?.unit : "N/A" }}</p>
+      <p>Status :{{ taskData?.status ? taskData?.status : "N/A" }}</p>
+      <p>Note :{{ taskData?.note ? taskData?.note : "N/A" }}</p>
     </template>
     <template #action>
       <VButton style="display: none" color="primary" raised> Confirm </VButton>
