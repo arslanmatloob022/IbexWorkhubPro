@@ -9,12 +9,14 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useThemeColors } from "/@src/composable/useThemeColors";
+import { useUserSession } from "/@src/stores/userSession";
 
 const themeColors = useThemeColors();
 const api = useApi();
 const notyf = useNotyf();
 const route = useRoute();
 const router = useRouter();
+const userSession = useUserSession();
 const tab = ref("detail");
 
 const Loading = ref(false);
@@ -342,6 +344,10 @@ onMounted(() => {
             <h3 class="title is-4 is-narrow is-bold">
               {{ projectData.title ? projectData.title : "N/A" }}
               <VIcon
+                v-if="
+                  userSession.user.role == 'admin' ||
+                  userSession.user.role == 'manager'
+                "
                 class="cu-pointer"
                 @click="
                   () => {
@@ -402,7 +408,12 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="tabs-inner">
+    <div
+      v-if="
+        userSession.user.role == 'admin' || userSession.user.role == 'manager'
+      "
+      class="tabs-inner"
+    >
       <div class="tabs is-boxed" slider>
         <ul>
           <li :class="[tab === 'detail' && 'is-active']">
@@ -429,7 +440,12 @@ onMounted(() => {
     </div>
 
     <div v-if="tab === 'detail'" class="columns is-multiline">
-      <div class="column is-8">
+      <div
+        v-if="
+          userSession.user.role == 'admin' || userSession.user.role == 'manager'
+        "
+        class="column is-8"
+      >
         <div class="dashboard-card has-margin-bottom">
           <ProjectFiles
             :projectId="route.params.id"
@@ -467,7 +483,13 @@ onMounted(() => {
         </div> -->
       </div>
 
-      <div class="column is-4">
+      <div
+        :class="
+          userSession.user.role == 'admin' || userSession.user.role == 'manager'
+            ? 'column is-4'
+            : 'column is-12'
+        "
+      >
         <!-- <TasksCompletionChart :completedTasks="projectCompletedTasks" /> -->
 
         <!-- manager card -->
@@ -492,8 +514,8 @@ onMounted(() => {
                   <div class="position">{{ manager.email }}</div>
                 </div>
                 <div class="user-list-icons">
-                  <a><i aria-hidden="true" class="fas fa-phone" /></a>
-                  <a><i aria-hidden="true" class="fas fa-video" /></a>
+                  <!-- <a><i aria-hidden="true" class="fas fa-phone" /></a>
+                  <a><i aria-hidden="true" class="fas fa-video" /></a> -->
                 </div>
               </li>
             </ul>
@@ -509,7 +531,14 @@ onMounted(() => {
         <div class="dashboard-card">
           <div class="card-head">
             <h3 class="dark-inverted">Client Information</h3>
-            <a @click="toggleAddClient" class="action-link" tabindex="0"
+            <a
+              v-if="
+                userSession.user.role == 'admin' ||
+                userSession.user.role == 'manager'
+              "
+              @click="toggleAddClient"
+              class="action-link"
+              tabindex="0"
               >{{ showAddClient ? "Close" : "Edit" }}
             </a>
           </div>
@@ -531,8 +560,8 @@ onMounted(() => {
                   <div class="position">{{ projectData.client.email }}</div>
                 </div>
                 <div class="user-list-icons">
-                  <a><i aria-hidden="true" class="fas fa-phone" /></a>
-                  <a><i aria-hidden="true" class="fas fa-video" /></a>
+                  <!-- <a><i aria-hidden="true" class="fas fa-phone" /></a>
+                  <a><i aria-hidden="true" class="fas fa-video" /></a> -->
                 </div>
               </li>
             </ul>
@@ -566,9 +595,16 @@ onMounted(() => {
         <div class="dashboard-card">
           <div class="card-head">
             <h3 class="dark-inverted">Contractor Information</h3>
-            <a @click="toggleAddContractor" class="action-link" tabindex="0">{{
-              showAddContractor ? "Close" : "Edit"
-            }}</a>
+            <a
+              v-if="
+                userSession.user.role == 'admin' ||
+                userSession.user.role == 'manager'
+              "
+              @click="toggleAddContractor"
+              class="action-link"
+              tabindex="0"
+              >{{ showAddContractor ? "Close" : "Edit" }}</a
+            >
           </div>
           <div class="active-team">
             <ul class="user-list" v-if="projectData.contractor">
@@ -588,8 +624,8 @@ onMounted(() => {
                   <div class="position">{{ projectData.contractor.email }}</div>
                 </div>
                 <div class="user-list-icons">
-                  <a><i aria-hidden="true" class="fas fa-phone" /></a>
-                  <a><i aria-hidden="true" class="fas fa-video" /></a>
+                  <!-- <a><i aria-hidden="true" class="fas fa-phone" /></a>
+                  <a><i aria-hidden="true" class="fas fa-video" /></a> -->
                 </div>
               </li>
             </ul>

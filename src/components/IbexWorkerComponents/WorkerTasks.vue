@@ -264,6 +264,10 @@ onMounted(() => {
           />
         </VControl>
         <VButton
+          v-if="
+            userSession.user.role == 'admin' ||
+            userSession.user.role == 'manager'
+          "
           @click="openTaskForm()"
           color="primary"
           icon="fas fa-plus"

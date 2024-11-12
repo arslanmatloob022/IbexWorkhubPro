@@ -189,12 +189,12 @@ const filteredData = computed(() => {
       </VField>
 
       <div class="tabs-inner">
-        <VButton
+        <!-- <VButton
           color="primary"
           to="/sidebar/dashboard/projects/add-project"
           elevated
           >Add Project</VButton
-        >
+        > -->
       </div>
     </div>
 

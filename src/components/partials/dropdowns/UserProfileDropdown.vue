@@ -25,8 +25,8 @@ async function logout() {
       >
         <VAvatar
           :picture="
-            userSession.user && userSession.user.avatar
-              ? userSession.user.avatar
+            userSession.user && userSession?.user?.avatar
+              ? userSession?.user?.avatar
               : '/images/avatars/svg/vuero-1.svg'
           "
         />
@@ -58,7 +58,7 @@ async function logout() {
         </div>
       </div>
 
-      <RouterLink
+      <!-- <RouterLink
         to="/sidebar/dashboard/profile"
         role="menuitem"
         class="dropdown-item is-media"
@@ -70,7 +70,7 @@ async function logout() {
           <span>Profile</span>
           <span>View your profile</span>
         </div>
-      </RouterLink>
+      </RouterLink> -->
 
       <!-- <a href="#" role="menuitem" class="dropdown-item is-media">
         <div class="icon">

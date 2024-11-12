@@ -16,6 +16,7 @@ const loading = ref(false);
 const isProjectFormOpen = ref(false);
 const editProjectId = ref("");
 const fullWidthView = ref(false);
+const taskDetailModal = ref(false);
 const activeFilter = ref("all");
 const query = ref("");
 const tasks = ref([]);
@@ -504,9 +505,7 @@ onMounted(async () => {
                         </h4>
                       </div>
                       <div class="popover-body">
-                        <p>
-                          {{ arg.event?.title }}
-                        </p>
+                        <p>{{ arg.event?.title }}asas</p>
                       </div>
                     </div>
                   </template>
@@ -576,6 +575,20 @@ onMounted(async () => {
         }
       "
     />
+
+    <VModal
+      v-if="taskDetailModal"
+      :open="taskDetailModal"
+      actions="center"
+      @close="taskDetailModal = false"
+    >
+      <template #content>
+        <p>{{ taskDetail }}</p>
+      </template>
+      <template #action>
+        <VButton color="primary" raised> Confirm </VButton>
+      </template>
+    </VModal>
   </div>
 </template>
 <style lang="scss">

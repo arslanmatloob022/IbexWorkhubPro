@@ -9,6 +9,8 @@ const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
+const taskDetailModal = ref(false);
+const taskDetail = ref({});
 const events = ref<any>([]);
 const workerData = ref({
   id: "",
@@ -97,6 +99,8 @@ const renderCalendar = () => {
     workers: task.workers,
     borderColor: colors[task.status],
     status: task.status,
+    unit: task.unit,
+    note: task.note,
   }));
 
   projects.value = tasks.value.map((task) => ({
@@ -151,6 +155,12 @@ const getTasksHandler = async () => {
     tasks.value = [];
   }
 };
+const taskData = ref({});
+const openTaskDetail = (task: any) => {
+  console.log("detail", task);
+  taskData.value = task;
+  taskDetailModal.value = true;
+};
 
 const getWorkerHandler = async () => {
   try {
@@ -204,6 +214,7 @@ onMounted(async () => {
               "
             >
               <p
+                @click="openTaskDetail(arg.event.extendedProps)"
                 style="font-weight: 600; margin-bottom: 0px; padding-left: 10px"
               >
                 {{ arg.event.title }}
@@ -220,6 +231,35 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+  <VModal
+    v-if="taskDetailModal"
+    :open="taskDetailModal"
+    title="Task Info"
+    actions="center"
+    @close="taskDetailModal = false"
+  >
+    <template #content>
+      <p>
+        Workers:<span
+          v-if="taskData.workers.length"
+          v-for="worker in taskData.workers"
+          >{{ worker.username }}
+        </span>
+      </p>
+      <p>
+        Description :{{ taskData.description ? taskData.description : "N/A" }}
+      </p>
+      <p>Unit :{{ taskData.unit ? taskData.unit : "N/A" }}</p>
+      <p>Status :{{ taskData.status ? taskData.status : "N/A" }}</p>
+      <p>Note :{{ taskData.note ? taskData.note : "N/A" }}</p>
+    </template>
+    <template #action>
+      <VButton style="display: none" color="primary" raised> Confirm </VButton>
+    </template>
+    <template #cancel>
+      <VButton @click="taskDetailModal = false" raised> Close </VButton>
+    </template>
+  </VModal>
 </template>
 
 <style lang="scss">

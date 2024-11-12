@@ -60,7 +60,7 @@ const loginSuccess = () => {
   if (userSession.user.role == "admin") {
     router.push("/sidebar/dashboard");
   } else if (userSession.user.role == "worker") {
-    router.push("/sidebar/worker/tasks");
+    router.push("/sidebar/worker/calendar");
   } else if (userSession.user.role == "manager") {
     router.push("/sidebar/manager/projects");
   } else if (userSession.user.role == "contractor") {
