@@ -139,7 +139,7 @@ const moveToDetail = (item: any) => {
   if (item.status !== "succeeded") {
     return;
   } else {
-    const url = `https://dashboard.stripe.com/test/payments/${item.response?.id}`;
+    const url = `https://dashboard.stripe.com/payments/${item.response?.id}`;
     window.open(url, "_blank"); // Opens the URL in a new tab
   }
 };
@@ -217,14 +217,23 @@ onMounted(() => {
                 >
                   <VFlexTableCell>
                     <div>
+                      <p class="light-text text-overflow">
+                        {{ item.description ? item.description : "not added" }}
+                      </p>
+
                       <p
                         class="light-text text-overflow"
                         :class="item.status === 'succeeded' ? 'is-link' : ''"
                         @click="moveToDetail(item)"
                       >
-                        {{ item.description }}
+                        Payment link
                       </p>
-                      <p class="mt-2" @click="copyLink(item.checkoutLink)">
+
+                      <p
+                        v-if="item.status !== 'succeeded'"
+                        class="mt-2"
+                        @click="copyLink(item.checkoutLink)"
+                      >
                         Checkout link
                         <i
                           style="color: var(--info)"
@@ -272,16 +281,11 @@ onMounted(() => {
                   </VFlexTableCell>
 
                   <VFlexTableCell>
-                    <VTag>
-                      <p
-                        style="
-                          font-size: 1rem;
-                          font-weight: 600;
-                          text-transform: uppercase;
-                        "
-                      >
-                        {{ item.status }}
-                      </p>
+                    <VTag
+                      style="text-transform: capitalize"
+                      :color="item.status == 'succeeded' ? 'primary' : ''"
+                    >
+                      {{ item.status }}
                     </VTag>
                   </VFlexTableCell>
                   <VFlexTableCell>

@@ -151,18 +151,7 @@ onMounted(() => {
                       </Multiselect>
                     </VControl>
                   </VField>
-
-                  <!-- <div class="columns is-multiple"> -->
-                  <!-- <div class="field column is-12"> -->
-                  <VField class="field column is-12 p-0">
-                    <VLabel for="">Pay by</VLabel>
-                    <VSelect v-model="linkData.payment_method">
-                      <VOption value="us_bank_account">US Bank Account</VOption>
-                      <VOption value="card">Credit Card</VOption>
-                      <VOption value="both">Any</VOption>
-                    </VSelect>
-                  </VField>
-                  <!-- <div class="field">
+                  <div class="field">
                     <label>Description* (Job Name, Invoice Number etc)</label>
                     <VField>
                       <VControl>
@@ -175,7 +164,18 @@ onMounted(() => {
                         />
                       </VControl>
                     </VField>
-                  </div> -->
+                  </div>
+
+                  <!-- <div class="columns is-multiple"> -->
+                  <!-- <div class="field column is-12"> -->
+                  <VField class="field column is-12 p-0">
+                    <VLabel for="">Pay by</VLabel>
+                    <VSelect v-model="linkData.payment_method">
+                      <VOption value="us_bank_account">US Bank Account</VOption>
+                      <VOption value="card">Credit Card</VOption>
+                      <VOption value="both">Any</VOption>
+                    </VSelect>
+                  </VField>
 
                   <form action="post" @submit.prevent="addItem">
                     <VField>
@@ -197,7 +197,7 @@ onMounted(() => {
                           required
                           v-model="listItem.amount"
                           type="number"
-                          step="0"
+                          step="0.01"
                           placeholder="Amount in $"
                         />
                       </VControl>
