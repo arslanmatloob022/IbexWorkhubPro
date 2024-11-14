@@ -224,7 +224,7 @@ onMounted(() => {
         </div>
 
         <!-- phone number -->
-        <div class="field column is-6 mb-0">
+        <div class="field column is-3 mb-0">
           <VField>
             <VLabel>Quantity</VLabel>
             <VControl>
@@ -238,7 +238,7 @@ onMounted(() => {
         </div>
 
         <!-- post code -->
-        <div class="field column is-6 mb-0">
+        <div class="field column is-3 mb-0">
           <VField>
             <VLabel>Unit</VLabel>
             <VControl>
@@ -278,7 +278,7 @@ onMounted(() => {
           </VField>
         </div>
 
-        <!-- external id -->
+        <!-- priority level 
         <div class="field column is-6 mb-0">
           <VField>
             <VLabel>Priority</VLabel>
@@ -291,7 +291,7 @@ onMounted(() => {
               </VSelect>
             </VControl>
           </VField>
-        </div>
+        </div>-->
 
         <div class="field column is-6 mb-0">
           <label>Select workers * </label>

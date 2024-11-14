@@ -17,20 +17,20 @@ const currentHelp = ref(-1);
 const addUserModal = ref(false);
 const selectedRole = ref("");
 
-const props = defineProps<{
-  isOpen: {
-    type: Boolean;
-    default: false;
-  };
-  closeModal: {
-    type: Function;
-    default: () => {};
-  };
-  projectId: {
-    type: Number;
-    default: null;
-  };
-}>();
+// const props = defineProps<{
+//   isOpen: {
+//     type: Boolean;
+//     default: false;
+//   };
+//   closeModal: {
+//     type: Function;
+//     default: () => {};
+//   };
+//   projectId: {
+//     type: Number;
+//     default: null;
+//   };
+// }>();
 
 const newProjectId = ref(0);
 const workWithContractor = ref(false);
@@ -177,7 +177,7 @@ const uploadTasksSheet = async (tasksFile: any) => {
         file: tasksFile,
       }
     );
-    notyf.success(`Tasks Will be generated automatically`);
+    notyf.success(`Tasks will be generated automatically`);
     console.log(resp);
   } catch (err) {
     console.log(err);
@@ -213,7 +213,6 @@ const openUserModal = (role: string) => {
 };
 
 const getAddedUser = () => {
-  addUserModal.value = false;
   if (selectedRole.value == "manager") {
     getManagersHandler();
   } else if (selectedRole.value == "contractor") {
@@ -221,6 +220,7 @@ const getAddedUser = () => {
   } else {
     getClientHandler();
   }
+  addUserModal.value = false;
 };
 
 const getProjectDetail = async () => {
@@ -958,6 +958,7 @@ onMounted(() => {
     v-if="addUserModal"
     :isModalOpen="addUserModal"
     :userRole="selectedRole"
+    userId=""
     @closeModalHandler="addUserModal = false"
     @update:actionUpdateHandler="getAddedUser"
   />

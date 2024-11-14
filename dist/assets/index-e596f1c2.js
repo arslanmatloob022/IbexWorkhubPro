@@ -1,1 +1,0 @@
-import{v as n}from"./index-f949a12e.js";const o=function(o,t,e,f){"function"==typeof t&&"function"!=typeof e&&(f=e,e=t,t=null),n(o,t,(function(n,o){const t=o[o.length-1];return e(n,t?t.children.indexOf(n):null,t)}),f)};export{o as v};

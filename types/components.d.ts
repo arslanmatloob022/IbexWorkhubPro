@@ -543,6 +543,7 @@ declare module 'vue' {
     TabsSliderTsquareDocumentation: typeof import('./../documentation/tabs/tabs-slider-tsquare-documentation.md')['default']
     TabsSlotsDocumentation: typeof import('./../documentation/tabs/tabs-slots-documentation.md')['default']
     TabsToggleDocumentation: typeof import('./../documentation/tabs/tabs-toggle-documentation.md')['default']
+    TaskInfoModal: typeof import('./../src/components/IbexProjects/ProjectTasks/TaskInfoModal.vue')['default']
     TaskPanel: typeof import('./../src/components/partials/panels/TaskPanel.vue')['default']
     TasksCompletionChart: typeof import('./../src/components/IbexProjects/ProjectTasks/TasksCompletionChart.vue')['default']
     TeamCardDropdown: typeof import('./../src/components/partials/dropdowns/TeamCardDropdown.vue')['default']

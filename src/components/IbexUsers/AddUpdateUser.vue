@@ -143,7 +143,9 @@ onMounted(() => {
     getUserDataHandler();
   }
   userFormData.value.role = props.userRole;
-  getSuppliers();
+  if (props.userRole == "worker") {
+    getSuppliers();
+  }
   if (props.supplierId) {
     userFormData.value.supplier = props.supplierId;
   }
@@ -354,6 +356,16 @@ onMounted(() => {
     <template #action>
       <VButton :loading="Loading" type="submit" color="primary" raised>
         {{ props.userId ? "Update" : "Add" }}
+      </VButton>
+    </template>
+    <template #cancel>
+      <VButton
+        :loading="Loading"
+        type="cancel"
+        @click="closeModalHandler"
+        raised
+      >
+        Cancel
       </VButton>
     </template>
   </VModal>

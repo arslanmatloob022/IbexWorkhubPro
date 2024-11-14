@@ -4,6 +4,7 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
+import { formatDate } from "/@src/composable/useSupportElement";
 
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -35,7 +36,44 @@ const query = ref("");
 const loading = ref(false);
 
 // Tasks, Resources, Events, and Projects as Reactive Arrays
-const tasks = ref([]);
+const tasks = ref([
+  {
+    id: "",
+    workers: [
+      {
+        id: "937a8b15-62b4-4576-98af-2e53ecb90e46",
+        username: "Test Worker",
+        email: "testworker@gmail.com",
+        role: "worker",
+        avatar: "/media/static/users_avatars/selfie1_tW8X714.jpg",
+      },
+    ],
+    project: {
+      id: "ab1a2dba-2786-45c0-8494-86a9229384b6",
+      title: "Test Home",
+      startDate: "2024-11-09",
+      endDate: "2024-11-30",
+      status: "active",
+      address: "Test job address",
+    },
+    color: "#7c8dad",
+    title: "Test detail",
+    description: "Description of task",
+    startDate: "2024-11-12",
+    endDate: "2024-11-20",
+    status: "active",
+    is_active: false,
+    updated: "2024-11-12T03:37:52.203461Z",
+    created: "2024-11-12T03:37:52.203474Z",
+    costCode: "123456",
+    quantity: "12",
+    unit: "14",
+    fileName: null,
+    note: null,
+    priority: "Low",
+    contractor: null,
+  },
+]);
 const filteredResources = ref([]);
 const filteredEvents = ref([]);
 const projects = ref<any>([]);
@@ -103,6 +141,7 @@ const renderCalendar = () => {
     workers: task.workers,
     borderColor: colors[task.status],
     status: task.status,
+    project: task.project,
   }));
 
   projects.value = tasks.value.map((task) => ({
@@ -169,7 +208,7 @@ const getWorkerHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/users/${route.params.id ? route.params.id : userSession.user.id}`
+      `/api/users/${route.params.id ? route.params.id : userSession.user.id}/`
     );
     workerData.value = response.data;
     loading.value = false;
@@ -192,6 +231,7 @@ const taskData = ref({});
 const taskDetailModal = ref(false);
 const openTaskDetail = (task: any) => {
   taskData.value = task;
+  console.log("dataa", task);
   taskDetailModal.value = true;
 };
 
@@ -406,6 +446,7 @@ onMounted(async () => {
         <FullCalendar :options="calendarOptions">
           <template v-slot:eventContent="arg">
             <div
+              @click="openTaskDetail(arg.event.extendedProps)"
               style="
                 display: flex;
                 flex-wrap: wrap;
@@ -415,7 +456,6 @@ onMounted(async () => {
               "
             >
               <p
-                @click="openTaskDetail(arg.event.extendedProps)"
                 style="
                   font-weight: 600;
                   margin-bottom: 0px;
@@ -454,35 +494,13 @@ onMounted(async () => {
       @update:actionUpdateHandler="getWorkerHandler"
     />
   </div>
-  <VModal
+  <TaskInfoModal
     v-if="taskDetailModal"
-    :open="taskDetailModal"
-    title="Task Info"
-    actions="center"
-    @close="taskDetailModal = false"
+    :taskDetailModal="taskDetailModal"
+    :taskData="taskData"
+    @update:modalHandler="taskDetailModal = false"
   >
-    <template #content>
-      <p>
-        Workers:<span
-          v-if="taskData?.workers?.length"
-          v-for="worker in taskData?.workers"
-          >{{ worker.username }}
-        </span>
-      </p>
-      <p>
-        Description :{{ taskData?.description ? taskData?.description : "N/A" }}
-      </p>
-      <p>Unit :{{ taskData?.unit ? taskData?.unit : "N/A" }}</p>
-      <p>Status :{{ taskData?.status ? taskData?.status : "N/A" }}</p>
-      <p>Note :{{ taskData?.note ? taskData?.note : "N/A" }}</p>
-    </template>
-    <template #action>
-      <VButton style="display: none" color="primary" raised> Confirm </VButton>
-    </template>
-    <template #cancel>
-      <VButton @click="taskDetailModal = false" raised> Close </VButton>
-    </template>
-  </VModal>
+  </TaskInfoModal>
 </template>
 
 <style lang="scss">

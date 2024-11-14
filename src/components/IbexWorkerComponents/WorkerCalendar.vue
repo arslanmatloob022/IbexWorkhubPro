@@ -31,7 +31,44 @@ const query = ref("");
 const loading = ref(false);
 
 // Tasks, Resources, Events, and Projects as Reactive Arrays
-const tasks = ref([]);
+const tasks = ref([
+  {
+    id: "",
+    workers: [
+      {
+        id: "937a8b15-62b4-4576-98af-2e53ecb90e46",
+        username: "Test Worker",
+        email: "testworker@gmail.com",
+        role: "worker",
+        avatar: "/media/static/users_avatars/selfie1_tW8X714.jpg",
+      },
+    ],
+    project: {
+      id: "ab1a2dba-2786-45c0-8494-86a9229384b6",
+      title: "Test Home",
+      startDate: "2024-11-09",
+      endDate: "2024-11-30",
+      status: "active",
+      address: "Test job address",
+    },
+    color: "#7c8dad",
+    title: "Test detail",
+    description: "Description of task",
+    startDate: "2024-11-12",
+    endDate: "2024-11-20",
+    status: "active",
+    is_active: false,
+    updated: "2024-11-12T03:37:52.203461Z",
+    created: "2024-11-12T03:37:52.203474Z",
+    costCode: "123456",
+    quantity: "12",
+    unit: "14",
+    fileName: null,
+    note: null,
+    priority: "Low",
+    contractor: null,
+  },
+]);
 const filteredResources = ref([]);
 const filteredEvents = ref([]);
 const projects = ref<any>([]);
@@ -71,21 +108,10 @@ const calendarOptions = ref({
   },
   resourceAreaHeaderContent: "Projects",
   resources: [],
+  resourceClick: function (info) {
+    console.log("Additional Data:");
+  },
 });
-
-const sendTasksMailToWorker = async () => {
-  try {
-    const resp = await api.post(`/api/task/worker-mail/`, {
-      worker: route.params.id,
-    });
-    console.log(resp);
-    notyf.success(
-      `List of tasks sent to ${workerData.value.username} successfully`
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 const renderCalendar = () => {
   events.value = tasks.value.map((task) => ({
@@ -97,10 +123,10 @@ const renderCalendar = () => {
     color: task.color,
     description: task.description,
     workers: task.workers,
-    borderColor: colors[task.status],
     status: task.status,
     unit: task.unit,
     note: task.note,
+    project: task.project,
   }));
 
   projects.value = tasks.value.map((task) => ({
@@ -110,7 +136,6 @@ const renderCalendar = () => {
     title: task.project.title,
     address: task.project.address,
     status: task.project.status,
-    color: colors[task.project.status],
   }));
 
   filteredResources.value = projects.value;
@@ -129,6 +154,20 @@ const renderCalendar = () => {
     "resources",
     calendarOptions.value.resources
   );
+};
+
+const sendTasksMailToWorker = async () => {
+  try {
+    const resp = await api.post(`/api/task/worker-mail/`, {
+      worker: route.params.id,
+    });
+    console.log(resp);
+    notyf.success(
+      `List of tasks sent to ${workerData.value.username} successfully`
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const changeFilterHandler = () => {
@@ -165,7 +204,7 @@ const openTaskDetail = (task: any) => {
 const getWorkerHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/users/${userSession.user.id}`);
+    const response = await api.get(`/api/users/${userSession.user.id}/`);
     workerData.value = response.data;
     loading.value = false;
     // renderCalendar();
@@ -206,6 +245,7 @@ onMounted(async () => {
         <FullCalendar :options="calendarOptions">
           <template v-slot:eventContent="arg">
             <div
+              @click="openTaskDetail(arg.event.extendedProps)"
               style="
                 display: flex;
                 flex-wrap: wrap;
@@ -214,13 +254,17 @@ onMounted(async () => {
               "
             >
               <p
-                @click="openTaskDetail(arg.event.extendedProps)"
-                style="font-weight: 600; margin-bottom: 0px; padding-left: 10px"
+                style="
+                  font-weight: 600;
+                  margin-bottom: 0px;
+                  padding-left: 10px;
+                  color: #f1f1f1;
+                "
               >
                 {{ arg.event.title }}
               </p>
               <div>
-                <p style="margin-top: 8px; padding-right: 10px">
+                <p style="margin-top: 8px; padding-right: 10px; color: #f1f1f1">
                   {{ new Date(arg.event.start).toDateString() }} to
                   {{ new Date(arg.event.end).toDateString() }}
                 </p>
@@ -231,35 +275,13 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <VModal
+  <TaskInfoModal
     v-if="taskDetailModal"
-    :open="taskDetailModal"
-    title="Task Info"
-    actions="center"
-    @close="taskDetailModal = false"
+    :taskDetailModal="taskDetailModal"
+    :taskData="taskData"
+    @update:modalHandler="taskDetailModal = false"
   >
-    <template #content>
-      <p>
-        Workers:<span
-          v-if="taskData?.workers?.length"
-          v-for="worker in taskData?.workers"
-          >{{ worker.username }}
-        </span>
-      </p>
-      <p>
-        Description :{{ taskData?.description ? taskData?.description : "N/A" }}
-      </p>
-      <p>Unit :{{ taskData?.unit ? taskData?.unit : "N/A" }}</p>
-      <p>Status :{{ taskData?.status ? taskData?.status : "N/A" }}</p>
-      <p>Note :{{ taskData?.note ? taskData?.note : "N/A" }}</p>
-    </template>
-    <template #action>
-      <VButton style="display: none" color="primary" raised> Confirm </VButton>
-    </template>
-    <template #cancel>
-      <VButton @click="taskDetailModal = false" raised> Close </VButton>
-    </template>
-  </VModal>
+  </TaskInfoModal>
 </template>
 
 <style lang="scss">
