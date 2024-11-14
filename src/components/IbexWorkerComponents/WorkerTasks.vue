@@ -263,7 +263,7 @@ onMounted(() => {
             placeholder="Search..."
           />
         </VControl>
-        <VButton
+        <!-- <VButton
           v-if="
             userSession.user.role == 'admin' ||
             userSession.user.role == 'manager'
@@ -274,7 +274,7 @@ onMounted(() => {
           elevated
           raised
           >Task</VButton
-        >
+        > -->
       </VButtons>
       <div class="tabs-inner">
         <div class="tabs">
@@ -451,7 +451,23 @@ onMounted(() => {
                   </div>
                 </div>
                 <div class="bottom-section">
-                  <div class="foot-block">
+                  <div v-if="item.supplier" class="foot-block">
+                    <h4 class="heading">Sub Contractor</h4>
+                    <div class="developers">
+                      <VAvatar
+                        :picture="item.supplier?.avatar"
+                        size="small"
+                        color="primary"
+                        v-tooltip.rounded.info="`${item?.supplier?.username}`"
+                        :initials="
+                          item.supplier?.avatar
+                            ? ''
+                            : item.supplier?.username.slice(0, 2)
+                        "
+                      />
+                    </div>
+                  </div>
+                  <div v-if="item.workers?.length" class="foot-block">
                     <h4 class="heading">Worker(s)</h4>
                     <div class="developers">
                       <VAvatar

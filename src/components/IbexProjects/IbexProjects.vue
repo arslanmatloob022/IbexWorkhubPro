@@ -248,9 +248,9 @@ const filteredData = computed(() => {
                     />
                     <span>{{ item.address ? item.address : "" }}</span>
                   </p>
-                  <p>
+                  <!-- <p>
                     <span>{{ item.description ? item.description : "" }}</span>
-                  </p>
+                  </p> -->
                   <span>
                     <!-- <span>
                       {{

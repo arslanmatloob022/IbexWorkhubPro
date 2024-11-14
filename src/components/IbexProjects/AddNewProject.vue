@@ -3,6 +3,7 @@ import VueScrollTo from "vue-scrollto";
 import { useNotyf } from "/@src/composable/useNotyf";
 import sleep from "/@src/utils/sleep";
 import { useApi } from "/@src/composable/useAPI";
+const editor = shallowRef<any>();
 import { convertToFormData } from "/@src/composable/useSupportElement";
 
 const route = useRoute();
@@ -240,6 +241,25 @@ const getProjectDetail = async () => {
   }
 };
 
+const CKEditor = defineAsyncComponent(() =>
+  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
+);
+
+const editorConfig = {
+  fontFamily: {
+    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
+  },
+  height: "400px",
+  minHeight: "400px",
+  maxHeight: "600px",
+};
+
+onMounted(async () => {
+  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
+    (m) => m.default
+  );
+});
+
 onMounted(() => {
   getManagersHandler();
   getClientHandler();
@@ -445,14 +465,20 @@ onMounted(() => {
 
               <VField>
                 <VLabel>Description: </VLabel>
-                <VControl>
+                <CKEditor
+                  v-if="editor"
+                  v-model="projectData.description"
+                  :editor="editor"
+                  :config="editorConfig"
+                />
+                <!-- <VControl>
                   <VTextarea
                     rows="4"
                     type="text"
                     :placeholder="loading ? 'Loading...' : 'Description'"
                     v-model="projectData.description"
                   />
-                </VControl>
+                </VControl> -->
               </VField>
 
               <!-- <VField v-slot="{ id }">

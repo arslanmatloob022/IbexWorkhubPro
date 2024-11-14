@@ -332,7 +332,30 @@ onMounted(() => {
 
     <div class="columns is-multiline">
       <div class="column is-12">
-        <div class="dashboard-header">
+        <div class="dashboard-header is-relative">
+          <VIcon
+            style="
+              position: absolute;
+              top: 10px;
+              font-size: 18px;
+              font-weight: 600;
+              right: 10px;
+              color: var(--info);
+            "
+            v-if="
+              userSession.user.role == 'admin' ||
+              userSession.user.role == 'manager'
+            "
+            class="cu-pointer"
+            @click="
+              () => {
+                router.push(
+                  `/sidebar/dashboard/projects/add-project/?id=${projectData.id}`
+                );
+              }
+            "
+            icon="lucide:edit"
+          />
           <VAvatar
             :picture="projectData.image"
             squared
@@ -343,21 +366,6 @@ onMounted(() => {
           <div class="user-meta is-dark-bordered-12">
             <h3 class="title is-4 is-narrow is-bold">
               {{ projectData.title ? projectData.title : "N/A" }}
-              <VIcon
-                v-if="
-                  userSession.user.role == 'admin' ||
-                  userSession.user.role == 'manager'
-                "
-                class="cu-pointer"
-                @click="
-                  () => {
-                    router.push(
-                      `/sidebar/dashboard/projects/add-project/?id=${projectData.id}`
-                    );
-                  }
-                "
-                icon="lucide:edit"
-              />
             </h3>
             <p class="light-text">
               Current status:
@@ -446,6 +454,9 @@ onMounted(() => {
         "
         class="column is-8"
       >
+        <div class="dashboard-card has-margin-bottom">
+          <div v-html="projectData.description"></div>
+        </div>
         <div class="dashboard-card has-margin-bottom">
           <ProjectFiles
             :projectId="route.params.id"

@@ -90,7 +90,7 @@ onMounted(() => {
           icon="fas fa-plus"
           elevated
         >
-          Subcontractors
+          Subcontractor
         </VButton>
       </div>
     </div>
@@ -125,7 +125,7 @@ onMounted(() => {
               v-if="filteredData.length != 0"
               v-for="(item, index) in filteredData"
               :key="item.id"
-              class="list-view-item"
+              class="list-view-item cu-pointer"
             >
               <div class="list-view-item-inner">
                 <VAvatar

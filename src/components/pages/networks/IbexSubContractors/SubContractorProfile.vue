@@ -27,6 +27,7 @@ const workerData = ref({
 const fullWidthView = ref(false);
 const activeFilter = ref("all");
 const loading = ref(false);
+const tab = ref("tasks");
 
 // Tasks, Resources, Events, and Projects as Reactive Arrays
 const tasks = ref([]);
@@ -238,7 +239,46 @@ onMounted(async () => {
     </div>
 
     <div class="columns is-multiline is-flex-tablet-p">
-      <div class="column is-12">
+      <div class="list-flex-toolbar is-reversed">
+        <div class="tabs-inner">
+          <div class="tabs is-boxed">
+            <ul>
+              <li :class="[tab === 'tasks' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'tasks'"
+                  @click="tab = 'tasks'"
+                  ><span>Tasks</span></a
+                >
+              </li>
+              <li :class="[tab === 'workers' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'workers'"
+                  @click="tab = 'workers'"
+                  ><span>Workers</span></a
+                >
+              </li>
+              <!-- <li :class="[tab === 'today' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'today'"
+                  @click="tab = 'today'"
+                  ><span>Today Tasks</span></a
+                >
+              </li> -->
+              <li class="tab-naver" />
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div v-if="tab == 'tasks'" class="column is-12">
+        <WorkerTasks :workerId="route.params.id" />
+      </div>
+      <div v-if="tab == 'workers'" class="column is-12">
         <WorkersOfSubcontractors
           :supplier-id="route.params.id"
         ></WorkersOfSubcontractors>

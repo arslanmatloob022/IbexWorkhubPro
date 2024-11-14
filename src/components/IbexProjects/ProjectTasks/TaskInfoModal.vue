@@ -90,6 +90,12 @@ const closeModalHandler = () => {
             </span>
           </p>
           <p>
+            Description:
+            <div v-html="props.taskData?.project?.description" class="is-bold">
+              
+            </div>
+          </p>
+          <!-- <p>
             Parking:
             <VTag
               outlined
@@ -117,7 +123,7 @@ const closeModalHandler = () => {
               </VTag>
             </span>
           </p>
-          <p></p>
+          <p></p> -->
         </VCard>
       </div>
 

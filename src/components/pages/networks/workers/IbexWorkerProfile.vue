@@ -325,7 +325,7 @@ onMounted(async () => {
               <span class="dark-inverted">{{
                 workerTasksStats?.stats?.pending +
                 workerTasksStats?.stats?.active +
-                workerTasksStats?.stats?.active
+                workerTasksStats?.stats?.completed
               }}</span>
               <!-- <span>lbs</span> -->
             </h4>

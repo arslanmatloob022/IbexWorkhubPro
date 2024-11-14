@@ -7,8 +7,10 @@ import { convertToFormData } from "/@src/composable/useSupportElement";
 const notyf = useNotyf();
 const api = useApi();
 const allWorkers = ref([]);
+const allSupplier = ref([]);
 const loading = ref(false);
 let selectWorkersSlot = ref<any>([]);
+let selectSupplierSlot = ref<any>([]);
 const selectedWorkers = ref([]);
 const selectSupplierSlotValue = ref();
 const selectSupplierSlotOptions = [
@@ -48,6 +50,7 @@ const taskData = ref({
   endDate: "",
   status: "",
   quantity: "",
+  supplier: "",
   unit: "",
   costCode: "",
   color: "",
@@ -142,6 +145,23 @@ const getWorkershandler = async () => {
   }
 };
 
+const getSubContractorHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role-option/supplier/", {});
+    allSupplier.value = response.data.map((supplier) => {
+      return {
+        value: supplier.id,
+        label: supplier.username,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
   console.log("modal closed");
@@ -152,7 +172,7 @@ onMounted(() => {
     fetchTaskData();
   }
   getWorkershandler();
-
+  getSubContractorHandler();
   if (props.startDate) {
     taskData.value.startDate = props.startDate;
     taskData.value.endDate = props.endDate;
@@ -252,7 +272,7 @@ onMounted(() => {
         </div>
 
         <!-- lin manger -->
-        <div class="field column is-3 mb-0">
+        <div class="field column is-6 mb-0">
           <VField>
             <VLabel>Start Date</VLabel>
             <VControl>
@@ -265,7 +285,7 @@ onMounted(() => {
           </VField>
         </div>
 
-        <div class="field column is-3 mb-0">
+        <div class="field column is-6 mb-0">
           <VField>
             <VLabel>End Date</VLabel>
             <VControl>
@@ -299,13 +319,29 @@ onMounted(() => {
             <VControl>
               <Multiselect
                 v-model="selectWorkersSlot"
-                required
+                :required="taskData.supplier ? false : true"
                 :attrs="{ id }"
                 mode="tags"
                 :searchable="true"
                 :create-tag="true"
                 :options="allWorkers"
                 placeholder="Add workers"
+              />
+            </VControl>
+          </VField>
+        </div>
+        <div class="field column is-6 mb-0">
+          <label>Select Subcontractor * </label>
+          <VField v-slot="{ id }">
+            <VControl>
+              <Multiselect
+                v-model="taskData.supplier"
+                :required="selectWorkersSlot ? false : true"
+                :attrs="{ id }"
+                :searchable="true"
+                :create-tag="true"
+                :options="allSupplier"
+                placeholder="Add sub-contractor"
               />
             </VControl>
           </VField>
