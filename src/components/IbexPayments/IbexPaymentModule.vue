@@ -43,7 +43,7 @@ const addItem = () => {
   };
 };
 const removeItem = (index: any) => {
-  linkData.value.itemsList.splice(index, 1); // Removes the item at the specified index
+  itemsList.value.splice(index, 1); // Removes the item at the specified index
 };
 
 const getClientHandler = async () => {
@@ -156,7 +156,6 @@ onMounted(() => {
                     <VField>
                       <VControl>
                         <VTextarea
-                          required
                           v-model="linkData.description"
                           class="is-primary-focus"
                           rows="2"
