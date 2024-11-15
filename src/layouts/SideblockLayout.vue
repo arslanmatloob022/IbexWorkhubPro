@@ -550,7 +550,7 @@ onMounted(() => {
             <RouterLink
               class="is-submenu"
               to="/sidebar/dashboard/received-payments"
-              :class="{ active: 'workers-tasks' === route.query.tab }"
+              :class="{ active: 'received-payments' === route.query.tab }"
             >
               <i class="lnir lnir-invest-monitor" aria-hidden="true"></i>
               <span>All Payments</span>
@@ -559,7 +559,7 @@ onMounted(() => {
             <RouterLink
               class="is-submenu"
               to="/sidebar/dashboard/approved-payments"
-              :class="{ active: 'manage-projects' === route.query.tab }"
+              :class="{ active: 'approved-payments' === route.query.tab }"
             >
               <i class="lnir lnir-diagnosis-alt" aria-hidden="true"></i>
               <span>Approved Payments </span>
