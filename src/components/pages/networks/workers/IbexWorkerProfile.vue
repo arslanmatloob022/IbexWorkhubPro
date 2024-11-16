@@ -14,7 +14,7 @@ const events = ref<any>([]);
 const router = useRouter();
 const currentSelectedId = ref("");
 const openUserUpdateModal = ref(false);
-const tab = ref("cards");
+const tab = ref("chronic");
 const userId = ref("");
 const isPasswordModalOpen = ref(false);
 const workerData = ref({
@@ -407,13 +407,13 @@ onMounted(async () => {
         <div class="tabs-inner">
           <div class="tabs is-boxed">
             <ul>
-              <li :class="[tab === 'cards' && 'is-active']">
+              <li :class="[tab === 'chronic' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
-                  @keydown.space.prevent="tab = 'cards'"
-                  @click="tab = 'cards'"
-                  ><span>Cards View</span></a
+                  @keydown.space.prevent="tab = 'chronic'"
+                  @click="tab = 'chronic'"
+                  ><span>Chronic View</span></a
                 >
               </li>
               <li :class="[tab === 'calendar' && 'is-active']">
@@ -425,6 +425,16 @@ onMounted(async () => {
                   ><span>Calendar View</span></a
                 >
               </li>
+              <li :class="[tab === 'cards' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'cards'"
+                  @click="tab = 'cards'"
+                  ><span>Cards View</span></a
+                >
+              </li>
+
               <li :class="[tab === 'today' && 'is-active']">
                 <a
                   tabindex="0"
@@ -439,7 +449,10 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <div v-show="tab == 'cards'" class="column is-12">
+      <div v-if="tab == 'chronic'" class="column is-12">
+        <ChronicTasksView :userId="route.params.id" />
+      </div>
+      <div v-if="tab == 'cards'" class="column is-12">
         <WorkerTasks :workerId="route.params.id" />
       </div>
       <div v-if="tab == 'calendar'" class="column is-12">

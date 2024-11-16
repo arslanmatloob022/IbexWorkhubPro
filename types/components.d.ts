@@ -113,6 +113,8 @@ declare module 'vue' {
     CheckboxPropsDocumentation: typeof import('./../documentation/checkbox/checkbox-props-documentation.md')['default']
     CheckboxSolidCircleDocumentation: typeof import('./../documentation/checkbox/checkbox-solid-circle-documentation.md')['default']
     CheckboxSolidDocumentation: typeof import('./../documentation/checkbox/checkbox-solid-documentation.md')['default']
+    ChronicTasksList: typeof import('./../src/components/IbexTasks/ChronicTasksList.vue')['default']
+    ChronicTasksView: typeof import('./../src/components/IbexTasks/ChronicTasksView.vue')['default']
     CircleChart: typeof import('./../src/components/partials/widgets/misc/CircleChart.vue')['default']
     CircularMenu: typeof import('./../src/components/partials/circular-menu/CircularMenu.vue')['default']
     CKEditorBasicDocumentation: typeof import('./../documentation/plugins/ckeditor/CKEditor-basic-documentation.md')['default']

@@ -130,6 +130,13 @@ SCSS Imports
   margin-left: 1rem;
 }
 
+.link-text {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .is-bold {
   font-weight: 500;
 }

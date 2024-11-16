@@ -27,7 +27,7 @@ const workerData = ref({
 const fullWidthView = ref(false);
 const activeFilter = ref("all");
 const loading = ref(false);
-const tab = ref("tasks");
+const tab = ref("chronic");
 
 // Tasks, Resources, Events, and Projects as Reactive Arrays
 const tasks = ref([]);
@@ -243,6 +243,15 @@ onMounted(async () => {
         <div class="tabs-inner">
           <div class="tabs is-boxed">
             <ul>
+              <li :class="[tab === 'chronic' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'chronic'"
+                  @click="tab = 'chronic'"
+                  ><span>Chronic View</span></a
+                >
+              </li>
               <li :class="[tab === 'tasks' && 'is-active']">
                 <a
                   tabindex="0"
@@ -274,6 +283,9 @@ onMounted(async () => {
             </ul>
           </div>
         </div>
+      </div>
+      <div v-if="tab == 'chronic'" class="column is-12">
+        <ChronicTasksView :userId="route.params.id" />
       </div>
       <div v-if="tab == 'tasks'" class="column is-12">
         <WorkerTasks :workerId="route.params.id" />

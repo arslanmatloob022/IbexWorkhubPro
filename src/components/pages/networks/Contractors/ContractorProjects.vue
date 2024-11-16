@@ -2,6 +2,9 @@
 import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { useUserSession } from "/@src/stores/userSession";
+
+const userSession = useUserSession();
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
@@ -220,9 +223,9 @@ const filteredData = computed(() => {
                 <div class="meta-left">
                   <h3>
                     <span>{{ item.title }}</span>
-                    <VRangeRating v-model="HomeRating" class="is-inline">
+                    <!-- <VRangeRating v-model="HomeRating" class="is-inline">
                       <i class="fas fa-star" aria-hidden="true" />
-                    </VRangeRating>
+                    </VRangeRating> -->
                   </h3>
                   <p>
                     <i
@@ -233,7 +236,7 @@ const filteredData = computed(() => {
                     <span>{{ item.address ? item.address : "" }}</span>
                   </p>
                   <p>
-                    <span>{{ item.description ? item.description : "" }}</span>
+                    <!-- <span>{{ item.description ? item.description : "" }}</span> -->
                   </p>
                   <span>
                     <!-- <span>
@@ -357,6 +360,10 @@ const filteredData = computed(() => {
                       View Details
                     </VButton>
                     <VButton
+                      v-if="
+                        userSession.user.role == 'admin' ||
+                        userSession.user.role == 'manager'
+                      "
                       @click="openDeleteAlert(item.id)"
                       color="danger"
                       raised
