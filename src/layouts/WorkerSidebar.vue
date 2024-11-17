@@ -396,19 +396,20 @@ onMounted(() => {
 
         <template #links>
           <li>
-            <RouterLink to="/sidebar/worker/calendar" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-calender-alt-1" aria-hidden="true"></i
-              ></span>
-              Tasks Calendar
-            </RouterLink>
-          </li>
-          <li>
             <RouterLink to="/sidebar/worker/tasks" class="single-link">
               <span class="icon">
                 <i class="lnir lnir-list-alt" aria-hidden="true"></i
               ></span>
               My Tasks
+            </RouterLink>
+          </li>
+
+          <li>
+            <RouterLink to="/sidebar/worker/calendar" class="single-link">
+              <span class="icon">
+                <i class="lnir lnir-calender-alt-1" aria-hidden="true"></i
+              ></span>
+              Tasks Calendar
             </RouterLink>
           </li>
 
