@@ -4,8 +4,10 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { useUserSession } from "/@src/stores/userSession";
+import { formatISO } from "date-fns";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
+import { formatDate } from "/@src/composable/useSupportElement";
 
 const api = useApi();
 const calendarRef = ref(null);
@@ -38,12 +40,16 @@ const colors = ref({
 const calendarOptions = ref({
   plugins: [resourceTimelinePlugin, interactionPlugin],
   schedulerLicenseKey: "0965592368-fcs-1694657447",
-  initialView: "resourceTimelineMonth",
+  initialView: "resourceTimelineMonth", // Set the default view to yearly
+  initialDate: new Date().toISOString(), // F
   height: "auto",
   themeSystem: "cerulean",
   resourceAreaWidth: "20%",
   resourcesInitiallyExpanded: false,
   selectable: true,
+  dragScroll: true,
+  eventOrder: "start",
+  resourceOrder: "start",
   headerToolbar: {
     left: "today prev,next",
     center: "title",
@@ -62,8 +68,9 @@ const calendarOptions = ref({
     },
   },
   resourceAreaHeaderContent: "Projects",
-  // resourceGroupField: 'project',
+  // resourceGroupField: "project",
   resources: [],
+  events: [],
   eventDrop: (info: any) => {
     eventChangeHandler(info);
     info.revert();
@@ -206,6 +213,17 @@ const getManagersById = (id: any) => {
 const renderCalender = () => {
   console.log(projects.value);
 
+  // Map projects to background events
+  const bgEvents = projects.value.map((project) => ({
+    id: project.id,
+    resourceId: project.id,
+    start: project.startDate,
+    end: project.endDate,
+    title: project.title,
+    display: "background",
+    color: project.color,
+  }));
+
   // Map tasks to events
   const events = tasks.value.map((task) => ({
     id: task.id,
@@ -221,20 +239,15 @@ const renderCalender = () => {
     managers: getManagersById(task.project),
   }));
 
-  // Map projects to background events
-  const bgEvents = projects.value.map((project) => ({
-    id: project.id,
-    resourceId: project.id,
-    start: project.startDate,
-    end: project.endDate,
-    title: project.title,
-    display: "background",
-    color: project.color,
-  }));
-
   // Merge all events
-  const allEvents = [...events, ...bgEvents];
+  let sortedEvents = [...events, ...bgEvents];
 
+  let allNew = sortedEvents.sort(
+    (a, b) => new Date(a.start) - new Date(b.start)
+  );
+
+  const allEvents = allNew;
+  console.log("events rea", allEvents);
   // Map tasks as child resources of their respective projects
   const projectResources = projects.value.map((project) => {
     const taskResources = tasks.value
@@ -255,7 +268,8 @@ const renderCalender = () => {
       children: taskResources, // Tasks as child resources
     };
   });
-  // Assign resources and events to calendar options
+
+  // Assign sorted resources and events to calendar options
   calendarOptions.value.resources = projectResources;
   calendarOptions.value.events = allEvents;
 };
@@ -287,13 +301,26 @@ const getProjectHandler = async () => {
   try {
     loading.value = true;
     console.log("inside all projects func");
+
     const response = await api.get("/api/project/projects/", {});
-    projects.value = response.data;
-    filteredResources.value = response.data;
-    loading.value = false;
+    let newData = response.data;
+    // projects.value = newData;
+    // filteredResources.value = newData;
+
+    let sortedData = newData
+      .filter(
+        (project) => project.startDate && !isNaN(new Date(project.startDate))
+      )
+      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+    projects.value = sortedData;
+    console.log("projects", sortedData);
+    filteredResources.value = sortedData; // Use sorted data for filteredResources
   } catch (err) {
     console.error(err);
     projects.value = [];
+    filteredResources.value = [];
+  } finally {
     loading.value = false;
   }
 };
@@ -302,8 +329,15 @@ const getTasksHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get("/api/task/", {});
-    tasks.value = response.data;
+    let newData = response.data;
+
+    // Validate and sort tasks
+    let sortedData = newData
+      .filter((task) => task.startDate && !isNaN(new Date(task.startDate))) // Ensure valid dates
+      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    tasks.value = sortedData;
   } catch (err) {
+    console.error("Error fetching tasks:", err);
     tasks.value = [];
   } finally {
     loading.value = false;
@@ -469,12 +503,47 @@ onMounted(async () => {
               justify-content: space-between;
             "
           >
-            <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
+            <p
+              style="
+                font-weight: 500;
+                margin-bottom: 0px;
+                padding-left: 10px;
+                padding-right: 10px;
+                z-index: 99;
+                text-shadow: 2px 2px 2px black;
+              "
+            >
+              <!-- v-if="
+                formatDate(arg.event.start)
+                  .slice(-7)
+                  .replace(',', '')
+                  .replace(' ', '')
+                  .toString() !=
+                formatDate(arg.event.end)
+                  .slice(-7)
+                  .replace(',', '')
+                  .replace(' ', '')
+                  .toString()
+              " -->
               <span
                 v-for="worker in arg.event.extendedProps?.workers"
                 :key="worker.id"
               >
                 {{ worker.username }},
+                <!-- {{
+                  formatDate(arg.event.start)
+                    .slice(-7)
+                    .replace(",", "")
+                    .replace(" ", "")
+                    .toString()
+                }}
+                {{
+                  formatDate(arg.event.end)
+                    .slice(-7)
+                    .replace(",", "")
+                    .replace(" ", "")
+                    .toString()
+                }} -->
               </span>
             </p>
             <div

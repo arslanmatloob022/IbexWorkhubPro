@@ -1,0 +1,1 @@
+import{a6 as e,r as n}from"./index-540da221.js";const o=e("sidebar",(()=>{const e=n("none");return{active:e,toggle:function(n){e.value===n?e.value="none":e.value=n},setActive:function(n){e.value=n},close:function(){e.value="none"}}}));export{o as u};

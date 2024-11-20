@@ -241,11 +241,11 @@ const filteredData = computed(() => {
                     </VRangeRating> -->
                   </h3>
                   <p>
-                    <i
+                    <!-- <i
                       aria-hidden="true"
                       class="iconify"
                       data-icon="feather:map-pin"
-                    />
+                    /> -->
                     <span>{{ item.address ? item.address : "" }}</span>
                   </p>
                   <!-- <p>
