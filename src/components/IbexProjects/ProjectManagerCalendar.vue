@@ -37,14 +37,22 @@ const colors = ref({
   canceled: "#344767",
 });
 
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+
 const calendarOptions = ref({
   plugins: [resourceTimelinePlugin, interactionPlugin],
   schedulerLicenseKey: "0965592368-fcs-1694657447",
   initialView: "resourceTimelineMonth", // Set the default view to yearly
-  initialDate: new Date().toISOString(), // F
+  // initialDate: "2024-11-11", // F
   height: "auto",
   themeSystem: "cerulean",
   resourceAreaWidth: "20%",
+  slotMinHeight: 20, // Reduce row height for resources
   resourcesInitiallyExpanded: false,
   selectable: true,
   dragScroll: true,
@@ -66,9 +74,14 @@ const calendarOptions = ref({
         year: "numeric",
       },
     },
+    resourceTimelineYear: {
+      slotMinWidth: 35,
+      dayMinWidth: 30,
+      slotMinHeight: 35,
+      dayMinHeight: 30,
+    },
   },
   resourceAreaHeaderContent: "Projects",
-  // resourceGroupField: "project",
   resources: [],
   events: [],
   eventDrop: (info: any) => {
@@ -99,8 +112,8 @@ const calendarOptions = ref({
 });
 
 const eventChangeHandler = (info: any) => {
-  console.warn("inside func");
-  console.log("inside ", userSession.user.role);
+  // console.warn("inside func");
+  // console.log("inside ", userSession.user.role);
 
   if (userSession.user.role === "contractor") {
     info.revert();
@@ -108,7 +121,6 @@ const eventChangeHandler = (info: any) => {
   } else if (userSession.user.role === "manager") {
     if (!info.event.extendedProps.managers.includes(userSession.user.id)) {
       info.revert();
-
       notyf.error(
         "You can modify the task only for the projects for which you are a manager."
       );
@@ -118,22 +130,29 @@ const eventChangeHandler = (info: any) => {
 
   let start = info.event.startStr;
   let end = info.event.end.toISOString().substring(0, 10);
-  console.log("resource ids", info.event);
-  console.log("event", info.event);
+  // console.log("resource ids", info.event);
+  // console.log("event", info.event);
+
   if (info.event.id != info.event._def.publicId) {
     info.revert();
     return;
   }
 
-  if (
-    !confirm(
-      `Are you sure you want to update the project ${info.event.title} date from ${start} to ${end}?`
-    )
-  ) {
-    info.revert();
-  } else {
-    editTask(info.event.id, start, end);
-  }
+  // Update SweetAlertProps with dynamic values
+  SweetAlertProps.value = {
+    title: "Confirm Update",
+    subtitle: `Are you sure you want to update the project "${info.event.title}" date from ${start} to ${end}?`,
+    btntext: "Confirm",
+    isSweetAlertOpen: true,
+    onConfirm: () => {
+      editTask(info.event.id, start, end);
+      SweetAlertProps.value.isSweetAlertOpen = false;
+    },
+    onCancel: () => {
+      SweetAlertProps.value.isSweetAlertOpen = false;
+      info.revert();
+    },
+  };
 };
 
 const addOneDayToDate = (dateString: any) => {
@@ -163,9 +182,9 @@ const eventClick = (info: any) => {
     }
   }
   startDate.value = "";
-  isTaskFormOpen.value = true;
   projectID.value = 0;
   editTaskId.value = info.event.id;
+  isTaskFormOpen.value = true;
 };
 
 const editTask = async (id: any, start: any, end: any) => {
@@ -174,27 +193,12 @@ const editTask = async (id: any, start: any, end: any) => {
       startDate: start,
       endDate: end,
       schedule_mode: false,
-      // schedule_mode: store.state.isScheduleMode,
     });
 
     notyf.success("Task updated successfully");
     await getProjectHandler();
     await getTasksHandler();
     renderCalender();
-  } catch (err) {
-    notyf.error("Something went wrong");
-    console.log(err);
-  }
-};
-
-const editProject = async (id: any, start: any, end: any) => {
-  try {
-    let resp = await api.patch(`/api/project/${id}/`, {
-      startDate: start,
-      endDate: end,
-    });
-    console.log(resp);
-    notyf.success("Project updated successfully");
   } catch (err) {
     notyf.error("Something went wrong");
     console.log(err);
@@ -211,9 +215,7 @@ const getManagersById = (id: any) => {
 };
 
 const renderCalender = () => {
-  console.log(projects.value);
-
-  // Map projects to background events
+  // console.log(projects.value);
   const bgEvents = projects.value.map((project) => ({
     id: project.id,
     resourceId: project.id,
@@ -247,7 +249,7 @@ const renderCalender = () => {
   );
 
   const allEvents = allNew;
-  console.log("events rea", allEvents);
+  // console.log("events rea", allEvents);
   // Map tasks as child resources of their respective projects
   const projectResources = projects.value.map((project) => {
     const taskResources = tasks.value
@@ -275,7 +277,7 @@ const renderCalender = () => {
 };
 
 const changeFilterHandler = () => {
-  console.log("func called", activeFilter.value);
+  // console.log("func called", activeFilter.value);
 
   if (activeFilter.value !== "all") {
     let data = projects.value.filter(
@@ -293,8 +295,8 @@ const changeFilterHandler = () => {
   }
 
   calendarOptions.value.resources = filteredResources.value;
-  console.log(filteredResources.value);
-  console.log(filteredResources.value.length);
+  // console.log(filteredResources.value);
+  // console.log(filteredResources.value.length);
 };
 
 const getProjectHandler = async () => {
@@ -314,7 +316,7 @@ const getProjectHandler = async () => {
       .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
     projects.value = sortedData;
-    console.log("projects", sortedData);
+    // console.log("projects", sortedData);
     filteredResources.value = sortedData; // Use sorted data for filteredResources
   } catch (err) {
     console.error(err);
@@ -648,6 +650,16 @@ onMounted(async () => {
       "
     />
   </div>
+  <SweetAlert
+    v-if="SweetAlertProps.isSweetAlertOpen"
+    :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+    :title="SweetAlertProps.title"
+    :loading="false"
+    :subtitle="SweetAlertProps.subtitle"
+    :btntext="SweetAlertProps.btntext"
+    :onConfirm="SweetAlertProps.onConfirm"
+    :onCancel="SweetAlertProps.onCancel"
+  />
 </template>
 <style lang="scss">
 .fc-event.fc-event-draggable {
@@ -655,7 +667,7 @@ onMounted(async () => {
   border-width: 1px;
   border-radius: 4px;
   height: 100% !important;
-  padding: 0.6rem !important;
+  padding: 0.4rem !important;
   p {
     color: #fff;
   }

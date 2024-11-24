@@ -118,10 +118,8 @@ const getWorkershandler = async () => {
     workersData.value = response.data.map((item) => {
       return {
         ...item,
-        progress:
-          item.active_tasks +
-          item.pending_tasks +
-          item.cancelled_tasks / item.completed_tasks,
+        totalTasks:
+          item.active_tasks + item.pending_tasks + item.completed_tasks,
       };
     });
     console.log("data", workersData.value);
@@ -288,12 +286,19 @@ onMounted(() => {
               <div class="left">
                 <div class="progress-stats">
                   <span class="dark-inverted">Progress</span>
-                  <span> {{ item.progress ? item.progress : "0" }}%</span>
+                  <span>
+                    {{
+                      item.completed_tasks
+                        ? (item.completed_tasks / item.totalTasks) * 100
+                        : "0"
+                    }}%</span
+                  >
                 </div>
                 <div class="progress-bar">
                   <VProgress
                     size="tiny"
-                    :value="item.progress ? item.progress : 0"
+                    :value="item.completed_tasks ? item.completed_tasks : 0"
+                    :max="item.totalTasks ? item.totalTasks : 0"
                   />
                 </div>
               </div>

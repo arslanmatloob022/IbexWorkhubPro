@@ -28,23 +28,16 @@ const loading = ref(false);
 const clientsList = ref([]);
 const contarctorList = ref([]);
 const selectedManagers = ref([]);
+const managersList = ref([]);
+const selectMangerSlotOptions = ref(<any>[]);
 const deleteTaskId = ref(0);
 const projectCompletedTasks = ref<any>(0);
 const projectActiveTasks = ref<any>(0);
-const editTaskId = ref("");
-const currentProjectId = ref("");
-const sheetNameDeleteTobe = ref("");
 const preview = ref("");
-const image = ref("");
 const projectId = ref("");
 const editProjectId = ref("");
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
-const Taskstatus = ref([
-  { value: "active", name: "Active" },
-  { value: "pending", name: "Pre Construction" },
-  { value: "completed", name: "Completed" },
-  { value: "cancelled", name: "cancelled" },
-]);
+
 const projectTodaysTasks = ref<any>([]);
 const projectData = ref<any>({
   id: 0,
@@ -192,6 +185,10 @@ const toggleAddContractor = () => {
 const toggleAddClient = () => {
   showAddClient.value = !showAddClient.value;
 };
+const showAddManager = ref(false);
+const toggleAddManager = () => {
+  showAddManager.value = !showAddManager.value;
+};
 
 const openDeleteAlert = (id: any) => {
   projectId.value = id;
@@ -226,6 +223,7 @@ const getProject = async () => {
     let completion = resp.data.percentage.toFixed(2);
     completionChart.value.series.push(completion);
     preview.value = resp.data.image;
+    selectedManagers.value = resp.data.managers ? resp.data.managers : [];
 
     getProjectTasks();
   } catch (err) {
@@ -251,7 +249,17 @@ const getWorkershandler = async () => {
     contarctorList.value = response.data.filter(
       (contractor: any) => contractor.role == "contractor"
     );
-
+    managersList.value = response.data.filter(
+      (contractor: any) => contractor.role == "manager"
+    );
+    selectMangerSlotOptions.value = managersList.value.map((manager: any) => {
+      return {
+        value: manager.id.toString(),
+        name: `${manager.username}`,
+        supplier: manager.partner ? manager.partner : "",
+        image: manager.avatar,
+      };
+    });
     console.log("data", workersData.value);
   } catch (err) {
     console.log(err);
@@ -272,10 +280,10 @@ const getProjectTasks = async () => {
     console.log(err);
   }
 };
-
+const selectedManagersIds = ref([]);
 const editProject = async () => {
   try {
-    projectData.value.managers = selectedManagers;
+    projectData.value.managers = selectedManagersIds.value;
     let formData = convertToFormData(projectData.value, ["image"]);
     formData.delete("clientInfo");
     formData.delete("contractorInfo");
@@ -290,6 +298,7 @@ const editProject = async () => {
     showAddContractor.value = false;
 
     notyf.green("Project updated successfully");
+    showAddManager.value = false;
     getProject(resp.data.id);
   } catch (err) {
     console.log(err);
@@ -316,6 +325,14 @@ const getCompletedTasks = (total: any) => {
 const getAllActiveTasks = (total: any) => {
   projectActiveTasks.value = total;
 };
+
+// watch(
+//   () => selectedManagers.value,
+//   () => {
+//     console.log("manager", selectedManagers.value);
+//     editProject();
+//   }
+// );
 
 onMounted(() => {
   projectId.value = route.params.id;
@@ -507,11 +524,22 @@ onMounted(() => {
         <div class="dashboard-card">
           <div class="card-head">
             <h3 class="dark-inverted">Assigned Manager</h3>
-            <a class="action-link" tabindex="0"></a>
+            <a
+              v-if="
+                userSession.user.role == 'admin' ||
+                userSession.user.role == 'manager'
+              "
+              @click="toggleAddManager"
+              class="action-link"
+              tabindex="0"
+              >{{ showAddManager ? "Close" : "Edit" }}
+            </a>
+
+            <!-- @blur="editProject" -->
           </div>
           <div class="active-team">
-            <ul class="user-list" v-if="projectData.managers.length > 0">
-              <li v-for="manager in projectData.managers" :key="manager.id">
+            <ul class="user-list" v-if="selectedManagers.length > 0">
+              <li v-for="manager in selectedManagers" :key="manager.id">
                 <div>
                   <Tippy class="has-help-cursor" interactive :offset="[0, 10]">
                     <VAvatar :picture="manager.avatar" />
@@ -535,6 +563,50 @@ onMounted(() => {
                 <div class="name dark-inverted">No Manager assigned yet</div>
               </div>
             </ul>
+            <div v-if="showAddManager">
+              <!-- @change="editProject" -->
+              <VField v-slot="{ id }">
+                <VControl>
+                  <Multiselect
+                    v-model="selectedManagersIds"
+                    :attrs="{ id }"
+                    mode="tags"
+                    placeholder="Select manager"
+                    track-by="name"
+                    label="name"
+                    :searchable="true"
+                    :create-tag="true"
+                    :options="selectMangerSlotOptions"
+                    :max-height="145"
+                  >
+                    <!-- <template #tag="{ option, remove, disabled }">
+                      <div class="multiselect-tag is-user">
+                        <img :src="option.image" alt="" />
+                        {{ option.name }}
+                        <i
+                          v-if="!disabled"
+                          role="button"
+                          tabindex="0"
+                          @click.prevent
+                          @mousedown.prevent.stop="remove(option)"
+                        />
+                      </div>
+                    </template> -->
+                  </Multiselect>
+                </VControl>
+              </VField>
+            </div>
+            <div class="is-flex space-between">
+              <a v-if="showAddManager"> </a>
+
+              <a
+                v-if="showAddManager"
+                @click="editProject"
+                class="action-link"
+                tabindex="0"
+                >Save
+              </a>
+            </div>
           </div>
         </div>
 
@@ -591,7 +663,6 @@ onMounted(() => {
                       v-for="client in clientsList"
                       :key="client.id"
                       :value="client.id"
-                      value="Superman"
                     >
                       {{ client.username }}
                     </VOption>

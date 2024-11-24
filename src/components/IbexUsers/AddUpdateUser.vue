@@ -8,7 +8,6 @@ const api = useApi();
 const preview = ref<any>("");
 const showPassword = ref(false);
 const Loading = ref(false);
-const selectSupplierSlotValue = ref();
 const selectSupplierSlotOptions = ref([
   {
     value: "javascript",
@@ -37,7 +36,7 @@ const emits = defineEmits<{
   (e: "update:actionUpdateHandler", value: null): void;
 }>();
 
-const closeModalHandler = () => {
+const closeUserModalHandler = () => {
   emits("update:closeModalHandler", false);
 };
 
@@ -58,17 +57,15 @@ const userFormData = ref<any>({
 
 const handleFileChange = (event) => {
   const input = event?.target;
-
-  // Check if input and files exist
   if (input && input.files && input.files.length > 0) {
     const file = input.files[0];
     userFormData.value.avatar = file;
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      preview.value = e.target?.result; // Update image preview
+      preview.value = e.target?.result;
     };
-    reader.readAsDataURL(file); // Read file for preview
+    reader.readAsDataURL(file);
   } else {
     console.error("No file selected");
   }
@@ -94,7 +91,7 @@ const addUpdateUserHandler = async () => {
       notyf.success("User added successfully");
     }
     actionUpdateHandler();
-    closeModalHandler();
+    closeUserModalHandler();
   } catch (err: any) {
     if (
       err.response?.data?.email &&
@@ -159,7 +156,7 @@ onMounted(() => {
     size="big"
     actions="right"
     @submit.prevent="addUpdateUserHandler"
-    @close="closeModalHandler"
+    @close="closeUserModalHandler"
   >
     <template #content>
       <div class="modal-form columns is-multiline">
@@ -360,9 +357,9 @@ onMounted(() => {
     </template>
     <template #cancel>
       <VButton
-        :loading="Loading"
         type="cancel"
-        @click="closeModalHandler"
+        :loading="Loading"
+        @click="closeUserModalHandler"
         raised
       >
         Cancel

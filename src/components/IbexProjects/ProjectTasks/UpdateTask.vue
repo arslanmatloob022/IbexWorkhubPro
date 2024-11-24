@@ -9,6 +9,7 @@ const api = useApi();
 const allWorkers = ref([]);
 const allSupplier = ref([]);
 const loading = ref(false);
+const delLoading = ref(false);
 let selectWorkersSlot = ref<any>([]);
 let selectSupplierSlot = ref<any>([]);
 const selectedWorkers = ref([]);
@@ -70,7 +71,7 @@ const fetchTaskData = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/task/${props.taskIdSelected ? props.taskIdSelected : ""}`
+      `/api/task/${props.taskIdSelected ? props.taskIdSelected : ""}/`
     );
     taskData.value = response.data;
     selectWorkersSlot.value = response.data.workers.map(
@@ -115,7 +116,7 @@ const editTaskHandler = async () => {
 
 const deleteTask = async () => {
   try {
-    loading.value = true;
+    delLoading.value = true;
     const response = await api.delete(`/api/task/${props.taskIdSelected}/`);
     console.log(response);
     notyf.error("Task deleted successfully");
@@ -124,7 +125,7 @@ const deleteTask = async () => {
   } catch (err) {
     console.log(err);
   } finally {
-    loading.value = false;
+    delLoading.value = false;
   }
 };
 
@@ -384,10 +385,11 @@ onMounted(() => {
         @click="deleteTask"
         class="is-left"
         color="danger"
+        :loading="delLoading"
         raised
         >Delete</VButton
       >
-      <VButton type="submit" color="primary" raised>{{
+      <VButton type="submit" :loading="loading" color="primary" raised>{{
         props.taskIdSelected ? "Update Task" : "Add Task"
       }}</VButton>
     </template>

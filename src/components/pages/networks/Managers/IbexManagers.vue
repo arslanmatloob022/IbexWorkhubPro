@@ -176,12 +176,7 @@ onMounted(() => {
                 <div @click="gotoManagerProfile(item.id)" class="meta-left">
                   <h3>{{ item.username }}</h3>
                   <span>
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:map-pin"
-                    />
-                    <span>{{ item.email }}</span>
+                    <span><VIcon icon="lucide:mail" /> {{ item.email }}</span>
                   </span>
                 </div>
                 <div class="meta-right">

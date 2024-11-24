@@ -91,40 +91,69 @@ const onRemoveFile = () => {
   projectData.value.image = null;
   preview.value = null;
 };
-
+// if (Array.isArray(property_features.value)) {
+//   projectData.value.property_features = JSON.stringify(
+//     property_features.value
+//   );
+// }
 const addNewProject = async () => {
   try {
     loading.value = true;
-    // if (Array.isArray(property_features.value)) {
-    //   projectData.value.property_features = JSON.stringify(
-    //     property_features.value
-    //   );
-    // }
 
+    // Ensure managers are valid UUIDs or remove the field if empty
+    if (
+      Array.isArray(projectData.value.managers) &&
+      projectData.value.managers.length > 0
+    ) {
+      // Validate that each manager is a valid UUID (basic check for format)
+      const isValidUUID = (uuid) =>
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          uuid
+        );
+      projectData.value.managers =
+        projectData.value.managers.filter(isValidUUID);
+
+      if (projectData.value.managers.length === 0) {
+        delete projectData.value.managers; // Remove field if no valid UUIDs
+      }
+    } else {
+      delete projectData.value.managers; // Remove field if not an array or empty
+    }
+
+    // Remove contractor if not assigned
     if (!projectData.value.contractor) {
       delete projectData.value.contractor;
     }
+
+    // Remove client if not assigned
     if (!projectData.value.client) {
       delete projectData.value.client;
     }
+
+    // Remove unnecessary fields
     delete projectData.value.property_features;
+
+    // Convert data to FormData
     const formData = convertToFormData(projectData.value, ["image"]);
 
     if (projectData.value.id) {
-      const resp = await api.patch(
+      // Update existing project
+      const response = await api.patch(
         `/api/project/${projectData.value.id}/`,
         formData
       );
-      notyf.info("Information added");
+      notyf.info("Project information updated successfully");
     } else {
+      // Create new project
       const response = await api.post("/api/project/", formData);
       projectData.value.id = response.data.id;
       notyf.success("Project added successfully");
     }
+
     validateStep();
   } catch (err) {
     console.error(err);
-    notyf.error("Something went wrong");
+    notyf.error("Something went wrong while adding the project");
   } finally {
     loading.value = false;
   }
@@ -471,14 +500,6 @@ onMounted(() => {
                   :editor="editor"
                   :config="editorConfig"
                 />
-                <!-- <VControl>
-                  <VTextarea
-                    rows="4"
-                    type="text"
-                    :placeholder="loading ? 'Loading...' : 'Description'"
-                    v-model="projectData.description"
-                  />
-                </VControl> -->
               </VField>
 
               <!-- <VField v-slot="{ id }">
@@ -984,8 +1005,11 @@ onMounted(() => {
     v-if="addUserModal"
     :isModalOpen="addUserModal"
     :userRole="selectedRole"
-    userId=""
-    @closeModalHandler="addUserModal = false"
+    @update:closeModalHandler="
+      () => {
+        addUserModal = false;
+      }
+    "
     @update:actionUpdateHandler="getAddedUser"
   />
 </template>
