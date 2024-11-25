@@ -3,12 +3,14 @@ import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 const api = useApi();
+const route = useRoute();
 const notyf = useNotyf();
 const loading = ref(false);
 const query = ref("");
 const filters = ref("");
 const activeFilter = ref("all");
-const HomeRating = ref(4);
+const itemsPerPage = ref(8);
+const maxLinksDisplayed = ref(4);
 const projectIdDeleteTobe = ref(0);
 const projects = ref([]);
 const SweetAlertProps = ref({
@@ -103,6 +105,22 @@ const filterProject = (filterType: string | null) => {
   }
 };
 
+const pagedData = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+  const endIndex = startIndex + itemsPerPage.value;
+  return filteredProjects.value.slice(startIndex, endIndex);
+});
+
+const currentPage = computed(() => {
+  let index: any = route.query.page as string;
+  if (index == undefined || index == "undefined") {
+    index = 1;
+  } else {
+    index = route.query.page as string;
+  }
+  return Number.parseInt(route.query.page as string) || 1;
+});
+
 const openDeleteAlert = (id: any) => {
   projectIdDeleteTobe.value = id;
   SweetAlertProps.value.title = "Delete Project";
@@ -142,10 +160,6 @@ const deleteProject = async () => {
   }
 };
 
-onMounted(() => {
-  getProjectHandler();
-});
-
 const filteredData = computed(() => {
   if (!filters.value) {
     return retails;
@@ -165,6 +179,10 @@ const filteredData = computed(() => {
       );
     });
   }
+});
+
+onMounted(() => {
+  getProjectHandler();
 });
 </script>
 
@@ -224,7 +242,7 @@ const filteredData = computed(() => {
         <div class="list-view-inner">
           <TransitionGroup name="list-complete" tag="div">
             <div
-              v-for="item in filteredProjects"
+              v-for="item in pagedData"
               :key="item.id"
               class="list-view-item"
             >
@@ -377,11 +395,12 @@ const filteredData = computed(() => {
         </div>
 
         <VFlexPagination
-          v-if="filteredProjects.length > 5"
-          :item-per-page="10"
-          :total-items="873"
-          :current-page="42"
-          :max-links-displayed="5"
+          v-if="filteredProjects.length > itemsPerPage"
+          :item-per-page="itemsPerPage"
+          v-model="currentPage"
+          :total-items="filteredProjects.length"
+          :current-page="currentPage"
+          :max-links-displayed="maxLinksDisplayed"
         />
 
         <!--Inactive Tab-->

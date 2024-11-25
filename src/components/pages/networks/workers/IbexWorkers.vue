@@ -4,6 +4,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 
 const api = useApi();
 const notyf = useNotyf();
+const route = useRoute();
 const filters = ref("");
 const selectedIdToDelete = ref("");
 const valueSingle = ref(0);
@@ -60,6 +61,15 @@ const openUserModal = (id: any = "") => {
   isOpenModal.value = !isOpenModal.value;
 };
 
+const itemsPerPage = ref(8);
+const maxLinksDisplayed = ref(5);
+
+const pagedData = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+  const endIndex = startIndex + itemsPerPage.value;
+  return filteredData.value.slice(startIndex, endIndex);
+});
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return workersData.value;
@@ -71,6 +81,16 @@ const filteredData = computed(() => {
       );
     });
   }
+});
+
+const currentPage = computed(() => {
+  let index: any = route.query.page as string;
+  if (index == undefined || index == "undefined") {
+    index = 1;
+  } else {
+    index = route.query.page as string;
+  }
+  return Number.parseInt(route.query.page as string) || 1;
 });
 
 const openStatusAlert = (user: any) => {
@@ -97,6 +117,8 @@ const openDeleteModal = (worker: any) => {
   };
 };
 
+const columns = ref({});
+
 const deleteWorker = async () => {
   try {
     loading.value = true;
@@ -120,6 +142,10 @@ const getWorkershandler = async () => {
         ...item,
         totalTasks:
           item.active_tasks + item.pending_tasks + item.completed_tasks,
+        progress:
+          (item.completed_tasks /
+            (item.active_tasks + item.pending_tasks + item.completed_tasks)) *
+          100,
       };
     });
     console.log("data", workersData.value);
@@ -172,16 +198,6 @@ onMounted(() => {
       </VControl>
 
       <div class="buttons">
-        <!-- <VField class="h-hidden-mobile">
-          <VControl>
-            <Multiselect
-              v-model="valueSingle"
-              :options="optionsSingle"
-              :max-height="145"
-              placeholder="Select an option"
-            />
-          </VControl>
-        </VField> -->
         <VButton @click="openUserModal()" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
@@ -194,7 +210,7 @@ onMounted(() => {
     <div class="card-grid card-grid-v1">
       <!--List Empty Search Placeholder -->
       <VPlaceholderPage
-        :class="[filteredData.length !== 0 && 'is-hidden']"
+        :class="[workersData.length !== 0 && 'is-hidden']"
         title="We couldn't find any matching results."
         subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
@@ -215,108 +231,129 @@ onMounted(() => {
         </template>
       </VPlaceholderPage>
 
-      <!--Card Grid v1-->
-      <TransitionGroup name="list" tag="div" class="columns is-multiline">
-        <!--Grid item-->
-        <div
-          v-for="(item, index) in filteredData"
-          :key="index"
-          class="column is-6"
-        >
-          <div class="card-grid-item">
-            <div class="card-grid-item-body">
-              <div class="left">
-                <VAvatar size="big" :picture="item?.avatar" />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.username }}</span>
-                  <span>{{ item.role }}</span>
-                </div>
-              </div>
-              <div class="right">
-                <div class="social-links">
-                  <a
-                    @click="openStatusAlert(item)"
-                    v-if="item.is_active"
-                    channel="Linkedin"
-                    class="social-link"
-                  >
-                    <i
-                      class="success-text fas fa-check-circle"
-                      aria-hidden="true"
-                    ></i>
-                  </a>
-                  <a
-                    v-else
-                    @click="openStatusAlert(item)"
-                    channel="Linkedin"
-                    class="social-link"
-                  >
-                    <i class="fas fa-ban warning-text" aria-hidden="true"></i>
-                  </a>
-                  <a
-                    v-if="item.is_sentMail"
-                    channel="Twitter"
-                    class="social-link"
-                  >
-                    <i
-                      class="fas fa-envelope warning-text"
-                      aria-hidden="true"
-                    ></i>
-                  </a>
+      <VFlexTable
+        v-if="filteredData.length"
+        :data="filteredData"
+        :columns="columns"
+        rounded
+      >
+        <template #body>
+          <!--Card Grid v1-->
+          <TransitionGroup name="list" tag="div" class="columns is-multiline">
+            <!--Grid item-->
+            <div
+              v-for="(item, index) in pagedData"
+              :key="index"
+              class="column is-6"
+            >
+              <div class="card-grid-item">
+                <div class="card-grid-item-body">
+                  <div class="left">
+                    <VAvatar size="big" :picture="item?.avatar" />
+                    <div class="meta">
+                      <span class="dark-inverted">{{ item.username }}</span>
+                      <span>{{ item.role }}</span>
+                    </div>
+                  </div>
+                  <div class="right">
+                    <div class="social-links">
+                      <a
+                        @click="openStatusAlert(item)"
+                        v-if="item.is_active"
+                        channel="Linkedin"
+                        class="social-link"
+                      >
+                        <i
+                          class="success-text fas fa-check-circle"
+                          aria-hidden="true"
+                        ></i>
+                      </a>
+                      <a
+                        v-else
+                        @click="openStatusAlert(item)"
+                        channel="Linkedin"
+                        class="social-link"
+                      >
+                        <i
+                          class="fas fa-ban warning-text"
+                          aria-hidden="true"
+                        ></i>
+                      </a>
+                      <a
+                        v-if="item.is_sentMail"
+                        channel="Twitter"
+                        class="social-link"
+                      >
+                        <i
+                          class="fas fa-envelope warning-text"
+                          aria-hidden="true"
+                        ></i>
+                      </a>
 
-                  <a
-                    channel="Dribbble"
-                    @click="openUserModal(item.id)"
-                    class="social-link"
-                  >
-                    <i aria-hidden="true" class="fas fa-edit info-text" />
-                  </a>
-                  <a
-                    channel="Dribbble"
-                    @click="openDeleteModal(item)"
-                    class="social-link"
-                  >
-                    <i aria-hidden="true" class="fas fa-trash danger-text" />
-                  </a>
+                      <a
+                        channel="Dribbble"
+                        @click="openUserModal(item.id)"
+                        class="social-link"
+                      >
+                        <i aria-hidden="true" class="fas fa-edit info-text" />
+                      </a>
+                      <a
+                        channel="Dribbble"
+                        @click="openDeleteModal(item)"
+                        class="social-link"
+                      >
+                        <i
+                          aria-hidden="true"
+                          class="fas fa-trash danger-text"
+                        />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-grid-item-footer">
+                  <div class="left">
+                    <div class="progress-stats">
+                      <span class="dark-inverted">Progress</span>
+                      <span>
+                        {{
+                          item.progress ? item.progress.toFixed(2) : "0"
+                        }}%</span
+                      >
+                    </div>
+                    <div class="progress-bar">
+                      <VProgress
+                        size="tiny"
+                        :value="item.completed_tasks ? item.completed_tasks : 0"
+                        :max="item.totalTasks ? item.totalTasks : 0"
+                      />
+                    </div>
+                  </div>
+                  <div class="right">
+                    <div class="buttons">
+                      <VButton
+                        :to="`/sidebar/dashboard/workers/${item.id}`"
+                        dark-outlined
+                        rounded
+                      >
+                        View Profile
+                      </VButton>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div class="card-grid-item-footer">
-              <div class="left">
-                <div class="progress-stats">
-                  <span class="dark-inverted">Progress</span>
-                  <span>
-                    {{
-                      item.completed_tasks
-                        ? (item.completed_tasks / item.totalTasks) * 100
-                        : "0"
-                    }}%</span
-                  >
-                </div>
-                <div class="progress-bar">
-                  <VProgress
-                    size="tiny"
-                    :value="item.completed_tasks ? item.completed_tasks : 0"
-                    :max="item.totalTasks ? item.totalTasks : 0"
-                  />
-                </div>
-              </div>
-              <div class="right">
-                <div class="buttons">
-                  <VButton
-                    :to="`/sidebar/dashboard/workers/${item.id}`"
-                    dark-outlined
-                    rounded
-                  >
-                    View Profile
-                  </VButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </TransitionGroup>
+          </TransitionGroup>
+        </template>
+      </VFlexTable>
+      <VFlexPagination
+        v-if="workersData.length > itemsPerPage"
+        :item-per-page="itemsPerPage"
+        v-model="currentPage"
+        :total-items="workersData.length"
+        :current-page="currentPage"
+        :max-links-displayed="maxLinksDisplayed"
+      />
     </div>
 
     <SweetAlert

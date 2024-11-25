@@ -41,42 +41,12 @@ const editmodalTitle = ref("Edit Project");
 const modalTitle = ref("Add Task");
 const filters = ref("");
 const tab = ref("active");
-const showDropdown = ref(false);
 const currentTask = ref(0);
-const isOpen = ref(false);
-const isProjectFormOpen = ref(false);
 const loading = ref(false);
-const assignToMore = ref(false);
 const isTaskFormOpen = ref(false);
 const deleteTaskId = ref(0);
-const activeTasks = ref(0);
-const projectid = ref(0);
 const taskData = ref({});
-const selectedManagers = ref([]);
-const preview = ref("");
-const editProjectId = ref("");
 const taskToBeEdit = ref("");
-const currentProjectId = ref("");
-
-const Taskstatus = ref([
-  { value: "active", name: "Active" },
-  { value: "pending", name: "Pre Construction" },
-  { value: "completed", name: "Completed" },
-  { value: "cancelled", name: "cancelled" },
-]);
-
-const alertData = ref({
-  icon: "fa fa-bell",
-  alertTitle: "Delete Task ?",
-  alertDescription:
-    "After deleting this task you will not be able to recover it",
-});
-const delteAlertData = ref({
-  icon: "fa fa-warning",
-  alertTitle: "Delete Project Permanently?",
-  alertDescription:
-    "After deleting this Project you will not be able to recover it",
-});
 
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
 const projectTasks = ref([
@@ -100,26 +70,6 @@ const SweetAlertProps = ref({
   isSweetAlertOpen: false,
   btntext: "text",
 });
-
-const columns = {
-  title: {
-    label: "Title",
-    // grow: true,
-    // media: true,
-  },
-  quantity: "Quantity/Unit",
-  start: "Start Date",
-  end: "End Date",
-  status: "Status",
-  team: {
-    label: "Worker(s)",
-    cellClass: "h-hidden-tablet-p",
-  },
-  actions: {
-    label: "Actions",
-    align: "end",
-  },
-} as const;
 
 const toggleDropdown = (taskId: any) => {
   if (currentTask.value === taskId) {
@@ -402,7 +352,7 @@ onMounted(() => {
                           class="dropdown-item is-media"
                         >
                           <div class="icon">
-                            <i aria-hidden="true" class="lnil lnil-eye" />
+                            <i class="lnir lnir-play" aria-hidden="true"></i>
                           </div>
                           <div class="meta">
                             <span>Active</span>
@@ -416,7 +366,10 @@ onMounted(() => {
                           class="dropdown-item is-media"
                         >
                           <div class="icon">
-                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                            <i
+                              class="lnir lnir-playlist-alt"
+                              aria-hidden="true"
+                            ></i>
                           </div>
                           <div class="meta">
                             <span>Pending</span>
@@ -430,7 +383,10 @@ onMounted(() => {
                           class="dropdown-item is-media"
                         >
                           <div class="icon">
-                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                            <i
+                              class="lnir lnir-round-box-check"
+                              aria-hidden="true"
+                            ></i>
                           </div>
                           <div class="meta">
                             <span>Completed</span>
@@ -445,7 +401,10 @@ onMounted(() => {
                           class="dropdown-item is-media"
                         >
                           <div class="icon">
-                            <i aria-hidden="true" class="lnil lnil-pencil" />
+                            <i
+                              class="lnir lnir-pencil-alt"
+                              aria-hidden="true"
+                            ></i>
                           </div>
                           <div class="meta">
                             <span>Edit</span>
@@ -459,7 +418,10 @@ onMounted(() => {
                           class="dropdown-item is-media"
                         >
                           <div class="icon">
-                            <i aria-hidden="true" class="lnil lnil-archive" />
+                            <i
+                              class="lnir lnir-trash-can-alt-1"
+                              aria-hidden="true"
+                            ></i>
                           </div>
                           <div class="meta">
                             <span>Delete </span>

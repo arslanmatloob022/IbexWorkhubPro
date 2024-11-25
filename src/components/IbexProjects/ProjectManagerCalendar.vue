@@ -47,15 +47,16 @@ const SweetAlertProps = ref({
 const calendarOptions = ref({
   plugins: [resourceTimelinePlugin, interactionPlugin],
   schedulerLicenseKey: "0965592368-fcs-1694657447",
-  initialView: "resourceTimelineMonth", // Set the default view to yearly
-  // initialDate: "2024-11-11", // F
+  initialView: "resourceTimelineYear",
+  initialDate: new Date().toISOString().split("T")[0],
   height: "auto",
   themeSystem: "cerulean",
   resourceAreaWidth: "20%",
-  slotMinHeight: 20, // Reduce row height for resources
+  slotMinHeight: 20,
   resourcesInitiallyExpanded: false,
   selectable: true,
   dragScroll: true,
+  nowIndicator: true,
   eventOrder: "start",
   resourceOrder: "start",
   headerToolbar: {
@@ -66,7 +67,7 @@ const calendarOptions = ref({
   editable: true,
   views: {
     resourceTimelineWeek: {
-      slotDuration: { days: 1, hours: 1 }, // Each slot represents 1 hour
+      slotDuration: { days: 1, hours: 1 },
       slotLabelFormat: {
         weekday: "short",
         month: "numeric",
@@ -75,10 +76,17 @@ const calendarOptions = ref({
       },
     },
     resourceTimelineYear: {
-      slotMinWidth: 35,
+      type: "resourceTimeline",
+      duration: { month: 12 },
+      titleFormat: { year: "numeric" },
+      title: "Year",
+      // slotLabelFormat: {
+      //   month: "short",
+      // }, // Format months as Jan, Feb, etc.
+      slotMinWidth: 30,
       dayMinWidth: 30,
-      slotMinHeight: 35,
-      dayMinHeight: 30,
+      slotMinHeight: 28,
+      dayMinHeight: 26,
     },
   },
   resourceAreaHeaderContent: "Projects",
@@ -309,15 +317,15 @@ const getProjectHandler = async () => {
     // projects.value = newData;
     // filteredResources.value = newData;
 
-    let sortedData = newData
-      .filter(
-        (project) => project.startDate && !isNaN(new Date(project.startDate))
-      )
-      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    // let sortedData = newData
+    //   .filter(
+    //     (project) => project.startDate && !isNaN(new Date(project.startDate))
+    //   )
+    //   .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
-    projects.value = sortedData;
+    projects.value = newData;
     // console.log("projects", sortedData);
-    filteredResources.value = sortedData; // Use sorted data for filteredResources
+    filteredResources.value = newData; // Use sorted data for filteredResources
   } catch (err) {
     console.error(err);
     projects.value = [];
@@ -333,11 +341,21 @@ const getTasksHandler = async () => {
     const response = await api.get("/api/task/", {});
     let newData = response.data;
 
-    // Validate and sort tasks
-    let sortedData = newData
-      .filter((task) => task.startDate && !isNaN(new Date(task.startDate))) // Ensure valid dates
-      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-    tasks.value = sortedData;
+    let newTasks = newData.map((item) => {
+      return {
+        ...item,
+        workers: item.workers.map((worker) => ({
+          ...worker,
+          picture: worker.avatar || "default-avatar.png", // Use a default picture if avatar is null
+          initials: worker.username
+            ? worker.username.slice(0, 2).toUpperCase()
+            : "N/A",
+        })),
+      };
+    });
+
+    tasks.value = newTasks;
+    console.log("new", tasks.value);
   } catch (err) {
     console.error("Error fetching tasks:", err);
     tasks.value = [];
@@ -485,12 +503,7 @@ onMounted(async () => {
         <div style="height: 100%; position: relative">
           <p
             v-if="arg.event?.display == 'background'"
-            style="
-              font-weight: 500;
-              margin-bottom: 0px;
-              padding-left: 10px;
-              color: black;
-            "
+            style="font-weight: 500; margin-bottom: 0px; color: black"
           >
             Job: {{ arg.event.title }}
           </p>
@@ -509,43 +522,17 @@ onMounted(async () => {
               style="
                 font-weight: 500;
                 margin-bottom: 0px;
-                padding-left: 10px;
-                padding-right: 10px;
+                padding-left: 1px;
+                padding-right: 1px;
                 z-index: 99;
                 text-shadow: 2px 2px 2px black;
               "
             >
-              <!-- v-if="
-                formatDate(arg.event.start)
-                  .slice(-7)
-                  .replace(',', '')
-                  .replace(' ', '')
-                  .toString() !=
-                formatDate(arg.event.end)
-                  .slice(-7)
-                  .replace(',', '')
-                  .replace(' ', '')
-                  .toString()
-              " -->
               <span
                 v-for="worker in arg.event.extendedProps?.workers"
                 :key="worker.id"
               >
                 {{ worker.username }},
-                <!-- {{
-                  formatDate(arg.event.start)
-                    .slice(-7)
-                    .replace(",", "")
-                    .replace(" ", "")
-                    .toString()
-                }}
-                {{
-                  formatDate(arg.event.end)
-                    .slice(-7)
-                    .replace(",", "")
-                    .replace(" ", "")
-                    .toString()
-                }} -->
               </span>
             </p>
             <div
@@ -554,36 +541,23 @@ onMounted(async () => {
             >
               <div
                 class="avatars__item"
-                v-for="worker in arg.event.extendedProps.workers"
+                v-for="worker in arg.event.extendedProps?.workers"
                 :key="worker.id"
               >
-                <Tippy>
-                  <img
-                    v-if="worker.avatar"
-                    :src="worker.avatar"
-                    alt=""
-                    @click="workerImageClick(worker)"
-                    :title="worker.username"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    :data-bs-original-title="
-                      worker.username ? worker.username : 'Hi'
-                    "
-                  />
-                  <template #content>
-                    <div class="v-popover-content is-text">
-                      <div class="popover-head">
-                        <VAvatar :picture="worker.avatar" size="small" />
-                        <h4 class="dark-inverted">
-                          {{ worker.username ? worker.username : "" }}
-                        </h4>
-                      </div>
-                      <div class="popover-body">
-                        <p>{{ arg.event?.title }}</p>
-                      </div>
-                    </div>
-                  </template>
-                </Tippy>
+                <img
+                  v-if="worker.avatar"
+                  :src="worker.avatar"
+                  alt=""
+                  @click="workerImageClick(worker)"
+                  :title="worker.username"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  :data-bs-original-title="
+                    worker.username
+                      ? worker.username.slice(0, 2).toUpperCase()
+                      : 'Hi'
+                  "
+                />
 
                 <div
                   v-if="arg.event.extendedProps?.workers?.length == 0"
@@ -619,6 +593,11 @@ onMounted(async () => {
 
                 <p>{{ worker.username }}</p>
               </div>
+              <!-- <VAvatarStack
+                :avatars="arg.event.extendedProps?.workers"
+                size="small"
+              >
+              </VAvatarStack> -->
             </div>
             <p
               v-if="
@@ -686,7 +665,7 @@ onMounted(async () => {
 .avatars {
   display: flex;
   position: absolute;
-  right: -20%; /* Move it outside of the parent element */
+  right: -60px; /* Move it outside of the parent element */
   top: 50%; /* Center vertically within parent */
   transform: translateY(-50%); /* Adjust for vertical centering */
   list-style-type: none;
@@ -699,7 +678,6 @@ onMounted(async () => {
 .avatars:hover .avatars__item {
   margin-right: 10px;
 }
-
 .avatars__item {
   background-color: #596376;
   border: 1px solid white;

@@ -128,18 +128,18 @@ const completionChart = shallowRef({
 
 const completionOptions = shallowRef({
   series: [
-    {
-      name: "Pending",
-      data: [31, 40, 28, 51, 42, 109, 100],
-    },
-    {
-      name: "Completed",
-      data: [11, 32, 45, 32, 34, 52, 41],
-    },
-    {
-      name: "Blocked",
-      data: [78, 53, 36, 10, 14, 5, 2],
-    },
+    // {
+    //   name: "Pending",
+    //   data: [31, 40, 28, 51, 42, 109, 100],
+    // },
+    // {
+    //   name: "Completed",
+    //   data: [11, 32, 45, 32, 34, 52, 41],
+    // },
+    // {
+    //   name: "Blocked",
+    //   data: [78, 53, 36, 10, 14, 5, 2],
+    // },
   ],
   chart: {
     height: 295,
@@ -162,13 +162,20 @@ const completionOptions = shallowRef({
   xaxis: {
     type: "date",
     categories: [
-      "2020-09-19",
-      "2020-09-20",
-      "2020-09-21",
-      "2020-09-22",
-      "2020-09-23",
-      "2020-09-24",
-      "2020-09-25",
+      "2024-11-12",
+      "2024-11-13",
+      "2024-11-14",
+      "2024-11-15",
+      "2024-11-16",
+      "2024-11-17",
+      "2024-11-18",
+      "2024-11-19",
+      "2024-11-20",
+      "2024-11-21",
+      "2024-11-22",
+      "2024-11-23",
+      "2024-11-24",
+      "2024-11-25",
     ],
   },
   tooltip: {
@@ -268,18 +275,59 @@ const getWorkershandler = async () => {
   }
 };
 
+// const projectTasks = ref([]);
+const taskSeries = ref([]);
+
 const getProjectTasks = async () => {
   try {
     Loading.value = true;
+
     const resp = await api.get(`api/task/${route.params.id}/project/`);
     projectTasks.value = resp.data;
-    console.log(resp.data);
-    getActiveTasks();
+
+    // Initialize a map to store the counts for each status
+    const statusData = {
+      pending: [],
+      completed: [],
+      active: [],
+    };
+
+    // Extract task data based on status
+    projectTasks.value.forEach((task) => {
+      const taskDate = new Date(task.startDate).toISOString().split("T")[0]; // Grouping by date (YYYY-MM-DD)
+      const status = task.status || "Unknown"; // Default status if missing
+
+      // Ensure the status array exists in statusData
+      if (!statusData[status]) {
+        statusData[status] = [];
+      }
+
+      // Update the count for this date
+      const dateIndex = statusData[status].findIndex(
+        (entry) => entry.date === taskDate
+      );
+      if (dateIndex > -1) {
+        statusData[status][dateIndex].count += 1;
+      } else {
+        statusData[status].push({ date: taskDate, count: 1 });
+      }
+    });
+
+    // Map the data into the format required for the chart
+    completionOptions.value.series = Object.keys(statusData).map((status) => ({
+      name: status,
+      data: statusData[status].map((entry) => entry.count),
+    }));
+
+    console.log("Task Series Data:", taskSeries.value);
+
     Loading.value = false;
   } catch (err) {
     console.log(err);
+    Loading.value = false;
   }
 };
+
 const selectedManagersIds = ref([]);
 const editProject = async () => {
   try {
@@ -325,14 +373,6 @@ const getCompletedTasks = (total: any) => {
 const getAllActiveTasks = (total: any) => {
   projectActiveTasks.value = total;
 };
-
-// watch(
-//   () => selectedManagers.value,
-//   () => {
-//     console.log("manager", selectedManagers.value);
-//     editProject();
-//   }
-// );
 
 onMounted(() => {
   projectId.value = route.params.id;

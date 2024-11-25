@@ -38,7 +38,7 @@ const openChangePasswordModal = (id: any) => {
 const getUserDataHandler = async () => {
   try {
     Loading.value = true;
-    const resp = await api.get(`/api/users/${userSession.user.id}`);
+    const resp = await api.get(`/api/users/${userSession.user.id}/`);
     userFormData.value = resp.data;
   } catch (err) {
     console.error(err);
