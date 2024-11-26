@@ -31,10 +31,6 @@ const closeModalHandler = () => {
   emits("update:closeModalHandler", false);
 };
 
-const actionUpdateHandler = () => {
-  emits("update:actionUpdateHandler", null);
-};
-
 const changePassword = async () => {
   try {
     if (Password.value.newPassword === Password.value.confirmPassword) {

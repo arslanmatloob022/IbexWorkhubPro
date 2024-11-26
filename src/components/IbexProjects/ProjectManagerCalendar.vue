@@ -80,14 +80,25 @@ const calendarOptions = ref({
       duration: { month: 12 },
       titleFormat: { year: "numeric" },
       title: "Year",
-      // slotLabelFormat: {
-      //   month: "short",
-      // }, // Format months as Jan, Feb, etc.
+      slotLabelFormat: [
+        { month: "short" },
+        { day: "numeric" },
+        { weekday: "short" },
+      ],
       slotMinWidth: 30,
       dayMinWidth: 30,
       slotMinHeight: 28,
       dayMinHeight: 26,
     },
+  },
+  dayCellDidMount: function (info) {
+    // Get the day of the week (0 = Sunday, 6 = Saturday)
+    const day = info.date.getDay();
+
+    // Highlight weekends
+    if (day === 0 || day === 6) {
+      info.el.classList.add("fc-day-sat", "fc-day-sun"); // Add custom classes
+    }
   },
   resourceAreaHeaderContent: "Projects",
   resources: [],
@@ -251,14 +262,11 @@ const renderCalender = () => {
 
   // Merge all events
   let sortedEvents = [...events, ...bgEvents];
-
   let allNew = sortedEvents.sort(
     (a, b) => new Date(a.start) - new Date(b.start)
   );
 
   const allEvents = allNew;
-  // console.log("events rea", allEvents);
-  // Map tasks as child resources of their respective projects
   const projectResources = projects.value.map((project) => {
     const taskResources = tasks.value
       .filter((task) => task.project === project.id)
@@ -279,7 +287,6 @@ const renderCalender = () => {
     };
   });
 
-  // Assign sorted resources and events to calendar options
   calendarOptions.value.resources = projectResources;
   calendarOptions.value.events = allEvents;
 };
@@ -383,16 +390,6 @@ onMounted(async () => {
   await getCalendarData();
   showWorkerChart.value = true;
 });
-
-// const getCalendarData = async () => {
-//   await getProjectHandler(), await getTasksHandler();
-//   await renderCalender();
-// };
-
-// onMounted(async () => {
-//   await getCalendarData();
-//   showWorkerChart.value = true;
-// });
 </script>
 
 <template>
@@ -641,6 +638,11 @@ onMounted(async () => {
   />
 </template>
 <style lang="scss">
+.fc-day-sat,
+.fc-day-sun {
+  background-color: #f2f2f2;
+}
+
 .fc-event.fc-event-draggable {
   margin-right: 1px;
   border-width: 1px;
@@ -679,10 +681,10 @@ onMounted(async () => {
   margin-right: 10px;
 }
 .avatars__item {
-  background-color: #596376;
-  border: 1px solid white;
+  background-color: #555;
+  border: 1px solid var(--primary);
   border-radius: 100%;
-  color: #ffffff;
+  color: #333;
   display: block;
   font-family: sans-serif;
   font-size: 10px;
