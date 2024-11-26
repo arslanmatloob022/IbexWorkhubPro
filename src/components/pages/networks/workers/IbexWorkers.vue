@@ -130,6 +130,7 @@ const deleteWorker = async () => {
     notyf.error("Error while deleting");
   } finally {
     loading.value = false;
+    deleteSweetAlertProps.value.isSweetAlertOpen = false;
   }
 };
 
