@@ -45,6 +45,7 @@ const actionUpdateHandler = () => {
 };
 const userFormData = ref<any>({
   username: "",
+  last_name: "",
   email: "",
   password: "",
   is_sentMail: false,
@@ -109,7 +110,7 @@ const avatarFile = ref(false);
 const getUserDataHandler = async () => {
   try {
     Loading.value = true;
-    const resp = await api.get(`/api/users/${props.userId}`);
+    const resp = await api.get(`/api/users/${props.userId}/`);
     preview.value = resp.data.avatar ? resp.data.avatar : "";
     avatarFile.value = resp.data.avatar ? resp.data.avatar : "";
     userFormData.value = resp.data;
@@ -163,7 +164,7 @@ onMounted(() => {
         <div class="column is-6">
           <div class="columns is-multiline">
             <VField class="column is-12">
-              <VLabel>Full Name</VLabel>
+              <VLabel>First Name</VLabel>
               <VControl>
                 <VInput
                   required
@@ -174,12 +175,13 @@ onMounted(() => {
               </VControl>
             </VField>
             <VField class="column is-12">
-              <VLabel>Phone</VLabel>
+              <VLabel>Last Name</VLabel>
               <VControl>
                 <VInput
-                  v-model="userFormData.phoneNumber"
-                  type="phone"
-                  placeholder="Enter phone number"
+                  required
+                  v-model="userFormData.last_name"
+                  type="text"
+                  placeholder="Last name"
                 />
               </VControl>
             </VField>
@@ -222,6 +224,39 @@ onMounted(() => {
           </VField>
         </div>
         <VField class="column is-6">
+          <VLabel>Phone</VLabel>
+          <VControl>
+            <VInput
+              v-model="userFormData.phoneNumber"
+              type="phone"
+              placeholder="Enter phone number"
+            />
+          </VControl>
+        </VField>
+        <div class="column is-6 is-flex space-around">
+          <VField class="mt-5">
+            <VControl>
+              <VSwitchBlock
+                v-model="userFormData.is_sentMail"
+                label="Send email"
+                color="primary"
+                thin
+              />
+            </VControl>
+          </VField>
+          <VField class="mt-5">
+            <VControl>
+              <VSwitchBlock
+                v-model="userFormData.is_active"
+                label="Active"
+                color="primary"
+                thin
+              />
+            </VControl>
+          </VField>
+        </div>
+
+        <VField class="column is-6">
           <VLabel>Email</VLabel>
           <VControl>
             <VInput
@@ -232,6 +267,7 @@ onMounted(() => {
             />
           </VControl>
         </VField>
+
         <VField
           v-if="!props.userId"
           class="column is-6"
@@ -253,26 +289,7 @@ onMounted(() => {
             </VButton>
           </VControl>
         </VField>
-        <VField :class="props.userId ? 'mt-5' : ''" class="column is-3">
-          <VControl>
-            <VSwitchBlock
-              v-model="userFormData.is_sentMail"
-              label="Send email"
-              color="primary"
-              thin
-            />
-          </VControl>
-        </VField>
-        <VField :class="props.userId ? 'mt-5' : ''" class="column is-3">
-          <VControl>
-            <VSwitchBlock
-              v-model="userFormData.is_active"
-              label="Active"
-              color="primary"
-              thin
-            />
-          </VControl>
-        </VField>
+
         <VField
           v-if="props.userRole == 'worker'"
           class="column is-6"

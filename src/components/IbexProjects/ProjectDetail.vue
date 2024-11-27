@@ -535,20 +535,6 @@ onMounted(() => {
             :options="completionOptions"
           />
         </div>
-
-        <!-- <div class="dashboard-card">
-          <div class="card-head">
-            <h3 class="dark-inverted">Team Efficiency</h3>
-            <a class="action-link" tabindex="0">Reports</a>
-          </div>
-          <ApexChart
-            id="efficiency-chart"
-            :height="barOptions.chart.height"
-            :type="barOptions.chart.type"
-            :series="barOptions.series"
-            :options="barOptions"
-          />
-        </div> -->
       </div>
 
       <div
@@ -558,8 +544,6 @@ onMounted(() => {
             : 'column is-12'
         "
       >
-        <!-- <TasksCompletionChart :completedTasks="projectCompletedTasks" /> -->
-
         <!-- manager card -->
         <div class="dashboard-card">
           <div class="card-head">
@@ -592,10 +576,7 @@ onMounted(() => {
                   <div class="name dark-inverted">{{ manager.username }}</div>
                   <div class="position">{{ manager.email }}</div>
                 </div>
-                <div class="user-list-icons">
-                  <!-- <a><i aria-hidden="true" class="fas fa-phone" /></a>
-                  <a><i aria-hidden="true" class="fas fa-video" /></a> -->
-                </div>
+                <div class="user-list-icons"></div>
               </li>
             </ul>
             <ul class="user-list" v-else>
@@ -604,7 +585,6 @@ onMounted(() => {
               </div>
             </ul>
             <div v-if="showAddManager">
-              <!-- @change="editProject" -->
               <VField v-slot="{ id }">
                 <VControl>
                   <Multiselect
@@ -619,19 +599,6 @@ onMounted(() => {
                     :options="selectMangerSlotOptions"
                     :max-height="145"
                   >
-                    <!-- <template #tag="{ option, remove, disabled }">
-                      <div class="multiselect-tag is-user">
-                        <img :src="option.image" alt="" />
-                        {{ option.name }}
-                        <i
-                          v-if="!disabled"
-                          role="button"
-                          tabindex="0"
-                          @click.prevent
-                          @mousedown.prevent.stop="remove(option)"
-                        />
-                      </div>
-                    </template> -->
                   </Multiselect>
                 </VControl>
               </VField>

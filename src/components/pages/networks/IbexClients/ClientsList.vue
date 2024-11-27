@@ -26,7 +26,24 @@ export interface UserData extends VAvatarProps {
 const users = gridData.users as UserData[];
 
 const filters = ref("");
-const clientsList = ref([]);
+const clientsList = ref([
+  {
+    id: "",
+    password: "",
+    last_login: "",
+    date_joined: "",
+    email: "",
+    role: "",
+    avatar: null,
+    is_active: true,
+    phoneNumber: "",
+    username: "",
+    last_name: null,
+    is_sentMail: false,
+    token: null,
+    supplier: null,
+  },
+]);
 
 const getIbexClients = async () => {
   try {
@@ -186,7 +203,7 @@ onMounted(() => {
             <div class="grid-item">
               <VAvatar :picture="item.avatar" :badge="item.badge" size="big" />
               <h3 class="dark-inverted">
-                {{ item.username }}
+                {{ item.username }} {{ item.last_name ? item.last_name : "" }}
               </h3>
               <p style="text-transform: capitalize">{{ item.role }}</p>
               <div class="people">

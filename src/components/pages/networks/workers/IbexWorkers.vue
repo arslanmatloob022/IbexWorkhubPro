@@ -51,6 +51,7 @@ const workersData = ref([
     is_active: true,
     phoneNumber: "",
     username: "",
+    last_name: "",
     is_sentMail: false,
     avatar: null as File | null | String,
   },
@@ -252,7 +253,10 @@ onMounted(() => {
                   <div class="left">
                     <VAvatar size="big" :picture="item?.avatar" />
                     <div class="meta">
-                      <span class="dark-inverted">{{ item.username }}</span>
+                      <span class="dark-inverted"
+                        >{{ item.username }}
+                        {{ item.last_name ? item.last_name : "" }}</span
+                      >
                       <span>{{ item.role }}</span>
                     </div>
                   </div>

@@ -23,6 +23,7 @@ const managersData = ref([
     is_active: true,
     phoneNumber: "",
     username: "",
+    last_name: "",
     is_sentMail: false,
   },
 ]);
@@ -174,7 +175,10 @@ onMounted(() => {
                 />
                 <!-- :badge="item.medias.flag" -->
                 <div @click="gotoManagerProfile(item.id)" class="meta-left">
-                  <h3>{{ item.username }}</h3>
+                  <h3>
+                    {{ item.username }}
+                    {{ item.last_name ? item.last_name : "" }}
+                  </h3>
                   <span>
                     <span><VIcon icon="lucide:mail" /> {{ item.email }}</span>
                   </span>

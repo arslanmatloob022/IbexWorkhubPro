@@ -31,6 +31,7 @@ const SweetAlertProps = ref({
 const adminsData = ref([
   {
     username: "",
+    last_name: "",
     email: "",
     password: "",
     status: "",
@@ -176,7 +177,10 @@ onMounted(() => {
                 size="medium"
               />
               <div class="meta">
-                <span class="dark-inverted">{{ item.username }}</span>
+                <span class="dark-inverted"
+                  >{{ item.username }}
+                  {{ item.last_name ? item.last_name : "" }}</span
+                >
                 <span style="text-transform: capitalize">{{ item.role }}</span>
               </div>
               <VDropdown icon="feather:more-vertical" spaced right>

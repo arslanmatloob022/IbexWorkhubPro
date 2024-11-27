@@ -7,6 +7,7 @@ import { onceImageErrored } from "/@src/utils/via-placeholder";
 const api = useApi();
 const notyf = useNotyf();
 const Loading = ref(false);
+const addFileModal = ref(false);
 const filters = ref("");
 
 const props = defineProps<{
@@ -34,12 +35,15 @@ const filteredData = computed(() => {
 
 const sheetNameDeleteTobe = ref("");
 const selectedFileName = ref("");
+const start = ref("");
+let myFile: File | null = null;
 
-const uploadTasksSheet = async (tasksFile: any) => {
+const uploadTasksSheet = async () => {
   try {
     Loading.value = true;
     const resp = await api.post(`/api/task/bulk-upload/${props.projectId}/`, {
-      file: tasksFile,
+      file: myFile,
+      start: start.value,
     });
     notyf.green(`Tasks Will be generated automatically`);
     console.log(resp);
@@ -47,12 +51,11 @@ const uploadTasksSheet = async (tasksFile: any) => {
     Loading.value = false;
   } catch (err) {
     console.log(err);
+  } finally {
+    addFileModal.value = false;
   }
 };
 
-const str = "Internal Notes Spreadsheet.xls on 2024-09-17 14:31:59.913783";
-
-// Regular expression to match date and time
 const getDate = (str: any) => {
   const dateTimeRegex = /\d{4}-\d{2}-\d{2}/;
   const timeRegex = /\d{2}:\d{2}:\d{2}\.\d+/;
@@ -69,7 +72,7 @@ const getDate = (str: any) => {
 
 const handleFileSelect = (event) => {
   let csvFile = event.target.files[0];
-  uploadTasksSheet(csvFile);
+  myFile = csvFile;
   selectedFileName.value = csvFile.name;
 };
 
@@ -134,35 +137,21 @@ const deleteSheetTasks = async () => {
           </VControl>
         </VField> -->
 
-        <VField grouped>
-          <VControl>
-            <div class="file">
-              <label class="file-label">
-                <input
-                  @change="handleFileSelect"
-                  class="file-input"
-                  type="file"
-                  name="file"
-                  style="background-color: var(--primary); color: #fff"
-                />
-                <span
-                  style="background-color: var(--primary); color: #fff"
-                  class="file-cta"
-                >
-                  <span class="file-icon">
-                    <i class="fas fa-plus" />
-                  </span>
-                  <span class="file-label"> File </span>
-                </span>
-              </label>
-            </div>
-          </VControl>
-        </VField>
+        <VButton
+          icon="fas fa-plus"
+          raised
+          size="small"
+          light
+          @click="addFileModal = !addFileModal"
+          outlined
+          color="primary"
+        >
+          File
+        </VButton>
       </div>
     </div>
 
     <div class="tile-grid tile-grid-v2">
-      <!--List Empty Search Placeholder -->
       <VPlaceholderPage
         :class="[filteredData.length !== 0 && 'is-hidden']"
         title="There is not file uploaded"
@@ -244,6 +233,57 @@ const deleteSheetTasks = async () => {
     :onConfirm="deleteSheetTasks"
     :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
   />
+  <VModal
+    is="form"
+    :open="addFileModal"
+    title="Upload Task File"
+    size="medium"
+    actions="right"
+    @close="addFileModal = false"
+    @submit.prevent="uploadTasksSheet"
+  >
+    <template #content>
+      <div class="modal-form columns is-multiline">
+        <VField class="column is-12">
+          <VLabel>Start date of task</VLabel>
+          <VControl>
+            <VInput v-model="start" type="date" />
+          </VControl>
+        </VField>
+        <VField class="column is-12" grouped>
+          <VControl>
+            <div class="file has-name">
+              <label class="file-label">
+                <input
+                  @change="handleFileSelect"
+                  class="file-input"
+                  type="file"
+                  name="file"
+                  required
+                />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-cloud-upload-alt" />
+                  </span>
+                  <span class="file-label"> Choose a file… </span>
+                </span>
+                <span class="file-name light-text">
+                  {{ selectedFileName ? selectedFileName : "Upload any file" }}
+                </span>
+              </label>
+            </div>
+          </VControl>
+        </VField>
+      </div>
+    </template>
+
+    <template #cancel>
+      <VButton @click="addFileModal = false" raised>Close</VButton>
+    </template>
+    <template #action>
+      <VButton type="submit" color="primary" raised>Upload</VButton>
+    </template>
+  </VModal>
 </template>
 
 <style scoped lang="scss">

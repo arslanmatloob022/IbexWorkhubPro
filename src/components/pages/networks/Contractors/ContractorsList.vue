@@ -30,6 +30,7 @@ const ContractorsData = ref([
     is_active: true,
     phoneNumber: "23984729370",
     username: "Patrick",
+    last_name: "",
     is_sentMail: false,
     supplier: null,
   },
@@ -138,7 +139,7 @@ onMounted(() => {
           <div class="grid-item">
             <VAvatar :picture="item.avatar" size="big" />
             <h3 class="dark-inverted">
-              {{ item.username }}
+              {{ item.username }} {{ item.last_name ? item.last_name : "" }}
             </h3>
             <p>{{ item.role }}</p>
             <div class="people">

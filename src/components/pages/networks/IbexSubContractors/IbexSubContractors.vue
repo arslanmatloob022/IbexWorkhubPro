@@ -17,12 +17,12 @@ const suppliers = ref([
     is_active: true,
     phoneNumber: "03007626555",
     username: "Second Test",
+    last_name: "",
     is_sentMail: false,
   },
 ]);
 const filters = ref("");
 const openUserModal = ref(false);
-const selectedUserId = ref("");
 const isOpenModal = ref(false);
 const userId = ref("");
 const isPasswordModalOpen = ref(false);
@@ -137,7 +137,10 @@ onMounted(() => {
                   @click="gotoSubContrctorProfile(item.id)"
                   class="meta-left"
                 >
-                  <h3>{{ item?.username }}</h3>
+                  <h3>
+                    {{ item?.username }}
+                    {{ item?.last_name ? item?.last_name : "" }}
+                  </h3>
                   <span>
                     <i aria-hidden="true" class="fas fa-envelope mr-1" />
                     <span>{{ item?.email }}</span>
