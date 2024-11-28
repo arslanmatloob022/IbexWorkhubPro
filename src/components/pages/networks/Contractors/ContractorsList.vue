@@ -56,15 +56,40 @@ const filteredData = computed(() => {
   }
 });
 
-const valueSingle = ref(0);
-const optionsSingle = [
-  "All",
-  "UI/UX Design",
-  "Web Development",
-  "Software Eng.",
-  "Business",
-];
-
+const deleteSweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+const selectedUserId = ref("");
+const openDeleteModal = (user: any) => {
+  selectedUserId.value = user.id;
+  deleteSweetAlertProps.value = {
+    title: `Delete ${user.username}?`,
+    subtitle:
+      "After deleting this worker you won't be able to recover it again.",
+    btntext: `Delete it`,
+    isSweetAlertOpen: true,
+  };
+};
+const deleteUser = async () => {
+  try {
+    loading.value = true;
+    const response = await api.delete(
+      `/api/users/${selectedUserId.value}/`,
+      {}
+    );
+    getContractorshandler();
+    notyf.green(`Contractor deleted successfully`);
+  } catch (err) {
+    console.log(err);
+    notyf.error("Error while deleting");
+  } finally {
+    loading.value = false;
+    deleteSweetAlertProps.value.isSweetAlertOpen = false;
+  }
+};
 const getContractorshandler = async () => {
   try {
     loading.value = true;
@@ -163,20 +188,31 @@ onMounted(() => {
                 </span>
                 <span>Profile</span>
               </button>
+
               <button
-                @click="openUserModal(item.id)"
+                @click="openDeleteModal(item)"
                 class="button v-button is-dark-outlined"
               >
                 <span class="icon">
-                  <VIcon icon="lucide:pen-tool" />
+                  <VIcon icon="lucide:trash" />
                 </span>
-                <span>Edit</span>
+                <span>Remove</span>
               </button>
             </div>
           </div>
         </div>
       </TransitionGroup>
     </div>
+    <SweetAlert
+      v-if="deleteSweetAlertProps.isSweetAlertOpen"
+      :loading="loading"
+      :isSweetAlertOpen="deleteSweetAlertProps.isSweetAlertOpen"
+      :title="deleteSweetAlertProps.title"
+      :subtitle="deleteSweetAlertProps.subtitle"
+      :btntext="deleteSweetAlertProps.btntext"
+      :onConfirm="deleteUser"
+      :onCancel="() => (deleteSweetAlertProps.isSweetAlertOpen = false)"
+    />
     <AddUpdateUser
       v-if="isOpenModal"
       :is-modal-open="isOpenModal"

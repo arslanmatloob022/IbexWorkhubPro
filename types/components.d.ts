@@ -587,6 +587,7 @@ declare module 'vue' {
     UpdateTask: typeof import('./../src/components/IbexProjects/ProjectTasks/UpdateTask.vue')['default']
     UpdateWorkerProfile: typeof import('./../src/components/pages/networks/workers/UpdateWorkerProfile.vue')['default']
     UserCardDropdown: typeof import('./../src/components/partials/dropdowns/UserCardDropdown.vue')['default']
+    UserDeleteComponent: typeof import('./../src/components/ActionsComponents/UserDeleteComponent.vue')['default']
     UserPopoverContent: typeof import('./../src/components/partials/popover/UserPopoverContent.vue')['default']
     UserProfileDropdown: typeof import('./../src/components/partials/dropdowns/UserProfileDropdown.vue')['default']
     UsersGridV1: typeof import('./../src/components/pages/layouts/users-grid/UsersGridV1.vue')['default']

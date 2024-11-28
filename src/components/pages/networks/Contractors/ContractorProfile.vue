@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
 import { useUserSession } from "/@src/stores/userSession";
 
 const userSession = useUserSession();
-const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
-const events = ref<any>([]);
-const router = useRouter();
-const tab = ref("cards");
 const openPasswordModal = ref(false);
+const currentSelectId = ref("");
+const isOpenModal = ref(false);
+const loading = ref(false);
 
 const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
   usePersonalScoreGauge();
@@ -29,133 +27,6 @@ const workerData = ref({
   username: "",
   is_sentMail: false,
 });
-const fullWidthView = ref(false);
-const activeFilter = ref("all");
-const loading = ref(false);
-
-// Tasks, Resources, Events, and Projects as Reactive Arrays
-const tasks = ref([]);
-const filteredResources = ref([]);
-const filteredEvents = ref([]);
-const projects = ref<any>([]);
-
-// Colors as an Object
-const colors = ref({
-  pending: "#fbcf33",
-  active: "#82d616",
-  completed: "#cb0c9f",
-  canceled: "#344767",
-});
-
-const calendarOptions = ref({
-  plugins: [resourceTimelinePlugin],
-  schedulerLicenseKey: "0965592368-fcs-1694657447",
-  initialView: "resourceTimelineMonth",
-  height: "auto",
-  resourceAreaWidth: "20%",
-  selectable: true,
-  events: [],
-  headerToolbar: {
-    left: "today prev,next",
-    center: "title",
-    right: "resourceTimelineWeek,resourceTimelineMonth,resourceTimelineYear",
-  },
-  editable: true,
-  views: {
-    resourceTimelineWeek: {
-      slotDuration: { days: 1, hours: 1 },
-      slotLabelFormat: {
-        weekday: "short",
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-      },
-    },
-  },
-  resourceAreaHeaderContent: "Projects",
-  resources: [],
-});
-
-const sendTasksMailToWorker = async () => {
-  try {
-    const resp = await api.post(`/api/task/worker-mail/`, {
-      worker: route.params.id,
-    });
-    console.log(resp);
-    notyf.success(
-      `List of tasks sent to ${workerData.value.username} successfully`
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const renderCalendar = () => {
-  events.value = tasks.value.map((task) => ({
-    id: task.id,
-    resourceId: task.project.id,
-    start: task.startDate,
-    end: task.endDate,
-    title: task.title,
-    color: task.color,
-    description: task.description,
-    workers: task.workers,
-    borderColor: colors[task.status],
-    status: task.status,
-  }));
-
-  projects.value = tasks.value.map((task) => ({
-    id: task.project.id,
-    start: task.project.startDate,
-    end: task.project.endDate,
-    title: task.project.title,
-    address: task.project.address,
-    status: task.project.status,
-    color: colors[task.project.status],
-  }));
-
-  filteredResources.value = projects.value;
-  filteredEvents.value = events.value;
-
-  // Update the reactive calendar options object properly
-  calendarOptions.value = {
-    ...calendarOptions.value, // Keep other properties intact
-    resources: filteredResources.value, // Assign resources in a reactive manner
-    events: filteredEvents.value, // Assign events in a reactive manner
-  };
-
-  console.log(
-    "tasks",
-    calendarOptions.value.events,
-    "resources",
-    calendarOptions.value.resources
-  );
-};
-
-const changeFilterHandler = () => {
-  if (activeFilter.value !== "all") {
-    const data = events.value.filter(
-      (event) => event.status === activeFilter.value
-    );
-    filteredEvents.value = data;
-  } else {
-    filteredEvents.value = events.value;
-  }
-  calendarOptions.value.events = filteredEvents.value;
-};
-
-// Method to get tasks for a worker
-const getTasksHandler = async () => {
-  try {
-    const response = await api.get(
-      `/api/task/${route.params.id}/worker-tasks/`
-    );
-    tasks.value = response.data;
-    console.log("worker tasks", tasks.value);
-  } catch (err) {
-    tasks.value = [];
-  }
-};
 
 const getContractorDetailHandler = async () => {
   try {
@@ -171,45 +42,34 @@ const getContractorDetailHandler = async () => {
     loading.value = false;
   }
 };
-const showFullView = () => {
-  fullWidthView.value = !fullWidthView.value;
-};
 
-const workerTasksStats = ref({});
-const getWorkerTodayTask = async () => {
-  try {
-    const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
-    workerTasksStats.value = resp.data.stats;
-    if (refresh) {
-      notyf.green("Tasks list Refreshed");
-    }
-  } catch (err) {
-    console.log(err);
-  }
+const openUserModal = (id: any = "") => {
+  currentSelectId.value = id;
+  isOpenModal.value = !isOpenModal.value;
 };
 
 onMounted(async () => {
   await getContractorDetailHandler();
-  //   await getTasksHandler();
-  //   renderCalendar();
-  //   getWorkerTodayTask();
 });
 </script>
 
 <template>
   <div class="lifestyle-dashboard lifestyle-dashboard-v3">
-    <div class="illustration-header">
+    <div class="illustration-header is-relative">
+      <VIconBox
+        @click="openUserModal(workerData.id)"
+        size="small"
+        color="primary"
+        style="position: absolute; right: 8px; top: 8px; cursor: pointer"
+      >
+        <i class="lnil lnil-pencil" />
+      </VIconBox>
       <div class="p-4">
         <VAvatar size="xl" squared :picture="workerData.avatar" alt="" />
       </div>
       <div class="header-meta">
         <h3>
           {{ loading ? "Loading..." : workerData?.username }}
-          <i
-            @click="openPasswordModal = true"
-            class="lnir lnir-lock"
-            aria-hidden="true"
-          ></i>
         </h3>
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
@@ -247,6 +107,14 @@ onMounted(async () => {
               loading ? "Loading..." : workerData.is_sentMail ? "On" : "Off"
             }}</span>
           </div>
+          <div class="summary-stat h-hidden-tablet-p">
+            <span>Password</span>
+            <span
+              @click="openPasswordModal = !openPasswordModal"
+              class="link-text"
+              >Change Password</span
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -265,6 +133,14 @@ onMounted(async () => {
       :isModalOpen="openPasswordModal"
       :userId="route.params.id"
       @update:closeModalHandler="openPasswordModal = false"
+    />
+    <AddUpdateUser
+      v-if="isOpenModal"
+      :is-modal-open="isOpenModal"
+      user-role="contractor"
+      :user-id="currentSelectId"
+      @update:close-modal-handler="isOpenModal = false"
+      @update:action-update-handler="getContractorshandler"
     />
   </div>
 </template>
