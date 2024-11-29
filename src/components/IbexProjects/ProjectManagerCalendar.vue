@@ -64,6 +64,11 @@ const calendarOptions = ref({
     center: "title",
     right: "resourceTimelineWeek,resourceTimelineMonth,resourceTimelineYear",
   },
+  buttonText: {
+    resourceTimelineWeek: "Week",
+    resourceTimelineMonth: "Month",
+    resourceTimelineYear: "Year", // Change the text for the year view
+  },
   editable: true,
   views: {
     resourceTimelineWeek: {
@@ -321,17 +326,7 @@ const getProjectHandler = async () => {
 
     const response = await api.get("/api/project/projects/", {});
     let newData = response.data;
-    // projects.value = newData;
-    // filteredResources.value = newData;
-
-    // let sortedData = newData
-    //   .filter(
-    //     (project) => project.startDate && !isNaN(new Date(project.startDate))
-    //   )
-    //   .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-
     projects.value = newData;
-    // console.log("projects", sortedData);
     filteredResources.value = newData; // Use sorted data for filteredResources
   } catch (err) {
     console.error(err);

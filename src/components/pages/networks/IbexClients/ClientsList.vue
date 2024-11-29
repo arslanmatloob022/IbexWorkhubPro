@@ -2,9 +2,10 @@
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import * as gridData from "/@src/data/layouts/user-grid-v2";
 import { useApi } from "/@src/composable/useAPI";
-
-const router = useRouter();
+import { useNotyf } from "/@src/composable/useNotyf";
 const api = useApi();
+const notyf = useNotyf();
+const router = useRouter();
 const loading = ref(false);
 const isOpenModal = ref(false);
 const isPasswordOpenModal = ref(false);
@@ -84,15 +85,40 @@ const gotoClient = (id: any = "") => {
   router.push(`/sidebar/dashboard/clients/${id}`);
 };
 
-const valueSingle = ref(0);
-const optionsSingle = [
-  "All",
-  "UI/UX Design",
-  "Web Development",
-  "Software Eng.",
-  "Business",
-];
-
+const deleteSweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+const selectedUserId = ref("");
+const openDeleteModal = (user: any) => {
+  selectedUserId.value = user.id;
+  deleteSweetAlertProps.value = {
+    title: `Delete ${user.username}?`,
+    subtitle:
+      "After deleting this worker you won't be able to recover it again.",
+    btntext: `Delete it`,
+    isSweetAlertOpen: true,
+  };
+};
+const deleteUser = async () => {
+  try {
+    loading.value = true;
+    const response = await api.delete(
+      `/api/users/${selectedUserId.value}/`,
+      {}
+    );
+    getIbexClients();
+    notyf.green(`Contractor deleted successfully`);
+  } catch (err) {
+    console.log(err);
+    notyf.error("Error while deleting");
+  } finally {
+    loading.value = false;
+    deleteSweetAlertProps.value.isSweetAlertOpen = false;
+  }
+};
 onMounted(() => {
   getIbexClients();
 });
@@ -177,17 +203,14 @@ onMounted(() => {
                 </div>
               </div>
               <div class="buttons">
-                <button class="button v-button is-dark-outlined">
+                <button
+                  @click="openDeleteModal(item)"
+                  class="button v-button is-dark-outlined"
+                >
                   <span class="icon">
-                    <i
-                      v-if="item.is_sentMail"
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:check-circle"
-                    />
-                    <VIcon v-else icon="lucide:alert-octagon" />
+                    <VIcon icon="lucide:alert-octagon" />
                   </span>
-                  <span>Email</span>
+                  <span>Delete</span>
                 </button>
                 <button
                   @click="openPasswordModal(item.id)"
@@ -263,6 +286,16 @@ onMounted(() => {
     :user-id="currentSelectId"
     @update:close-modal-handler="isOpenModal = false"
     @update:action-update-handler="getIbexClients"
+  />
+  <SweetAlert
+    v-if="deleteSweetAlertProps.isSweetAlertOpen"
+    :loading="loading"
+    :isSweetAlertOpen="deleteSweetAlertProps.isSweetAlertOpen"
+    :title="deleteSweetAlertProps.title"
+    :subtitle="deleteSweetAlertProps.subtitle"
+    :btntext="deleteSweetAlertProps.btntext"
+    :onConfirm="deleteUser"
+    :onCancel="() => (deleteSweetAlertProps.isSweetAlertOpen = false)"
   />
 </template>
 
