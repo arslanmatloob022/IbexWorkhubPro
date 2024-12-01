@@ -2,12 +2,19 @@
 import { useApi } from "/@src/composable/useAPI";
 import { formatDateTime } from "/@src/composable/useSupportElement";
 import { useNotyf } from "/@src/composable/useNotyf";
+
+const route = useRoute();
 const selectedPayID = ref("");
 const loading = ref(false);
 const notyf = useNotyf();
 const api = useApi();
 const router = useRouter();
+const filters = ref("");
+const tab = ref("paid");
+const itemsPerPage = ref(10);
+const maxLinksDisplayed = ref(6);
 const paymentsLoading = ref(false);
+
 const paymentsList = ref([
   {
     id: "",
@@ -36,9 +43,6 @@ const paymentsList = ref([
     client: null,
   },
 ]);
-
-const filters = ref("");
-const tab = ref("paid");
 
 const columns = {
   description: {
@@ -71,6 +75,12 @@ const columns = {
   },
 } as const;
 
+const pagedData = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+  const endIndex = startIndex + itemsPerPage.value;
+  return filteredData.value.slice(startIndex, endIndex);
+});
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return paymentsList.value;
@@ -86,6 +96,16 @@ const filteredData = computed(() => {
       );
     });
   }
+});
+
+const currentPage = computed(() => {
+  let index: any = route.query.page as string;
+  if (index == undefined || index == "undefined") {
+    index = 1;
+  } else {
+    index = route.query.page as string;
+  }
+  return Number.parseInt(route.query.page as string) || 1;
 });
 
 const getPaymentsList = async () => {
@@ -130,11 +150,15 @@ const deletePayment = async () => {
     loading.value = false;
   }
 };
-const gotoPaymentDetail = (id: any) => {
-  router.push({
-    path: `/sidebar/dashboard/received-payments/${id}`,
-  });
+
+const statusColors = {
+  created: "info",
+  pending: "waning", // Yellow for 'pending'
+  canceled: "danger", // Green for 'completed'
+  succeeded: "primary", // Red for 'blocked'
+  processing: "success", // Blue for 'in-progress'
 };
+
 const moveToDetail = (item: any) => {
   if (item.status !== "succeeded") {
     return;
@@ -143,6 +167,7 @@ const moveToDetail = (item: any) => {
     window.open(url, "_blank"); // Opens the URL in a new tab
   }
 };
+
 const copyLink = (link: any) => {
   if (link) {
     navigator.clipboard
@@ -211,7 +236,7 @@ onMounted(() => {
               <TransitionGroup name="list" tag="div" class="flex-list-inner">
                 <!--Table item-->
                 <div
-                  v-for="item in filteredData"
+                  v-for="item in pagedData"
                   :key="item.id"
                   class="flex-table-item"
                 >
@@ -282,8 +307,11 @@ onMounted(() => {
 
                   <VFlexTableCell>
                     <VTag
+                      elevated
+                      raised
+                      rounded
                       style="text-transform: capitalize"
-                      :color="item.status == 'succeeded' ? 'primary' : ''"
+                      :color="statusColors[item.status]"
                     >
                       {{ item.status }}
                     </VTag>
@@ -317,13 +345,14 @@ onMounted(() => {
           </VFlexTable>
 
           <!--Table Pagination-->
-          <!-- <VFlexPagination
-            v-if="filteredData.length > 5"
-            :item-per-page="10"
-            :total-items="90"
-            :current-page="1"
-            :max-links-displayed="5"
-          /> -->
+          <VFlexPagination
+            v-if="paymentsList.length > itemsPerPage"
+            :item-per-page="itemsPerPage"
+            v-model="currentPage"
+            :total-items="paymentsList.length"
+            :current-page="currentPage"
+            :max-links-displayed="maxLinksDisplayed"
+          />
         </div>
       </div>
     </div>

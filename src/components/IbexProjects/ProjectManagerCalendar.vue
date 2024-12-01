@@ -2,9 +2,7 @@
 import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import { useUserSession } from "/@src/stores/userSession";
-import { formatISO } from "date-fns";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { formatDate } from "/@src/composable/useSupportElement";
@@ -67,7 +65,7 @@ const calendarOptions = ref({
   buttonText: {
     resourceTimelineWeek: "Week",
     resourceTimelineMonth: "Month",
-    resourceTimelineYear: "Year", // Change the text for the year view
+    resourceTimelineYear: "Year",
   },
   editable: true,
   views: {
@@ -97,12 +95,10 @@ const calendarOptions = ref({
     },
   },
   dayCellDidMount: function (info) {
-    // Get the day of the week (0 = Sunday, 6 = Saturday)
     const day = info.date.getDay();
 
-    // Highlight weekends
     if (day === 0 || day === 6) {
-      info.el.classList.add("fc-day-sat", "fc-day-sun"); // Add custom classes
+      info.el.classList.add("fc-day-sat", "fc-day-sun");
     }
   },
   resourceAreaHeaderContent: "Projects",
@@ -136,9 +132,6 @@ const calendarOptions = ref({
 });
 
 const eventChangeHandler = (info: any) => {
-  // console.warn("inside func");
-  // console.log("inside ", userSession.user.role);
-
   if (userSession.user.role === "contractor") {
     info.revert();
     return;
@@ -154,15 +147,12 @@ const eventChangeHandler = (info: any) => {
 
   let start = info.event.startStr;
   let end = info.event.end.toISOString().substring(0, 10);
-  // console.log("resource ids", info.event);
-  // console.log("event", info.event);
 
   if (info.event.id != info.event._def.publicId) {
     info.revert();
     return;
   }
 
-  // Update SweetAlertProps with dynamic values
   SweetAlertProps.value = {
     title: "Confirm Update",
     subtitle: `Are you sure you want to update the project "${info.event.title}" date from ${start} to ${end}?`,
@@ -239,7 +229,6 @@ const getManagersById = (id: any) => {
 };
 
 const renderCalender = () => {
-  // console.log(projects.value);
   const bgEvents = projects.value.map((project) => ({
     id: project.id,
     resourceId: project.id,
@@ -250,7 +239,6 @@ const renderCalender = () => {
     color: project.color,
   }));
 
-  // Map tasks to events
   const events = tasks.value.map((task) => ({
     id: task.id,
     resourceId: task.id,
@@ -265,7 +253,6 @@ const renderCalender = () => {
     managers: getManagersById(task.project),
   }));
 
-  // Merge all events
   let sortedEvents = [...events, ...bgEvents];
   let allNew = sortedEvents.sort(
     (a, b) => new Date(a.start) - new Date(b.start)
@@ -279,7 +266,7 @@ const renderCalender = () => {
         id: task.id,
         title: task.title,
         project: task.project,
-        initiallyExpanded: true, // Child resources collapsed by default
+        initiallyExpanded: true,
       }));
 
     return {
@@ -287,8 +274,8 @@ const renderCalender = () => {
       title: project.title,
       eventBackgroundColor: project.color,
       project: project.id,
-      initiallyExpanded: true, // Parent resource expanded
-      children: taskResources, // Tasks as child resources
+      initiallyExpanded: true,
+      children: taskResources,
     };
   });
 
@@ -662,9 +649,9 @@ onMounted(async () => {
 .avatars {
   display: flex;
   position: absolute;
-  right: -60px; /* Move it outside of the parent element */
-  top: 50%; /* Center vertically within parent */
-  transform: translateY(-50%); /* Adjust for vertical centering */
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
   list-style-type: none;
   margin: 0;
   padding: 0;

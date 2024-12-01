@@ -7,17 +7,10 @@ const notyf = useNotyf();
 const route = useRoute();
 const filters = ref("");
 const selectedIdToDelete = ref("");
-const valueSingle = ref(0);
 const currentSelectId = ref("");
 const isOpenModal = ref(false);
-const optionsSingle = [
-  "All",
-  "UI/UX Design",
-  "Web Development",
-  "Software Eng.",
-  "Business",
-];
-
+const itemsPerPage = ref(8);
+const maxLinksDisplayed = ref(5);
 const loading = ref(false);
 const selectedIdToChangeStatus = ref(null);
 const selectedStatus = ref(null);
@@ -61,9 +54,6 @@ const openUserModal = (id: any = "") => {
   currentSelectId.value = id;
   isOpenModal.value = !isOpenModal.value;
 };
-
-const itemsPerPage = ref(8);
-const maxLinksDisplayed = ref(5);
 
 const pagedData = computed(() => {
   const startIndex = (currentPage.value - 1) * itemsPerPage.value;

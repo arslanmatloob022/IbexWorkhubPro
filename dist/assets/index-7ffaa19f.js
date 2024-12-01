@@ -1,1 +1,0 @@
-import{e as s,v as a,o as e,B as d,C as o}from"./index-0b5beb63.js";const r=s({__name:"index",setup(s){const r=a();return e((()=>{r.push("/sidebar/dashboard")})),(s,a)=>(d(),o("div"))}});export{r as default};
