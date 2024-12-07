@@ -526,14 +526,15 @@ onMounted(async () => {
                 v-for="worker in arg.event.extendedProps?.workers"
                 :key="worker.id"
               >
+                <!-- <VAvatar
+                  @click="workerImageClick(worker)"
+                  :picture="worker.avatar"
+                /> -->
                 <img
                   v-if="worker.avatar"
                   :src="worker.avatar"
-                  alt=""
                   @click="workerImageClick(worker)"
                   :title="worker.username"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="bottom"
                   :data-bs-original-title="
                     worker.username
                       ? worker.username.slice(0, 2).toUpperCase()
@@ -541,10 +542,10 @@ onMounted(async () => {
                   "
                 />
 
+                <!-- data-bs-toggle="tooltip" -->
                 <div
                   v-if="arg.event.extendedProps?.workers?.length == 0"
                   @click="workerImageClick(worker)"
-                  data-bs-toggle="tooltip"
                   data-bs-placement="bottom"
                   :data-bs-original-title="
                     worker.username ? worker.username : 'Hi'
@@ -668,9 +669,9 @@ onMounted(async () => {
   align-items: center;
 }
 
-.avatars:hover .avatars__item {
-  margin-right: 10px;
-}
+// .avatars:hover .avatars__item {
+//   margin-right: 10px;
+// }
 .avatars__item {
   background-color: #555;
   border: 1px solid var(--primary);
@@ -684,11 +685,11 @@ onMounted(async () => {
   width: 30px;
   line-height: 20px;
   text-align: center;
-  transition: margin 0.1s ease-in-out;
+  // transition: margin 0.1s ease-in-out;
   overflow: hidden;
-  margin-left: -10px;
-  transition: all 0.4s ease-in-out;
+  // transition: all 0.4s ease-in-out;
 }
+//margin-left: -10px;
 
 .avatars__item > img {
   width: 100%;
