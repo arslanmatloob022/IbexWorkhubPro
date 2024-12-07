@@ -172,18 +172,6 @@ const renderCalendar = () => {
   );
 };
 
-const changeFilterHandler = () => {
-  if (activeFilter.value !== "all") {
-    const data = events.value.filter(
-      (event) => event.status === activeFilter.value
-    );
-    filteredEvents.value = data;
-  } else {
-    filteredEvents.value = events.value;
-  }
-  calendarOptions.value.events = filteredEvents.value;
-};
-
 const openPasswordModal = (id: any) => {
   userId.value = id;
   isPasswordModalOpen.value = true;

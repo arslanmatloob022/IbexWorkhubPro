@@ -127,62 +127,66 @@ const completionChart = shallowRef({
 });
 
 const completionOptions = shallowRef({
-  series: [
-    // {
-    //   name: "Pending",
-    //   data: [31, 40, 28, 51, 42, 109, 100],
-    // },
-    // {
-    //   name: "Completed",
-    //   data: [11, 32, 45, 32, 34, 52, 41],
-    // },
-    // {
-    //   name: "Blocked",
-    //   data: [78, 53, 36, 10, 14, 5, 2],
-    // },
-  ],
+  series: [],
   chart: {
     height: 295,
-    type: "area",
+    type: "pie",
     toolbar: {
       show: false,
     },
   },
-  colors: [themeColors.accent, themeColors.info, themeColors.primary],
+  labels: ["Active", "Pending", "Completed", "Canceled"],
+  colors: [
+    themeColors.accent,
+    themeColors.info,
+    themeColors.primary,
+    themeColors.orange,
+  ],
   legend: {
-    position: "top",
+    position: "right",
+    horizontalAlign: "center",
   },
+  responsive: [
+    {
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 315,
+          toolbar: {
+            show: false,
+          },
+        },
+        legend: {
+          position: "top",
+        },
+      },
+    },
+  ],
   dataLabels: {
     enabled: false,
   },
-  stroke: {
-    width: [2, 3, 5],
-    curve: "smooth",
-  },
-  xaxis: {
-    type: "date",
-    categories: [
-      "2024-11-12",
-      "2024-11-13",
-      "2024-11-14",
-      "2024-11-15",
-      "2024-11-16",
-      "2024-11-17",
-      "2024-11-18",
-      "2024-11-19",
-      "2024-11-20",
-      "2024-11-21",
-      "2024-11-22",
-      "2024-11-23",
-      "2024-11-24",
-      "2024-11-25",
-    ],
-  },
-  tooltip: {
-    x: {
-      format: "dd/MM/yy HH:mm",
-    },
-  },
+  // stroke: {
+  //   width: [2, 3, 5],
+  //   curve: "smooth",
+  // },
+  // xaxis: {
+  //   type: "date",
+  //   categories: [
+  //     "2024-11-15",
+  //     "2024-11-16",
+  //     "2024-11-17",
+  //     "2024-11-18",
+  //     "2024-11-19",
+  //     "2024-11-20",
+  //     "2024-11-21",
+  //     "2024-11-22",
+  //   ],
+  // },
+  // tooltip: {
+  //   x: {
+  //     format: "dd/MM/yy HH:mm",
+  //   },
+  // },
 });
 
 const toggleAddContractor = () => {
@@ -204,7 +208,7 @@ const openDeleteAlert = (id: any) => {
 const deleteProject = () => {
   try {
     loading.value = true;
-    const response = api.delete(`/api/project/${projectId.value}/`);
+    const response = api.delete(`/api/project/${route.params.id}/`);
     notyf.green("Selected project deleted successfully!");
     router.push("/sidebar/dashboard/projects");
   } catch (err) {
@@ -285,41 +289,31 @@ const getProjectTasks = async () => {
     const resp = await api.get(`api/task/${route.params.id}/project/`);
     projectTasks.value = resp.data;
 
-    // Initialize a map to store the counts for each status
-    const statusData = {
-      pending: [],
-      completed: [],
-      active: [],
+    // Initialize counts for each status
+    const statusCounts = {
+      pending: 0,
+      completed: 0,
+      active: 0,
+      canceled: 0,
     };
 
-    // Extract task data based on status
+    // Count the tasks by their status
     projectTasks.value.forEach((task) => {
-      const taskDate = new Date(task.startDate).toISOString().split("T")[0]; // Grouping by date (YYYY-MM-DD)
-      const status = task.status || "Unknown"; // Default status if missing
-
-      // Ensure the status array exists in statusData
-      if (!statusData[status]) {
-        statusData[status] = [];
-      }
-
-      // Update the count for this date
-      const dateIndex = statusData[status].findIndex(
-        (entry) => entry.date === taskDate
-      );
-      if (dateIndex > -1) {
-        statusData[status][dateIndex].count += 1;
-      } else {
-        statusData[status].push({ date: taskDate, count: 1 });
+      const status = task.status || "Unknown";
+      if (statusCounts[status] !== undefined) {
+        statusCounts[status]++;
       }
     });
 
-    // Map the data into the format required for the chart
-    completionOptions.value.series = Object.keys(statusData).map((status) => ({
-      name: status,
-      data: statusData[status].map((entry) => entry.count),
-    }));
+    // Update the series with the counts
+    completionOptions.value.series = [
+      statusCounts.completed,
+      statusCounts.pending,
+      statusCounts.active,
+      statusCounts.canceled,
+    ];
 
-    console.log("Task Series Data:", taskSeries.value);
+    console.log("Task Series Data:", completionOptions.value.series);
 
     Loading.value = false;
   } catch (err) {
@@ -396,7 +390,7 @@ onMounted(() => {
               top: 10px;
               font-size: 18px;
               font-weight: 600;
-              right: 10px;
+              right: 36px;
               color: var(--info);
             "
             v-if="
@@ -413,6 +407,24 @@ onMounted(() => {
             "
             icon="lucide:edit"
           />
+          <VIcon
+            style="
+              position: absolute;
+              top: 10px;
+              font-size: 18px;
+              font-weight: 600;
+              right: 10px;
+              color: var(--danger);
+            "
+            v-if="
+              userSession.user.role == 'admin' ||
+              userSession.user.role == 'manager'
+            "
+            class="cu-pointer"
+            @click="deleteProject"
+            icon="lucide:trash"
+          />
+
           <VAvatar
             :picture="projectData.image"
             squared
@@ -527,8 +539,8 @@ onMounted(() => {
             <h3 class="dark-inverted">Task Completion</h3>
             <a class="action-link" tabindex="0">Reports</a>
           </div>
+          <!-- v-if="completionOptions.series" -->
           <ApexChart
-            id="completion-chart"
             :height="completionOptions.chart.height"
             :type="completionOptions.chart.type"
             :series="completionOptions.series"

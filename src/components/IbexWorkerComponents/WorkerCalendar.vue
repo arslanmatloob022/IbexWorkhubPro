@@ -25,12 +25,25 @@ const workerData = ref({
   username: "",
   is_sentMail: false,
 });
-const fullWidthView = ref(false);
-const activeFilter = ref("all");
-const query = ref("");
+const props = withDefaults(
+  defineProps<{
+    projectID?: string;
+    workerId?: string;
+  }>(),
+  {
+    projectID: "",
+    workerId: "",
+  }
+);
+const workerTasksStats = ref({});
 const loading = ref(false);
+const taskData = ref({});
+const openTaskDetail = (task: any) => {
+  console.log("detail", task);
+  taskData.value = task;
+  taskDetailModal.value = true;
+};
 
-// Tasks, Resources, Events, and Projects as Reactive Arrays
 const tasks = ref([
   {
     id: "",
@@ -141,11 +154,10 @@ const renderCalendar = () => {
   filteredResources.value = projects.value;
   filteredEvents.value = events.value;
 
-  // Update the reactive calendar options object properly
   calendarOptions.value = {
-    ...calendarOptions.value, // Keep other properties intact
-    resources: filteredResources.value, // Assign resources in a reactive manner
-    events: filteredEvents.value, // Assign events in a reactive manner
+    ...calendarOptions.value,
+    resources: filteredResources.value,
+    events: filteredEvents.value,
   };
 
   console.log(
@@ -170,23 +182,13 @@ const sendTasksMailToWorker = async () => {
   }
 };
 
-const changeFilterHandler = () => {
-  if (activeFilter.value !== "all") {
-    const data = events.value.filter(
-      (event) => event.status === activeFilter.value
-    );
-    filteredEvents.value = data;
-  } else {
-    filteredEvents.value = events.value;
-  }
-  calendarOptions.value.events = filteredEvents.value;
-};
-
 // Method to get tasks for a worker
 const getTasksHandler = async () => {
   try {
     const response = await api.get(
-      `/api/task/${userSession.user.id}/worker-tasks/`
+      `/api/task/${
+        props.workerId ? props.workerId : userSession.user.id
+      }/worker-tasks/`
     );
     tasks.value = response.data;
     console.log("worker tasks", tasks.value);
@@ -194,32 +196,26 @@ const getTasksHandler = async () => {
     tasks.value = [];
   }
 };
-const taskData = ref({});
-const openTaskDetail = (task: any) => {
-  console.log("detail", task);
-  taskData.value = task;
-  taskDetailModal.value = true;
-};
 
 const getWorkerHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/users/${userSession.user.id}/`);
+    const response = await api.get(
+      `/api/users/${props.workerId ? props.workerId : userSession.user.id}/`
+    );
     workerData.value = response.data;
     loading.value = false;
-    // renderCalendar();
   } catch (err) {
     console.log(err);
   }
 };
 
-const openEditUserModal = (id: any = "") => {};
-
-const workerTasksStats = ref({});
 const getWorkerTodayTask = async (refresh: boolean = false) => {
   try {
     const resp = await api.get(
-      `/api/task/worker-today/${userSession.user.id}/`
+      `/api/task/worker-today/${
+        props.workerId ? props.workerId : userSession.user.id
+      }/`
     );
     workerTasksStats.value = resp.data;
     if (refresh) {

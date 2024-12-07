@@ -861,6 +861,7 @@ declare module 'vue' {
     WorkerSidebar: typeof import('./../src/layouts/WorkerSidebar.vue')['default']
     WorkersMapLocation: typeof import('./../src/components/supportComponents/WorkersMapLocation.vue')['default']
     WorkersOfSubcontractors: typeof import('./../src/components/pages/networks/IbexSubContractors/WorkersOfSubcontractors.vue')['default']
+    WorkersTaskCalendarModal: typeof import('./../src/components/IbexWorkerComponents/WorkersTaskCalendarModal.vue')['default']
     WorkerTasks: typeof import('./../src/components/IbexWorkerComponents/WorkerTasks.vue')['default']
     WorkerTemplateDocModal: typeof import('./../src/components/pages/networks/workers/WorkerTemplateDocModal.vue')['default']
     WorkerTimeSheet: typeof import('./../src/components/pages/networks/rota/WorkerTimeSheet.vue')['default']

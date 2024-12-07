@@ -23,11 +23,11 @@ const projectID = ref<any>(0);
 const selectedWorkerName = ref("");
 const startDate = ref<any>("");
 const endDate = ref<any>("");
-const selectedWorkerId = ref(0);
+const selectedWorkerId = ref("");
 const showWorkerChart = ref(true);
 const isTaskFormOpen = ref<any>(false);
 const editTaskId = ref<any>("");
-
+const workerTasksModal = ref(false);
 const colors = ref({
   pending: "#8392ab",
   active: "#fbcf33",
@@ -177,6 +177,7 @@ const addOneDayToDate = (dateString: any) => {
 
 const workerImageClick = (worker: any) => {
   window.location.hash = "";
+  workerTasksModal.value = true;
   selectedWorkerId.value = worker.id;
   selectedWorkerName.value = worker.username;
   window.location.hash = "workerCalendar";
@@ -363,9 +364,11 @@ watch(activeFilter, (newValue, oldValue) => {
 });
 
 const getCalendarData = async () => {
+  loading.value = true;
   await Promise.all([getProjectHandler(), getTasksHandler()]);
 
   await renderCalender();
+  loading.value = false;
 };
 
 onMounted(async () => {
@@ -489,7 +492,6 @@ onMounted(async () => {
 
           <div
             v-else
-            @click="eventClick(arg)"
             style="
               display: flex;
               flex-wrap: wrap;
@@ -498,6 +500,7 @@ onMounted(async () => {
             "
           >
             <p
+              @click="eventClick(arg)"
               style="
                 font-weight: 500;
                 margin-bottom: 0px;
@@ -592,6 +595,12 @@ onMounted(async () => {
       </template>
     </FullCalendar>
 
+    <WorkersTaskCalendarModal
+      v-if="workerTasksModal"
+      :workerTasksModal="workerTasksModal"
+      :workerId="selectedWorkerId"
+      @update:modal-handler="workerTasksModal = !workerTasksModal"
+    />
     <UpdateTask
       v-if="isTaskFormOpen"
       :isOpen="isTaskFormOpen"

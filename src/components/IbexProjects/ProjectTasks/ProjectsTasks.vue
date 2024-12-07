@@ -130,6 +130,13 @@ const getProjectTasks = async () => {
   }
 };
 
+const statusColors = {
+  active: "#336aeb",
+  pending: "#faad42",
+  canceled: "#e62864",
+  completed: "#f3c2c2ff",
+};
+
 const totalActiveTasks = computed(() => {
   let totalActiveTasks = projectTasks.value.filter(
     (task) => task.status == "active"
@@ -339,7 +346,12 @@ onMounted(() => {
           >
             <!--Project-->
             <div v-for="item in filteredData" class="column is-6">
-              <div class="grid-item">
+              <div
+                class="grid-item"
+                :style="{
+                  boxShadow: `2px 4px 8px 2px ${statusColors[item.status]}40`,
+                }"
+              >
                 <div class="top-section">
                   <div class="head">
                     <h3>{{ item.title }}</h3>
@@ -463,7 +475,12 @@ onMounted(() => {
                   </div>
                   <div class="foot-block">
                     <h4 class="heading">Status</h4>
-                    <p>{{ item.status }}</p>
+                    <p
+                      style="text-transform: capitalize"
+                      :style="{ color: statusColors[item.status] }"
+                    >
+                      {{ item.status }}
+                    </p>
                   </div>
                 </div>
               </div>

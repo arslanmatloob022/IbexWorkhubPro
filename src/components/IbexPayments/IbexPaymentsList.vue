@@ -153,10 +153,10 @@ const deletePayment = async () => {
 
 const statusColors = {
   created: "info",
-  pending: "waning", // Yellow for 'pending'
-  canceled: "danger", // Green for 'completed'
-  succeeded: "primary", // Red for 'blocked'
-  processing: "success", // Blue for 'in-progress'
+  pending: "warning",
+  canceled: "danger",
+  succeeded: "primary",
+  processing: "success",
 };
 
 const moveToDetail = (item: any) => {
