@@ -1,0 +1,27 @@
+<script setup lang="ts">
+import { useViewWrapper } from "/@src/stores/viewWrapper";
+
+const viewWrapper = useViewWrapper();
+
+viewWrapper.setPageTitle("Jobs");
+useHead({
+  title: "Jobs - Ibex",
+});
+</script>
+
+<template>
+  <div>
+    <JobsList />
+  </div>
+</template>
+
+<style lang="scss">
+.has-top-nav {
+  .flex-list-wrapper,
+  .list-flex-toolbar {
+    max-width: 880px;
+    margin-inline-end: auto;
+    margin-inline-start: auto;
+  }
+}
+</style>

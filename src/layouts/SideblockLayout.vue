@@ -565,6 +565,55 @@ onMounted(() => {
               <span>Approved Payments </span>
             </RouterLink>
           </VCollapseLinks>
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="estimates"
+            class="collapse-wrap"
+          >
+            <!-- :class="[isOpen && 'active']" -->
+            <template #header>
+              <div class="icon">
+                <i class="lnir lnir-library" aria-hidden="true"></i>
+              </div>
+              <span>Jobs Estimates</span>
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/jobs"
+              :class="{ active: 'projects' === route.query.tab }"
+            >
+              <i class="lnir lnir-suitcase" aria-hidden="true"></i>
+              <span>Jobs</span>
+            </RouterLink>
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/received-payments"
+              :class="{ active: 'received-payments' === route.query.tab }"
+            >
+              <i class="lnir lnir-cloud-search" aria-hidden="true"></i>
+              <span>Lead Opportunity</span>
+            </RouterLink>
+
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/approved-payments"
+              :class="{ active: 'approved-payments' === route.query.tab }"
+            >
+              <i class="lnir lnir-add-files" aria-hidden="true"></i>
+              <span>Lead Proposals</span>
+            </RouterLink>
+          </VCollapseLinks>
           <li>
             <RouterLink to="/sidebar/dashboard/profile" class="single-link">
               <span class="icon">

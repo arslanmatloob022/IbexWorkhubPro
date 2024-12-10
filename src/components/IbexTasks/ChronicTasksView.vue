@@ -138,13 +138,13 @@ onMounted(() => {
             </TransitionGroup>
           </div>
 
-          <VFlexPagination
+          <!-- <VFlexPagination
             v-if="filteredData.length > 5"
             :item-per-page="10"
             :total-items="873"
             :current-page="42"
             :max-links-displayed="7"
-          />
+          /> -->
         </div>
 
         <!--Inactive Tab-->

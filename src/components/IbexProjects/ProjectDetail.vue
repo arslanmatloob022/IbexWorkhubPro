@@ -289,7 +289,6 @@ const getProjectTasks = async () => {
     const resp = await api.get(`api/task/${route.params.id}/project/`);
     projectTasks.value = resp.data;
 
-    // Initialize counts for each status
     const statusCounts = {
       pending: 0,
       completed: 0,
@@ -297,7 +296,6 @@ const getProjectTasks = async () => {
       canceled: 0,
     };
 
-    // Count the tasks by their status
     projectTasks.value.forEach((task) => {
       const status = task.status || "Unknown";
       if (statusCounts[status] !== undefined) {
@@ -312,8 +310,6 @@ const getProjectTasks = async () => {
       statusCounts.active,
       statusCounts.canceled,
     ];
-
-    console.log("Task Series Data:", completionOptions.value.series);
 
     Loading.value = false;
   } catch (err) {
@@ -368,11 +364,11 @@ const getAllActiveTasks = (total: any) => {
   projectActiveTasks.value = total;
 };
 
-onMounted(() => {
+onMounted(async () => {
   projectId.value = route.params.id;
   getProject();
   getWorkershandler();
-  getProjectTasks();
+  await getProjectTasks();
   getTodayTask();
 });
 </script>
@@ -541,6 +537,7 @@ onMounted(() => {
           </div>
           <!-- v-if="completionOptions.series" -->
           <ApexChart
+            v-if="projectTasks.length != 0"
             :height="completionOptions.chart.height"
             :type="completionOptions.chart.type"
             :series="completionOptions.series"

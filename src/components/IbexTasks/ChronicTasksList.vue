@@ -46,6 +46,13 @@ const columns = {
   },
 } as const;
 
+const statusColor = {
+  completed: "primary",
+  pending: "warning",
+  active: "info",
+  canceled: "danger",
+};
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return projects;
@@ -110,7 +117,7 @@ const filteredData = computed(() => {
                 <VFlexTableCell :column="{ media: true, grow: true }">
                   <!-- <VAvatar :picture="item.picture" /> -->
                   <div>
-                    <span class="item-name dark-inverted">
+                    <span class="item-name dark-inverted show-text-200">
                       {{ item.title ? item.title : "" }}</span
                     >
                     <span class="item-meta">
@@ -150,17 +157,10 @@ const filteredData = computed(() => {
                   <VTag outlined color="primary" rounded>
                     {{ item.unit ? item.unit : "N/A" }}
                   </VTag>
-                  <!-- <VAvatarStack
-                    :avatars="item.team"
-                    size="small"
-                    :limit="3"
-                    class="is-pushed-mobile"
-                  /> -->
                 </VFlexTableCell>
                 <VFlexTableCell :column="{ align: 'end' }">
-                  <!-- <ProjectListDropdown /> -->
-                  <VTag outlined color="warning" rounded>
-                    {{ item.costCode ? item.costCode : "" }}
+                  <VTag outlined :color="statusColor[item.status]" rounded>
+                    {{ item.status ? item.status : "" }}
                   </VTag>
                 </VFlexTableCell>
               </div>

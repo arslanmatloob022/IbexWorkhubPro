@@ -276,6 +276,8 @@ declare module 'vue-router/auto/routes' {
     '/sidebar/dashboard/contracts/': RouteRecordInfo<'/sidebar/dashboard/contracts/', '/sidebar/dashboard/contracts', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboard/contracts/[id]': RouteRecordInfo<'/sidebar/dashboard/contracts/[id]', '/sidebar/dashboard/contracts/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/sidebar/dashboard/create-payment/': RouteRecordInfo<'/sidebar/dashboard/create-payment/', '/sidebar/dashboard/create-payment', Record<never, never>, Record<never, never>>,
+    '/sidebar/dashboard/jobs/': RouteRecordInfo<'/sidebar/dashboard/jobs/', '/sidebar/dashboard/jobs', Record<never, never>, Record<never, never>>,
+    '/sidebar/dashboard/jobs/[id]': RouteRecordInfo<'/sidebar/dashboard/jobs/[id]', '/sidebar/dashboard/jobs/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/sidebar/dashboard/manage-projects/': RouteRecordInfo<'/sidebar/dashboard/manage-projects/', '/sidebar/dashboard/manage-projects', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboard/managers/': RouteRecordInfo<'/sidebar/dashboard/managers/', '/sidebar/dashboard/managers', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboard/managers/[id]': RouteRecordInfo<'/sidebar/dashboard/managers/[id]', '/sidebar/dashboard/managers/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,

@@ -137,6 +137,13 @@ const statusColors = {
   completed: "#f3c2c2ff",
 };
 
+const statusColorsName = {
+  active: "info",
+  pending: "warning",
+  canceled: "danger",
+  completed: "primary",
+};
+
 const totalActiveTasks = computed(() => {
   let totalActiveTasks = projectTasks.value.filter(
     (task) => task.status == "active"
@@ -349,9 +356,14 @@ onMounted(() => {
               <div
                 class="grid-item"
                 :style="{
-                  boxShadow: `2px 4px 8px 2px ${statusColors[item.status]}40`,
+                  backgroundImage: `linear-gradient(350deg, white 65%, ${
+                    statusColors[item.status]
+                  }30)`,
                 }"
               >
+                <!-- :style="{
+                  boxShadow: `2px 4px 8px 2px ${statusColors[item.status]}40`,
+                }" -->
                 <div class="top-section">
                   <div class="head">
                     <h3>{{ item.title }}</h3>
@@ -475,12 +487,18 @@ onMounted(() => {
                   </div>
                   <div class="foot-block">
                     <h4 class="heading">Status</h4>
-                    <p
+                    <VTag
+                      outlined
+                      rounded
+                      :color="statusColorsName[item.status]"
+                      >{{ item.status }}</VTag
+                    >
+                    <!-- <p
                       style="text-transform: capitalize"
                       :style="{ color: statusColors[item.status] }"
                     >
                       {{ item.status }}
-                    </p>
+                    </p> -->
                   </div>
                 </div>
               </div>

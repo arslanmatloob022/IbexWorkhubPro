@@ -122,7 +122,26 @@ SCSS Imports
 .bg-grey {
   background-color: #f5f5f5;
 }
+.show-text-100 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
 
+.show-text-150 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.show-text-200 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
 .border-bottom-light {
   border-bottom: 1px solid #69696930;
 }
