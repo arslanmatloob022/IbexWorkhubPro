@@ -7,6 +7,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   workerTasksModal?: boolean;
   workerId?: string;
+  workerName?: string;
 }>();
 
 const closeModalHandler = () => {
@@ -15,9 +16,8 @@ const closeModalHandler = () => {
 </script>
 <template>
   <VModal
-    v-if="props.workerTasksModal"
     :open="props.workerTasksModal"
-    title="Task Info"
+    :title="`${props.workerName} Tasks`"
     actions="right"
     size="xl"
     @close="closeModalHandler"

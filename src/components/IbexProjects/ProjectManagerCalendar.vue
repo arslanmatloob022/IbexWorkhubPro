@@ -176,11 +176,11 @@ const addOneDayToDate = (dateString: any) => {
 };
 
 const workerImageClick = (worker: any) => {
-  window.location.hash = "";
-  workerTasksModal.value = true;
+  console.log("worker data", worker);
   selectedWorkerId.value = worker.id;
   selectedWorkerName.value = worker.username;
-  window.location.hash = "workerCalendar";
+  workerTasksModal.value = true;
+  // window.location.hash = "workerCalendar";
 };
 
 const eventClick = (info: any) => {
@@ -562,6 +562,7 @@ onMounted(async () => {
                 >
                   <h6
                     class="mb-0"
+                    @click="workerImageClick(worker)"
                     style="color: white"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
@@ -574,7 +575,7 @@ onMounted(async () => {
                   </h6>
                 </div>
 
-                <p>{{ worker.username }}</p>
+                <p @click="workerImageClick(worker)">{{ worker.username }}</p>
               </div>
               <!-- <VAvatarStack
                 :avatars="arg.event.extendedProps?.workers"
@@ -600,7 +601,8 @@ onMounted(async () => {
       v-if="workerTasksModal"
       :workerTasksModal="workerTasksModal"
       :workerId="selectedWorkerId"
-      @update:modal-handler="workerTasksModal = !workerTasksModal"
+      :workerName="selectedWorkerName"
+      @update:modalHandler="workerTasksModal = !workerTasksModal"
     />
     <UpdateTask
       v-if="isTaskFormOpen"
