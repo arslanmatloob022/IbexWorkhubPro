@@ -34,10 +34,10 @@ const columns = {
     media: true,
   },
   customer: "Customer",
-  industry: "Industry",
+  industry: "Zip Code",
   status: "Status",
   team: {
-    label: "Team",
+    label: "Internal Users",
     cellClass: "h-hidden-tablet-p",
   },
   actions: {
@@ -141,7 +141,7 @@ const filteredData = computed(() => {
               <div
                 v-for="item in filteredData"
                 :key="item.id"
-                class="flex-table-item"
+                class="flex-table-item cu-pointer"
               >
                 <VFlexTableCell
                   @click="
@@ -170,7 +170,7 @@ const filteredData = computed(() => {
                   <span class="light-text">{{ item.customer }}</span>
                 </VFlexTableCell>
                 <VFlexTableCell>
-                  <span class="light-text">{{ item.industry }}</span>
+                  <span class="light-text">80401</span>
                 </VFlexTableCell>
                 <VFlexTableCell>
                   <VTag rounded>
