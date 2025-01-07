@@ -6,8 +6,6 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useCompany } from "/@src/stores/company";
 import FullCalendar from "@fullcalendar/vue3";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import { M } from "@fullcalendar/resource/internal-common";
-import { info } from "console";
 const company = useCompany();
 const Loading = ref(false);
 const notyf = useNotyf();

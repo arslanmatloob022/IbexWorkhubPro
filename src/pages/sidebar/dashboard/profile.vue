@@ -1,7 +1,15 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+  isAdminAllowed: false
+  isManagerAllowed: false
+  isContractorAllowed: false
+  isPartnerAllowed: false
+  isWorkerAllowed: false
+  isClientAllowed: false
+</route>
 <script setup lang="ts">
-import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useUserSession } from "/@src/stores/userSession";
-import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 import { useI18n } from "vue-i18n";

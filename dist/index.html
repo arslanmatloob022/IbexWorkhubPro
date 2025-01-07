@@ -23,19 +23,37 @@
       rel="stylesheet"
       href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css"
+    />
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
     <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
     <script>
       (function () {
         const prefersDark =
           window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches;
+          window.matchMedia("(prefers-color-scheme: light)").matches;
         const setting = localStorage.getItem("color-schema") || "auto";
         if (setting === "dark" || (prefersDark && setting !== "light"))
           document.documentElement.classList.toggle("is-dark", true);
       })();
     </script>
-    <script type="module" crossorigin src="/assets/index-d3607b72.js"></script>
-    <link rel="stylesheet" href="/assets/index-b14d9fb4.css">
+    <script type="module" crossorigin src="/assets/index-67ab4c5c.js"></script>
+    <link rel="stylesheet" href="/assets/index-9c693d35.css">
   <link rel="manifest" href="/manifest.webmanifest"></head>
   <body>
     

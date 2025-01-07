@@ -1,11 +1,12 @@
 <route lang="yaml">
 meta:
   requiresAuth: true
-  # isPartnerAllowed: true
-  # isManagerAllowed: true
-  # isContractorAllowed: false
-  # isWorkerAllowed: false
-  # isClientAllowed: false
+  isAdminAllowed: true
+  isManagerAllowed: false
+  isContractorAllowed: false
+  isPartnerAllowed: false
+  isWorkerAllowed: false
+  isClientAllowed: false
 </route>
 
 <script setup lang="ts">

@@ -45,98 +45,15 @@ export default definePlugin(async ({ router, pinia }) => {
     }
   }
 
-  router.beforeEach((to) => {
-    // If authentication is required but the user is not logged in, redirect to login page
-    // if (to.meta.requiresAuth && !userSession.isLoggedIn) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-
-    if (to.meta.requiresAuth && !userSession.isLoggedIn) {
-      return {
-        name: "/auth/login",
-        query: { redirect: to.fullPath },
-      };
-    }
-    // if (
-    //   (to.meta.isManagerAllowed == false &&
-    //     userSession.user.role === "manager") ||
-    //   !userSession.isLoggedIn
-    // ) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-    // if (
-    //   (to.meta.isContractorAllowed == false &&
-    //     userSession.user.role === "contractor") ||
-    //   !userSession.isLoggedIn
-    // ) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-    // if (
-    //   (to.meta.isSupplierAllowed == false &&
-    //     userSession.user.role === "supplier") ||
-    //   !userSession.isLoggedIn
-    // ) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-    // if (
-    //   (to.meta.isWorkerAllowed == false &&
-    //     userSession.user.role === "worker") ||
-    //   !userSession.isLoggedIn
-    // ) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-    // if (
-    //   (to.meta.isClientAllowed == false &&
-    //     userSession.user.role === "client") ||
-    //   !userSession.isLoggedIn
-    // ) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-
-    // Check user role permissions based on meta tags
-    // const role = userSession.user.role;
-
-    // const roleMetaMapping = {
-    //   supplier: "isPartnerAllowed",
-    //   manager: "isManagerAllowed",
-    //   contractor: "isContractorAllowed",
-    //   worker: "isWorkerAllowed",
-    //   client: "isClientAllowed",
-    // };
-
-    // const metaKey = roleMetaMapping[role];
-
-    // if (
-    //   metaKey &&
-    //   (to.meta[metaKey] === false || to.meta[metaKey] === undefined)
-    // ) {
-    //   return {
-    //     name: "/auth/login",
-    //     query: { redirect: to.fullPath },
-    //   };
-    // }
-    console.log("dfghjlkkl", to.meta); // To see if the meta fields are correctly set
-  });
-
   // router.beforeEach((to) => {
+  //   // If authentication is required but the user is not logged in, redirect to login page
+  //   // if (to.meta.requiresAuth && !userSession.isLoggedIn) {
+  //   //   return {
+  //   //     name: "/auth/login",
+  //   //     query: { redirect: to.fullPath },
+  //   //   };
+  //   // }
+
   //   if (to.meta.requiresAuth && !userSession.isLoggedIn) {
   //     return {
   //       name: "/auth/login",
@@ -144,9 +61,9 @@ export default definePlugin(async ({ router, pinia }) => {
   //     };
   //   }
   //   if (
-  //     userSession.user.role === "supplier" &&
-  //     (to.meta.isPartnerAllowed === false ||
-  //       to.meta.isPartnerAllowed === undefined)
+  //     (to.meta.isManagerAllowed == false &&
+  //       userSession.user.role === "manager") ||
+  //     !userSession.isLoggedIn
   //   ) {
   //     return {
   //       name: "/auth/login",
@@ -154,9 +71,9 @@ export default definePlugin(async ({ router, pinia }) => {
   //     };
   //   }
   //   if (
-  //     userSession.user.role === "manager" &&
-  //     (to.meta.isManagerAllowed === false ||
-  //       to.meta.isManagerAllowed === undefined)
+  //     (to.meta.isContractorAllowed == false &&
+  //       userSession.user.role === "contractor") ||
+  //     !userSession.isLoggedIn
   //   ) {
   //     return {
   //       name: "/auth/login",
@@ -164,9 +81,9 @@ export default definePlugin(async ({ router, pinia }) => {
   //     };
   //   }
   //   if (
-  //     userSession.user.role === "contractor" &&
-  //     (to.meta.isContractorAllowed === false ||
-  //       to.meta.isContractorAllowed === undefined)
+  //     (to.meta.isSupplierAllowed == false &&
+  //       userSession.user.role === "supplier") ||
+  //     !userSession.isLoggedIn
   //   ) {
   //     return {
   //       name: "/auth/login",
@@ -174,9 +91,9 @@ export default definePlugin(async ({ router, pinia }) => {
   //     };
   //   }
   //   if (
-  //     userSession.user.role === "worker" &&
-  //     (to.meta.isWorkerAllowed === false ||
-  //       to.meta.isWorkerAllowed === undefined)
+  //     (to.meta.isWorkerAllowed == false &&
+  //       userSession.user.role === "worker") ||
+  //     !userSession.isLoggedIn
   //   ) {
   //     return {
   //       name: "/auth/login",
@@ -184,16 +101,100 @@ export default definePlugin(async ({ router, pinia }) => {
   //     };
   //   }
   //   if (
-  //     userSession.user.role === "client" &&
-  //     (to.meta.isClientAllowed === false ||
-  //       to.meta.isClientAllowed === undefined)
+  //     (to.meta.isClientAllowed == false &&
+  //       userSession.user.role === "client") ||
+  //     !userSession.isLoggedIn
   //   ) {
   //     return {
   //       name: "/auth/login",
   //       query: { redirect: to.fullPath },
   //     };
   //   }
+
+  //   // Check user role permissions based on meta tags
+  //   const role = userSession.user.role;
+
+  //   const roleMetaMapping = {
+  //     supplier: "isPartnerAllowed",
+  //     manager: "isManagerAllowed",
+  //     contractor: "isContractorAllowed",
+  //     worker: "isWorkerAllowed",
+  //     client: "isClientAllowed",
+  //   };
+
+  //   const metaKey = roleMetaMapping[role];
+
+  //   if (
+  //     metaKey &&
+  //     (to.meta[metaKey] === false || to.meta[metaKey] === undefined)
+  //   ) {
+  //     return {
+  //       name: "/auth/login",
+  //       query: { redirect: to.fullPath },
+  //     };
+  //   }
+  //   console.log("role allowed", to.meta); // To see if the meta fields are correctly set
   // });
+
+  router.beforeEach((to) => {
+    if (to.meta.requiresAuth && !userSession.isLoggedIn) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (userSession.user.role === "admin" && to.meta.isAdminAllowed === false) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      userSession.user.role === "supplier" &&
+      to.meta.isPartnerAllowed === false
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      userSession.user.role === "manager" &&
+      to.meta.isManagerAllowed === false
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      userSession.user.role === "contractor" &&
+      to.meta.isContractorAllowed === false
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      userSession.user.role === "worker" &&
+      to.meta.isWorkerAllowed === false
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+    if (
+      userSession.user.role === "client" &&
+      to.meta.isClientAllowed === false
+    ) {
+      return {
+        name: "/auth/login",
+        query: { redirect: to.fullPath },
+      };
+    }
+  });
 });
 
 /*

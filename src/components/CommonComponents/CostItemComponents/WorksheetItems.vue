@@ -1,0 +1,341 @@
+<script setup lang="ts">
+import axios from "axios";
+import { useApi } from "/@src/composable/useAPI";
+import { useNotyf } from "/@src/composable/useNotyf";
+import { useCompany } from "/@src/stores/company";
+import { convertToFormData } from "/@src/composable/useSupportElement";
+import { useUserSession } from "/@src/stores/userSession";
+import ItemsTabuler from "./CostItemsTable.vue";
+const editor = shallowRef<any>();
+const userSession = useUserSession();
+const notyf = useNotyf();
+const api = useApi();
+const isLoading = ref(false);
+const FormData = ref({});
+const openAddContactModal = ref(false);
+
+const emit = defineEmits<{
+  (e: "update:modalHandler", value: boolean): void;
+  (e: "update:OnSuccess", value: null): void;
+}>();
+const props = defineProps<{
+  leadProposalModal?: boolean;
+}>();
+
+const tagsValue = ref([]);
+const tagsOptions = [
+  { value: "batman", label: "Batman" },
+  { value: "robin", label: "Robin" },
+  { value: "joker", label: "Joker" },
+];
+
+const sourcesValue = ref([]);
+const sourcesOptions = [
+  { value: "all", label: "All" },
+  { value: "contact", label: "Contact Form" },
+  { value: "google", label: "Google" },
+  { value: "referral", label: "Referral" },
+];
+
+const tagsSlotValue = ref([]);
+const tagsSlotOptions = [
+  {
+    value: "javascript",
+    name: "Javascript",
+    image: "/images/icons/stacks/js.svg",
+  },
+  {
+    value: "reactjs",
+    name: "ReactJS",
+    image: "/images/icons/stacks/reactjs.svg",
+  },
+  {
+    value: "vuejs",
+    name: "VueJS",
+    image: "/images/icons/stacks/vuejs.svg",
+  },
+  {
+    value: "angular",
+    name: "Angular",
+    image: "/images/icons/stacks/angular.svg",
+  },
+  {
+    value: "android",
+    name: "Android",
+    image: "/images/icons/stacks/android.svg",
+  },
+  {
+    value: "html5",
+    name: "Html5",
+    image: "/images/icons/stacks/html5.svg",
+  },
+  {
+    value: "css3",
+    name: "CSS3",
+    image: "/images/icons/stacks/css3.svg",
+  },
+];
+
+interface item {
+  title: string;
+  description: string;
+  quantity: number;
+  unit: number;
+  unitCost: number;
+  markup: number;
+  clientPrice: number;
+  costCode: string;
+  costType: string;
+  builderCost: string;
+  margin: number;
+  profit: number;
+  internalNotes: string;
+}
+
+const workItem = ref({
+  title: "",
+  description: "",
+  quantity: 0,
+  unit: 0,
+  unitCost: 0,
+  markup: 0,
+  clientPrice: 0,
+  costCode: "",
+  costType: "",
+  builderCost: "",
+  margin: 0,
+  profit: 0,
+  internalNotes: "",
+});
+
+interface leadProposalData {
+  title: string;
+  approvalDeadline: string;
+  internalNotes: string;
+  introductoryText: string;
+  closingText: string;
+  attachments: [];
+  paymentStatus: string;
+  worksheetItems: item[];
+}
+
+const leadProposalFormData = ref<leadProposalData>({
+  title: "",
+  attachments: [],
+  approvalDeadline: "",
+  internalNotes: "",
+  introductoryText: "",
+  closingText: "",
+  paymentStatus: "",
+  worksheetItems: [],
+});
+
+interface ActivityModel {
+  type: string;
+  color: string;
+  activityDate: string;
+  startTime: string;
+  endTime: string;
+  reminder: string;
+  assignedUser: string;
+  attendees: string[];
+  initiatedBy: InitiatedByOption;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  description: string;
+}
+
+interface InitiatedByOption {
+  value: string;
+  label: string;
+}
+
+const sources = ref([
+  { value: "all", label: "All" },
+  { value: "contact", label: "Contact Form" },
+  { value: "google", label: "Google" },
+  { value: "referral", label: "Referral" },
+]);
+
+const status = ref([
+  { value: "open", label: "Open" },
+  { value: "inProgress", label: "In Progress" },
+  { value: "onHold", label: "On Hold" },
+  { value: "pending", label: "Pending" },
+  { value: "lost", label: "Lost" },
+  { value: "sold", label: "sold" },
+  { value: "noOpportunity", label: "No Opportunity" },
+]);
+
+const addUpdateLeadHandler = async () => {
+  try {
+    isLoading.value = true;
+    const formDataAPI = convertToFormData(leadProposalFormData.value, [
+      "profileImageURL",
+    ]);
+    const response = await api.post("/v3/api/worker/", formDataAPI);
+    closeModalHandler();
+    notyf.dismissAll();
+    notyf.success("New worker added, New Worker");
+  } catch (error: any) {
+    notyf.error(` ${error}, New Worker`);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const closeModalHandler = () => {
+  emit("update:modalHandler", false);
+};
+
+const handlePostCodeChange = async () => {
+  try {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${FormData.value.postCode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
+    );
+    if (response.data.status === "OK") {
+      //   FormData.value.homeAddress = response.data.results[0].formatted_address;
+      //   FormData.value.latitude = response.data.results[0].geometry.location.lat;
+      //   FormData.value.longitude = response.data.results[0].geometry.location.lng;
+      notyf.success("Address Added");
+    } else if (response.data.status === "ZERO_RESULTS") {
+      notyf.error("Invalid Post-Code");
+    }
+  } catch (error) {
+    notyf.error("Invalid Post-Code");
+    console.error(error);
+  }
+};
+
+function DataURIToBlob(dataURI: string) {
+  const splitDataURI = dataURI.split(",");
+  const byteString =
+    splitDataURI[0].indexOf("base64") >= 0
+      ? atob(splitDataURI[1])
+      : decodeURI(splitDataURI[1]);
+  const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
+  const ia = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+  return new Blob([ia], { type: mimeString });
+}
+const tab = ref<"worksheet" | "format" | "preview">("worksheet");
+const CKEditor = defineAsyncComponent(() =>
+  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
+);
+
+const editorConfig = {
+  fontFamily: {
+    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
+  },
+  height: "400px",
+  minHeight: "400px",
+};
+const addCostItemModal = ref(false);
+
+onMounted(async () => {
+  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
+    (m) => m.default
+  );
+});
+</script>
+
+<template>
+  <div>
+    <div class="columns is-multiline">
+      <div class="column is-12 is-flex space-between">
+        <div>
+          <h1 class="title is-4">Proposal Worksheet</h1>
+        </div>
+        <div>
+          <VButton
+            size="small"
+            light
+            outlined
+            class="mr-2"
+            color="info"
+            @click="addCostItemModal = !addCostItemModal"
+            >Import</VButton
+          >
+          <VButton
+            size="small"
+            light
+            outlined
+            class="mr-2"
+            color="primary"
+            @click="addCostItemModal = !addCostItemModal"
+            >Add From</VButton
+          >
+          <VButton
+            size="small"
+            light
+            outlined
+            color="warning"
+            @click="addCostItemModal = !addCostItemModal"
+            >Add Item</VButton
+          >
+        </div>
+      </div>
+      <div class="tabs-wrapper column is-12 m-0">
+        <div class="tabs-inner mt-4">
+          <div class="tabs is-boxed">
+            <ul>
+              <li :class="[tab === 'worksheet' ? 'is-active' : 'not-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'worksheet'"
+                  @click="tab = 'worksheet'"
+                  ><span>Worksheet</span></a
+                >
+              </li>
+              <li :class="[tab === 'format' ? 'is-active' : 'not-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'format'"
+                  @click="tab = 'format'"
+                  ><span>Format</span></a
+                >
+              </li>
+              <li :class="[tab === 'preview' ? 'is-active' : 'not-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'preview'"
+                  @click="tab = 'preview'"
+                  ><span>Preview</span></a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div v-if="tab === 'worksheet'" class="column is-12">
+        <CostItemsTable />
+      </div>
+      <div v-if="tab === 'format'" class="column is-12">
+        <VCard class="columns is-multiline">
+          <div class="column is-12" style="text-align: center">
+            <h1 class="title is-4">Connect your clients to their projects</h1>
+            <h1 class="title is-5">
+              Create a client contact and assign them to jobs and lead
+              opportunities effortlessly.
+            </h1>
+          </div>
+          <CostItemsTable />
+        </VCard>
+      </div>
+      <div v-if="tab === 'preview'">
+        <p>preview</p>
+      </div>
+    </div>
+    <EstimateCostItemModal
+      v-if="addCostItemModal"
+      :costItemModal="addCostItemModal"
+      @update:modalHandler="addCostItemModal = false"
+    >
+    </EstimateCostItemModal>
+  </div>
+</template>

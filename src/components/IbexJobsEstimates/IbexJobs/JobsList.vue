@@ -151,9 +151,10 @@ const filteredData = computed(() => {
                   "
                   :column="{ media: true, grow: true }"
                 >
-                  <VAvatar :picture="item.picture" />
                   <div>
-                    <span class="item-name dark-inverted">{{ item.name }}</span>
+                    <span class="item-name dark-inverted"
+                      >Anthony & Anita House</span
+                    >
                     <span class="item-meta">
                       <span>
                         <i

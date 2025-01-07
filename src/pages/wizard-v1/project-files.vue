@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import Dropzone from 'dropzone'
-import 'dropzone/dist/dropzone.css'
+import Dropzone from "dropzone";
+import "dropzone/dist/dropzone.css";
 
-import { useWizard } from '/@src/composable/useWizard'
-import { onceImageErrored } from '/@src/utils/via-placeholder'
-import sleep from '/@src/utils/sleep'
-Dropzone.autoDiscover = false
+import { useWizard } from "../../models/useWizard";
+import { onceImageErrored } from "/@src/utils/via-placeholder";
+import sleep from "/@src/utils/sleep";
+Dropzone.autoDiscover = false;
 
-let isInit = false
-const isUploading = ref(false)
-const previewTemplateElement = ref<HTMLElement>()
-const previewContainerElement = ref<HTMLElement>()
-const totalProgressElement = ref<HTMLElement>()
-const addUploadElement = ref<HTMLElement>()
-const startUploadElement = ref<HTMLElement>()
-const cancelUploadElement = ref<HTMLElement>()
-const dropzone = ref<typeof Dropzone>()
-const previewTemplate = ref('')
+let isInit = false;
+const isUploading = ref(false);
+const previewTemplateElement = ref<HTMLElement>();
+const previewContainerElement = ref<HTMLElement>();
+const totalProgressElement = ref<HTMLElement>();
+const addUploadElement = ref<HTMLElement>();
+const startUploadElement = ref<HTMLElement>();
+const cancelUploadElement = ref<HTMLElement>();
+const dropzone = ref<typeof Dropzone>();
+const previewTemplate = ref("");
 
-const wizard = useWizard()
-const router = useRouter()
+const wizard = useWizard();
+const router = useRouter();
 wizard.setStep({
   number: 4,
   canNavigate: true,
   previousStepFn: async () => {
-    router.push('/wizard-v1/project-details')
+    router.push("/wizard-v1/project-details");
   },
   validateStepFn: async () => {
-    router.push('/wizard-v1/project-team')
+    router.push("/wizard-v1/project-team");
   },
-})
+});
 
 const initDropzone = () => {
   if (isInit) {
-    return
+    return;
   }
-  isInit = true
+  isInit = true;
 
   // We use dropzone library to handle the file upload
   // https://docs.dropzone.dev/
   dropzone.value = new Dropzone(document.body, {
     // Make the whole body a dropzone
-    url: 'https://www.cssninja.io/upload.php', // Set the url
+    url: "https://www.cssninja.io/upload.php", // Set the url
     thumbnailWidth: 800,
     thumbnailHeight: 600,
     parallelUploads: 2,
     previewTemplate: previewTemplate.value,
     autoQueue: false, // Make sure the files aren't queued until manually added
     previewsContainer: previewContainerElement.value, // Define the container to display the previews
-    clickable: '.fileinput-button', // Define the element that should be used as click trigger to select files.
-  })
+    clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
+  });
 
-  dropzone.value.on('complete', (file: any) => {
+  dropzone.value.on("complete", (file: any) => {
     const attachment = {
       name: file.name,
       size: file.size,
@@ -61,148 +61,143 @@ const initDropzone = () => {
         uuid: file.upload.uuid,
         url: file.upload.url,
       },
-    }
-    wizard.data.attachments.push(attachment)
-  })
+    };
+    wizard.data.attachments.push(attachment);
+  });
 
-  dropzone.value.on('removedfile', (file: any) => {
+  dropzone.value.on("removedfile", (file: any) => {
     const fileIndex = wizard.data.attachments.findIndex((item) => {
-      return item.upload.uuid === file.upload.uuid
-    })
+      return item.upload.uuid === file.upload.uuid;
+    });
 
     if (fileIndex !== -1) {
-      wizard.data.attachments.splice(fileIndex, 1)
+      wizard.data.attachments.splice(fileIndex, 1);
     }
-  })
+  });
 
-  dropzone.value.on('addedfile', (file: any) => {
-    const startElement = file.previewElement.querySelector('.start')
+  dropzone.value.on("addedfile", (file: any) => {
+    const startElement = file.previewElement.querySelector(".start");
     if (startElement) {
       startElement.onclick = () => {
-        dropzone.value.enqueueFile(file)
-      }
+        dropzone.value.enqueueFile(file);
+      };
     }
-  })
+  });
 
-  dropzone.value.on('totaluploadprogress', (progress: number) => {
+  dropzone.value.on("totaluploadprogress", (progress: number) => {
     if (totalProgressElement.value) {
-      totalProgressElement.value.style.width = `${progress}%`
+      totalProgressElement.value.style.width = `${progress}%`;
     }
-  })
+  });
 
-  dropzone.value.on('sending', (file: any) => {
-    const startElement = file.previewElement.querySelector('.start')
+  dropzone.value.on("sending", (file: any) => {
+    const startElement = file.previewElement.querySelector(".start");
 
     if (totalProgressElement.value) {
-      totalProgressElement.value.style.opacity = '1'
+      totalProgressElement.value.style.opacity = "1";
     }
     if (startElement) {
-      startElement.disabled = true
+      startElement.disabled = true;
     }
-  })
+  });
 
-  dropzone.value.on('queuecomplete', () => {
+  dropzone.value.on("queuecomplete", () => {
     if (totalProgressElement.value) {
-      totalProgressElement.value.style.opacity = '0'
+      totalProgressElement.value.style.opacity = "0";
     }
-  })
+  });
 
   if (startUploadElement.value) {
     startUploadElement.value.onclick = () => {
       if (dropzone.value) {
-        const files = dropzone.value.getAddedFiles()
-        dropzone.value.enqueueFiles(files)
+        const files = dropzone.value.getAddedFiles();
+        dropzone.value.enqueueFiles(files);
       }
-    }
+    };
   }
 
   if (cancelUploadElement.value) {
     cancelUploadElement.value.onclick = () => {
       if (dropzone.value) {
-        dropzone.value.removeAllFiles(true)
+        dropzone.value.removeAllFiles(true);
       }
-      wizard.data.attachments.splice(0, wizard.data.attachments.length)
-    }
+      wizard.data.attachments.splice(0, wizard.data.attachments.length);
+    };
   }
 
-  const minSteps = 6
-  const maxSteps = 60
-  const timeBetweenSteps = 100
-  const bytesPerStep = 1024 * 1024 // 1024 kilooctets upload rate simulation
+  const minSteps = 6;
+  const maxSteps = 60;
+  const timeBetweenSteps = 100;
+  const bytesPerStep = 1024 * 1024; // 1024 kilooctets upload rate simulation
 
   dropzone.value.uploadFiles = async (files: any) => {
     for (let i = 0; i < files.length; i++) {
-      const file = files[i]
+      const file = files[i];
       const totalSteps = Math.round(
         Math.min(maxSteps, Math.max(minSteps, file.size / bytesPerStep))
-      )
+      );
 
       for (let step = 0; step < totalSteps; step++) {
-        const duration = timeBetweenSteps * (step + 1)
-        await sleep(duration)
+        const duration = timeBetweenSteps * (step + 1);
+        await sleep(duration);
 
         file.upload = {
           ...file.upload,
           progress: (100 * (step + 1)) / totalSteps,
           bytesSent: ((step + 1) * file.size) / totalSteps,
-        }
+        };
 
         dropzone.value.emit(
-          'uploadprogress',
+          "uploadprogress",
           file,
           file.upload.progress,
           file.upload.bytesSent
-        )
+        );
         if (file.upload.progress >= 100) {
-          file.status = Dropzone.SUCCESS
+          file.status = Dropzone.SUCCESS;
           file.upload = {
             url: `https://fake-uploads.cssninja.io/${file.name}`,
-          }
+          };
 
-          dropzone.value.emit('success', file, 'success', null)
-          dropzone.value.emit('complete', file)
-          dropzone.value.processQueue()
+          dropzone.value.emit("success", file, "success", null);
+          dropzone.value.emit("complete", file);
+          dropzone.value.processQueue();
         }
       }
     }
-  }
-}
+  };
+};
 
 onUnmounted(() => {
   if (dropzone.value) {
-    dropzone.value.destroy()
-    isInit = false
+    dropzone.value.destroy();
+    isInit = false;
   }
-})
+});
 
 watch(isUploading, () => {
   if (isUploading.value) {
     nextTick(() => {
       if (previewTemplateElement.value) {
-        previewTemplate.value = previewTemplateElement.value.outerHTML
-        previewTemplateElement.value.remove()
+        previewTemplate.value = previewTemplateElement.value.outerHTML;
+        previewTemplateElement.value.remove();
       }
-    })
+    });
   }
-})
+});
 
 watch(previewTemplate, () => {
   if (previewTemplate.value) {
-    initDropzone()
+    initDropzone();
   }
-})
+});
 </script>
 
 <template>
-  <div
-    id="wizard-step-3"
-    class="inner-wrapper is-active"
-  >
+  <div id="wizard-step-3" class="inner-wrapper is-active">
     <div class="step-content">
       <div class="step-title">
-        <h2 class="dark-inverted">
-          Add files to this project
-        </h2>
+        <h2 class="dark-inverted">Add files to this project</h2>
         <p>Or you can skip this step. You can always add more files later.</p>
       </div>
 
@@ -219,12 +214,12 @@ watch(previewTemplate, () => {
             class="light-image is-rounded"
             src="/@src/assets/illustrations/wizard/upload-placeholder.svg"
             alt=""
-          >
+          />
           <img
             class="dark-image is-rounded"
             src="/@src/assets/illustrations/wizard/upload-placeholder.svg"
             alt=""
-          >
+          />
         </template>
         <template #action>
           <a
@@ -239,10 +234,7 @@ watch(previewTemplate, () => {
         </template>
       </VPlaceholderPage>
 
-      <div
-        v-else
-        class="uploader"
-      >
+      <div v-else class="uploader">
         <div class="uploader-toolbar">
           <div class="left">
             <div class="uploader-actions">
@@ -280,11 +272,7 @@ watch(previewTemplate, () => {
                   class="inner-action cancel hint--bubble hint--primary hint--top"
                   data-hint="Remove All"
                 >
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:x"
-                  />
+                  <i aria-hidden="true" class="iconify" data-icon="feather:x" />
                 </button>
               </div>
             </div>
@@ -313,24 +301,15 @@ watch(previewTemplate, () => {
           <div class="upload-wrapper">
             <div class="upload-box fileinput-button">
               <div class="uploader-label">
-                <i
-                  aria-hidden="true"
-                  class="lnil lnil-cloud-upload"
-                />
+                <i aria-hidden="true" class="lnil lnil-cloud-upload" />
                 <h3>Upload photos/videos</h3>
               </div>
             </div>
           </div>
         </div>
 
-        <div
-          ref="previewContainerElement"
-          class="template-list"
-        >
-          <div
-            ref="previewTemplateElement"
-            class="template-list-item"
-          >
+        <div ref="previewContainerElement" class="template-list">
+          <div ref="previewTemplateElement" class="template-list-item">
             <div class="preview-box">
               <!-- This is used as the file preview template -->
               <div class="preview">
@@ -338,23 +317,14 @@ watch(previewTemplate, () => {
                   data-dz-thumbnail
                   alt=""
                   @error.once="onceImageErrored(150)"
-                >
+                />
               </div>
               <div class="list-item-meta">
-                <p
-                  class="name"
-                  data-dz-name
-                />
-                <p
-                  class="error text-danger"
-                  data-dz-errormessage
-                />
+                <p class="name" data-dz-name />
+                <p class="error text-danger" data-dz-errormessage />
               </div>
               <div class="list-item-progress">
-                <p
-                  class="size"
-                  data-dz-size
-                />
+                <p class="size" data-dz-size />
                 <div
                   class="progress active"
                   role="progressbar"

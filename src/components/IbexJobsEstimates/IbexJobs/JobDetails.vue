@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LeadProposalsList from "../LeadPropsalComponents/LeadProposalsList.vue";
 import { useTodoList } from "/@src/data/widgets/list/todoList";
 
 const { todoList3, todoList4 } = useTodoList();
@@ -39,6 +40,34 @@ const columns = {
     align: "end",
   },
 } as const;
+
+let leafLetMap: any;
+
+const drawMap = (lat: any, lng: any) => {
+  if (leafLetMap) {
+    leafLetMap.remove();
+  }
+
+  leafLetMap = L.map("workerProfileMap").setView([51.4497984, -0.3464489], 10);
+
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 24,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(leafLetMap);
+
+  if (lat && lng) {
+    const position = [lat, lng];
+    L.marker(position).addTo(leafLetMap);
+    leafLetMap.setView(position, 12);
+  } else {
+    console.log("Invalid latitude or longitude for supplier");
+  }
+};
+
+onMounted(() => {
+  drawMap(32.80839, -83.650384);
+});
 </script>
 
 <template>
@@ -57,13 +86,13 @@ const columns = {
                     picture="/images/avatars/svg/vuero-1.svg"
                     squared
                   />
-                  <h3>Welcome back, Erik.</h3>
+                  <h3>Jonathan & Anita Home.</h3>
                 </div>
               </div>
 
               <!--Center-->
               <div class="center">
-                <h4 class="block-heading">New Rookies</h4>
+                <h4 class="block-heading">Managers</h4>
                 <p class="block-text">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Praeclarae mortes.
@@ -90,7 +119,7 @@ const columns = {
                   Praeclarae mortes.
                 </p>
 
-                <VButton bold fullwidth dark-outlined> Manage Jobs </VButton>
+                <VButton bold fullwidth dark-outlined> Manage Tasks </VButton>
               </div>
             </div>
           </div>
@@ -118,6 +147,15 @@ const columns = {
                         ><span>Documents/Files</span></a
                       >
                     </li>
+                    <li :class="[tab === 'proposals' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'proposals'"
+                        @click="tab = 'proposals'"
+                        ><span>Proposals</span></a
+                      >
+                    </li>
                     <li :class="[tab === 'finance' && 'is-active']">
                       <a
                         tabindex="0"
@@ -137,6 +175,24 @@ const columns = {
                         ><span>Report</span></a
                       >
                     </li>
+                    <li :class="[tab === 'activityLogs' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'activityLogs'"
+                        @click="tab = 'activityLogs'"
+                        ><span>Activity Logs</span></a
+                      >
+                    </li>
+                    <li :class="[tab === 'progress' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'progress'"
+                        @click="tab = 'progress'"
+                        ><span>Job progress</span></a
+                      >
+                    </li>
                     <li class="tab-naver" />
                   </ul>
                 </div>
@@ -152,14 +208,16 @@ const columns = {
                   <!--Selector-->
                   <div class="column is-12">
                     <div class="feed-settings">
-                      <h3 class="dark-inverted">Manage feed settings</h3>
+                      <h3 class="dark-inverted">Job feeds</h3>
                       <div class="buttons">
-                        <button class="button is-dark-outlined">All</button>
                         <button class="button is-selected is-dark-outlined">
-                          Candidates
+                          Residential Remodeler
+                        </button>
+                        <button class="button is-selected is-dark-outlined">
+                          Fixed Price
                         </button>
                         <button class="button is-dark-outlined">
-                          Companies
+                          Job Color
                         </button>
                       </div>
                     </div>
@@ -167,7 +225,7 @@ const columns = {
                   <!--Side Text-->
                   <div class="column is-4">
                     <div class="side-text">
-                      <h3 class="dark-inverted">More Details</h3>
+                      <h3 class="dark-inverted">Job Description</h3>
                       <p>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Perge porro; Oratio me istius philosophi non offendit;
@@ -244,7 +302,7 @@ const columns = {
                   <div class="column is-12">
                     <div class="recent-rookies">
                       <div class="recent-rookies-header">
-                        <h3 class="dark-inverted">Recent Rookies</h3>
+                        <h3 class="dark-inverted">Internal Users</h3>
                         <a class="action-link" tabindex="0">View All</a>
                       </div>
 
@@ -260,10 +318,12 @@ const columns = {
                               badge="/images/icons/stacks/illustrator.svg"
                               size="large"
                             />
-                            <h3 class="dark-inverted">Tara Svenson</h3>
-                            <p>UI/UX Designer</p>
+                            <h3 class="dark-inverted">Krystal Tamayo</h3>
+                            <p>Admin</p>
                             <div class="button-wrap has-text-centered">
-                              <VButton color="primary" raised> Hire </VButton>
+                              <VButton color="primary" raised>
+                                View Profile
+                              </VButton>
                             </div>
                           </div>
                         </div>
@@ -276,10 +336,12 @@ const columns = {
                               badge="/images/icons/flags/france.svg"
                               size="large"
                             />
-                            <h3 class="dark-inverted">Helmut Fritz</h3>
-                            <p>Product Manager</p>
+                            <h3 class="dark-inverted">Juan</h3>
+                            <p>Project Manager</p>
                             <div class="button-wrap has-text-centered">
-                              <VButton dark-outlined bold> Assess </VButton>
+                              <VButton dark-outlined bold>
+                                View Profile
+                              </VButton>
                             </div>
                           </div>
                         </div>
@@ -292,10 +354,12 @@ const columns = {
                               badge="/images/icons/stacks/js.svg"
                               size="large"
                             />
-                            <h3 class="dark-inverted">Melany Wallace</h3>
-                            <p>Web Developer</p>
+                            <h3 class="dark-inverted">Domus Builders</h3>
+                            <p>Contractor</p>
                             <div class="button-wrap has-text-centered">
-                              <VButton dark-outlined bold> Assess </VButton>
+                              <VButton dark-outlined bold>
+                                View Profile
+                              </VButton>
                             </div>
                           </div>
                         </div>
@@ -308,42 +372,14 @@ const columns = {
               <!-- Search/Calendar and Todos -->
               <div class="column is-4">
                 <!--Widget-->
-                <UIWidget class="search-widget">
-                  <template #body>
-                    <div class="field">
-                      <div class="control">
-                        <input
-                          type="text"
-                          class="input"
-                          placeholder="Search..."
-                        />
-                        <button class="searcv-button">
-                          <i
-                            aria-hidden="true"
-                            class="iconify"
-                            data-icon="feather:search"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </template>
-                </UIWidget>
+                <div
+                  class="card mb-4"
+                  id="workerProfileMap"
+                  style="height: 300px; width: 100%; border-radius: 10px"
+                ></div>
 
                 <!--Widget-->
-                <ListWidgetTabbed title="Todo" :labels="['All', 'Mine']">
-                  <template #tab1>
-                    <ListWidgetTodoList
-                      v-model="todoList3Selection"
-                      :todos="todoList3"
-                    />
-                  </template>
-                  <template #tab2>
-                    <ListWidgetTodoList
-                      v-model="todoList4Selection"
-                      :todos="todoList4"
-                    />
-                  </template>
-                </ListWidgetTabbed>
+                <JobTodos />
 
                 <!--Widget-->
                 <UIWidget class="picker-widget">
@@ -456,11 +492,24 @@ const columns = {
           <div v-if="tab === 'documents'" class="column is-12">
             <JobDocuments />
           </div>
+
+          <div v-if="tab === 'proposals'" class="column is-12">
+            <LeadProposalsList />
+          </div>
+
+          <div v-if="tab === 'progress'" class="column is-12">
+            <JobProgress />
+          </div>
           <div v-if="tab === 'finance'" class="column is-12">
             <JobFinance />
           </div>
+          <div v-if="tab === 'activityLogs'" class="column is-12">
+            <JobActivities />
+          </div>
 
-          <div v-if="tab === 'report'" class="column is-12"></div>
+          <div v-if="tab === 'report'" class="column is-12">
+            <JobReport />
+          </div>
         </div>
       </div>
     </div>

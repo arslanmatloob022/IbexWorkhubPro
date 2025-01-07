@@ -3,7 +3,7 @@ import { files } from "/@src/data/layouts/tile-grid-v2";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
 
 const filters = ref("");
-
+const tab = ref("contracts");
 const filteredData = computed(() => {
   if (!filters.value) {
     return files;
@@ -29,6 +29,77 @@ const optionsSingle = [
 
 <template>
   <div>
+    <div class="tabs-inner">
+      <div class="tabs is-toggle">
+        <ul>
+          <li :class="[tab === 'contracts' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'contracts'"
+              @click="tab = 'contracts'"
+              ><span>Contracts</span></a
+            >
+          </li>
+          <li :class="[tab === 'estimates' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'estimates'"
+              @click="tab = 'estimates'"
+              ><span>Customer Estimates</span></a
+            >
+          </li>
+          <li :class="[tab === 'jobScope' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'jobScope'"
+              @click="tab = 'jobScope'"
+              ><span>Job Scope</span></a
+            >
+          </li>
+
+          <li :class="[tab === 'asbestos' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'asbestos'"
+              @click="tab = 'asbestos'"
+              ><span>Asbestos & Lead Report</span></a
+            >
+          </li>
+          <li :class="[tab === 'permits' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'permits'"
+              @click="tab = 'permits'"
+              ><span>Permits</span></a
+            >
+          </li>
+          <li :class="[tab === 'material' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'material'"
+              @click="tab = 'material'"
+              ><span>Bids & Material</span></a
+            >
+          </li>
+          <li :class="[tab === 'miscellaneous' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'miscellaneous'"
+              @click="tab = 'miscellaneous'"
+              ><span>Miscellaneous</span></a
+            >
+          </li>
+          <li class="tab-naver" />
+        </ul>
+      </div>
+    </div>
     <div class="tile-grid-toolbar">
       <VControl icon="feather:search">
         <input
@@ -83,29 +154,203 @@ const optionsSingle = [
       </VPlaceholderPage>
 
       <!--Tile Grid v1-->
-      <TransitionGroup name="list" tag="div" class="columns is-multiline">
-        <!--Grid item-->
-        <div v-for="item in filteredData" :key="item.id" class="column is-4">
-          <div class="tile-grid-item">
-            <div class="tile-grid-item-inner">
-              <img
-                :src="item.icon"
-                alt=""
-                @error.once="onceImageErrored(150)"
-              />
-              <div class="meta">
-                <span class="dark-inverted">{{ item.name }}</span>
-                <span>
-                  <span>{{ item.size }}</span>
-                  <i aria-hidden="true" class="fas fa-circle icon-separator" />
-                  <span>Updated {{ item.updated }}</span>
-                </span>
+      <div v-if="tab == 'contracts'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
               </div>
-              <FileTileDropdown />
             </div>
           </div>
-        </div>
-      </TransitionGroup>
+        </TransitionGroup>
+      </div>
+
+      <div v-if="tab == 'estimates'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
+      <div v-if="tab == 'jobScope'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
+      <div v-if="tab == 'asbestos'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
+      <div v-if="tab == 'permits'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
+      <div v-if="tab == 'material'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
+      <div v-if="tab == 'miscellaneous'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <!--Grid item-->
+          <div v-for="item in filteredData" :key="item.id" class="column is-4">
+            <div class="tile-grid-item">
+              <div class="tile-grid-item-inner">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                />
+                <div class="meta">
+                  <span class="dark-inverted">{{ item.name }}</span>
+                  <span>
+                    <span>{{ item.size }}</span>
+                    <i
+                      aria-hidden="true"
+                      class="fas fa-circle icon-separator"
+                    />
+                    <span>Updated {{ item.updated }}</span>
+                  </span>
+                </div>
+                <FileTileDropdown />
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
     </div>
   </div>
 </template>

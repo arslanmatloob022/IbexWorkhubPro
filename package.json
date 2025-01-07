@@ -38,7 +38,7 @@
     "dev": "run-p dev:vite dev:json-server",
     "dev:ssr": "run-p ssr:dev dev:json-server",
     "dev:vite": "vite --open",
-    "dev:json-server": "json-server --read-only --routes ./json-server/routes.json --port 8080 --watch ./json-server/db.json",
+    "dev:json-server": "json-server --read-only --routes ./json-server/routes.json --port 8081 --watch ./json-server/db.json",
     "build": "NODE_OPTIONS=--max_old_space_size=8192 run-s build:*",
     "build:update-bulma-colors": "bulma-css-vars",
     "build:vite": "cross-env NODE_ENV=production vite build",
@@ -94,7 +94,7 @@
     "@vueuse/core": "10.4.0",
     "@vueuse/router": "10.4.0",
     "apexcharts": "3.42.0",
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "billboard.js": "3.9.3",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
@@ -145,7 +145,8 @@
     "vue-tippy": "6.3.1",
     "vue3-apexcharts": "1.4.4",
     "vue3-carousel": "^0.3.4",
-    "workbox-window": "^7.1.0",
+    "vuedraggable": "^2.24.3",
+    "workbox-window": "^7.3.0",
     "zod": "3.22.2"
   },
   "devDependencies": {
@@ -158,8 +159,8 @@
     "@types/dragula": "3.7.1",
     "@types/fs-extra": "11.0.1",
     "@types/js-yaml": "4.0.5",
-    "@types/mapbox__mapbox-gl-geocoder": "4.7.4",
     "@types/mapbox-gl": "2.7.13",
+    "@types/mapbox__mapbox-gl-geocoder": "4.7.4",
     "@types/node": "20.4.5",
     "@types/nprogress": "0.2.0",
     "@types/photoswipe": "4.1.2",
@@ -169,7 +170,7 @@
     "@typescript-eslint/parser": "6.4.1",
     "@unhead/addons": "1.3.7",
     "@vitejs/plugin-vue": "4.3.3",
-    "@vue/compiler-sfc": "^3.5.8",
+    "@vue/compiler-sfc": "^3.5.13",
     "commitlint": "17.7.1",
     "compression": "1.7.4",
     "cross-env": "7.0.3",
@@ -251,5 +252,6 @@
     "patchedDependencies": {
       "@purge-icons/core@0.9.1": "patches/@purge-icons__core@0.9.1.patch"
     }
-  }
+  },
+  "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
 }

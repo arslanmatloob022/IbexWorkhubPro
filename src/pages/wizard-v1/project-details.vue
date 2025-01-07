@@ -1,52 +1,47 @@
 <script setup lang="ts">
-import type { WizardCustomer } from '/@src/models/wizard'
-import { customers } from '/@src/data/wizard'
-import { useWizard } from '/@src/composable/useWizard'
+import type { WizardCustomer } from "/@src/models/wizard";
+import { customers } from "/@src/data/wizard";
+import { useWizard } from "../../models/useWizard";
 
-const search = ref('')
-const wizard = useWizard()
-const router = useRouter()
+const search = ref("");
+const wizard = useWizard();
+const router = useRouter();
 wizard.setStep({
   number: 3,
   canNavigate: true,
   previousStepFn: async () => {
-    router.push('/wizard-v1/project-info')
+    router.push("/wizard-v1/project-info");
   },
   validateStepFn: async () => {
-    router.push('/wizard-v1/project-files')
+    router.push("/wizard-v1/project-files");
   },
-})
+});
 
 const filteredCustomers = computed<WizardCustomer[]>(() => {
   if (!search.value) {
-    return []
+    return [];
   }
 
   return customers
     .filter((item) => {
       return (
-        item.name.match(new RegExp(search.value, 'i')) ||
-        item.location.match(new RegExp(search.value, 'i'))
-      )
+        item.name.match(new RegExp(search.value, "i")) ||
+        item.location.match(new RegExp(search.value, "i"))
+      );
     })
-    .splice(0, 4)
-})
+    .splice(0, 4);
+});
 
 const selectCustomer = (customer: WizardCustomer | null) => {
-  wizard.data.customer = customer
-}
+  wizard.data.customer = customer;
+};
 </script>
 
 <template>
-  <div
-    id="wizard-step-2"
-    class="inner-wrapper is-active"
-  >
+  <div id="wizard-step-2" class="inner-wrapper is-active">
     <div class="step-content">
       <div class="step-title">
-        <h2 class="dark-inverted">
-          Add more details
-        </h2>
+        <h2 class="dark-inverted">Add more details</h2>
         <p>Add useful details to your project. You can edit this later.</p>
       </div>
 
@@ -55,10 +50,7 @@ const selectCustomer = (customer: WizardCustomer | null) => {
 
         <VField v-if="!wizard.data.customer">
           <VControl icon="feather:search">
-            <VInput
-              v-model="search"
-              placeholder="search..."
-            />
+            <VInput v-model="search" placeholder="search..." />
           </VControl>
         </VField>
 
@@ -69,10 +61,7 @@ const selectCustomer = (customer: WizardCustomer | null) => {
           center
         >
           <template #icon>
-            <VAvatar
-              size="medium"
-              :picture="wizard.data.customer.logo"
-            />
+            <VAvatar size="medium" :picture="wizard.data.customer.logo" />
           </template>
 
           <template #action>
@@ -86,10 +75,7 @@ const selectCustomer = (customer: WizardCustomer | null) => {
         </VBlock>
 
         <template v-else-if="filteredCustomers.length > 0">
-          <TransitionGroup
-            name="list"
-            tag="div"
-          >
+          <TransitionGroup name="list" tag="div">
             <VBlock
               v-for="customer in filteredCustomers"
               :key="customer.name"
@@ -98,10 +84,7 @@ const selectCustomer = (customer: WizardCustomer | null) => {
               center
             >
               <template #icon>
-                <VAvatar
-                  size="medium"
-                  :picture="customer.logo"
-                />
+                <VAvatar size="medium" :picture="customer.logo" />
               </template>
 
               <template #action>
@@ -142,7 +125,7 @@ const selectCustomer = (customer: WizardCustomer | null) => {
                       class="input form-datepicker"
                       placeholder="Start Date"
                       v-on="inputEvents.start"
-                    >
+                    />
                   </VControl>
                 </div>
                 <div class="separator" />
@@ -160,7 +143,7 @@ const selectCustomer = (customer: WizardCustomer | null) => {
                       class="input form-datepicker"
                       placeholder="End Date"
                       v-on="inputEvents.end"
-                    >
+                    />
                   </VControl>
                 </div>
               </div>

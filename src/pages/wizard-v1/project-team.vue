@@ -1,98 +1,93 @@
 <script setup lang="ts">
-import type { WizardTeammate, WizardTeammateRole } from '/@src/models/wizard'
-import { users } from '/@src/data/wizard'
+import type { WizardTeammate, WizardTeammateRole } from "/@src/models/wizard";
+import { users } from "/@src/data/wizard";
 
-import { useWizard } from '/@src/composable/useWizard'
+import { useWizard } from "../../models/useWizard";
 
-const search = ref('')
-const isAddingMembers = ref(false)
-const filteredUsers = ref<Omit<WizardTeammate, 'role'>[]>([])
+const search = ref("");
+const isAddingMembers = ref(false);
+const filteredUsers = ref<Omit<WizardTeammate, "role">[]>([]);
 
-const wizard = useWizard()
-const router = useRouter()
+const wizard = useWizard();
+const router = useRouter();
 wizard.setStep({
   number: 5,
   canNavigate: true,
   previousStepFn: async () => {
-    router.push('/wizard-v1/project-files')
+    router.push("/wizard-v1/project-files");
   },
   validateStepFn: async () => {
-    if (search.value) return
+    if (search.value) return;
 
-    router.push('/wizard-v1/project-tools')
+    router.push("/wizard-v1/project-tools");
   },
-})
+});
 
-const addTeammate = (teammate: Omit<WizardTeammate, 'role'>) => {
+const addTeammate = (teammate: Omit<WizardTeammate, "role">) => {
   wizard.data.teammates.push({
     ...teammate,
-    role: 'reader',
-  })
-  search.value = ''
-}
+    role: "reader",
+  });
+  search.value = "";
+};
 
 const setTeammateRole = (
-  teammate: Omit<WizardTeammate, 'role'>,
+  teammate: Omit<WizardTeammate, "role">,
   role: WizardTeammateRole
 ) => {
   const index = wizard.data.teammates.findIndex((item) => {
-    return item.name === teammate.name
-  })
+    return item.name === teammate.name;
+  });
 
   if (index > -1) {
-    wizard.data.teammates[index].role = role
+    wizard.data.teammates[index].role = role;
   }
-}
+};
 
-const removeTeammate = (teammate: Omit<WizardTeammate, 'role'>) => {
+const removeTeammate = (teammate: Omit<WizardTeammate, "role">) => {
   const index = wizard.data.teammates.findIndex((item) => {
-    return item.name === teammate.name
-  })
+    return item.name === teammate.name;
+  });
   if (index > -1) {
-    wizard.data.teammates.splice(index, 1)
+    wizard.data.teammates.splice(index, 1);
   }
-}
+};
 
 const getRoleLevel = (teammate: WizardTeammate) => {
   switch (teammate.role) {
-    case 'collaborator':
-      return 1
-    case 'manager':
-      return 2
-    case 'owner':
-      return 3
-    case 'reader':
+    case "collaborator":
+      return 1;
+    case "manager":
+      return 2;
+    case "owner":
+      return 3;
+    case "reader":
     default:
-      return 0
+      return 0;
   }
-}
+};
 
 watchEffect(() => {
   if (!search.value) {
-    filteredUsers.value = []
-    return
+    filteredUsers.value = [];
+    return;
   }
 
   filteredUsers.value = users
     .filter((item) => {
       return !wizard.data.teammates.find((_item) => {
-        return item.name === _item.name
-      })
+        return item.name === _item.name;
+      });
     })
-    .filter((item) => item.name.match(new RegExp(search.value, 'i')))
-})
+    .filter((item) => item.name.match(new RegExp(search.value, "i")));
+});
 </script>
 
 <template>
-  <div
-    id="wizard-step-4"
-    class="inner-wrapper is-active"
-  >
+  <div id="wizard-step-4" class="inner-wrapper is-active">
     <div class="step-content">
       <div class="step-title">
-        <h2 class="dark-inverted">
-          Who will be working on this project?
-        </h2>
+        <h2 class="dark-inverted">Who will be working on this project?</h2>
         <p>Start by adding members to your team</p>
       </div>
 
@@ -110,12 +105,12 @@ watchEffect(() => {
             class="light-image is-rounded"
             src="/@src/assets/illustrations/wizard/team-placeholder.svg"
             alt=""
-          >
+          />
           <img
             class="dark-image is-rounded"
             src="/@src/assets/illustrations/wizard/team-placeholder.svg"
             alt=""
-          >
+          />
         </template>
         <template #action>
           <a
@@ -130,22 +125,15 @@ watchEffect(() => {
         </template>
       </VPlaceholderPage>
 
-      <div
-        v-if="isAddingMembers"
-        class="project-team-wrapper"
-      >
+      <div v-if="isAddingMembers" class="project-team-wrapper">
         <div class="project-team-header">
           <VAvatar
             size="big"
             picture="/images/avatars/svg/vuero-1.svg"
             badge="/images/icons/flags/united-states-of-america.svg"
           />
-          <h3 class="title is-4 is-narrow is-thin">
-            Erik Kovalsky
-          </h3>
-          <p class="light-text">
-            You are the project owner
-          </p>
+          <h3 class="title is-4 is-narrow is-thin">Erik Kovalsky</h3>
+          <p class="light-text">You are the project owner</p>
 
           <VField class="mt-4">
             <VControl icon="feather:search">
@@ -161,10 +149,7 @@ watchEffect(() => {
         <div class="project-team-body">
           <div class="members-list">
             <template v-if="filteredUsers.length > 0">
-              <TransitionGroup
-                name="list"
-                tag="div"
-              >
+              <TransitionGroup name="list" tag="div">
                 <VBlock
                   v-for="teammate in filteredUsers"
                   :key="teammate.name"
@@ -173,10 +158,7 @@ watchEffect(() => {
                   :subtitle="teammate.name"
                 >
                   <template #icon>
-                    <VAvatar
-                      size="medium"
-                      :picture="teammate.picture"
-                    />
+                    <VAvatar size="medium" :picture="teammate.picture" />
                   </template>
                   <template #action>
                     <div class="actions">
@@ -193,10 +175,7 @@ watchEffect(() => {
               </TransitionGroup>
             </template>
             <template v-if="wizard.data.teammates.length > 0">
-              <TransitionGroup
-                name="list-complete"
-                tag="div"
-              >
+              <TransitionGroup name="list-complete" tag="div">
                 <VBlock
                   v-for="teammate in wizard.data.teammates"
                   :key="teammate.name"
@@ -205,10 +184,7 @@ watchEffect(() => {
                   :subtitle="teammate.name"
                 >
                   <template #icon>
-                    <VAvatar
-                      size="medium"
-                      :picture="teammate.picture"
-                    />
+                    <VAvatar size="medium" :picture="teammate.picture" />
                   </template>
                   <template #action>
                     <div class="actions">
@@ -219,12 +195,16 @@ watchEffect(() => {
                             aria-label="Reader"
                             role="button"
                             tabindex="0"
-                            @keydown.space.prevent="setTeammateRole(teammate, 'reader')"
+                            @keydown.space.prevent="
+                              setTeammateRole(teammate, 'reader')
+                            "
                             @click="setTeammateRole(teammate, 'reader')"
                           >
                             <div
                               class="permission-level-inner"
-                              :class="[getRoleLevel(teammate) >= 0 && 'is-active']"
+                              :class="[
+                                getRoleLevel(teammate) >= 0 && 'is-active',
+                              ]"
                             />
                           </div>
                           <div
@@ -239,7 +219,9 @@ watchEffect(() => {
                           >
                             <div
                               class="permission-level-inner"
-                              :class="[getRoleLevel(teammate) >= 1 && 'is-active']"
+                              :class="[
+                                getRoleLevel(teammate) >= 1 && 'is-active',
+                              ]"
                             />
                           </div>
                           <div
@@ -247,12 +229,16 @@ watchEffect(() => {
                             aria-label="Manager"
                             role="button"
                             tabindex="0"
-                            @keydown.space.prevent="setTeammateRole(teammate, 'manager')"
+                            @keydown.space.prevent="
+                              setTeammateRole(teammate, 'manager')
+                            "
                             @click="setTeammateRole(teammate, 'manager')"
                           >
                             <div
                               class="permission-level-inner"
-                              :class="[getRoleLevel(teammate) >= 2 && 'is-active']"
+                              :class="[
+                                getRoleLevel(teammate) >= 2 && 'is-active',
+                              ]"
                             />
                           </div>
                           <div
@@ -260,12 +246,16 @@ watchEffect(() => {
                             aria-label="Owner"
                             role="button"
                             tabindex="0"
-                            @keydown.space.prevent="setTeammateRole(teammate, 'owner')"
+                            @keydown.space.prevent="
+                              setTeammateRole(teammate, 'owner')
+                            "
                             @click="setTeammateRole(teammate, 'owner')"
                           >
                             <div
                               class="permission-level-inner"
-                              :class="[getRoleLevel(teammate) >= 3 && 'is-active']"
+                              :class="[
+                                getRoleLevel(teammate) >= 3 && 'is-active',
+                              ]"
                             />
                           </div>
                           <progress
@@ -289,10 +279,7 @@ watchEffect(() => {
                 </VBlock>
               </TransitionGroup>
             </template>
-            <div
-              v-else
-              class="empty-wrap has-text-centered"
-            >
+            <div v-else class="empty-wrap has-text-centered">
               <span>No team members yet</span>
             </div>
           </div>

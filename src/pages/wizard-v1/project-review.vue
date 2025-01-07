@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 
-import { useWizard } from '/@src/composable/useWizard'
+import { useWizard } from "../../models/useWizard";
 
-const wizard = useWizard()
-const router = useRouter()
+const wizard = useWizard();
+const router = useRouter();
 wizard.setStep({
   number: 7,
   canNavigate: true,
   previousStepFn: async () => {
-    router.push('/wizard-v1/project-tools')
+    router.push("/wizard-v1/project-tools");
   },
   validateStepFn: async () => {
-    router.push('/wizard-v1/success')
+    router.push("/wizard-v1/success");
   },
-})
+});
 
 const capitalize = (string: string) => {
-  return string.slice(0, 1).toUpperCase() + string.slice(1)
-}
+  return string.slice(0, 1).toUpperCase() + string.slice(1);
+};
 
 const projectInitial = computed(() => {
-  return wizard.data.name.slice(0, 1).toUpperCase() || 'P'
-})
+  return wizard.data.name.slice(0, 1).toUpperCase() || "P";
+});
 
 const formatedDueDate = computed(() => {
-  return dayjs(wizard.data.timeFrame.end).format('MMM D, YYYY')
-})
+  return dayjs(wizard.data.timeFrame.end).format("MMM D, YYYY");
+});
 
-const projectPicture = ref('')
+const projectPicture = ref("");
 
 watchEffect(async () => {
   try {
     projectPicture.value = await new Promise((resolve, reject) => {
       if (wizard.data.logo) {
-        const reader = new FileReader()
-        reader.readAsDataURL(wizard.data.logo)
-        reader.onload = () => resolve(reader.result?.toString() || '')
-        reader.onerror = (error) => reject(error)
+        const reader = new FileReader();
+        reader.readAsDataURL(wizard.data.logo);
+        reader.onload = () => resolve(reader.result?.toString() || "");
+        reader.onerror = (error) => reject(error);
       } else {
-        projectPicture.value = ''
+        projectPicture.value = "";
       }
-    })
+    });
   } catch (error) {
-    projectPicture.value = ''
+    projectPicture.value = "";
   }
-})
+});
 </script>
 
 <template>
@@ -56,9 +56,7 @@ watchEffect(async () => {
   >
     <div class="step-content">
       <div class="step-title">
-        <h2 class="dark-inverted">
-          Make sure everything is good
-        </h2>
+        <h2 class="dark-inverted">Make sure everything is good</h2>
         <p>You can go back to previous steps if you need to edit anything.</p>
       </div>
 
@@ -80,14 +78,8 @@ watchEffect(async () => {
             <span v-if="wizard.data.name">{{ wizard.data.name }}</span>
             <span v-else>Project Title Goes Here</span>
 
-            <RouterLink
-              class="edit-icon"
-              to="/wizard-v1/project-info"
-            >
-              <i
-                aria-hidden="true"
-                class="lnil lnil-pencil"
-              />
+            <RouterLink class="edit-icon" to="/wizard-v1/project-info">
+              <i aria-hidden="true" class="lnil lnil-pencil" />
             </RouterLink>
           </h3>
         </div>
@@ -98,36 +90,24 @@ watchEffect(async () => {
               <div class="edit-box">
                 <h4>Description</h4>
 
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-info"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-info">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
 
                 <p v-if="wizard.data.description">
                   {{ wizard.data.description }}
                 </p>
                 <p v-else>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis negat?
-                  Tamen a proposito, inquam, aberramus. Deinde dolorem quem maximum? Quae
-                  duo sunt, unum facit. Quod vestri non item.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis
+                  negat? Tamen a proposito, inquam, aberramus. Deinde dolorem
+                  quem maximum? Quae duo sunt, unum facit. Quod vestri non item.
                 </p>
               </div>
             </div>
             <div class="column is-6 is-tablet-50">
               <div class="edit-box">
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
                 <VBlock
                   :title="wizard.data.relatedTo"
@@ -135,15 +115,8 @@ watchEffect(async () => {
                   center
                 >
                   <template #icon>
-                    <VIconBox
-                      size="medium"
-                      color="warning"
-                      rounded
-                    >
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-vector-pen"
-                      />
+                    <VIconBox size="medium" color="warning" rounded>
+                      <i aria-hidden="true" class="lnil lnil-vector-pen" />
                     </VIconBox>
                   </template>
                 </VBlock>
@@ -152,14 +125,8 @@ watchEffect(async () => {
 
             <div class="column is-6 is-tablet-50">
               <div class="edit-box">
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-details"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-details">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
                 <VBlock
                   v-if="wizard.data.customer"
@@ -174,10 +141,7 @@ watchEffect(async () => {
                     />
                   </template>
                 </VBlock>
-                <div
-                  v-else
-                  class="edit-box-placeholder is-media"
-                >
+                <div v-else class="edit-box-placeholder is-media">
                   <span>No selected customer</span>
                 </div>
               </div>
@@ -185,14 +149,8 @@ watchEffect(async () => {
 
             <div class="column is-4 is-tablet-33">
               <div class="edit-box">
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-details"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-details">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
                 <div class="estimated-budget">
                   <div class="inner-block">
@@ -207,14 +165,8 @@ watchEffect(async () => {
 
             <div class="column is-4 is-tablet-33">
               <div class="edit-box">
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-details"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-details">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
                 <div class="estimated-due-date">
                   <div class="inner-block">
@@ -229,14 +181,8 @@ watchEffect(async () => {
 
             <div class="column is-4 is-tablet-33">
               <div class="edit-box">
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-files"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-files">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
                 <div class="attachments-count">
                   <div class="inner-block">
@@ -256,14 +202,8 @@ watchEffect(async () => {
               <div class="edit-box">
                 <h4>Team</h4>
 
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-team"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-team">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
 
                 <div
@@ -273,10 +213,7 @@ watchEffect(async () => {
                   <span>No selected teammate</span>
                 </div>
 
-                <div
-                  v-else
-                  class="media-list"
-                >
+                <div v-else class="media-list">
                   <div
                     v-for="teammate in wizard.data.teammates"
                     :key="teammate.name"
@@ -300,14 +237,8 @@ watchEffect(async () => {
               <div class="edit-box">
                 <h4>Tools</h4>
 
-                <RouterLink
-                  class="edit-icon"
-                  to="/wizard-v1/project-tools"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="lnil lnil-pencil"
-                  />
+                <RouterLink class="edit-icon" to="/wizard-v1/project-tools">
+                  <i aria-hidden="true" class="lnil lnil-pencil" />
                 </RouterLink>
 
                 <div
@@ -317,10 +248,7 @@ watchEffect(async () => {
                   <span>No selected tools</span>
                 </div>
 
-                <div
-                  v-else
-                  class="media-list"
-                >
+                <div v-else class="media-list">
                   <div
                     v-for="tool in wizard.data.tools"
                     :key="tool.name"

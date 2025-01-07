@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import { useWizard } from '/@src/composable/useWizard'
+import { useWizard } from "../models/useWizard";
 
-const wizard = useWizard()
+const wizard = useWizard();
 
 useHead({
   title: computed(() => `${wizard.stepTitle} - Wizard V1 - Arez`),
-})
+});
 </script>
 
 <template>
   <MinimalLayout>
     <!--Wizard Navbar-->
-    <WizardV1Navigation
-      v-model:step="wizard.step"
-      :title="wizard.stepTitle"
-    />
+    <WizardV1Navigation v-model:step="wizard.step" :title="wizard.stepTitle" />
 
     <!--Wizard Progress Bar-->
     <VProgress
@@ -36,10 +33,7 @@ useHead({
       <RouterView />
 
       <!--Wizard Navigation Buttons-->
-      <div
-        class="wizard-buttons"
-        :class="[wizard.canNavigate && 'is-active']"
-      >
+      <div class="wizard-buttons" :class="[wizard.canNavigate && 'is-active']">
         <div class="wizard-buttons-inner">
           <VButton
             class="wizard-button-previous"
@@ -68,7 +62,7 @@ useHead({
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
+@import "/@src/scss/abstracts/all";
 
 /* ==========================================================================
 1. Wizard V1 Navigation

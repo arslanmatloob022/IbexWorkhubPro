@@ -1,54 +1,49 @@
 <script setup lang="ts">
-import { useWizard } from '/@src/composable/useWizard'
-import { useNotyf } from '/@src/composable/useNotyf'
+import { useWizard } from "../../models/useWizard";
+import { useNotyf } from "/@src/composable/useNotyf";
 
-const notyf = useNotyf()
-const wizard = useWizard()
-const router = useRouter()
+const notyf = useNotyf();
+const wizard = useWizard();
+const router = useRouter();
 wizard.setStep({
   number: 2,
   canNavigate: true,
   validateStepFn: async () => {
-    router.push('/wizard-v1/project-details')
+    router.push("/wizard-v1/project-details");
   },
-})
+});
 
 const onAddFile = (error: any, fileInfo: any) => {
   if (error) {
-    notyf.error(`${error.main}: ${error.sub}`)
-    console.error(error)
-    return
+    notyf.error(`${error.main}: ${error.sub}`);
+    console.error(error);
+    return;
   }
 
-  const _file = fileInfo.file as File
+  const _file = fileInfo.file as File;
   if (_file) {
-    wizard.data.logo = _file
+    wizard.data.logo = _file;
   }
-}
+};
 
 const onRemoveFile = (error: any, fileInfo: any) => {
   if (error) {
-    notyf.error(error)
-    console.error(error)
-    return
+    notyf.error(error);
+    console.error(error);
+    return;
   }
 
-  console.log(fileInfo)
+  console.log(fileInfo);
 
-  wizard.data.logo = null
-}
+  wizard.data.logo = null;
+};
 </script>
 
 <template>
-  <div
-    id="wizard-step-1"
-    class="inner-wrapper is-active"
-  >
+  <div id="wizard-step-1" class="inner-wrapper is-active">
     <div class="step-content">
       <div class="step-title">
-        <h2 class="dark-inverted">
-          What is this project about?
-        </h2>
+        <h2 class="dark-inverted">What is this project about?</h2>
         <p>Manage better by adding all relevant project information</p>
       </div>
 
@@ -63,7 +58,11 @@ const onRemoveFile = (error: any, fileInfo: any) => {
                   name="profile_filepond"
                   :chunk-retry-delays="[500, 1000, 3000]"
                   label-idle="<i class='lnil lnil-cloud-upload'></i>"
-                  :accepted-file-types="['image/png', 'image/jpeg', 'image/gif']"
+                  :accepted-file-types="[
+                    'image/png',
+                    'image/jpeg',
+                    'image/gif',
+                  ]"
                   :image-preview-height="140"
                   :image-resize-target-width="140"
                   :image-resize-target-height="140"
@@ -103,23 +102,22 @@ const onRemoveFile = (error: any, fileInfo: any) => {
                     rows="4"
                     placeholder="Describe your project..."
                   />
-                  <p
-                    v-if="wizard.data.description.length === 0"
-                    class="help"
-                  >
+                  <p v-if="wizard.data.description.length === 0" class="help">
                     Minimum of 50 characters
                   </p>
                   <p
                     v-else-if="wizard.data.description.length === 49"
                     class="help"
                   >
-                    {{ 50 - wizard.data.description.length }} character remaining
+                    {{ 50 - wizard.data.description.length }} character
+                    remaining
                   </p>
                   <p
                     v-else-if="wizard.data.description.length < 50"
                     class="help"
                   >
-                    {{ 50 - wizard.data.description.length }} characters remaining
+                    {{ 50 - wizard.data.description.length }} characters
+                    remaining
                   </p>
                 </VControl>
               </VField>

@@ -471,7 +471,7 @@ onMounted(() => {
             </RouterLink>
           </VCollapseLinks>
 
-          <li>
+          <!-- <li>
             <RouterLink to="/sidebar/dashboard/managers" class="single-link">
               <span class="icon">
                 <i class="lnir lnir-user-alt-1" aria-hidden="true"></i
@@ -514,7 +514,69 @@ onMounted(() => {
               ></span>
               Clients
             </RouterLink>
-          </li>
+          </li> -->
+
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="users"
+            class="collapse-wrap"
+          >
+            <!-- :class="[isOpen && 'active']" -->
+            <template #header>
+              <div class="icon">
+                <i class="lnir lnir-users" aria-hidden="true"></i>
+              </div>
+              <span>System Users</span>
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink to="/sidebar/dashboard/clients" class="is-submenu">
+              <span class="icon">
+                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
+              ></span>
+              Clients
+            </RouterLink>
+
+            <RouterLink to="/sidebar/dashboard/managers" class="is-submenu">
+              <span class="icon">
+                <i class="lnir lnir-user-alt-1" aria-hidden="true"></i
+              ></span>
+              Managers
+            </RouterLink>
+
+            <RouterLink to="/sidebar/dashboard/contractors" class="is-submenu">
+              <span class="icon">
+                <i class="lnir lnir-user-alt" aria-hidden="true"></i
+              ></span>
+              Contractors
+            </RouterLink>
+
+            <RouterLink
+              to="/sidebar/dashboard/subcontractors"
+              class="is-submenu"
+            >
+              <span class="icon">
+                <i class="lnir lnir-user" aria-hidden="true"></i
+              ></span>
+              Sub Contractors
+            </RouterLink>
+
+            <RouterLink to="/sidebar/dashboard/workers" class="is-submenu">
+              <span class="icon">
+                <i class="lnir lnir-users" aria-hidden="true"></i
+              ></span>
+              Workers
+            </RouterLink>
+          </VCollapseLinks>
 
           <VCollapseLinks
             v-model:open="openSideblockLinks"
@@ -575,7 +637,7 @@ onMounted(() => {
               <div class="icon">
                 <i class="lnir lnir-library" aria-hidden="true"></i>
               </div>
-              <span>Jobs Estimates</span>
+              <span>Leads & Jobs</span>
               <i
                 aria-hidden="true"
                 class="iconify rtl-hidden"
@@ -590,28 +652,30 @@ onMounted(() => {
 
             <RouterLink
               class="is-submenu"
+              to="/sidebar/dashboard/leads"
+              :class="{ active: 'leads' === route.query.tab }"
+            >
+              <i class="lnir lnir-cloud-search" aria-hidden="true"></i>
+              <span>Lead Opportunity</span>
+            </RouterLink>
+            <RouterLink class="is-submenu" to="/sidebar/dashboard/proposals">
+              <i class="lnir lnir-add-files" aria-hidden="true"></i>
+              <span>Lead Proposals</span>
+            </RouterLink>
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/proposal-templates"
+            >
+              <i class="lnir lnir-files" aria-hidden="true"></i>
+              <span>Proposals Templates</span>
+            </RouterLink>
+            <RouterLink
+              class="is-submenu"
               to="/sidebar/dashboard/jobs"
               :class="{ active: 'projects' === route.query.tab }"
             >
               <i class="lnir lnir-suitcase" aria-hidden="true"></i>
               <span>Jobs</span>
-            </RouterLink>
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/received-payments"
-              :class="{ active: 'received-payments' === route.query.tab }"
-            >
-              <i class="lnir lnir-cloud-search" aria-hidden="true"></i>
-              <span>Lead Opportunity</span>
-            </RouterLink>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/approved-payments"
-              :class="{ active: 'approved-payments' === route.query.tab }"
-            >
-              <i class="lnir lnir-add-files" aria-hidden="true"></i>
-              <span>Lead Proposals</span>
             </RouterLink>
           </VCollapseLinks>
           <li>
@@ -622,10 +686,18 @@ onMounted(() => {
               Profile
             </RouterLink>
           </li>
+          <li>
+            <RouterLink to="/sidebar/settings" class="single-link">
+              <span class="icon">
+                <i class="lnir lnir-cogs" aria-hidden="true"></i
+              ></span>
+              Settings
+            </RouterLink>
+          </li>
         </template>
 
         <template #bottom-links>
-          <!-- <UserProfileDropdown up /> -->
+          <!-- <UserProfileDropdown left /> -->
           <div class="pb-3 arez-version">
             <!-- <p style="font-weight: 500">Powered by CodeSphere Studios</p>
             <p style="font-weight: 500; font-size: 10px">Version 3.04</p> -->

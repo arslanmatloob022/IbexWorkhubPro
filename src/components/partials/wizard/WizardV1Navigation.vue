@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import { useDropdown } from '/@src/composable/useDropdown'
-import { useWizard } from '/@src/composable/useWizard'
-import { useDarkmode } from '/@src/stores/darkmode'
-import { onceImageErrored } from '/@src/utils/via-placeholder'
+import { useDropdown } from "/@src/composable/useDropdown";
+import { useWizard } from "../../../models/useWizard";
+import { useDarkmode } from "/@src/stores/darkmode";
+import { onceImageErrored } from "/@src/utils/via-placeholder";
 
-const darkmode = useDarkmode()
+const darkmode = useDarkmode();
 
-const dropdownElement = ref<HTMLElement>()
-const dropdown = useDropdown(dropdownElement)
+const dropdownElement = ref<HTMLElement>();
+const dropdown = useDropdown(dropdownElement);
 
-const wizard = useWizard()
+const wizard = useWizard();
 </script>
 
 <template>
   <nav class="wizard-navigation">
-    <RouterLink
-      to="/"
-      class="wizard-brand"
-    >
-      <AnimatedLogo
-        width="38px"
-        height="38px"
-      />
+    <RouterLink to="/" class="wizard-brand">
+      <AnimatedLogo width="38px" height="38px" />
     </RouterLink>
 
     <div class="navbar-item is-wizard-title">
@@ -121,7 +115,7 @@ const wizard = useWizard()
             type="checkbox"
             :checked="!darkmode.isDark"
             @change="darkmode.onChange"
-          >
+          />
           <span />
         </label>
       </div>
@@ -144,7 +138,7 @@ const wizard = useWizard()
             src="/images/avatars/svg/vuero-1.svg"
             alt=""
             @error.once="onceImageErrored(150)"
-          >
+          />
         </div>
         <i
           aria-hidden="true"
@@ -152,41 +146,21 @@ const wizard = useWizard()
           data-icon="feather:chevron-down"
         />
       </div>
-      <div
-        class="dropdown-menu"
-        role="menu"
-      >
+      <div class="dropdown-menu" role="menu">
         <div class="dropdown-content">
           <div class="dropdown-item">
-            <p class="is-size-7 dark-inverted">
-              Erik Kovalsky
-            </p>
+            <p class="is-size-7 dark-inverted">Erik Kovalsky</p>
           </div>
-          <a
-            href="#"
-            class="dropdown-item"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:user"
-            />
+          <a href="#" class="dropdown-item">
+            <i aria-hidden="true" class="iconify" data-icon="feather:user" />
             <span>Profile</span>
           </a>
           <a class="dropdown-item">
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:edit-2"
-            />
+            <i aria-hidden="true" class="iconify" data-icon="feather:edit-2" />
             <span>Edit Profile</span>
           </a>
           <a class="dropdown-item">
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:box"
-            />
+            <i aria-hidden="true" class="iconify" data-icon="feather:box" />
             <span>Projects</span>
           </a>
           <a class="dropdown-item">
@@ -197,16 +171,9 @@ const wizard = useWizard()
             />
             <span>Settings</span>
           </a>
-          <hr class="dropdown-divider">
-          <a
-            href="#"
-            class="dropdown-item"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:log-out"
-            />
+          <hr class="dropdown-divider" />
+          <a href="#" class="dropdown-item">
+            <i aria-hidden="true" class="iconify" data-icon="feather:log-out" />
             <span>Sign Out</span>
           </a>
         </div>

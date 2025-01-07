@@ -1,9 +1,10 @@
 <route lang="yaml">
 meta:
   requiresAuth: true
-  isPartnerAllowed: false
+  isAdminAllowed: true
   isManagerAllowed: true
-  isContractorAllowed: true
+  isContractorAllowed: false
+  isPartnerAllowed: false
   isWorkerAllowed: false
   isClientAllowed: false
 </route>

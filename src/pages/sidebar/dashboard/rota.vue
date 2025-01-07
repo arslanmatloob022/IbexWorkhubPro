@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useViewWrapper } from '/@src/stores/viewWrapper'
+import { useViewWrapper } from "/@src/stores/viewWrapper";
 
-const viewWrapper = useViewWrapper()
-viewWrapper.setPageTitle('Rota')
+const viewWrapper = useViewWrapper();
+viewWrapper.setPageTitle("Rota - Ibex");
 
 useHead({
-  title: 'Rota - Arez',
-})
+  title: "Rota - Ibex",
+});
 </script>
 
 <template>

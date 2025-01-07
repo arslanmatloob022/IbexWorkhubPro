@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useWizard } from '/@src/composable/useWizard'
+import { useWizard } from "../../models/useWizard";
 
-const wizard = useWizard()
+const wizard = useWizard();
 wizard.setStep({
   number: 8,
   canNavigate: false,
-})
+});
 </script>
 
 <template>
@@ -16,9 +16,7 @@ wizard.setStep({
   >
     <div class="step-content">
       <div class="step-title">
-        <h2 class="dark-inverted">
-          Congrats! You're all set.
-        </h2>
+        <h2 class="dark-inverted">Congrats! You're all set.</h2>
         <p>Awesome, you just finished creating this project.</p>
       </div>
 
@@ -33,12 +31,12 @@ wizard.setStep({
             class="light-image"
             src="/@src/assets/illustrations/wizard/finish.svg"
             alt=""
-          >
+          />
           <img
             class="dark-image"
             src="/@src/assets/illustrations/wizard/finish-dark.svg"
             alt=""
-          >
+          />
         </template>
         <template #action>
           <VButton
