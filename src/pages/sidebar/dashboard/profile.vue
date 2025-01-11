@@ -1,12 +1,12 @@
 <route lang="yaml">
 meta:
   requiresAuth: true
-  isAdminAllowed: false
-  isManagerAllowed: false
-  isContractorAllowed: false
-  isPartnerAllowed: false
-  isWorkerAllowed: false
-  isClientAllowed: false
+  # isAdminAllowed: true
+  # isManagerAllowed: false
+  # isContractorAllowed: false
+  # isPartnerAllowed: false
+  # isWorkerAllowed: false
+  # isClientAllowed: false
 </route>
 <script setup lang="ts">
 import { useUserSession } from "/@src/stores/userSession";
