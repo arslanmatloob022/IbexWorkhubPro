@@ -401,6 +401,24 @@ onMounted(async () => {
                   />
                 </div>
               </div>
+
+              <!-- Project type -->
+              <div class="field column is-6 mb-0">
+                <label>Project Type </label>
+                <VField>
+                  <VControl>
+                    <VSelect v-model="leadFormData.projectType">
+                      <VOption
+                        v-for="(item, index) in status"
+                        :key="index"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </VOption>
+                    </VSelect>
+                  </VControl>
+                </VField>
+              </div>
             </div>
 
             <!-- Salespeople -->
@@ -437,23 +455,7 @@ onMounted(async () => {
               </VField>
             </div>
 
-            <div class="field column is-6 mb-0">
-              <label>Tags </label>
-              <VField v-slot="{ id }">
-                <VControl>
-                  <Multiselect
-                    v-model="tagsValue"
-                    :attrs="{ id }"
-                    mode="tags"
-                    :searchable="true"
-                    :create-tag="true"
-                    :options="tagsOptions"
-                    placeholder="Add tags"
-                  />
-                </VControl>
-              </VField>
-            </div>
-
+            <!-- estimated revenue -->
             <div class="field column is-3 mb-0">
               <label>Estimated Revenue: </label>
               <div class="control">
@@ -478,6 +480,24 @@ onMounted(async () => {
                 />
               </div>
             </div>
+
+            <div class="field column is-6 mb-0">
+              <label>Tags </label>
+              <VField v-slot="{ id }">
+                <VControl>
+                  <Multiselect
+                    v-model="tagsValue"
+                    :attrs="{ id }"
+                    mode="tags"
+                    :searchable="true"
+                    :create-tag="true"
+                    :options="tagsOptions"
+                    placeholder="Add tags"
+                  />
+                </VControl>
+              </VField>
+            </div>
+
             <div class="field column is-6 mb-0">
               <label>Sources </label>
               <VField v-slot="{ id }">
@@ -499,22 +519,6 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VSelect v-model="leadFormData.status">
-                    <VOption
-                      v-for="(item, index) in status"
-                      :key="index"
-                      :value="item.value"
-                    >
-                      {{ item.label }}
-                    </VOption>
-                  </VSelect>
-                </VControl>
-              </VField>
-            </div>
-            <div class="field column is-6 mb-0">
-              <label>Project Type </label>
-              <VField>
-                <VControl>
-                  <VSelect v-model="leadFormData.projectType">
                     <VOption
                       v-for="(item, index) in status"
                       :key="index"
@@ -612,7 +616,7 @@ onMounted(async () => {
                 fullwidth
                 bold
               >
-                Add Propsal
+                Add Proposal
               </VButton>
             </div>
           </VCard>

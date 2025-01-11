@@ -21,13 +21,13 @@ const users = listData.users as UserData[];
 
 const columns = {
   username: {
-    label: "Contact",
+    label: "Job",
     grow: true,
   },
-  location: "Title",
-  industry: "Confidence",
+  location: "Company",
+  industry: "Client",
   status: "Status",
-  contacts: "Salespeople",
+  contacts: "Date Created",
   actions: {
     label: "Actions",
     align: "end",
@@ -128,19 +128,30 @@ const filteredData = computed(() => {
                     size="medium"
                   /> -->
                   <div>
-                    <span class="item-name dark-inverted">{{
-                      item.username
-                    }}</span>
+                    <span class="item-name dark-inverted"
+                      >Davidson Builders - Krugar</span
+                    >
                     <span class="item-meta">
-                      <span>{{ item.position }}</span>
+                      <span>6919 S Columbine Road, Evergreen CO</span>
                     </span>
                   </div>
                 </VFlexTableCell>
-                <VFlexTableCell>
-                  <span class="light-text">{{ item.location }}</span>
+
+                <VFlexTableCell :column="{ media: true, grow: false }">
+                  <div>
+                    <span class="item-name">Company Name</span>
+                    <span class="item-meta">
+                      <span>Company email</span>
+                    </span>
+                  </div>
                 </VFlexTableCell>
-                <VFlexTableCell>
-                  <span class="light-text">{{ item.industry }}</span>
+                <VFlexTableCell :column="{ media: true, grow: false }">
+                  <div>
+                    <span class="item-name">Client Name</span>
+                    <span class="item-meta">
+                      <span>Client email</span>
+                    </span>
+                  </div>
                 </VFlexTableCell>
                 <VFlexTableCell>
                   <VTag v-if="item.status === 'Online'" color="success" rounded>
@@ -161,12 +172,7 @@ const filteredData = computed(() => {
                   </VTag>
                 </VFlexTableCell>
                 <VFlexTableCell>
-                  <VAvatarStack
-                    :avatars="item.contacts"
-                    size="small"
-                    :limit="3"
-                    class="is-pushed-mobile"
-                  />
+                  <span>24 Jan, 2025</span>
                 </VFlexTableCell>
                 <VFlexTableCell :column="{ align: 'end' }">
                   <FlexTableDropdown />

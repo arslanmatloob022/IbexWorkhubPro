@@ -22,58 +22,35 @@ const props = defineProps<{
   leadProposalModal?: boolean;
 }>();
 
-const tagsValue = ref([]);
+const tagsValue = ref([
+  "ItemNumber",
+  "Description",
+  "Quantity",
+  "Unit",
+  "UnitCost",
+  "ClientPrice",
+]);
+
 const tagsOptions = [
-  { value: "batman", label: "Batman" },
-  { value: "robin", label: "Robin" },
-  { value: "joker", label: "Joker" },
-];
-
-const sourcesValue = ref([]);
-const sourcesOptions = [
-  { value: "all", label: "All" },
-  { value: "contact", label: "Contact Form" },
-  { value: "google", label: "Google" },
-  { value: "referral", label: "Referral" },
-];
-
-const tagsSlotValue = ref([]);
-const tagsSlotOptions = [
-  {
-    value: "javascript",
-    name: "Javascript",
-    image: "/images/icons/stacks/js.svg",
-  },
-  {
-    value: "reactjs",
-    name: "ReactJS",
-    image: "/images/icons/stacks/reactjs.svg",
-  },
-  {
-    value: "vuejs",
-    name: "VueJS",
-    image: "/images/icons/stacks/vuejs.svg",
-  },
-  {
-    value: "angular",
-    name: "Angular",
-    image: "/images/icons/stacks/angular.svg",
-  },
-  {
-    value: "android",
-    name: "Android",
-    image: "/images/icons/stacks/android.svg",
-  },
-  {
-    value: "html5",
-    name: "Html5",
-    image: "/images/icons/stacks/html5.svg",
-  },
-  {
-    value: "css3",
-    name: "CSS3",
-    image: "/images/icons/stacks/css3.svg",
-  },
+  { value: "ItemNumber", label: "Item Number" },
+  { value: "Title", label: "Title" },
+  { value: "Unit", label: "Unit" },
+  { value: "Description", label: "Description" },
+  { value: "CostType", label: "Cost Type" },
+  { value: "Quantity", label: "Quantity" },
+  { value: "UnitCost", label: "Unit Cost" },
+  { value: "BuilderCost", label: "Builder Cost" },
+  { value: "Markup", label: "Markup" },
+  { value: "MarkupAmount", label: "Markup Amount" },
+  { value: "UnitPrice", label: "Unit Price" },
+  { value: "Price", label: "Price" },
+  { value: "TotalPrice", label: "Total Price" },
+  { value: "GroupPrice", label: "Group Price" },
+  { value: "TotalCost", label: "Total Cost" },
+  { value: "TotalMarkup", label: "Total Markup" },
+  { value: "ClientPrice", label: "Client Price" },
+  { value: "Profit", label: "Profit" },
+  { value: "Notes", label: "Notes" },
 ];
 
 interface item {
@@ -313,10 +290,30 @@ onMounted(async () => {
         </div>
       </div>
       <div v-if="tab === 'worksheet'" class="column is-12">
-        <CostItemsTable />
+        <CostItemsTable :columnsToShow="tagsValue" />
       </div>
       <div v-if="tab === 'format'" class="column is-12">
-        <VCard class="columns is-multiline">
+        <div class="columns is-multiline">
+          <VField
+            v-slot="{ id }"
+            label="Choose what to show to lead"
+            class="column is-12"
+          >
+            <VControl>
+              <Multiselect
+                v-model="tagsValue"
+                :attrs="{ id }"
+                mode="tags"
+                :searchable="true"
+                :create-tag="true"
+                :options="tagsOptions"
+                placeholder="Add tags"
+              />
+            </VControl>
+          </VField>
+        </div>
+
+        <VCard class="columns is-multiline m-0">
           <div class="column is-12" style="text-align: center">
             <h1 class="title is-4">Connect your clients to their projects</h1>
             <h1 class="title is-5">
@@ -324,11 +321,13 @@ onMounted(async () => {
               opportunities effortlessly.
             </h1>
           </div>
-          <CostItemsTable />
+          <div class="column is-12">
+            <CostItemsTable :columnsToShow="tagsValue" />
+          </div>
         </VCard>
       </div>
-      <div v-if="tab === 'preview'">
-        <p>preview</p>
+      <div v-if="tab === 'preview'" class="column is-12">
+        <ProposalPreview :columnsToShow="tagsValue" />
       </div>
     </div>
     <EstimateCostItemModal

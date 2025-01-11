@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import { useNotyf } from "/@src/composable/useNotyf";
-
+import { costItems } from "../../IbexJobsEstimates/proposalItems";
 export interface UserData extends VAvatarProps {
   id: number;
   username: string;
@@ -13,13 +13,23 @@ export interface UserData extends VAvatarProps {
   status: string;
   contacts: VAvatarProps[];
 }
+
+const props = defineProps<{
+  columnsToShow?: any;
+}>();
 const notyf = useNotyf();
 const page = ref(42);
-const filters = ref("");
 
-const tagsValue = ref([]);
+const tagsValue = ref([
+  "ItemNumber",
+  "Description",
+  "Quantity",
+  "Unit",
+  "UnitCost",
+  "ClientPrice",
+]);
 const tagsOptions = [
-  { value: "Items", label: "Items" },
+  { value: "ItemNumber", label: "Item Number" },
   { value: "Description", label: "Description" },
   { value: "Quantity", label: "Quantity" },
   { value: "Unit", label: "Unit" },
@@ -28,228 +38,54 @@ const tagsOptions = [
   { value: "Margin", label: "Margin" },
   { value: "ClientPrice", label: "Client Price" },
   { value: "Profit", label: "Profit" },
-  { value: "Internal Notes", label: "Internal Notes" },
+  { value: "Notes", label: "Notes" },
 ];
-const costItems = ref([
-  {
-    id: "12345",
-    title: "Framing Labor",
-    cost_code: "030500",
-    cost_type: "Labor",
-    unit_cost: 50.0,
-    quantity: 100,
-    unit: "hours",
-    total_cost: 5000.0,
-    markup: 10,
-    markup_type: "percentage",
-    markup_value: 500.0,
-    tax_rate: 7.5,
-    tax_value: 375.0,
-    grand_total: 5875.0,
-    description: "Labor costs for framing the structure.",
-    internal_notes: "Ensure all workers have completed safety training.",
-    created_by: "user123",
-    created_date: "2024-12-22T14:45:00Z",
-    updated_by: "user123",
-    updated_date: "2024-12-22T15:00:00Z",
-    approved_by: "manager456",
-    approval_date: "2024-12-23T10:00:00Z",
-    status: "approved",
-    category: "Construction",
-    tags: ["labor", "framing", "construction"],
-    attachments: [
-      {
-        file_name: "worker_safety_checklist.pdf",
-        file_url: "https://example.com/files/worker_safety_checklist.pdf",
-        uploaded_date: "2024-12-21T12:00:00Z",
-      },
-    ],
-    visibility: {
-      internal_only: false,
-      shared_with_client: true,
-    },
-    dependencies: [
-      {
-        dependency_id: "56789",
-        type: "preceding_task",
-        title: "Foundation Completed",
-      },
-    ],
-    front_end_elements: {
-      highlighted: true,
-      background_color: "#f8f9fa",
-      font_color: "#000000",
-      display_order: 1,
-      editable: true,
-    },
-    back_end_elements: {
-      database_table: "cost_items",
-      api_endpoint: "/api/cost-items",
-      validation_rules: {
-        unit_cost: "numeric|min:0",
-        quantity: "integer|min:1",
-        markup: "numeric|min:0|max:100",
-        tax_rate: "numeric|min:0|max:100",
-      },
-    },
-  },
-  {
-    id: "12346",
-    title: "Foundation Material",
-    cost_code: "010100",
-    cost_type: "Material",
-    unit_cost: 75.0,
-    quantity: 200,
-    unit: "cubic meters",
-    total_cost: 15000.0,
-    markup: 5,
-    markup_type: "percentage",
-    markup_value: 750.0,
-    tax_rate: 7.5,
-    tax_value: 1125.0,
-    grand_total: 16875.0,
-    description: "Materials for building the foundation.",
-    internal_notes: "Order from preferred supplier for better pricing.",
-    created_by: "user124",
-    created_date: "2024-12-22T10:00:00Z",
-    updated_by: "user124",
-    updated_date: "2024-12-22T11:00:00Z",
-    approved_by: "manager457",
-    approval_date: "2024-12-22T15:00:00Z",
-    status: "approved",
-    category: "Materials",
-    tags: ["foundation", "materials", "construction"],
-    attachments: [
-      {
-        file_name: "foundation_blueprint.pdf",
-        file_url: "https://example.com/files/foundation_blueprint.pdf",
-        uploaded_date: "2024-12-21T08:00:00Z",
-      },
-    ],
-    visibility: {
-      internal_only: false,
-      shared_with_client: true,
-    },
-    dependencies: [],
-    front_end_elements: {
-      highlighted: false,
-      background_color: "#ffffff",
-      font_color: "#000000",
-      display_order: 2,
-      editable: true,
-    },
-    back_end_elements: {
-      database_table: "cost_items",
-      api_endpoint: "/api/cost-items",
-      validation_rules: {
-        unit_cost: "numeric|min:0",
-        quantity: "integer|min:1",
-        markup: "numeric|min:0|max:100",
-        tax_rate: "numeric|min:0|max:100",
-      },
-    },
-  },
-  {
-    id: "12347",
-    title: "Electrical Wiring",
-    cost_code: "040100",
-    cost_type: "Material",
-    unit_cost: 20.0,
-    quantity: 500,
-    unit: "meters",
-    total_cost: 10000.0,
-    markup: 15,
-    markup_type: "percentage",
-    markup_value: 1500.0,
-    tax_rate: 7.5,
-    tax_value: 825.0,
-    grand_total: 12325.0,
-    description: "Electrical wiring and related materials.",
-    internal_notes: "Include wiring for backup generator.",
-    created_by: "user125",
-    created_date: "2024-12-22T12:00:00Z",
-    updated_by: "user125",
-    updated_date: "2024-12-22T13:00:00Z",
-    approved_by: "manager458",
-    approval_date: "2024-12-22T18:00:00Z",
-    status: "pending",
-    category: "Electrical",
-    tags: ["wiring", "electrical", "materials"],
-    attachments: [],
-    visibility: {
-      internal_only: false,
-      shared_with_client: false,
-    },
-    dependencies: [],
-    front_end_elements: {
-      highlighted: false,
-      background_color: "#f0f0f0",
-      font_color: "#000000",
-      display_order: 3,
-      editable: true,
-    },
-    back_end_elements: {
-      database_table: "cost_items",
-      api_endpoint: "/api/cost-items",
-      validation_rules: {
-        unit_cost: "numeric|min:0",
-        quantity: "integer|min:1",
-        markup: "numeric|min:0|max:100",
-        tax_rate: "numeric|min:0|max:100",
-      },
-    },
-  },
-  {
-    id: "12348",
-    title: "Painting Services",
-    cost_code: "060200",
-    cost_type: "Labor",
-    unit_cost: 40.0,
-    quantity: 150,
-    unit: "hours",
-    total_cost: 6000.0,
-    markup: 12,
-    markup_type: "percentage",
-    markup_value: 720.0,
-    tax_rate: 7.5,
-    tax_value: 504.0,
-    grand_total: 7224.0,
-    description: "Labor costs for painting the interiors.",
-    internal_notes: "Use eco-friendly paints.",
-    created_by: "user126",
-    created_date: "2024-12-22T09:00:00Z",
-    updated_by: "user126",
-    updated_date: "2024-12-22T10:00:00Z",
-    approved_by: "manager459",
-    approval_date: "2024-12-22T14:00:00Z",
-    status: "approved",
-    category: "Painting",
-    tags: ["painting", "labor", "interior"],
-    attachments: [],
-    visibility: {
-      internal_only: false,
-      shared_with_client: true,
-    },
-    dependencies: [],
-    front_end_elements: {
-      highlighted: false,
-      background_color: "#ffffff",
-      font_color: "#000000",
-      display_order: 4,
-      editable: true,
-    },
-    back_end_elements: {
-      database_table: "cost_items",
-      api_endpoint: "/api/cost-items",
-      validation_rules: {
-        unit_cost: "numeric|min:0",
-        quantity: "integer|min:1",
-        markup: "numeric|min:0|max:100",
-        tax_rate: "numeric|min:0|max:100",
-      },
-    },
-  },
-]);
+
+const getColumnName = ref({
+  ItemNumber: "No#",
+  Title: "Title",
+  Unit: "Cost Code",
+  Description: "Description",
+  CostType: "Cost Type",
+  MarkAs: "Mark As",
+  Quantity: "Quantity",
+  UnitCost: "Unit Cost",
+  BuilderCost: "Builder Cost",
+  Markup: "Markup",
+  MarkupAmount: "Markup Amount",
+  UnitPrice: "Unit Price",
+  Price: "Price",
+  TotalPrice: "Total Price",
+  GroupPrice: "Group Price",
+  TotalCost: "Total Cost",
+  TotalMarkup: "Total Markup",
+  ClientPrice: "Client Price",
+  Profit: "Profit",
+  Notes: "Internal Notes",
+});
+
+const getColumnData = ref({
+  ItemNumber: "id",
+  Title: "title",
+  Unit: "cost_code",
+  Description: "description",
+  CostType: "cost_type",
+  MarkAs: "mark_as",
+  Quantity: "quantity",
+  UnitCost: "unit_cost",
+  BuilderCost: "builder_cost",
+  Markup: "markup",
+  MarkupAmount: "markup_amount",
+  UnitPrice: "unit_price",
+  Price: "price",
+  TotalPrice: "total_price",
+  GroupPrice: "group_price",
+  TotalCost: "total_cost",
+  TotalMarkup: "total_markup",
+  ClientPrice: "client_price",
+  Profit: "profit",
+  Notes: "internal_notes",
+});
 
 const dragItem = ref<number | null>(null);
 
@@ -274,47 +110,31 @@ onMounted(() => {});
 </script>
 
 <template>
-  <div>
-    <VField v-slot="{ id }" label="Choose what to show to lead">
-      <VControl>
-        <Multiselect
-          v-model="tagsValue"
-          :attrs="{ id }"
-          mode="tags"
-          :searchable="true"
-          :create-tag="true"
-          :options="tagsOptions"
-          placeholder="Add tags"
-        />
-      </VControl>
-    </VField>
-    <div class="datatable-wrapper">
-      <div class="table-container">
-        <table class="table datatable-table is-fullwidth" id="external-events">
-          <thead>
-            <th>Items</th>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Unit</th>
-            <th>Unit Cost</th>
-            <th>Markup</th>
-            <th>Margin</th>
-            <th>Client Price</th>
-            <th>Profit</th>
-            <th>Internal Notes</th>
-          </thead>
-          <tbody>
-            <tr
-              class="events"
-              v-for="(user, index) in costItems"
-              :key="user.id"
-              :data-event="JSON.stringify(user)"
-              draggable="true"
-              @dragstart="handleDragStart(index)"
-              @drop="() => handleDrop(index)"
-              @dragover="handleDragOver"
-            >
-              <td>
+  <div class="datatable-wrapper mt-0">
+    <div class="table-container">
+      <table class="table datatable-table is-fullwidth" id="external-events">
+        <thead>
+          <th v-for="(column, index) in props.columnsToShow" :key="index">
+            {{ getColumnName[column] }}
+          </th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          <tr
+            class="events"
+            v-for="(user, index) in costItems"
+            :key="user.id"
+            :data-event="JSON.stringify(user)"
+            draggable="true"
+            @dragstart="handleDragStart(index)"
+            @drop="() => handleDrop(index)"
+            @dragover="handleDragOver"
+          >
+            <td v-for="(column, index) in props.columnsToShow" :key="index">
+              {{ user[getColumnData[column]] }}
+            </td>
+
+            <!-- <td>
                 <div class="is-flex">
                   <i
                     class="lnir lnir-sort"
@@ -327,7 +147,6 @@ onMounted(() => {});
               </td>
               <td>
                 <div class="flex-media">
-                  <!-- <VAvatar :picture="user.picture" alt="Avatar" /> -->
                   <div class="meta">
                     <h3>{{ user.title }}</h3>
                     <span>{{ user.approved_by }}</span>
@@ -350,46 +169,14 @@ onMounted(() => {});
               </td>
               <td>
                 {{ user.internal_notes }}
-              </td>
-              <td>
-                <FlexTableDropdown />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <VPlaceholderPage
-        v-if="costItems.length === 0"
-        title="We couldn't find any matching results."
-        subtitle="Too bad. Looks like we couldn't find any matching results for the search terms
-            you've entered. Please try different search terms or criteria."
-        larger
-      >
-        <template #image>
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/search-7.svg"
-            alt=""
-          />
-          <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/search-7-dark.svg"
-            alt=""
-          />
-        </template>
-      </VPlaceholderPage>
+              </td> -->
+            <td>
+              <FlexTableDropdown />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <!--Table Pagination-->
-    <VFlexPagination
-      v-if="costItems.length > 5"
-      v-model:current-page="page"
-      :item-per-page="10"
-      :total-items="873"
-      :max-links-displayed="7"
-      no-router
-      class="mt-4"
-    />
   </div>
 </template>
 

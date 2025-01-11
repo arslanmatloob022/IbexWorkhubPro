@@ -228,7 +228,7 @@ onUnmounted(() => {
     padding: 0 10px;
 
     .modal-card {
-      border-radius: 48px;
+      border-radius: 18px;
       max-width: 100%;
       margin: 0 auto;
 

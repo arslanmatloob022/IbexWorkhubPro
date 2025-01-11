@@ -463,6 +463,7 @@ declare module 'vue' {
     ProjectWidgetDropdown: typeof import('./../src/components/partials/dropdowns/ProjectWidgetDropdown.vue')['default']
     ProjectWorkerCalendar: typeof import('./../src/components/IbexProjects/ProjectWorkerCalendar.vue')['default']
     Promotion: typeof import('./../src/components/pages/layouts/actions/Promotion.vue')['default']
+    ProposalPreview: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/Proposals/ProposalPreview.vue')['default']
     QuestionsOfMembers: typeof import('./../src/components/supportComponents/QuestionsOfMembers.vue')['default']
     RadioEventsDocumentation: typeof import('./../documentation/radio/radio-events-documentation.md')['default']
     RadioOutlinedDocumentation: typeof import('./../documentation/radio/radio-outlined-documentation.md')['default']

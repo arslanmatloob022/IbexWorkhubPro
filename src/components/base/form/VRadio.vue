@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { useVFieldContext } from '/@src/composable/useVFieldContext'
+import { useVFieldContext } from "/@src/composable/useVFieldContext";
 
-export type VRadioColor = 'primary' | 'info' | 'success' | 'warning' | 'danger'
+export type VRadioColor = "primary" | "info" | "success" | "warning" | "danger";
 
 export interface VRadioProps {
-  id?: string
-  value: any
-  name?: string
-  label?: string
-  color?: VRadioColor
-  square?: boolean
-  solid?: boolean
-  paddingless?: boolean
+  id?: string;
+  value: any;
+  name?: string;
+  label?: string;
+  color?: VRadioColor;
+  square?: boolean;
+  solid?: boolean;
+  paddingless?: boolean;
 }
 
 const modelValue = defineModel<any>({
   default: undefined,
   local: true,
-})
+});
 
 const props = withDefaults(defineProps<VRadioProps>(), {
   id: undefined,
@@ -25,28 +25,28 @@ const props = withDefaults(defineProps<VRadioProps>(), {
   color: undefined,
   name: undefined,
   paddingless: false,
-})
+});
 
 const { field, id } = useVFieldContext({
   id: props.id,
   inherit: false,
-})
+});
 
 const internal = computed({
   get() {
     if (field?.value) {
-      return field.value.value
+      return field.value.value;
     } else {
-      return modelValue.value
+      return modelValue.value;
     }
   },
   set(value: any) {
     if (field?.value) {
-      field.value.setValue(value)
+      field.value.setValue(value);
     }
-    modelValue.value = value
+    modelValue.value = value;
   },
-})
+});
 </script>
 
 <template>
@@ -67,7 +67,7 @@ const internal = computed({
       :value="props.value"
       :name="props.name"
       v-bind="$attrs"
-    >
+    />
     <span />
     <slot v-bind="{ field, id }">
       {{ props.label }}
@@ -90,7 +90,7 @@ const internal = computed({
     position: relative;
     top: -1px;
     background: var(--white);
-    content: '';
+    content: "";
     display: inline-block;
     margin-inline-end: 0.5rem;
     padding: 0;
@@ -102,7 +102,7 @@ const internal = computed({
     backface-visibility: hidden;
 
     &::after {
-      content: '';
+      content: "";
       display: block;
       transform: scale(0);
       transition: transform 0.2s;
@@ -120,8 +120,8 @@ const internal = computed({
   }
 
   input:checked + span::after {
-    transform: translate(calc(var(--transform-direction) * -50%), -50%) scaleY(1)
-      scaleX(calc(var(--transform-direction) * 1)) !important;
+    transform: translate(calc(var(--transform-direction) * -50%), -50%)
+      scaleY(1) scaleX(calc(var(--transform-direction) * 1)) !important;
   }
 
   input {
@@ -158,12 +158,14 @@ const internal = computed({
   &.is-solid {
     input + span {
       background: var(--fade-grey-light-3);
+      background-color: var(--fade-grey-light-3);
     }
 
     &.is-primary {
       input + span {
         border-color: var(--primary);
         background: var(--primary);
+        background-color: var(--primary);
 
         &::after {
           color: var(--white);
@@ -175,7 +177,7 @@ const internal = computed({
       input + span {
         border-color: var(--success);
         background: var(--success);
-
+        background-color: var(--success);
         &::after {
           color: var(--white);
         }
@@ -186,6 +188,7 @@ const internal = computed({
       input + span {
         border-color: var(--info);
         background: var(--info);
+        background-color: var(--info);
 
         &::after {
           color: var(--white);
@@ -197,6 +200,7 @@ const internal = computed({
       input + span {
         border-color: var(--warning);
         background: var(--warning);
+        background-color: var(--warning);
 
         &::after {
           color: var(--white);
@@ -208,6 +212,7 @@ const internal = computed({
       input + span {
         border-color: var(--danger);
         background: var(--danger);
+        background-color: var(--danger);
 
         &::after {
           color: var(--white);
@@ -287,8 +292,8 @@ const internal = computed({
       top: 49%;
       inset-inline-start: 50%;
       transform: translate(-50%, -50%) scale(0);
-      content: '\f111';
-      font-family: 'Font Awesome\ 5 Free';
+      content: "\f111";
+      font-family: "Font Awesome\ 5 Free";
       font-weight: 900;
       font-size: 0.6rem;
     }

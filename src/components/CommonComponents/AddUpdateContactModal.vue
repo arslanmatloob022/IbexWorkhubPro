@@ -109,7 +109,7 @@ onMounted(() => {});
   >
     <template #content>
       <div class="modal-form columns is-multiline">
-        <div class="column is-12">
+        <div class="column is-12 m-0">
           <VCard class="columns is-multiline">
             <div class="column is-12">
               <h3 class="title is-6 mb-2">Contact Information</h3>
@@ -151,6 +151,18 @@ onMounted(() => {});
                   v-model="contactPersonData.lastName"
                   class="input is-primary-focus is-primary-focus"
                   placeholder="Display Name"
+                />
+              </div>
+            </div>
+            <div class="field column is-6 mb-0">
+              <label>Primary Email </label>
+              <div class="control">
+                <input
+                  type="email"
+                  name="email"
+                  v-model="contactPersonData.email"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Contact email"
                 />
               </div>
             </div>
@@ -230,19 +242,6 @@ onMounted(() => {});
                   v-model="contactPersonData.cellPhone"
                   class="input is-primary-focus is-primary-focus"
                   placeholder="Cell Phone"
-                />
-              </div>
-            </div>
-
-            <div class="field column is-6 mb-0">
-              <label>Primary Email </label>
-              <div class="control">
-                <input
-                  type="email"
-                  name="email"
-                  v-model="contactPersonData.email"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Contact email"
                 />
               </div>
             </div>

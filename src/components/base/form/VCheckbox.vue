@@ -1,26 +1,31 @@
 <script setup lang="ts">
-import { useVFieldContext } from '/@src/composable/useVFieldContext'
+import { useVFieldContext } from "/@src/composable/useVFieldContext";
 
-export type VCheckboxColor = 'primary' | 'info' | 'success' | 'warning' | 'danger'
+export type VCheckboxColor =
+  | "primary"
+  | "info"
+  | "success"
+  | "warning"
+  | "danger";
 
 export interface VCheckboxProps {
-  id?: string
-  raw?: boolean
-  label?: string
-  color?: VCheckboxColor
-  trueValue?: any
-  falseValue?: any
-  value?: any
-  circle?: boolean
-  solid?: boolean
-  paddingless?: boolean
-  wrapperClass?: string
+  id?: string;
+  raw?: boolean;
+  label?: string;
+  color?: VCheckboxColor;
+  trueValue?: any;
+  falseValue?: any;
+  value?: any;
+  circle?: boolean;
+  solid?: boolean;
+  paddingless?: boolean;
+  wrapperClass?: string;
 }
 
 const modelValue = defineModel<any>({
   default: false,
   local: true,
-})
+});
 const props = withDefaults(defineProps<VCheckboxProps>(), {
   id: undefined,
   label: undefined,
@@ -32,46 +37,42 @@ const props = withDefaults(defineProps<VCheckboxProps>(), {
   solid: false,
   paddingless: false,
   wrapperClass: undefined,
-})
+});
 
-const context = useVFieldContext()
+const context = useVFieldContext();
 
 const internal = computed({
   get() {
     if (context.field?.value) {
-      return context.field.value.value
+      return context.field.value.value;
     } else {
-      return modelValue.value
+      return modelValue.value;
     }
   },
   set(value: any) {
     if (context.field?.value) {
-      context.field.value.setValue(value)
+      context.field.value.setValue(value);
     }
-    modelValue.value = value
+    modelValue.value = value;
   },
-})
+});
 
 const classes = computed(() => {
-  if (props.raw) return [props.wrapperClass]
+  if (props.raw) return [props.wrapperClass];
 
   return [
-    'checkbox',
+    "checkbox",
     props.wrapperClass,
-    props.solid ? 'is-solid' : 'is-outlined',
-    props.circle && 'is-circle',
+    props.solid ? "is-solid" : "is-outlined",
+    props.circle && "is-circle",
     props.color && `is-${props.color}`,
-    props.paddingless && 'is-paddingless',
-  ]
-})
+    props.paddingless && "is-paddingless",
+  ];
+});
 </script>
 
 <template>
-  <VLabel
-    :id="props.id || context.id.value"
-    raw
-    :class="classes"
-  >
+  <VLabel :id="props.id || context.id.value" raw :class="classes">
     <input
       :id="props.id || context.id.value"
       v-model="internal"
@@ -80,7 +81,7 @@ const classes = computed(() => {
       :false-value="props.falseValue"
       :value="props.value"
       type="checkbox"
-    >
+    />
     <span />
     <slot v-bind="context">
       {{ props.label }}
@@ -103,7 +104,7 @@ const classes = computed(() => {
     position: relative;
     top: -1px;
     background: var(--white);
-    content: '';
+    content: "";
     display: inline-block;
     margin-inline-end: 0.5rem;
     padding: 0;
@@ -115,7 +116,7 @@ const classes = computed(() => {
     backface-visibility: hidden;
 
     &::after {
-      content: '';
+      content: "";
       display: block;
       transform: scale(0);
       transition: transform 0.2s;
@@ -195,6 +196,7 @@ const classes = computed(() => {
       input + span {
         border-color: var(--info);
         background: var(--info);
+        background-color: var(--info);
 
         &::after {
           color: var(--white);
@@ -206,6 +208,7 @@ const classes = computed(() => {
       input + span {
         border-color: var(--warning);
         background: var(--warning);
+        background-color: var(--warning);
 
         &::after {
           color: var(--white);
@@ -217,6 +220,7 @@ const classes = computed(() => {
       input + span {
         border-color: var(--danger);
         background: var(--danger);
+        background-color: var(--danger);
 
         &::after {
           color: var(--white);
@@ -229,11 +233,13 @@ const classes = computed(() => {
     &.is-primary {
       input:checked + span {
         border-color: var(--primary);
+        color: var(--primary);
       }
 
       input + span {
         &::after {
           color: var(--primary);
+          content: "✔";
         }
       }
     }
@@ -246,6 +252,7 @@ const classes = computed(() => {
       input + span {
         &::after {
           color: var(--success);
+          content: "✔";
         }
       }
     }
@@ -253,11 +260,13 @@ const classes = computed(() => {
     &.is-info {
       input:checked + span {
         border-color: var(--info);
+        // content: "&#x2714;";
       }
 
       input + span {
         &::after {
           color: var(--info);
+          content: url("/icons/icons-check.png");
         }
       }
     }
@@ -270,6 +279,7 @@ const classes = computed(() => {
       input + span {
         &::after {
           color: var(--warning);
+          content: "✔";
         }
       }
     }
@@ -282,6 +292,7 @@ const classes = computed(() => {
       input + span {
         &::after {
           color: var(--danger);
+          content: "✔";
         }
       }
     }
@@ -297,8 +308,8 @@ const classes = computed(() => {
       top: 48%;
       inset-inline-start: 50%;
       transform: translate(-50%, -50%) scale(0);
-      content: url('/images/check.png');
-      font-family: 'Font Awesome\ 5 Free';
+      content: url("/icons/icons-check.png");
+      font-family: "Font Awesome\ 5 Free";
       font-weight: 900;
       font-size: 0.7rem;
     }
