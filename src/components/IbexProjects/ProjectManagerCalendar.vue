@@ -101,9 +101,30 @@ const calendarOptions = ref({
       info.el.classList.add("fc-day-sat", "fc-day-sun");
     }
   },
+
   resourceAreaHeaderContent: "Projects",
   resources: [],
   events: [],
+  // resourceClick: (info: any) => {
+  //   const resource = info.resource;
+  //   notyf.success(`Resource clicked:`);
+
+  //   // Check for sub-resource
+  //   if (resource.extendedProps.event) {
+  //     notyf.success(`Sub-resource clicked: ${resource.title}`);
+  //   }
+  // },
+  // resourceLaneDidMount: (info: any) => {
+  //   notyf.success(`Clicked on resource: ${info.resource.extendedProps.start}`);
+  //   console.log(`data : ${info.resource.extendedProps.start}`);
+  //   info.el.addEventListener("click", () => {
+  //     const resourceTitle = info.resource.title;
+  //     if (info.resource.extendedProps.isSubResource) {
+  //       notyf.success(`Clicked sub-resource:`);
+  //     }
+  //   });
+  // },
+
   eventDrop: (info: any) => {
     eventChangeHandler(info);
     info.revert();
@@ -130,6 +151,36 @@ const calendarOptions = ref({
     isTaskFormOpen.value = true;
   },
 });
+
+const scrollToTaskEvent = (event: any) => {
+  const calendarEl = document.querySelector(".fc-scrollgrid-sync-inner");
+  notyf.blue("calling");
+  if (calendarEl && event.start) {
+    const taskStartTime = event.start.getTime();
+
+    // Get the current view's start and end times
+    const viewStart = calendarOptions.value.getApi().view.activeStart.getTime();
+    const viewEnd = calendarOptions.value.getApi().view.activeEnd.getTime();
+
+    // Ensure the task's start date is within the visible calendar range
+    if (taskStartTime >= viewStart && taskStartTime <= viewEnd) {
+      // Smooth scroll to the task's position
+      const eventEl = document.querySelector(`[data-event-id="${event.id}"]`);
+      if (eventEl) {
+        eventEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    } else {
+      // Change the view if the task is not in the current range
+      calendarOptions.value.getApi().gotoDate(event.start);
+      setTimeout(() => {
+        const eventEl = document.querySelector(`[data-event-id="${event.id}"]`);
+        if (eventEl) {
+          eventEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 500);
+    }
+  }
+};
 
 const eventChangeHandler = (info: any) => {
   if (userSession.user.role === "contractor") {

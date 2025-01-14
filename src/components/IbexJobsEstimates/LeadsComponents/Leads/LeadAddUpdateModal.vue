@@ -157,12 +157,12 @@ const sources = ref([
 
 const status = ref([
   { value: "open", label: "Open" },
-  { value: "inProgress", label: "In Progress" },
   { value: "onHold", label: "On Hold" },
-  { value: "pending", label: "Pending" },
   { value: "lost", label: "Lost" },
   { value: "sold", label: "sold" },
-  { value: "noOpportunity", label: "No Opportunity" },
+  // { value: "inProgress", label: "In Progress" },
+  // { value: "pending", label: "Pending" },
+  // { value: "noOpportunity", label: "No Opportunity" },
 ]);
 
 const activityType = ref([
@@ -468,6 +468,7 @@ onMounted(async () => {
                 />
               </div>
             </div>
+
             <div class="field column is-3 mb-0">
               <label>To</label>
               <div class="control">
@@ -481,6 +482,7 @@ onMounted(async () => {
               </div>
             </div>
 
+            <!-- Tags -->
             <div class="field column is-6 mb-0">
               <label>Tags </label>
               <VField v-slot="{ id }">
@@ -498,6 +500,7 @@ onMounted(async () => {
               </VField>
             </div>
 
+            <!-- Source -->
             <div class="field column is-6 mb-0">
               <label>Sources </label>
               <VField v-slot="{ id }">
@@ -514,6 +517,8 @@ onMounted(async () => {
                 </VControl>
               </VField>
             </div>
+
+            <!-- Status -->
             <div class="field column is-6 mb-0">
               <label>Status </label>
               <VField>

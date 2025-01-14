@@ -21,13 +21,16 @@ const users = listData.users as UserData[];
 
 const columns = {
   username: {
+    label: "Contractor",
+    grow: true,
+  },
+  location: {
     label: "Job",
     grow: true,
   },
-  location: "Company",
-  industry: "Client",
-  status: "Status",
   contacts: "Date Created",
+  status: "Status",
+  industry: "Manager",
   actions: {
     label: "Actions",
     align: "end",
@@ -110,12 +113,20 @@ const filteredData = computed(() => {
         >
           <template #body>
             <TransitionGroup name="list" tag="div" class="flex-list-inner">
-              <!--Table item-->
               <div
                 v-for="item in filteredData"
                 :key="item.id"
                 class="flex-table-item"
               >
+                <VFlexTableCell :column="{ media: true, grow: true }">
+                  <div>
+                    <span class="item-name">Contractor Name</span>
+                    <span class="item-meta">
+                      <span>contractor@gmail.com</span>
+                    </span>
+                  </div>
+                </VFlexTableCell>
+
                 <VFlexTableCell
                   :column="{ media: true, grow: true }"
                   data-th="Label"
@@ -136,23 +147,10 @@ const filteredData = computed(() => {
                     </span>
                   </div>
                 </VFlexTableCell>
+                <VFlexTableCell>
+                  <span>24 Jan, 2025</span>
+                </VFlexTableCell>
 
-                <VFlexTableCell :column="{ media: true, grow: false }">
-                  <div>
-                    <span class="item-name">Company Name</span>
-                    <span class="item-meta">
-                      <span>Company email</span>
-                    </span>
-                  </div>
-                </VFlexTableCell>
-                <VFlexTableCell :column="{ media: true, grow: false }">
-                  <div>
-                    <span class="item-name">Client Name</span>
-                    <span class="item-meta">
-                      <span>Client email</span>
-                    </span>
-                  </div>
-                </VFlexTableCell>
                 <VFlexTableCell>
                   <VTag v-if="item.status === 'Online'" color="success" rounded>
                     {{ item.status }}
@@ -171,9 +169,16 @@ const filteredData = computed(() => {
                     {{ item.status }}
                   </VTag>
                 </VFlexTableCell>
-                <VFlexTableCell>
-                  <span>24 Jan, 2025</span>
+
+                <VFlexTableCell :column="{ media: true }">
+                  <div>
+                    <span class="item-name">Manager Name</span>
+                    <span class="item-meta">
+                      <span>manager@gmail.com</span>
+                    </span>
+                  </div>
                 </VFlexTableCell>
+
                 <VFlexTableCell :column="{ align: 'end' }">
                   <FlexTableDropdown />
                 </VFlexTableCell>
@@ -202,10 +207,13 @@ const filteredData = computed(() => {
 </template>
 
 <style lang="scss">
+.flex-table .flex-table-item {
+  min-height: 48px !important;
+}
 .has-top-nav {
   .flex-list-wrapper,
   .list-flex-toolbar {
-    max-width: 880px;
+    max-width: 100%;
     margin-inline-end: auto;
     margin-inline-start: auto;
   }

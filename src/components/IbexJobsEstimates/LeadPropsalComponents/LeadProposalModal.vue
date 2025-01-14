@@ -357,6 +357,7 @@ onMounted(async () => {
         <div v-if="tab === 'worksheet'" class="column is-12">
           <WorksheetItems />
         </div>
+
         <div v-if="tab === 'format'" class="column is-12">
           <VCard class="columns is-multiline m-0">
             <div class="column is-12" style="text-align: center">

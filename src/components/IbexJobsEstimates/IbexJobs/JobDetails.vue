@@ -92,11 +92,21 @@ onMounted(() => {
 
               <!--Center-->
               <div class="center">
-                <h4 class="block-heading">Managers</h4>
+                <h4 class="block-heading">Address</h4>
                 <p class="block-text">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Praeclarae mortes.
                 </p>
+                <p class="block-text">City, State Colorado, ZIP Code: 803248</p>
+              </div>
+
+              <!--Right-->
+              <div class="right">
+                <h4 class="block-heading">Manager</h4>
+                <!-- <p class="block-text">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Praeclarae mortes.
+                </p> -->
                 <div class="candidates">
                   <VAvatar picture="/demo/avatars/13.jpg" squared />
                   <VAvatar picture="/demo/avatars/32.jpg" squared />
@@ -109,16 +119,6 @@ onMounted(() => {
                     />
                   </button>
                 </div>
-              </div>
-
-              <!--Right-->
-              <div class="right">
-                <h4 class="block-heading">Job Feed</h4>
-                <p class="block-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Praeclarae mortes.
-                </p>
-
                 <VButton bold fullwidth dark-outlined> Manage Tasks </VButton>
               </div>
             </div>
@@ -599,6 +599,32 @@ onMounted(() => {
 
       .button {
         margin-top: auto;
+      }
+      .candidates {
+        margin-top: auto;
+
+        > .v-avatar {
+          margin-inline-end: 10px;
+        }
+
+        button {
+          height: 40px;
+          width: 40px;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 10px;
+          background: var(--white);
+          color: var(--light-text);
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s; // transition-all test
+
+          svg {
+            height: 18px;
+            width: 18px;
+          }
+        }
       }
     }
 

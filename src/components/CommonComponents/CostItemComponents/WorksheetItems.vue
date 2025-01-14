@@ -210,7 +210,7 @@ const editorConfig = {
   minHeight: "400px",
 };
 const addCostItemModal = ref(false);
-
+const showDropdown = ref(false);
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -226,6 +226,16 @@ onMounted(async () => {
           <h1 class="title is-4">Proposal Worksheet</h1>
         </div>
         <div>
+          <VButton
+            size="small"
+            light
+            outlined
+            icon="fas fa-cog"
+            class="mr-2"
+            :color="showDropdown ? 'danger' : 'success'"
+            @click="showDropdown = !showDropdown"
+            >Table</VButton
+          >
           <VButton
             size="small"
             light
@@ -254,6 +264,27 @@ onMounted(async () => {
           >
         </div>
       </div>
+      <TransitionGroup class="fade-slow" name="fade-slow">
+        <div v-if="showDropdown" class="column is-12">
+          <VField
+            v-slot="{ id }"
+            label="Choose what to show to lead"
+            class="column is-12"
+          >
+            <VControl>
+              <Multiselect
+                v-model="tagsValue"
+                :attrs="{ id }"
+                mode="tags"
+                :searchable="true"
+                :create-tag="true"
+                :options="tagsOptions"
+                placeholder="Add tags"
+              />
+            </VControl>
+          </VField>
+        </div>
+      </TransitionGroup>
       <div class="tabs-wrapper column is-12 m-0">
         <div class="tabs-inner mt-4">
           <div class="tabs is-boxed">
@@ -289,46 +320,53 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <div v-if="tab === 'worksheet'" class="column is-12">
-        <CostItemsTable :columnsToShow="tagsValue" />
-      </div>
-      <div v-if="tab === 'format'" class="column is-12">
-        <div class="columns is-multiline">
-          <VField
-            v-slot="{ id }"
-            label="Choose what to show to lead"
-            class="column is-12"
-          >
-            <VControl>
-              <Multiselect
-                v-model="tagsValue"
-                :attrs="{ id }"
-                mode="tags"
-                :searchable="true"
-                :create-tag="true"
-                :options="tagsOptions"
-                placeholder="Add tags"
-              />
-            </VControl>
-          </VField>
-        </div>
 
-        <VCard class="columns is-multiline m-0">
-          <div class="column is-12" style="text-align: center">
-            <h1 class="title is-4">Connect your clients to their projects</h1>
-            <h1 class="title is-5">
-              Create a client contact and assign them to jobs and lead
-              opportunities effortlessly.
-            </h1>
+      <TransitionGroup class="fade-slow" name="slide-x">
+        <div v-if="tab === 'worksheet'" class="column is-12">
+          <CostItemsTable :columnsToShow="tagsValue" />
+        </div>
+      </TransitionGroup>
+
+      <TransitionGroup class="fade-slow" name="slide-x">
+        <div v-if="tab === 'format'" class="column is-12">
+          <div class="columns is-multiline">
+            <VField
+              v-slot="{ id }"
+              label="Choose what to show to lead"
+              class="column is-12"
+            >
+              <VControl>
+                <Multiselect
+                  v-model="tagsValue"
+                  :attrs="{ id }"
+                  mode="tags"
+                  :searchable="true"
+                  :create-tag="true"
+                  :options="tagsOptions"
+                  placeholder="Add tags"
+                />
+              </VControl>
+            </VField>
           </div>
-          <div class="column is-12">
-            <CostItemsTable :columnsToShow="tagsValue" />
-          </div>
-        </VCard>
-      </div>
-      <div v-if="tab === 'preview'" class="column is-12">
-        <ProposalPreview :columnsToShow="tagsValue" />
-      </div>
+          <VCard class="columns is-multiline m-0">
+            <div class="column is-12" style="text-align: center">
+              <h1 class="title is-4">Connect your clients to their projects</h1>
+              <h1 class="title is-5">
+                Create a client contact and assign them to jobs and lead
+                opportunities effortlessly.
+              </h1>
+            </div>
+            <div class="column is-12">
+              <CostItemsTable :columnsToShow="tagsValue" />
+            </div>
+          </VCard>
+        </div>
+      </TransitionGroup>
+      <TransitionGroup class="fade-slow" name="slide-x">
+        <div v-if="tab === 'preview'" class="column is-12">
+          <ProposalPreview :columnsToShow="tagsValue" />
+        </div>
+      </TransitionGroup>
     </div>
     <EstimateCostItemModal
       v-if="addCostItemModal"
