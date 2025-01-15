@@ -193,6 +193,7 @@ declare module 'vue' {
     DropdownWithImagesDocumentation: typeof import('./../documentation/dropdown/dropdown-with-images-documentation.md')['default']
     EcommerceDashboardV1: typeof import('./../src/components/pages/dashboards/business/EcommerceDashboardV1.vue')['default']
     EditCompany: typeof import('./../src/components/pages/networks/companies/EditCompany.vue')['default']
+    EditCompanyModal: typeof import('./../src/components/Company/EditCompanyModal.vue')['default']
     EditProfileExperience: typeof import('./../src/components/pages/forms/edit-profile/EditProfileExperience.vue')['default']
     EditProfileGeneral: typeof import('./../src/components/pages/forms/edit-profile/EditProfileGeneral.vue')['default']
     EditProfileSettings: typeof import('./../src/components/pages/forms/edit-profile/EditProfileSettings.vue')['default']
