@@ -6,7 +6,7 @@ import { CssUnitRe } from "/@src/utils/regex";
 
 import VPlaceload from "../loader/VPlaceload.vue";
 
-export type VButtonSize = "small" | "medium" | "big" | "huge";
+export type VButtonSize = "xsmall" | "small" | "medium" | "big" | "huge";
 export type VButtonColor =
   | "primary"
   | "info"
@@ -82,7 +82,9 @@ export default defineComponent({
       validator: (value: VButtonSize) => {
         // The value must match one of these strings
         if (
-          [undefined, "small", "medium", "big", "huge"].indexOf(value) === -1
+          [undefined, "xsmall", "small", "medium", "big", "huge"].indexOf(
+            value
+          ) === -1
         ) {
           console.warn(
             `VButton: invalid "${value}" size. Should be big, huge, medium or undefined`
@@ -407,6 +409,10 @@ export default defineComponent({
     &.is-small {
       height: 2.2rem;
       font-size: 0.8rem;
+    }
+    &.is-xsmall {
+      height: 1.7rem;
+      font-size: 0.6rem;
     }
 
     &.is-huge {

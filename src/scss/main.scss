@@ -51,19 +51,28 @@ SCSS Imports
   font-family: monospace;
   font-size: 30px;
   color: #0000;
-  background: linear-gradient(90deg, #2aac8e calc(50% + 0.5ch), #000 0)
-    right/calc(200% + 1ch) 100%;
+  background: linear-gradient(90deg, #2aac8e calc(50% + 0.5ch), #000 0) right/calc(200% + 1ch) 100%;
   -webkit-background-clip: text;
   background-clip: text;
   animation: l7 2s infinite steps(11);
 }
+
 .rota-loader:before {
   content: "Loading...";
 }
+
 @keyframes l7 {
   to {
     background-position: left;
   }
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
 }
 
 .small-img {
@@ -71,6 +80,7 @@ SCSS Imports
   height: 48px;
   border-radius: 8px;
 }
+
 .cus-card {
   padding-bottom: 16px;
   border-radius: 14px;
@@ -98,34 +108,61 @@ SCSS Imports
   color: #999 !important;
 }
 
+.font-400 {
+  font-weight: 400;
+}
+
+.font-500 {
+  font-weight: 500;
+}
+
+.font-600 {
+  font-weight: 600;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.font-700 {
+  font-weight: 700;
+}
+
 .cu-pointer {
   cursor: pointer;
 }
+
 .ckeditor h1 {
   font-size: 2.5rem;
   font-weight: 600;
 }
+
 .ckeditor h2 {
   font-size: 2.3rem;
   font-weight: 600;
 }
+
 .ckeditor h3 {
   font-size: 1.8rem;
   font-weight: 600;
 }
+
 .ckeditor h4 {
   font-size: 1.5rem;
   font-weight: 600;
 }
+
 .ckeditor blockquote {
   padding: 0.6rem 0.4rem;
   background: #eee;
   border-left: 2px solid #2aac8e;
   color: #222;
 }
+
 .bg-grey {
   background-color: #f5f5f5;
 }
+
 .show-text-100 {
   white-space: nowrap;
   overflow: hidden;
@@ -146,15 +183,18 @@ SCSS Imports
   text-overflow: ellipsis;
   max-width: 200px;
 }
+
 .border-bottom-light {
   border-bottom: 1px solid #69696930;
 }
+
 .ckeditor ol {
   margin-left: 1rem;
 }
 
 .link-text {
   cursor: pointer;
+
   &:hover {
     text-decoration: underline;
   }
@@ -163,6 +203,7 @@ SCSS Imports
 .is-bold {
   font-weight: 500;
 }
+
 .is-md-bold {
   font-size: 16px;
   font-weight: 500;
@@ -234,6 +275,7 @@ SCSS Imports
   align-items: center;
   gap: 14px;
 }
+
 .cu-align-center {
   display: flex;
   align-items: center;
@@ -275,10 +317,12 @@ SCSS Imports
   background-color: rgba(253, 178, 1, 0.62);
   color: black;
 }
+
 .cus-black-heading {
   font-size: 16px;
   font-weight: 400;
 }
+
 .weighted {
   font-weight: 500;
 }
@@ -315,6 +359,7 @@ SCSS Imports
 .text-align-center {
   text-align: center;
 }
+
 .cus-flex-column {
   display: flex;
   flex-direction: column;
@@ -350,6 +395,7 @@ SCSS Imports
     background-color: #2aac8e;
     border-radius: 8px;
   }
+
   &::-webkit-scrollbar-track {
     background-color: #d7faeb8f;
   }
@@ -387,13 +433,16 @@ SCSS Imports
   color: #696969;
   font-weight: 500;
 }
+
 .cus-stat-data {
   color: var(--primary);
 }
+
 .cus-onhover {
   color: var(--secondry);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+
   &:hover {
     transform: scale(1.28);
     color: var(--success);
@@ -414,6 +463,7 @@ SCSS Imports
     box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
     cursor: pointer;
   }
+
   .first-span {
     margin-left: 1rem;
     // font-weight: 500;
@@ -421,6 +471,7 @@ SCSS Imports
     color: #444;
     transform: translateY(0.5rem);
   }
+
   .multi-select {
     height: 55px;
     border-radius: 1rem;
@@ -429,67 +480,76 @@ SCSS Imports
     outline: none;
     width: 100%;
   }
+
   .value-image {
     width: 30px;
     border-radius: 0.5rem;
   }
+
   .options-div {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
   }
+
   .option-cdiv {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+
   .option-image {
     width: 40px;
     border-radius: 0.5rem;
   }
+
   .option-ddiv {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
   }
+
   .option-span {
     color: #444;
     font-size: 1.2rem;
     font-weight: 500;
   }
+
   .mail-span {
     color: #666;
     font-size: 1rem;
+
     .email-span {
       color: #444;
     }
   }
+
   .placement-wrapper:hover {
     box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2);
   }
+
   .sitejob-space {
     margin-top: -1rem;
   }
+
   .lg-multiselect {
     .multiselect-dropdown {
       max-height: 200px !important;
     }
   }
 
-  .placement-wrapper
-    > .multiselect
-    > .multiselect-wrapper
-    > .multiselect-search {
+  .placement-wrapper>.multiselect>.multiselect-wrapper>.multiselect-search {
     background: transparent;
     outline: none;
   }
 
-  .placement-wrapper > .multiselect > .multiselect-dropdown {
+  .placement-wrapper>.multiselect>.multiselect-dropdown {
     border-radius: 0.8rem;
     margin-bottom: -1.5rem;
     box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
     min-height: 320px !important;
   }
+
   .multiselect .multiselect-caret {
     width: 1.3rem;
     height: 1.3rem;
@@ -498,11 +558,13 @@ SCSS Imports
     background: #666;
   }
 }
+
 .flex-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
 }
+
 .smart-search-dropdown {
   .placement-wrapper {
     width: 100%;
@@ -517,6 +579,7 @@ SCSS Imports
     box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
     cursor: pointer;
   }
+
   .first-span {
     margin-left: 1rem;
     // font-weight: 500;
@@ -524,6 +587,7 @@ SCSS Imports
     color: #444;
     transform: translateY(0.5rem);
   }
+
   .multi-select {
     height: 55px;
     border-radius: 1rem;
@@ -537,63 +601,71 @@ SCSS Imports
     width: 30px;
     border-radius: 0.5rem;
   }
+
   .options-div {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
   }
+
   .option-cdiv {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+
   .option-image {
     width: 40px;
     border-radius: 0.5rem;
   }
+
   .option-ddiv {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
   }
+
   .option-span {
     color: #444;
     font-size: 1.2rem;
     font-weight: 500;
   }
+
   .mail-span {
     color: #666;
     font-size: 1rem;
+
     .email-span {
       color: #444;
     }
   }
+
   .placement-wrapper:hover {
     box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2);
   }
+
   .sitejob-space {
     margin-top: -1rem;
   }
+
   .lg-multiselect {
     .multiselect-dropdown {
       max-height: 300px !important;
     }
   }
 
-  .placement-wrapper
-    > .multiselect
-    > .multiselect-wrapper
-    > .multiselect-search {
+  .placement-wrapper>.multiselect>.multiselect-wrapper>.multiselect-search {
     background: transparent;
     outline: none;
   }
 
-  .placement-wrapper > .multiselect > .multiselect-dropdown {
+  .placement-wrapper>.multiselect>.multiselect-dropdown {
     border-radius: 0.8rem;
     margin-bottom: -1.5rem;
     box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
     min-height: 160px !important;
   }
+
   .multiselect .multiselect-caret {
     width: 1.3rem;
     height: 1.3rem;
@@ -605,6 +677,7 @@ SCSS Imports
 
 // apply on alll input fields =================================================
 .cu-all-input {
+
   /* General input styles */
   input {
     border-radius: 15px !important;
@@ -616,10 +689,14 @@ SCSS Imports
   /* Specific styles for color input fields */
   input[type="color"] {
     padding: 0;
-    border-radius: 15px; /* Makes the color picker circular */
-    border: 2px solid #ccc; /* Custom border */
-    background-color: #fff; /* Background color */
-    cursor: pointer; /* Changes cursor to pointer */
+    border-radius: 15px;
+    /* Makes the color picker circular */
+    border: 2px solid #ccc;
+    /* Custom border */
+    background-color: #fff;
+    /* Background color */
+    cursor: pointer;
+    /* Changes cursor to pointer */
   }
 
   textarea {
@@ -628,6 +705,7 @@ SCSS Imports
     border: 1px solid var(--border) !important;
     padding: 16px 20px !important;
   }
+
   select {
     border-radius: 15px !important;
     background-color: #fcfcfc;
@@ -636,6 +714,7 @@ SCSS Imports
     padding-left: 36px !important;
     padding-right: 20px !important;
   }
+
   .control {
     .has-icon {
       input {
@@ -643,10 +722,12 @@ SCSS Imports
         padding-inline-start: 38px !important;
       }
     }
+
     input {
       padding: 23px 20px !important;
       padding-inline-start: 18px !important;
     }
+
     .form-icon {
       height: 47px !important;
     }
@@ -658,13 +739,14 @@ SCSS Imports
     input {
       background-color: var(--dark-sidebar-light-2) !important;
     }
+
     select {
       background-color: var(--dark-sidebar-light-2) !important;
     }
   }
 }
 
-.cus-tag-button {
-}
+.cus-tag-button {}
+
 // =====================================================================================
 // ==================================================================================

@@ -582,6 +582,10 @@ onMounted(() => {
             v-model:open="openSideblockLinks"
             collapse-id="payments"
             class="collapse-wrap"
+            v-if="
+              userSession.user.id == 'f6c283ec-9499-4983-997c-0456362e6650' ||
+              userSession.user.id == '73462666-c7f0-41eb-b978-24f5ffe7a539'
+            "
           >
             <!-- :class="[isOpen && 'active']" -->
             <template #header>
