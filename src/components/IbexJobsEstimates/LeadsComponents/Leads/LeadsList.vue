@@ -14,6 +14,19 @@ export interface UserData extends VAvatarProps {
   contacts: VAvatarProps[];
 }
 
+interface leadsList {
+  id: string;
+  title: string;
+  zipCode: string;
+  address: string;
+  createdAt: string;
+  endDate: string;
+  createdBy: object;
+  manager: object;
+  status: string;
+  proposalsCount: number;
+}
+
 const page = ref(42);
 const filters = ref("");
 const openLeadModal = ref(false);

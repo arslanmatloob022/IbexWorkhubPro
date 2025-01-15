@@ -155,6 +155,7 @@ interface ActivityModel {
   description: string;
 }
 
+// scheduleEmailDateTime: string;
 interface InitiatedByOption {
   value: string;
   label: string;

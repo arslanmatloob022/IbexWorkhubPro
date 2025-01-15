@@ -314,6 +314,7 @@ declare module 'vue' {
     LayoutsSubnav: typeof import('./../src/layouts/navbar-items/LayoutsSubnav.vue')['default']
     LayoutsSubsidebar: typeof import('./../src/layouts/sidebar-subsidebar/LayoutsSubsidebar.vue')['default']
     LayoutSwitcher: typeof import('./../src/layouts/layout-switcher/LayoutSwitcher.vue')['default']
+    LeadActivityModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/Leads/LeadActivityModal.vue')['default']
     LeadAddUpdateModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/Leads/LeadAddUpdateModal.vue')['default']
     LeadProposalModal: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/LeadProposalModal.vue')['default']
     LeadProposalPreview: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/LeadProposalPreview.vue')['default']

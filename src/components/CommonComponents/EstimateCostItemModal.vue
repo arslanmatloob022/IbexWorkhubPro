@@ -94,7 +94,7 @@ interface item {
   group: string;
 }
 
-const workItem = ref<item>({
+const costItem = ref<item>({
   title: "",
   description: "",
   quantity: 0,
@@ -139,7 +139,7 @@ const status = ref([
 const addUpdateLeadHandler = async () => {
   try {
     isLoading.value = true;
-    const formDataAPI = convertToFormData(workItem.value, ["profileImageURL"]);
+    const formDataAPI = convertToFormData(costItem.value, ["profileImageURL"]);
     const response = await api.post("/v3/api/worker/", formDataAPI);
     closeModalHandler();
     notyf.dismissAll();
@@ -194,7 +194,7 @@ onMounted(async () => {
                 <input
                   type="text"
                   name="firstName"
-                  v-model="workItem.title"
+                  v-model="costItem.title"
                   required
                   class="input is-primary-focus is-primary-focus"
                   placeholder="Proposal Title"
@@ -206,7 +206,7 @@ onMounted(async () => {
               <label for="">Cost Type</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="workItem.costType">
+                  <VSelect v-model="costItem.costType">
                     <VOption
                       v-for="(item, index) in costType"
                       :value="item.value"
@@ -222,7 +222,7 @@ onMounted(async () => {
               <VField class="is-flex">
                 <VControl raw subcontrol>
                   <VCheckbox
-                    v-model="workItem.includeInCatalog"
+                    v-model="costItem.includeInCatalog"
                     label="Include item in Catalog"
                   />
                 </VControl>
@@ -232,7 +232,7 @@ onMounted(async () => {
               <label for="">Mark As</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="workItem.markAs">
+                  <VSelect v-model="costItem.markAs">
                     <VOption
                       v-for="(item, index) in markAsOption"
                       :value="item.value"
@@ -247,7 +247,7 @@ onMounted(async () => {
               <label for="">Cost Code *</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="workItem.costType">
+                  <VSelect v-model="costItem.costType">
                     <VOption
                       v-for="(item, index) in costType"
                       :value="item.value"
@@ -262,7 +262,7 @@ onMounted(async () => {
               <label for="">Group</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="workItem.costType">
+                  <VSelect v-model="costItem.costType">
                     <VOption
                       v-for="(item, index) in costType"
                       :value="item.value"
@@ -278,7 +278,7 @@ onMounted(async () => {
 
               <CKEditor
                 v-if="editor"
-                v-model="workItem.description"
+                v-model="costItem.description"
                 :editor="editor"
                 :config="editorConfig"
               />
@@ -288,7 +288,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VTextarea
-                    v-model="workItem.internalNotes"
+                    v-model="costItem.internalNotes"
                     rows="4"
                     placeholder="Internal notes..."
                   />
@@ -304,7 +304,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.unitCost"
+                    v-model="costItem.unitCost"
                     type="number"
                     name="unitCost"
                     placeholder="Unit cost"
@@ -317,7 +317,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.unitCost"
+                    v-model="costItem.unitCost"
                     type="number"
                     name="quantity"
                     placeholder="Quantity"
@@ -330,7 +330,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.unit"
+                    v-model="costItem.unit"
                     type="number"
                     name="unit"
                     placeholder="Unit"
@@ -343,7 +343,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.unit"
+                    v-model="costItem.unit"
                     type="number"
                     name="builderCost"
                     placeholder="Builder cost"
@@ -356,7 +356,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.markup"
+                    v-model="costItem.markup"
                     type="number"
                     name="markup"
                     placeholder="Markup"
@@ -369,7 +369,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.clientPrice"
+                    v-model="costItem.clientPrice"
                     type="number"
                     name="markup"
                     placeholder="Client Price"
@@ -382,7 +382,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="workItem.margin"
+                    v-model="costItem.margin"
                     type="number"
                     name="markup"
                     placeholder="Margin"
