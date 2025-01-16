@@ -1,8 +1,8 @@
 <route lang="yaml">
-meta:
-  requiresAuth: true
-</route>
-
+  meta:
+    requiresAuth: true
+  </route>
+  
 <script setup lang="ts">
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
@@ -41,7 +41,7 @@ const updateCompany = (updatedCompany: typeof company) => {
   closeEditModal();
 };
 </script>
-
+  
 <template>
   <div class="container">
     <div class="box cu-property">
@@ -139,17 +139,17 @@ const updateCompany = (updatedCompany: typeof company) => {
     </div>
   </div>
   <!-- <EditCompanyModal
-    v-if="showModal"
-    :company="company"
-    :show="showModal"
-    @close="closeEditModal"
-    @save="updateCompany"
-  /> -->
+      v-if="showModal"
+      :company="company"
+      :show="showModal"
+      @close="closeEditModal"
+      @save="updateCompany"
+    /> -->
 </template>
-
-
-
-<style scoped lang="scss">
+  
+  
+  
+  <style scoped lang="scss">
 .cu-vr-seperator {
   height: 60px;
   width: 4px;
@@ -161,4 +161,5 @@ const updateCompany = (updatedCompany: typeof company) => {
   background: radial-gradient(#ededed, #ffffff);
 }
 </style>
-
+  
+  
