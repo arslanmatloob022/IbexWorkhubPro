@@ -690,14 +690,39 @@ onMounted(() => {
               Profile
             </RouterLink>
           </li>
-          <li>
-            <RouterLink to="/sidebar/settings" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-cogs" aria-hidden="true"></i
-              ></span>
-              Settings
+
+          <VCollapseLinks
+            v-model:open="openSideblockLinks"
+            collapse-id="setting"
+            class="collapse-wrap"
+          >
+            <!-- :class="[isOpen && 'active']" -->
+            <template #header>
+              <div class="icon">
+                <i class="lnir lnir-cogs" aria-hidden="true"></i>
+              </div>
+              <span>Settings</span>
+              <i
+                aria-hidden="true"
+                class="iconify rtl-hidden"
+                data-icon="feather:chevron-right"
+              />
+              <i
+                aria-hidden="true"
+                class="iconify ltr-hidden"
+                data-icon="feather:chevron-left"
+              />
+            </template>
+
+            <RouterLink class="is-submenu" to="/sidebar/settings">
+              <i class="lnir lnir-cogs" aria-hidden="true"></i>
+              <span>Clients Setting</span>
             </RouterLink>
-          </li>
+            <RouterLink class="is-submenu" to="/sidebar/files-permission">
+              <i class="lnir lnir-add-files" aria-hidden="true"></i>
+              <span>Files</span>
+            </RouterLink>
+          </VCollapseLinks>
         </template>
 
         <template #bottom-links>
