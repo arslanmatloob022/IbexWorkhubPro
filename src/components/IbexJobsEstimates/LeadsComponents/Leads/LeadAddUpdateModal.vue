@@ -5,6 +5,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
+import LeadActivityModal from "./LeadActivityModal.vue";
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -13,6 +14,8 @@ const isLoading = ref(false);
 const FormData = ref({});
 const openAddContactModal = ref(false);
 const openLeadProposalModal = ref(false);
+const showAddUpdateContactModal = ref(false);
+const showMailSenderModal = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -604,6 +607,49 @@ onMounted(async () => {
               </VButton>
             </div>
           </VCard>
+          <VCard class="columns is-multiline">
+            <div class="column is-3"></div>
+            <div class="column is-6 text-align-center">
+              <i
+                class="fas fa-phone-alt fa-5x primary-text text-primary mb-3"
+                aria-hidden="true"
+              ></i>
+              <h1 class="title is-4">Engage your leads with activities</h1>
+              <h1 class="title is-6">
+                Track calls, emails, and meeting notes for leads in one place.
+              </h1>
+            </div>
+            <div class="column is-3"></div>
+            <div class="column is-3"></div>
+            <div class="column is-6 text-align-center">
+              <VButton
+                @click="showAddUpdateContactModal = !showAddUpdateContactModal"
+                color="warning"
+                icon="fas fa-exchange-alt"
+              >
+                Create Activity
+              </VButton>
+              <VButton
+                @click="showMailSenderModal = !showMailSenderModal"
+                color="success"
+                class="ml-2"
+                icon="fas fa-envelope"
+              >
+                Schedule Email
+              </VButton>
+            </div>
+            <div class="column is-3"></div>
+          </VCard>
+          <LeadActivityModal
+            v-if="showAddUpdateContactModal"
+            :addUpdateContactModal="showAddUpdateContactModal"
+            @update:modal-handler="showAddUpdateContactModal = false"
+          />
+          <GenericEmailSender
+            v-if="showMailSenderModal"
+            :mailSenderModal="showMailSenderModal"
+            @update:modal-handler="showMailSenderModal = false"
+          />
           <AddUpdateContactModal
             v-if="openAddContactModal"
             :add-update-contact-modal="openAddContactModal"
@@ -640,7 +686,7 @@ onMounted(async () => {
         color="primary"
         icon="fas fa-plus"
         raised
-        >Create</VButton
+        >Create Lead</VButton
       >
     </template>
   </VModal>

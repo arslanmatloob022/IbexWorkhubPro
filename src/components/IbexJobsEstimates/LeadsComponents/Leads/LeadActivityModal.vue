@@ -20,6 +20,7 @@ const props = defineProps<{
   userId?: string;
 }>();
 
+const tab = ref<"general" | "email">("general");
 const tagsSlotValue = ref([]);
 const tagsSlotOptions = [
   {
@@ -149,14 +150,14 @@ onMounted(() => {});
     is="form"
     :open="props.addUpdateContactModal"
     title="Lead Activity"
-    size="medium"
+    size="large"
     actions="right"
     @submit.prevent="addUpdateContactHandler"
     @close="closeModalHandler"
   >
     <template #content>
       <div class="modal-form columns is-multiline">
-        <div class="column is-12 m-0">
+        <div class="column is-12">
           <VCard class="columns is-multiline">
             <div class="column is-12">
               <h3 class="title is-6 mb-2">Activity Information</h3>
@@ -202,32 +203,6 @@ onMounted(() => {});
               </div>
             </div>
             <div class="field column is-6 mb-0">
-              <label>Start Time </label>
-              <div class="control">
-                <input
-                  type="time"
-                  name="starttime"
-                  v-model="activityFormData.startTime"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Start Time"
-                />
-              </div>
-            </div>
-            <div class="field column is-6 mb-0">
-              <label>End Time </label>
-              <div class="control">
-                <input
-                  required
-                  type="endtime"
-                  name="endtime"
-                  v-model="activityFormData.endTime"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="End Time"
-                />
-              </div>
-            </div>
-
-            <div class="field column is-12 mb-0">
               <label>Reminder: </label>
               <VField>
                 <VControl>
@@ -242,6 +217,32 @@ onMounted(() => {});
                   </VSelect>
                 </VControl>
               </VField>
+            </div>
+            <div class="field column is-6 mb-0">
+              <label>Start Time </label>
+              <div class="control">
+                <input
+                  type="time"
+                  name="starttime"
+                  v-model="activityFormData.startTime"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Start Time"
+                />
+              </div>
+            </div>
+
+            <div class="field column is-6 mb-0">
+              <label>End Time </label>
+              <div class="control">
+                <input
+                  required
+                  type="time"
+                  name="endtime"
+                  v-model="activityFormData.endTime"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="End Time"
+                />
+              </div>
             </div>
 
             <div class="field column is-12 mb-0">
@@ -277,7 +278,7 @@ onMounted(() => {});
               </VField>
             </div>
 
-            <div class="field column is-3 mb-0">
+            <div class="field column is-12 mb-0">
               <label>Attendees: </label>
               <div class="control">
                 <!-- <input
@@ -293,7 +294,7 @@ onMounted(() => {});
                   name="phone"
                   v-model="activityFormData.attendees"
                   class="input is-primary-focus is-primary-focus"
-                  placeholder="Phone Number"
+                  placeholder="Activity attendees"
                 />
               </div>
             </div>
@@ -369,13 +370,8 @@ onMounted(() => {});
       </div>
     </template>
     <template #action>
-      <VButton
-        :loading="isLoading"
-        type="submit"
-        color="primary"
-        icon="fas fa-plus"
-        raised
-        >Add Contact</VButton
+      <VButton :loading="isLoading" type="submit" color="primary" raised
+        >Create Activity</VButton
       >
     </template>
   </VModal>

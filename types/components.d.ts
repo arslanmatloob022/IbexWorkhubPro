@@ -232,6 +232,7 @@ declare module 'vue' {
     GalleryImagesDocumentation: typeof import('./../documentation/plugins/gallery/gallery-images-documentation.md')['default']
     GalleryImagesLargerDocumentation: typeof import('./../documentation/plugins/gallery/gallery-images-larger-documentation.md')['default']
     GalleryImagesRoundedDocumentation: typeof import('./../documentation/plugins/gallery/gallery-images-rounded-documentation.md')['default']
+    GenericEmailSender: typeof import('./../src/components/CommonComponents/GenericEmailSender.vue')['default']
     GraphDropdown: typeof import('./../src/components/partials/dropdowns/GraphDropdown.vue')['default']
     GroupedStatWidget: typeof import('./../src/components/partials/widgets/stat/GroupedStatWidget.vue')['default']
     Heatmap: typeof import('./../src/components/partials/lifestyle/Heatmap.vue')['default']
