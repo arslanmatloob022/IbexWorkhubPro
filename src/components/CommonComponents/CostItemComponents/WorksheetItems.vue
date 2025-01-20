@@ -240,6 +240,7 @@ const costItemsList = ref({
   group: "",
   proposal: "",
 });
+
 const getProposalCostItems = async () => {
   try {
     proposalStore.getProposalCostItems(props.proposalId);
@@ -248,7 +249,7 @@ const getProposalCostItems = async () => {
   } catch (err) {
     console.log(err);
   } finally {
-    costItemsList.value = proposalStore.proposalCostItems;
+    // costItemsList.value = proposalStore.proposalCostItems;
   }
 };
 onMounted(async () => {
@@ -258,6 +259,9 @@ onMounted(async () => {
   if (props.proposalId) {
     getProposalCostItems();
   }
+});
+onUnmounted(() => {
+  proposalStore.clearProposalId();
 });
 </script>
 

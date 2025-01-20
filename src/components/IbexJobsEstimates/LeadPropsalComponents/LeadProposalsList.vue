@@ -21,21 +21,22 @@ export interface ProjectData {
 }
 const loading = ref(false);
 const projects = listData.projects as ProjectData[];
-const proposalsList = ref([
-  {
-    id: "",
-    title: "",
-    approval_deadline: "",
-    internal_notes: null,
-    introductory_text: null,
-    closing_text: null,
-    payment_status: "",
-    type: "",
-    created_at: "",
-    updated_at: "",
-    job: "",
-  },
-]);
+interface Proposal {
+  id: string;
+  title: string;
+  approval_deadline: string;
+  internal_notes: string | null;
+  introductory_text: string | null;
+  closing_text: string | null;
+  payment_status: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+  job: string;
+}
+
+const proposalsList = ref<Proposal[]>([]);
+
 const openLeadProposalModal = ref(false);
 const selectedProposalId = ref("");
 
@@ -154,7 +155,7 @@ const filteredData = computed(() => {
 const getCompanyProposalList = () => {
   if (props.allProposal == true) {
     getCompanyProposals();
-  } else {
+  } else if (props.leadId) {
     getLeadProposals();
   }
 };
@@ -188,30 +189,9 @@ onMounted(() => {
 
     <div class="flex-list-wrapper flex-list-v2">
       <!--List Empty Search Placeholder -->
-      <VPlaceholderPage
-        v-if="filteredData.length === 0"
-        title="We couldn't find any matching results."
-        subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
-        larger
-      >
-        <template #image>
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/search-4.svg"
-            alt=""
-          />
-          <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-            alt=""
-          />
-        </template>
-      </VPlaceholderPage>
 
       <VFlexTable
-        v-if="filteredData.length"
+        v-if="filteredData.length > 0 && proposalsList.length > 0"
         :data="filteredData"
         :columns="columns"
         rounded
@@ -351,6 +331,25 @@ onMounted(() => {
           </TransitionGroup>
         </template>
       </VFlexTable>
+      <VPlaceholderPage
+        v-if="proposalsList.length < 1 && filteredData.length == 0"
+        title="There is no proposal created on this lead!"
+        subtitle="Too bad. Looks like we couldn't created any proposal on this Lead, please create proposal and release to the client"
+        larger
+      >
+        <template #image>
+          <img
+            class="light-image"
+            src="/@src/assets/illustrations/placeholders/search-4.svg"
+            alt=""
+          />
+          <img
+            class="dark-image"
+            src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+            alt=""
+          />
+        </template>
+      </VPlaceholderPage>
 
       <!--Table Pagination-->
       <VFlexPagination
@@ -368,6 +367,7 @@ onMounted(() => {
       :leadProposalModal="openLeadProposalModal"
       @update:modalHandler="openLeadProposalModal = false"
       @update:OnSuccess="getCompanyProposalList"
+      @clearProposalId="selectedProposalId = ''"
     />
     <SweetAlert
       v-if="SweetAlertProps.isSweetAlertOpen"

@@ -36,6 +36,7 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
+const tab = ref("general");
 const tagsValue = ref([]);
 const tagsOptions = [
   { value: "batman", label: "Batman" },
@@ -144,40 +145,10 @@ const leadFormData = ref<leadData>({
   client: "",
 });
 
-interface ActivityModel {
-  type: string;
-  color: string;
-  activityDate: string;
-  startTime: string;
-  endTime: string;
-  reminder: string;
-  assignedUser: string;
-  attendees: string[];
-  initiatedBy: InitiatedByOption;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  description: string;
-}
-
 interface InitiatedByOption {
   value: string;
   label: string;
 }
-
-const initiatedBy: InitiatedByOption[] = [
-  { value: "salesPerson", label: "Salesperson" },
-  { value: "lead", label: "Lead" },
-  { value: "other", label: "Other" },
-];
-
-const sources = ref([
-  { value: "all", label: "All" },
-  { value: "contact", label: "Contact Form" },
-  { value: "google", label: "Google" },
-  { value: "referral", label: "Referral" },
-]);
 
 const status = ref([
   { value: "open", label: "Open" },
@@ -187,14 +158,6 @@ const status = ref([
   // { value: "inProgress", label: "In Progress" },
   // { value: "pending", label: "Pending" },
   // { value: "noOpportunity", label: "No Opportunity" },
-]);
-
-const activityType = ref([
-  { value: "phone", label: "Phone call" },
-  { value: "followUp", label: "Follow Up" },
-  { value: "email", label: "Email" },
-  { value: "siteVisit", label: "Site Visit" },
-  { value: "webForm", label: "Website Form" },
 ]);
 
 interface contactPerson {
@@ -214,10 +177,19 @@ const addUpdateLeadHandler = async () => {
   try {
     loading.value = true;
     const formDataAPI = convertToFormData(leadFormData.value, [""]);
-    const response = await api.post("/api/job/", formDataAPI);
-    leadFormData.value = response.data;
+    if (props.leadId || leadFormData.value) {
+      const response = await api.patch("/api/job/", formDataAPI);
+      leadFormData.value = response.data;
+    } else {
+      const response = await api.post("/api/job/", formDataAPI);
+      leadFormData.value = response.data;
+    }
     updateOnSuccess();
-    notyf.success("Lead created successfully");
+    notyf.success(
+      `Lead ${
+        props.leadId || leadFormData.value ? "updated" : "created"
+      } successfully`
+    );
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
   } finally {
@@ -236,43 +208,6 @@ const getLeadDetailHandler = async () => {
     loading.value = false;
   }
 };
-
-const handlePostCodeChange = async () => {
-  try {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${leadFormData.value.zip_code}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
-    );
-    if (response.data.status === "OK") {
-      leadFormData.value.address = response.data.results[0].formatted_address;
-      leadFormData.value.latitude =
-        response.data.results[0].geometry.location.lat;
-      leadFormData.value.longitude =
-        response.data.results[0].geometry.location.lng;
-      notyf.success("Address Added");
-    } else if (response.data.status === "ZERO_RESULTS") {
-      notyf.error("Invalid Post-Code");
-    }
-  } catch (error) {
-    notyf.error("Invalid Post-Code");
-    console.error(error);
-  }
-};
-
-function DataURIToBlob(dataURI: string) {
-  const splitDataURI = dataURI.split(",");
-  const byteString =
-    splitDataURI[0].indexOf("base64") >= 0
-      ? atob(splitDataURI[1])
-      : decodeURI(splitDataURI[1]);
-  const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
-  const ia = new Uint8Array(byteString.length);
-  for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-  return new Blob([ia], { type: mimeString });
-}
-const tab = ref<"general" | "activities" | "proposals">("general");
-const CKEditor = defineAsyncComponent(() =>
-  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
-);
 
 const editorConfig = {
   fontFamily: {
@@ -645,7 +580,7 @@ onMounted(async () => {
               <VButton
                 @click="openAddContactModal = !openAddContactModal"
                 color="info"
-                class="p-6"
+                class="p-5"
                 icon="fas fa-plus"
                 fullwidth
                 bold
@@ -655,7 +590,7 @@ onMounted(async () => {
             </div>
             <div class="column is-6">
               <VButton
-                class="p-6"
+                class="p-5"
                 color="primary"
                 icon="fas fa-sign-in-alt"
                 fullwidth
@@ -665,7 +600,7 @@ onMounted(async () => {
               </VButton>
             </div>
           </VCard>
-          <VCard class="columns is-multiline">
+          <VCard class="columns is-multiline mt-1">
             <div class="column is-3"></div>
             <div class="column is-6 text-align-center">
               <i
@@ -717,15 +652,11 @@ onMounted(async () => {
         <div v-if="tab === 'proposals'" class="column is-12">
           <VCard class="columns is-multiline">
             <div class="column is-12">
-              <LeadProposalsList :leadId="leadFormData.id" />
+              <LeadProposalsList
+                :leadId="leadFormData.id ? props.leadId : props.leadId"
+              />
             </div>
           </VCard>
-          <!-- <LeadProposalModal
-            v-if="openLeadProposalModal"
-            :leadId="leadFormData.id"
-            :leadProposalModal="openLeadProposalModal"
-            @update:modal-handler="openLeadProposalModal = false"
-          /> -->
         </div>
       </div>
     </template>

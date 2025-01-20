@@ -13,11 +13,13 @@ const notyf = useNotyf();
 const api = useApi();
 const isLoading = ref(false);
 const FormData = ref({});
+const tab = ref("general");
 const openAddContactModal = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
+  (e: "clearProposalId", value: null): void;
 }>();
 const props = defineProps<{
   leadProposalModal?: boolean;
@@ -129,6 +131,7 @@ interface leadProposalData {
   paymentStatus: string;
   worksheetItems: item[];
   type: string;
+  job: "";
 }
 
 const leadProposalFormData = ref<leadProposalData>({
@@ -142,6 +145,7 @@ const leadProposalFormData = ref<leadProposalData>({
   paymentStatus: "",
   worksheetItems: [],
   type: "proposal",
+  job: "",
 });
 
 interface ActivityModel {
@@ -184,15 +188,31 @@ const status = ref([
   { value: "noOpportunity", label: "No Opportunity" },
 ]);
 
+const newCreatedLead = ref("");
+
 const addUpdateProposalHandler = async () => {
   try {
     isLoading.value = true;
+    // formDataAPI.append("job", props.leadId);
+    if (props.leadId) {
+      leadProposalFormData.value.job = props.leadId;
+    }
     const formDataAPI = convertToFormData(leadProposalFormData.value, [""]);
-    formDataAPI.append("job", props.leadId);
-    const response = await api.post("/api/lead-proposal/", formDataAPI);
+    if (props.proposalId) {
+      const response = await api.patch(
+        `/api/lead-proposal/${props.proposalId}/`,
+        formDataAPI
+      );
+    } else {
+      const response = await api.post("/api/lead-proposal/", formDataAPI);
+      newCreatedLead.value = response.data.id;
+      leadProposalFormData.value = response.data;
+    }
     updateOnSuccess();
     notyf.dismissAll();
-    notyf.success("Proposal created successfully");
+    notyf.success(
+      `Proposal ${props.proposalId ? "updated" : "created"} successfully`
+    );
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);
   } finally {
@@ -248,7 +268,6 @@ function DataURIToBlob(dataURI: string) {
   for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
   return new Blob([ia], { type: mimeString });
 }
-const tab = ref<"worksheet" | "format" | "preview">("worksheet");
 const CKEditor = defineAsyncComponent(() =>
   import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
 );
@@ -267,8 +286,12 @@ onMounted(async () => {
   );
   if (props.proposalId) {
     getProposalDetail();
-    useProposal.getProposalCostItems(props.proposalId);
+    // useProposal.getProposalCostItems(props.proposalId);
   }
+});
+onUnmounted(() => {
+  emit("clearProposalId", null);
+  leadProposalFormData.value = {};
 });
 </script>
 
@@ -284,150 +307,171 @@ onMounted(async () => {
   >
     <template #content>
       <div class="modal-form columns is-multiline">
-        <div class="field column is-6 mb-0">
-          <label>Title: *</label>
-          <div class="control">
-            <input
-              type="text"
-              name="firstName"
-              v-model="leadProposalFormData.title"
-              required
-              class="input is-primary-focus is-primary-focus"
-              placeholder="Proposal Title"
-            />
+        <div class="tabs-wrapper column is-12 m-0">
+          <div class="tabs-inner">
+            <div class="tabs is-boxed">
+              <ul>
+                <li :class="[tab === 'general' ? 'is-active' : 'not-active']">
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="tab = 'general'"
+                    @click="tab = 'general'"
+                    ><span>Proposal</span></a
+                  >
+                </li>
+                <li
+                  :class="[
+                    tab === 'CostWorksheet' ? 'is-active' : 'not-active',
+                  ]"
+                >
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="tab = 'CostWorksheet'"
+                    @click="tab = 'CostWorksheet'"
+                    ><span>Worksheet</span></a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="column is-6">
-          <VField class="m-0 p-0" label="Type">
-            <VControl>
-              <VRadio
-                v-model="leadProposalFormData.type"
-                value="proposal"
-                label="Proposal"
-                name="solid_squared_radio"
-                color="primary"
-                square
-                solid
+        <div v-if="tab == 'general'" class="columns is-multiline">
+          <div class="field column is-6 mb-0">
+            <label>Title: *</label>
+            <div class="control">
+              <input
+                type="text"
+                name="firstName"
+                v-model="leadProposalFormData.title"
+                required
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Proposal Title"
               />
-
-              <VRadio
-                v-model="leadProposalFormData.type"
-                value="change_order"
-                label="Change Order"
-                name="solid_squared_radio"
-                color="info"
-                square
-                solid
-              />
-
-              <VRadio
-                v-model="leadProposalFormData.type"
-                value="draft"
-                label="Draft"
-                name="solid_squared_radio"
-                color="warning"
-                square
-                solid
-              />
-            </VControl>
-          </VField>
-        </div>
-        <div class="field column is-6">
-          <label>Approval Deadline *</label>
-          <div class="control">
-            <input
-              type="date"
-              name="firstName"
-              v-model="leadProposalFormData.approval_deadline"
-              required
-              class="input is-primary-focus is-primary-focus"
-              placeholder="Proposal Approval deadline"
-            />
+            </div>
           </div>
-        </div>
-        <div class="field column is-6">
-          <label>Attachments</label>
-          <VField grouped>
-            <VControl>
-              <div class="file">
-                <label class="file-label">
-                  <input class="file-input" type="file" name="resume" />
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-cloud-upload-alt" />
+          <div class="column is-6">
+            <VField class="m-0 p-0" label="Type">
+              <VControl>
+                <VRadio
+                  v-model="leadProposalFormData.type"
+                  value="proposal"
+                  label="Proposal"
+                  name="solid_squared_radio"
+                  color="primary"
+                  square
+                  solid
+                />
+
+                <VRadio
+                  v-model="leadProposalFormData.type"
+                  value="change_order"
+                  label="Change Order"
+                  name="solid_squared_radio"
+                  color="info"
+                  square
+                  solid
+                />
+
+                <VRadio
+                  v-model="leadProposalFormData.type"
+                  value="draft"
+                  label="Draft"
+                  name="solid_squared_radio"
+                  color="warning"
+                  square
+                  solid
+                />
+              </VControl>
+            </VField>
+          </div>
+          <div class="field column is-6">
+            <label>Approval Deadline *</label>
+            <div class="control">
+              <input
+                type="date"
+                name="firstName"
+                v-model="leadProposalFormData.approval_deadline"
+                required
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Proposal Approval deadline"
+              />
+            </div>
+          </div>
+          <div class="field column is-6">
+            <label>Attachments</label>
+            <VField grouped>
+              <VControl>
+                <div class="file">
+                  <label class="file-label">
+                    <input class="file-input" type="file" name="resume" />
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fas fa-cloud-upload-alt" />
+                      </span>
+                      <span class="file-label"> Choose a file… </span>
                     </span>
-                    <span class="file-label"> Choose a file… </span>
-                  </span>
-                </label>
+                  </label>
+                </div>
+              </VControl>
+            </VField>
+          </div>
+          <VCollapse
+            :items="data"
+            with-chevron
+            style="border-radius: 14px"
+            class="m-3"
+          >
+            <template #collapse-item-content="item">
+              <div class="body-inner-content">
+                <div class="field columns is-multiline mb-0">
+                  <div class="field column is-12 mb-0">
+                    <label for="" class="label">Internal Notes</label>
+                    <VField>
+                      <VControl>
+                        <VTextarea
+                          v-model="leadProposalFormData.internalNotes"
+                          rows="4"
+                          placeholder="Internal notes..."
+                        />
+                      </VControl>
+                    </VField>
+                  </div>
+                  <div class="field column is-12 mb-0">
+                    <label for="" class="label">Introductory Text</label>
+
+                    <CKEditor
+                      v-if="editor"
+                      v-model="leadProposalFormData.introductoryText"
+                      :editor="editor"
+                      :config="editorConfig"
+                    />
+                  </div>
+                  <div class="field column is-12 mb-0">
+                    <label for="" class="label">Closing Text</label>
+
+                    <CKEditor
+                      v-if="editor"
+                      v-model="leadProposalFormData.closingText"
+                      :editor="editor"
+                      :config="editorConfig"
+                    />
+                  </div>
+                </div>
               </div>
-            </VControl>
-          </VField>
+            </template>
+          </VCollapse>
         </div>
-        <VCollapse
-          :items="data"
-          with-chevron
-          style="border-radius: 14px"
-          class="m-3"
-        >
-          <template #collapse-item-content="item">
-            <div class="body-inner-content">
-              <div class="field columns is-multiline mb-0">
-                <div class="field column is-12 mb-0">
-                  <label for="" class="label">Internal Notes</label>
-                  <VField>
-                    <VControl>
-                      <VTextarea
-                        v-model="leadProposalFormData.internalNotes"
-                        rows="4"
-                        placeholder="Internal notes..."
-                      />
-                    </VControl>
-                  </VField>
-                </div>
-                <div class="field column is-12 mb-0">
-                  <label for="" class="label">Introductory Text</label>
-
-                  <CKEditor
-                    v-if="editor"
-                    v-model="leadProposalFormData.introductoryText"
-                    :editor="editor"
-                    :config="editorConfig"
-                  />
-                </div>
-                <div class="field column is-12 mb-0">
-                  <label for="" class="label">Closing Text</label>
-
-                  <CKEditor
-                    v-if="editor"
-                    v-model="leadProposalFormData.closingText"
-                    :editor="editor"
-                    :config="editorConfig"
-                  />
-                </div>
-              </div>
-            </div>
-          </template>
-        </VCollapse>
-
-        <!-- <div v-if="tab === 'worksheet'" class="column is-12"> -->
-        <WorksheetItems :proposalId="leadProposalFormData.id" />
-        <!-- </div> -->
-
-        <!-- <div v-if="tab === 'format'" class="column is-12">
-          <VCard class="columns is-multiline m-0">
-            <div class="column is-12" style="text-align: center">
-              <h1 class="title is-4">Connect your clients to their projects</h1>
-              <h1 class="title is-5">
-                Create a client contact and assign them to jobs and lead
-                opportunities effortlessly.
-              </h1>
-            </div>
-            <CostItemsTable />
-          </VCard>
+        <div v-if="tab == 'CostWorksheet'" class="columns is-multiline">
+          <WorksheetItems
+            :proposalId="
+              leadProposalFormData.id
+                ? leadProposalFormData.id
+                : props.proposalId
+            "
+          />
         </div>
-        <div v-if="tab === 'preview'">
-          <p>preview</p>
-        </div> -->
       </div>
     </template>
     <template #action>

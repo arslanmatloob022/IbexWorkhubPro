@@ -36,7 +36,10 @@ export const useProposalStore = defineStore("useProposal", () => {
   const loading = ref(true);
   const notyf = useNotyf();
   const api = useApi();
-
+  const proposalId = ref("");
+  const leadId = ref("");
+  const companyProposalsList = ref([]);
+  const leadProposalsList = ref([]);
   const leadProposalFormData = ref<leadProposalData>({
     title: "",
     approval_deadline: "",
@@ -68,8 +71,36 @@ export const useProposalStore = defineStore("useProposal", () => {
     },
   ]);
 
+  const getCompanyProposals = async () => {
+    try {
+      loading.value = true;
+      const response = await api.get(`/api/lead-proposal/`);
+      companyProposalsList.value = response.data;
+    } catch (error: any) {
+      notyf.error(` ${error}, Lead`);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const getLeadProposals = async (leadId: any) => {
+    try {
+      leadId.value = leadId;
+      loading.value = true;
+      const response = await api.get(
+        `/api/lead-proposal/by-job/${leadId.value}/`
+      );
+      leadProposalsList.value = response.data;
+    } catch (error: any) {
+      notyf.error(` ${error}, Lead`);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   async function getProposalCostItems(proposal: any) {
     try {
+      proposalId.value = proposal;
       const resp = await api.get(`/api/cost/by-proposal/${proposal}/`);
       proposalCostItems.value = resp.data;
     } catch (err) {
@@ -77,11 +108,21 @@ export const useProposalStore = defineStore("useProposal", () => {
     }
   }
 
+  function clearProposalId() {
+    proposalId.value = "";
+    proposalCostItems.value = [];
+  }
+
   return {
     loading,
     proposalCostItems,
     leadProposalFormData,
+    companyProposalsList,
+    leadProposalsList,
+    getLeadProposals,
+    getCompanyProposals,
     getProposalCostItems,
+    clearProposalId,
   } as const;
 });
 

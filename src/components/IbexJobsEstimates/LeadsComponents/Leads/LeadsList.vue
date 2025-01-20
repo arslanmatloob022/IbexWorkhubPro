@@ -182,7 +182,7 @@ onMounted(() => {
 
         <VButtons>
           <VButton
-            @click="openLeadModal = !openLeadModal"
+            @click="openLeadUpdateModal('')"
             color="primary"
             icon="fas fa-plus"
             elevated
@@ -236,6 +236,7 @@ onMounted(() => {
                         router.push(`/sidebar/dashboard/jobs/${item.id}`);
                       }
                     "
+                    class="cu-pointer"
                     :column="{ media: true, grow: true }"
                   >
                     <div class="show-text-200">
@@ -255,7 +256,14 @@ onMounted(() => {
                   </VFlexTableCell>
 
                   <VFlexTableCell :column="{ media: true, grow: true }">
-                    <div class="">
+                    <div
+                      @click="
+                        () => {
+                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                        }
+                      "
+                      class="cu-pointer"
+                    >
                       <span class="item-name dark-inverted show-text-200">{{
                         item.title ? item.title : "N/A"
                       }}</span>
@@ -265,7 +273,14 @@ onMounted(() => {
                     </div>
                   </VFlexTableCell>
                   <VFlexTableCell :column="{ media: true }">
-                    <div>
+                    <div
+                      @click="
+                        () => {
+                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                        }
+                      "
+                      class="cu-pointer"
+                    >
                       <span class="item-name">{{
                         formatDate(item.created_at)
                       }}</span>
@@ -282,7 +297,14 @@ onMounted(() => {
                   </VFlexTableCell>
 
                   <VFlexTableCell :column="{ media: true }">
-                    <div>
+                    <div
+                      @click="
+                        () => {
+                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                        }
+                      "
+                      class="cu-pointer"
+                    >
                       <span class="item-name">{{
                         item.manager_info?.username
                           ? item.manager_info?.username
