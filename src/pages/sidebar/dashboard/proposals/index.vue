@@ -11,7 +11,7 @@ useHead({
 
 <template>
   <div>
-    <LeadProposalsList />
+    <LeadProposalsList :allProposal="true" />
   </div>
 </template>
 

@@ -9,6 +9,8 @@ import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 import { useApi } from "../composable/useAPI";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "../composable/useNotyf";
+// import { routerLinks } from "/@src/composable/CommonScripts/sideBarRoutes";
+import { routerLinks } from "/@src/composable/CommonScripts/sideBarRoutes";
 
 const notyf = useNotyf();
 const mostVisitedPages = ref([
@@ -397,24 +399,78 @@ onMounted(() => {
         </template>
 
         <template #links>
+          <template v-for="link in routerLinks" :key="link.title">
+            <!-- Render RouterLink -->
+            <li v-if="link.linkType === 'single'">
+              <RouterLink :to="link.route" :class="link.class">
+                <span class="icon">
+                  <i :class="link.icon" aria-hidden="true"></i>
+                </span>
+                <span>{{ link.title }}</span>
+              </RouterLink>
+            </li>
+
+            <!-- Render VCollapseLinks -->
+            <VCollapseLinks
+              v-else-if="link.linkType === 'collapse'"
+              v-model:open="openSideblockLinks"
+              :collapse-id="link.collapseId"
+              class="collapse-wrap"
+            >
+              <!-- Header -->
+              <template #header>
+                <div class="icon">
+                  <i :class="link.headerIcon" aria-hidden="true"></i>
+                </div>
+                <span>{{ link.headerTitle }}</span>
+                <i
+                  aria-hidden="true"
+                  class="iconify rtl-hidden"
+                  data-icon="feather:chevron-right"
+                />
+                <i
+                  aria-hidden="true"
+                  class="iconify ltr-hidden"
+                  data-icon="feather:chevron-left"
+                />
+              </template>
+
+              <!-- Child Links -->
+              <!-- <template v-for="child in link.children" :key="child.title"> -->
+              <RouterLink
+                v-for="child in link.children"
+                :key="child.title"
+                :to="child.route"
+                class="is-submenu"
+                :class="{
+                  active: route.query.tab === child.activeClass,
+                }"
+              >
+                <span class="icon">
+                  <i :class="child.icon" aria-hidden="true"></i>
+                </span>
+                <span>{{ child.title }}</span>
+              </RouterLink>
+              <!-- </template> -->
+            </VCollapseLinks>
+          </template>
+
           <!-- Dashboard -->
-          <li>
+          <!-- <li>
             <RouterLink to="/sidebar/dashboard" class="single-link">
               <span class="icon">
                 <i class="lnir lnir-bar-chart" aria-hidden="true"></i>
               </span>
               <span> Dashboard </span>
-              <!-- <span class="badge">5</span> -->
+              <span class="badge">5</span>
             </RouterLink>
-          </li>
+          </li> -->
 
-          <!-- proescts -->
-          <VCollapseLinks
+          <!-- <VCollapseLinks
             v-model:open="openSideblockLinks"
             collapse-id="Projects"
             class="collapse-wrap"
           >
-            <!-- :class="[isOpen && 'active']" -->
             <template #header>
               <div class="icon">
                 <i class="lnir lnir-list-alt-1" aria-hidden="true"></i>
@@ -471,57 +527,11 @@ onMounted(() => {
             </RouterLink>
           </VCollapseLinks>
 
-          <!-- <li>
-            <RouterLink to="/sidebar/dashboard/managers" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-user-alt-1" aria-hidden="true"></i
-              ></span>
-              Managers
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
-              ></span>
-              Contractors
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink
-              to="/sidebar/dashboard/subcontractors"
-              class="single-link"
-            >
-              <span class="icon">
-                <i class="lnir lnir-users" aria-hidden="true"></i
-              ></span>
-              Sub Contractors
-            </RouterLink>
-          </li>
-
-          <li>
-            <RouterLink to="/sidebar/dashboard/workers" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-network" aria-hidden="true"></i
-              ></span>
-              Workers
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/sidebar/dashboard/clients" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-briefcase-alt" aria-hidden="true"></i
-              ></span>
-              Clients
-            </RouterLink>
-          </li> -->
-
           <VCollapseLinks
             v-model:open="openSideblockLinks"
             collapse-id="users"
             class="collapse-wrap"
           >
-            <!-- :class="[isOpen && 'active']" -->
             <template #header>
               <div class="icon">
                 <i class="lnir lnir-users" aria-hidden="true"></i>
@@ -587,7 +597,6 @@ onMounted(() => {
               userSession.user.id == '73462666-c7f0-41eb-b978-24f5ffe7a539'
             "
           >
-            <!-- :class="[isOpen && 'active']" -->
             <template #header>
               <div class="icon">
                 <i class="lnir lnir-bank" aria-hidden="true"></i>
@@ -631,12 +640,12 @@ onMounted(() => {
               <span>Approved Payments </span>
             </RouterLink>
           </VCollapseLinks>
+
           <VCollapseLinks
             v-model:open="openSideblockLinks"
             collapse-id="estimates"
             class="collapse-wrap"
           >
-            <!-- :class="[isOpen && 'active']" -->
             <template #header>
               <div class="icon">
                 <i class="lnir lnir-library" aria-hidden="true"></i>
@@ -681,8 +690,9 @@ onMounted(() => {
               <i class="lnir lnir-suitcase" aria-hidden="true"></i>
               <span>Jobs</span>
             </RouterLink>
-          </VCollapseLinks>
-          <li>
+          </VCollapseLinks> -->
+
+          <!-- <li>
             <RouterLink to="/sidebar/dashboard/profile" class="single-link">
               <span class="icon">
                 <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
@@ -696,7 +706,6 @@ onMounted(() => {
             collapse-id="setting"
             class="collapse-wrap"
           >
-            <!-- :class="[isOpen && 'active']" -->
             <template #header>
               <div class="icon">
                 <i class="lnir lnir-cogs" aria-hidden="true"></i>
@@ -714,15 +723,18 @@ onMounted(() => {
               />
             </template>
 
-            <RouterLink class="is-submenu" to="/sidebar/settings">
+            <RouterLink
+              class="is-submenu"
+              to="/sidebar/dashboard/company-settings"
+            >
               <i class="lnir lnir-cogs" aria-hidden="true"></i>
-              <span>Clients Setting</span>
+              <span>Company Setting</span>
             </RouterLink>
             <RouterLink class="is-submenu" to="/sidebar/files-permission">
               <i class="lnir lnir-add-files" aria-hidden="true"></i>
               <span>Files</span>
             </RouterLink>
-          </VCollapseLinks>
+          </VCollapseLinks> -->
         </template>
 
         <template #bottom-links>
@@ -810,7 +822,7 @@ onMounted(() => {
           <li>
             <VCollapseLinks
               v-model:open="openSideblockLinks"
-              collapse-id="reports"
+              collapse-id="jobsprojects"
             >
               <template #header>
                 <span class="icon" id="cus-spanLink">
@@ -842,56 +854,62 @@ onMounted(() => {
             </VCollapseLinks>
           </li>
 
-          <!-- Managers -->
+          <!-- Internal users -->
           <li>
-            <RouterLink to="/sidebar/dashboard/managers" class="single-link">
-              <span class="icon" id="cus-spanLink">
-                <i class="lnir lnir-user-alt-1" aria-hidden="true"></i>
-              </span>
-            </RouterLink>
-          </li>
-
-          <!-- Contractors -->
-          <li>
-            <RouterLink to="/sidebar/dashboard/contractors" class="single-link">
-              <span class="icon" id="cus-spanLink">
-                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i>
-              </span>
-            </RouterLink>
-          </li>
-
-          <!-- sub Contractors -->
-          <li>
-            <RouterLink
-              to="/sidebar/dashboard/subcontractors"
-              class="single-link"
+            <VCollapseLinks
+              v-model:open="openSideblockLinks"
+              collapse-id="jobsProjects"
             >
-              <span class="icon" id="cus-spanLink">
-                <i class="lnir lnir-users" aria-hidden="true"></i>
-              </span>
-            </RouterLink>
-          </li>
+              <template #header>
+                <span class="icon" id="cus-spanLink">
+                  <i class="lnir lnir-users" aria-hidden="true"></i>
+                </span>
+              </template>
 
-          <li>
-            <RouterLink to="/sidebar/dashboard/workers" class="single-link">
-              <span class="icon" id="cus-spanLink">
-                <i class="lnir lnir-network" aria-hidden="true"></i>
-              </span>
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/sidebar/dashboard/clients" class="single-link">
-              <span class="icon" id="cus-spanLink">
-                <i class="lnir lnir-briefcase-alt" aria-hidden="true"></i>
-              </span>
-            </RouterLink>
+              <RouterLink to="/sidebar/dashboard/managers" class="is-submenu">
+                <span class="icon" id="cus-spanLink">
+                  <i class="lnir lnir-user-alt-1" aria-hidden="true"></i>
+                </span>
+              </RouterLink>
+
+              <RouterLink
+                to="/sidebar/dashboard/contractors"
+                class="is-submenu"
+              >
+                <span class="icon" id="cus-spanLink">
+                  <i class="lnir lnir-user-alt-2" aria-hidden="true"></i>
+                </span>
+              </RouterLink>
+              <RouterLink
+                to="/sidebar/dashboard/subcontractors"
+                class="is-submenu"
+              >
+                <span class="icon" id="cus-spanLink">
+                  <i class="lnir lnir-users" aria-hidden="true"></i>
+                </span>
+              </RouterLink>
+              <RouterLink to="/sidebar/dashboard/workers" class="is-submenu">
+                <span class="icon" id="cus-spanLink">
+                  <i class="lnir lnir-network" aria-hidden="true"></i>
+                </span>
+              </RouterLink>
+              <RouterLink to="/sidebar/dashboard/clients" class="is-submenu">
+                <span class="icon" id="cus-spanLink">
+                  <i class="lnir lnir-briefcase-alt" aria-hidden="true"></i>
+                </span>
+              </RouterLink>
+            </VCollapseLinks>
           </li>
 
           <!-- service Partners -->
           <li>
             <VCollapseLinks
               v-model:open="openSideblockLinks"
-              collapse-id="contractors"
+              collapse-id="finance"
+              v-if="
+                userSession.user.id == 'f6c283ec-9499-4983-997c-0456362e6650' ||
+                userSession.user.id == '73462666-c7f0-41eb-b978-24f5ffe7a539'
+              "
             >
               <template #header>
                 <span class="icon" id="cus-spanLink">
@@ -921,99 +939,6 @@ onMounted(() => {
                 <span class="icon" id="cus-spanLink">
                   <i class="lnir lnir-diagnosis-alt" aria-hidden="true"></i>
                 </span>
-              </RouterLink>
-            </VCollapseLinks>
-          </li>
-
-          <!-- workers -->
-          <li>
-            <VCollapseLinks
-              v-model:open="openSideblockLinks"
-              collapse-id="reports"
-            >
-              <template #header>
-                <span class="icon" id="cus-spanLink">
-                  <i class="iconify" data-icon="feather:users"></i>
-                </span>
-              </template>
-              <RouterLink
-                to="/sidebar/dashboard/workers?type=All"
-                :class="{ 'active-link': 'All' === route.query.type }"
-                style="
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  justify-content: center;
-                  background-color: transparent !important;
-                  align-items: center;
-                  font-size: 0.9rem;
-                  font-weight: 400;
-                "
-              >
-                <img
-                  src="/images/photo/multiUsers.png"
-                  style="
-                    border-radius: 8px;
-                    height: 25px;
-                    width: 25px;
-                    background-color: #f8f8f8;
-                    padding: 1px;
-                  "
-                />
-              </RouterLink>
-
-              <RouterLink
-                v-for="(item, index) in company.loggedCompany.industry"
-                :key="index"
-                :to="`/sidebar/dashboard/workers?type=${item.name}`"
-                :class="{ 'active-link': item.name === route.query.type }"
-                style="
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  background-color: transparent !important;
-                  align-items: center;
-                  font-size: 0.9rem;
-                  font-weight: 400;
-                "
-              >
-                <img
-                  :src="item.industryLogo"
-                  style="
-                    border-radius: 8px;
-                    height: 25px;
-                    width: 25px;
-                    background-color: #f8f8f8;
-                    padding: 1px;
-                  "
-                />
-              </RouterLink>
-
-              <!-- archive link -->
-              <RouterLink
-                to="/sidebar/dashboard/workers?archive=true"
-                :class="{ 'active-link': 'true' === route.query.archive }"
-                style="
-                  padding: 0;
-                  background-color: transparent !important;
-                  display: flex;
-                  flex-direction: column;
-                  font-family: var(--font);
-                  align-items: center;
-                  font-size: 0.9rem;
-                  font-weight: 400;
-                "
-              >
-                <img
-                  src="/images/photo/archiveUser.png"
-                  style="
-                    border-radius: 8px;
-                    padding: 1px;
-                    height: 25px;
-                    width: 25px;
-                    background-color: #f8f8f8;
-                  "
-                />
               </RouterLink>
             </VCollapseLinks>
           </li>

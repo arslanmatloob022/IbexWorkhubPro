@@ -215,21 +215,17 @@ export function convertToFormData(data: any, fileKeys: any) {
 
 export const markerColors = ref([
   { id: 1, hexCode: "#FFD700" },
-  // { id: 2, hexCode: "#87CEEB" },
   { id: 3, hexCode: "#98FB98" },
   { id: 4, hexCode: "#FF69B4" },
   { id: 5, hexCode: "#F0E68C" },
   { id: 6, hexCode: "#00CED1" },
   { id: 7, hexCode: "#FFA07A" },
-  // { id: 8, hexCode: "#ADD8E6" },
   { id: 9, hexCode: "#FF6347" },
   { id: 10, hexCode: "#00FA9A" },
   { id: 11, hexCode: "#FFE4B5" },
   { id: 12, hexCode: "#40E0D0" },
   { id: 13, hexCode: "#FF8C00" },
-  // { id: 14, hexCode: "#AFEEEE" },
   { id: 15, hexCode: "#FF4500" },
-  // { id: 16, hexCode: "#B0C4DE" },
   { id: 17, hexCode: "#FF1493" },
   { id: 18, hexCode: "#7FFFD4" },
   { id: 19, hexCode: "#FFB6C1" },
@@ -264,4 +260,22 @@ export function formatDateTime(inputDate: any) {
   };
 
   return date.toLocaleDateString("en-US", options);
+}
+
+export function formatTime(inputDate: any) {
+  const date = new Date(inputDate);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true, // Use 12-hour format. Change to false for 24-hour format.
+  };
+
+  return date.toLocaleTimeString("en-US", options);
 }

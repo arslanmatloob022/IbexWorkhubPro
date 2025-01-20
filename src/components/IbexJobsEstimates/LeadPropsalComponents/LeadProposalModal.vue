@@ -2,9 +2,11 @@
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
+import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
+
+const useProposal = useProposalStore();
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -19,6 +21,8 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
   leadProposalModal?: boolean;
+  proposalId?: string;
+  leadId?: string;
 }>();
 
 const tagsValue = ref([]);
@@ -116,6 +120,7 @@ const workItem = ref({
 
 interface leadProposalData {
   title: string;
+  approval_deadline: string;
   approvalDeadline: string;
   internalNotes: string;
   introductoryText: string;
@@ -128,6 +133,7 @@ interface leadProposalData {
 
 const leadProposalFormData = ref<leadProposalData>({
   title: "",
+  approval_deadline: "",
   attachments: [],
   approvalDeadline: "",
   internalNotes: "",
@@ -178,16 +184,15 @@ const status = ref([
   { value: "noOpportunity", label: "No Opportunity" },
 ]);
 
-const addUpdateLeadHandler = async () => {
+const addUpdateProposalHandler = async () => {
   try {
     isLoading.value = true;
-    const formDataAPI = convertToFormData(leadProposalFormData.value, [
-      "profileImageURL",
-    ]);
-    const response = await api.post("/v3/api/worker/", formDataAPI);
-    closeModalHandler();
+    const formDataAPI = convertToFormData(leadProposalFormData.value, [""]);
+    formDataAPI.append("job", props.leadId);
+    const response = await api.post("/api/lead-proposal/", formDataAPI);
+    updateOnSuccess();
     notyf.dismissAll();
-    notyf.success("New worker added, New Worker");
+    notyf.success("Proposal created successfully");
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);
   } finally {
@@ -195,8 +200,22 @@ const addUpdateLeadHandler = async () => {
   }
 };
 
+const getProposalDetail = async () => {
+  try {
+    const response = await api.get(`/api/lead-proposal/${props.proposalId}/`);
+    leadProposalFormData.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+  }
+};
+
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
+};
+
+const updateOnSuccess = () => {
+  emit("update:OnSuccess", null);
 };
 
 const handlePostCodeChange = async () => {
@@ -246,6 +265,10 @@ onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
+  if (props.proposalId) {
+    getProposalDetail();
+    useProposal.getProposalCostItems(props.proposalId);
+  }
 });
 </script>
 
@@ -256,7 +279,7 @@ onMounted(async () => {
     title="Lead Proposal"
     size="xl"
     actions="right"
-    @submit.prevent="addUpdateLeadHandler"
+    @submit.prevent="addUpdateProposalHandler"
     @close="closeModalHandler"
   >
     <template #content>
@@ -309,6 +332,37 @@ onMounted(async () => {
             </VControl>
           </VField>
         </div>
+        <div class="field column is-6">
+          <label>Approval Deadline *</label>
+          <div class="control">
+            <input
+              type="date"
+              name="firstName"
+              v-model="leadProposalFormData.approval_deadline"
+              required
+              class="input is-primary-focus is-primary-focus"
+              placeholder="Proposal Approval deadline"
+            />
+          </div>
+        </div>
+        <div class="field column is-6">
+          <label>Attachments</label>
+          <VField grouped>
+            <VControl>
+              <div class="file">
+                <label class="file-label">
+                  <input class="file-input" type="file" name="resume" />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-cloud-upload-alt" />
+                    </span>
+                    <span class="file-label"> Choose a file… </span>
+                  </span>
+                </label>
+              </div>
+            </VControl>
+          </VField>
+        </div>
         <VCollapse
           :items="data"
           with-chevron
@@ -345,7 +399,7 @@ onMounted(async () => {
 
                   <CKEditor
                     v-if="editor"
-                    v-model="leadProposalFormData.introductoryText"
+                    v-model="leadProposalFormData.closingText"
                     :editor="editor"
                     :config="editorConfig"
                   />
@@ -355,11 +409,11 @@ onMounted(async () => {
           </template>
         </VCollapse>
 
-        <div v-if="tab === 'worksheet'" class="column is-12">
-          <WorksheetItems />
-        </div>
+        <!-- <div v-if="tab === 'worksheet'" class="column is-12"> -->
+        <WorksheetItems :proposalId="leadProposalFormData.id" />
+        <!-- </div> -->
 
-        <div v-if="tab === 'format'" class="column is-12">
+        <!-- <div v-if="tab === 'format'" class="column is-12">
           <VCard class="columns is-multiline m-0">
             <div class="column is-12" style="text-align: center">
               <h1 class="title is-4">Connect your clients to their projects</h1>
@@ -373,7 +427,7 @@ onMounted(async () => {
         </div>
         <div v-if="tab === 'preview'">
           <p>preview</p>
-        </div>
+        </div> -->
       </div>
     </template>
     <template #action>

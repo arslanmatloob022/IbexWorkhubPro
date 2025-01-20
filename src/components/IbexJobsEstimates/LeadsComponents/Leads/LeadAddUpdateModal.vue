@@ -6,11 +6,12 @@ import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import LeadActivityModal from "./LeadActivityModal.vue";
+import ContractorsDropDown from "/@src/components/CommonComponents/DropDowns/ContractorsDropDown.vue";
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
-const isLoading = ref(false);
+const loading = ref(false);
 const FormData = ref({});
 const openAddContactModal = ref(false);
 const openLeadProposalModal = ref(false);
@@ -21,9 +22,19 @@ const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
+
 const props = defineProps<{
   addUpdateLeadModal?: boolean;
+  leadId?: string;
 }>();
+
+const closeModalHandler = () => {
+  emit("update:modalHandler", false);
+};
+
+const updateOnSuccess = () => {
+  emit("update:OnSuccess", null);
+};
 
 const tagsValue = ref([]);
 const tagsOptions = [
@@ -84,43 +95,53 @@ interface tag {
   label: string;
 }
 interface leadData {
+  id: string;
   title: string;
   address: string;
+  current_state: string;
   city: string;
   state: string;
   status: string;
-  zipCode: string;
+  zip_code: string;
   confidence: number;
-  saleDate: string;
+  sale_date: string;
   salesPeople: [];
   tags: tag[];
-  estimatedFrom: string;
-  estimatedTo: string;
+  estimated_from: string;
+  estimated_to: string;
   sources: string;
   projectType: string;
   notes: string;
   attachments: [];
-  attachMail: string;
+  attach_mail: string;
+  created_by: string;
+  manager: string;
+  client: string;
 }
 
 const leadFormData = ref<leadData>({
+  id: "",
   title: "",
   address: "",
+  current_state: "",
   city: "",
   state: "",
   status: "",
-  zipCode: "",
+  zip_code: "",
   confidence: 0,
-  saleDate: "",
+  sale_date: "",
   salesPeople: [],
   tags: [],
-  estimatedFrom: "",
-  estimatedTo: "",
+  estimated_from: "",
+  estimated_to: "",
   sources: "",
   projectType: "",
   notes: "",
   attachments: [],
-  attachMail: "",
+  attach_mail: "",
+  created_by: userSession.user.id,
+  manager: "",
+  client: "",
 });
 
 interface ActivityModel {
@@ -191,32 +212,42 @@ interface contactPerson {
 
 const addUpdateLeadHandler = async () => {
   try {
-    isLoading.value = true;
-    const formDataAPI = convertToFormData(FormData.value, ["profileImageURL"]);
-    const response = await api.post("/v3/api/worker/", formDataAPI);
-    closeModalHandler();
-    notyf.dismissAll();
-    notyf.success("New worker added, New Worker");
+    loading.value = true;
+    const formDataAPI = convertToFormData(leadFormData.value, [""]);
+    const response = await api.post("/api/job/", formDataAPI);
+    leadFormData.value = response.data;
+    updateOnSuccess();
+    notyf.success("Lead created successfully");
   } catch (error: any) {
-    notyf.error(` ${error}, New Worker`);
+    notyf.error(` ${error}, Lead`);
   } finally {
-    isLoading.value = false;
+    loading.value = false;
   }
 };
 
-const closeModalHandler = () => {
-  emit("update:modalHandler", false);
+const getLeadDetailHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/job/${props.leadId}/`);
+    leadFormData.value = response.data;
+  } catch (error: any) {
+    notyf.error(` ${error}, Lead`);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const handlePostCodeChange = async () => {
   try {
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${FormData.value.postCode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${leadFormData.value.zip_code}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
     );
     if (response.data.status === "OK") {
-      //   FormData.value.homeAddress = response.data.results[0].formatted_address;
-      //   FormData.value.latitude = response.data.results[0].geometry.location.lat;
-      //   FormData.value.longitude = response.data.results[0].geometry.location.lng;
+      leadFormData.value.address = response.data.results[0].formatted_address;
+      leadFormData.value.latitude =
+        response.data.results[0].geometry.location.lat;
+      leadFormData.value.longitude =
+        response.data.results[0].geometry.location.lng;
       notyf.success("Address Added");
     } else if (response.data.status === "ZERO_RESULTS") {
       notyf.error("Invalid Post-Code");
@@ -255,6 +286,9 @@ onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
+  if (props.leadId) {
+    getLeadDetailHandler();
+  }
 });
 </script>
 
@@ -309,14 +343,14 @@ onMounted(async () => {
         </div>
         <div v-if="tab === 'general'" class="column is-12">
           <VCard class="columns is-multiline">
-            <h3 class="title is-6 mb-2">Notes</h3>
+            <h3 class="title is-6 mb-2">General Information</h3>
             <div class="columns is-multiline">
               <div class="field column is-12 mb-0">
                 <label>Opportunity Title: *</label>
                 <div class="control">
                   <input
                     type="text"
-                    name="firstName"
+                    name="title"
                     v-model="leadFormData.title"
                     required
                     class="input is-primary-focus is-primary-focus"
@@ -330,7 +364,7 @@ onMounted(async () => {
                 <div class="control">
                   <input
                     type="text"
-                    name="lastName"
+                    name="address"
                     v-model="leadFormData.address"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="Street Address"
@@ -342,8 +376,8 @@ onMounted(async () => {
                 <label>City: </label>
                 <div class="control">
                   <input
-                    type="email"
-                    name="emailAddress"
+                    type="text"
+                    name="city"
                     v-model="leadFormData.city"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="City"
@@ -355,7 +389,7 @@ onMounted(async () => {
                 <label>State: </label>
                 <div class="control">
                   <input
-                    type="tel"
+                    type="text"
                     name="state"
                     v-model="leadFormData.state"
                     class="input is-primary-focus is-primary-focus"
@@ -368,13 +402,13 @@ onMounted(async () => {
                 <label>Zip Code: </label>
                 <div class="control">
                   <input
-                    type="tel"
+                    type="text"
                     name="zipCode"
-                    @blur="handlePostCodeChange"
-                    v-model="leadFormData.zipCode"
+                    v-model="leadFormData.zip_code"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="Zip code"
                   />
+                  <!-- @blur="handlePostCodeChange" -->
                 </div>
               </div>
 
@@ -397,8 +431,8 @@ onMounted(async () => {
                 <div class="control">
                   <input
                     type="date"
-                    name="postCode"
-                    v-model="leadFormData.saleDate"
+                    name="saleDate"
+                    v-model="leadFormData.sale_date"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="Post code"
                   />
@@ -426,7 +460,7 @@ onMounted(async () => {
 
             <!-- Salespeople -->
             <div class="field column is-12 mb-0">
-              <label>Salespeople:</label>
+              <label>Sales people:</label>
               <VField v-slot="{ id }" class="is-image-tags">
                 <VControl>
                   <Multiselect
@@ -458,6 +492,30 @@ onMounted(async () => {
               </VField>
             </div>
 
+            <div class="field column is-6 mb-0">
+              <ContractorsDropDown
+                v-if="props.addUpdateLeadModal"
+                :selectedContractor="leadFormData.manager"
+                @update:OnSelectContractor="
+                  (id: any) => {
+                    leadFormData.client = id;
+                  }
+                "
+              />
+            </div>
+
+            <div class="field column is-6 mb-0">
+              <ManagersDropDown
+                v-if="props.addUpdateLeadModal"
+                :selectedManager="leadFormData.manager"
+                @update:OnSelectManager="
+                  (id: any) => {
+                    leadFormData.manager = id;
+                  }
+                "
+              />
+            </div>
+
             <!-- estimated revenue -->
             <div class="field column is-3 mb-0">
               <label>Estimated Revenue: </label>
@@ -465,7 +523,7 @@ onMounted(async () => {
                 <input
                   type="text"
                   name="externalID"
-                  v-model="leadFormData.estimatedFrom"
+                  v-model="leadFormData.estimated_from"
                   class="input is-primary-focus is-primary-focus"
                   placeholder="From"
                 />
@@ -478,7 +536,7 @@ onMounted(async () => {
                 <input
                   type="text"
                   name="externalID"
-                  v-model="leadFormData.estimatedTo"
+                  v-model="leadFormData.estimated_to"
                   class="input is-primary-focus is-primary-focus"
                   placeholder="To"
                 />
@@ -658,30 +716,22 @@ onMounted(async () => {
         </div>
         <div v-if="tab === 'proposals'" class="column is-12">
           <VCard class="columns is-multiline">
-            <div class="column is-6">
-              <VButton
-                @click="openLeadProposalModal = !openLeadProposalModal"
-                color="info"
-                class="p-6"
-                icon="fas fa-plus"
-                fullwidth
-                bold
-              >
-                Add Proposal
-              </VButton>
+            <div class="column is-12">
+              <LeadProposalsList :leadId="leadFormData.id" />
             </div>
           </VCard>
-          <LeadProposalModal
+          <!-- <LeadProposalModal
             v-if="openLeadProposalModal"
+            :leadId="leadFormData.id"
             :leadProposalModal="openLeadProposalModal"
             @update:modal-handler="openLeadProposalModal = false"
-          />
+          /> -->
         </div>
       </div>
     </template>
     <template #action>
       <VButton
-        :loading="isLoading"
+        :loading="loading"
         type="submit"
         color="primary"
         icon="fas fa-plus"

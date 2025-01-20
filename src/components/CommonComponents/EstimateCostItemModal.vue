@@ -2,7 +2,6 @@
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 const editor = shallowRef<any>();
@@ -10,8 +9,6 @@ const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const isLoading = ref(false);
-const FormData = ref({});
-const openAddContactModal = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -19,6 +16,7 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
   costItemModal?: boolean;
+  proposalId?: string;
 }>();
 
 const tagsValue = ref([]);
@@ -36,81 +34,48 @@ const sourcesOptions = [
   { value: "referral", label: "Referral" },
 ];
 
-const tagsSlotValue = ref([]);
-const tagsSlotOptions = [
-  {
-    value: "javascript",
-    name: "Javascript",
-    image: "/images/icons/stacks/js.svg",
-  },
-  {
-    value: "reactjs",
-    name: "ReactJS",
-    image: "/images/icons/stacks/reactjs.svg",
-  },
-  {
-    value: "vuejs",
-    name: "VueJS",
-    image: "/images/icons/stacks/vuejs.svg",
-  },
-  {
-    value: "angular",
-    name: "Angular",
-    image: "/images/icons/stacks/angular.svg",
-  },
-  {
-    value: "android",
-    name: "Android",
-    image: "/images/icons/stacks/android.svg",
-  },
-  {
-    value: "html5",
-    name: "Html5",
-    image: "/images/icons/stacks/html5.svg",
-  },
-  {
-    value: "css3",
-    name: "CSS3",
-    image: "/images/icons/stacks/css3.svg",
-  },
-];
-
 interface item {
+  id: string;
   title: string;
-  costType: string;
   description: string;
+  type: string;
   quantity: number;
-  unit: number;
-  unitCost: number;
+  unit: string;
+  unit_cost: number;
   markup: number;
-  clientPrice: number;
-  costCode: string;
-  builderCost: string;
+  total_price: number;
+  cost_code: string;
+  cost_type: string;
+  builder_cost: number;
   margin: number;
   profit: number;
-  internalNotes: string;
-  includeInCatalog: boolean;
-  markAs: string;
+  internal_notes: string;
+  mark_as: string;
+  state: string;
   group: string;
+  proposal: string | undefined;
 }
 
 const costItem = ref<item>({
+  id: "",
+  type: "",
+  total_price: 0,
+  cost_code: "",
+  cost_type: "",
+  builder_cost: 0,
+  internal_notes: "",
+  mark_as: "",
+  state: "",
   title: "",
   description: "",
   quantity: 0,
-  unit: 0,
-  unitCost: 0,
+  unit: "",
+  unit_cost: 0,
   markup: 0,
-  clientPrice: 0,
-  costCode: "",
-  costType: "",
-  builderCost: "",
   margin: 0,
   profit: 0,
-  internalNotes: "",
-  includeInCatalog: false,
-  markAs: "",
   group: "",
+  proposal: props.proposalId,
 });
 
 const costType = ref([
@@ -119,6 +84,21 @@ const costType = ref([
   { value: "equipment", label: "Equipment" },
   { value: "subcontractor", label: "Subcontractor" },
   { value: "other", label: "Others" },
+]);
+
+const costCode = ref([
+  { value: "11011", label: "Labour" },
+  { value: "11012", label: "Material" },
+  { value: "11013", label: "Equipment" },
+  { value: "11014", label: "Subcontractor" },
+  { value: "11015", label: "Others" },
+]);
+
+const itemGroup = ref([
+  { value: "Tiling", label: "Tiling" },
+  { value: "Material", label: "Material" },
+  { value: "Paint", label: "Paint" },
+  { value: "Carpenter", label: "Carpenter" },
 ]);
 
 const markAsOption = ref([
@@ -139,11 +119,11 @@ const status = ref([
 const addUpdateLeadHandler = async () => {
   try {
     isLoading.value = true;
-    const formDataAPI = convertToFormData(costItem.value, ["profileImageURL"]);
-    const response = await api.post("/v3/api/worker/", formDataAPI);
+    const formDataAPI = convertToFormData(costItem.value, [""]);
+    const response = await api.post("/api/cost/", formDataAPI);
     closeModalHandler();
-    notyf.dismissAll();
-    notyf.success("New worker added, New Worker");
+    updateOnSuccess();
+    notyf.success("Item added successfully.");
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);
   } finally {
@@ -153,6 +133,10 @@ const addUpdateLeadHandler = async () => {
 
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
+};
+
+const updateOnSuccess = () => {
+  emit("update:OnSuccess", null);
 };
 
 const CKEditor = defineAsyncComponent(() =>
@@ -206,7 +190,7 @@ onMounted(async () => {
               <label for="">Cost Type</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.costType">
+                  <VSelect v-model="costItem.cost_type">
                     <VOption
                       v-for="(item, index) in costType"
                       :value="item.value"
@@ -219,20 +203,23 @@ onMounted(async () => {
             </div>
             <div class="field column is-6">
               <label for="">Catalog</label>
-              <VField class="is-flex">
+              <div>
+                <VButton size="small">Add in Catalog</VButton>
+              </div>
+              <!-- <VField class="is-flex">
                 <VControl raw subcontrol>
                   <VCheckbox
-                    v-model="costItem.includeInCatalog"
+                    v-model="costItem"
                     label="Include item in Catalog"
                   />
                 </VControl>
-              </VField>
+              </VField> -->
             </div>
             <div class="field column is-6">
               <label for="">Mark As</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.markAs">
+                  <VSelect v-model="costItem.mark_as">
                     <VOption
                       v-for="(item, index) in markAsOption"
                       :value="item.value"
@@ -247,9 +234,9 @@ onMounted(async () => {
               <label for="">Cost Code *</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.costType">
+                  <VSelect v-model="costItem.cost_code">
                     <VOption
-                      v-for="(item, index) in costType"
+                      v-for="(item, index) in costCode"
                       :value="item.value"
                     >
                       {{ item.label }}
@@ -259,12 +246,12 @@ onMounted(async () => {
               </VField>
             </div>
             <div class="field column is-6">
-              <label for="">Group</label>
+              <label for="">Group Cost</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.costType">
+                  <VSelect v-model="costItem.group">
                     <VOption
-                      v-for="(item, index) in costType"
+                      v-for="(item, index) in itemGroup"
                       :value="item.value"
                     >
                       {{ item.label }}
@@ -288,7 +275,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VTextarea
-                    v-model="costItem.internalNotes"
+                    v-model="costItem.internal_notes"
                     rows="4"
                     placeholder="Internal notes..."
                   />
@@ -304,7 +291,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="costItem.unitCost"
+                    v-model="costItem.unit_cost"
                     type="number"
                     name="unitCost"
                     placeholder="Unit cost"
@@ -317,7 +304,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="costItem.unitCost"
+                    v-model="costItem.quantity"
                     type="number"
                     name="quantity"
                     placeholder="Quantity"
@@ -331,7 +318,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="costItem.unit"
-                    type="number"
+                    type="text"
                     name="unit"
                     placeholder="Unit"
                   />
@@ -343,7 +330,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="costItem.unit"
+                    v-model="costItem.builder_cost"
                     type="number"
                     name="builderCost"
                     placeholder="Builder cost"
@@ -369,10 +356,10 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="costItem.clientPrice"
+                    v-model="costItem.total_price"
                     type="number"
                     name="markup"
-                    placeholder="Client Price"
+                    placeholder="Total Price"
                   />
                 </VControl>
               </VField>

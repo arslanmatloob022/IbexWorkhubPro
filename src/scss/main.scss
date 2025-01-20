@@ -51,7 +51,8 @@ SCSS Imports
   font-family: monospace;
   font-size: 30px;
   color: #0000;
-  background: linear-gradient(90deg, #2aac8e calc(50% + 0.5ch), #000 0) right/calc(200% + 1ch) 100%;
+  background: linear-gradient(90deg, #2aac8e calc(50% + 0.5ch), #000 0)
+    right/calc(200% + 1ch) 100%;
   -webkit-background-clip: text;
   background-clip: text;
   animation: l7 2s infinite steps(11);
@@ -79,6 +80,30 @@ SCSS Imports
   align-items: center;
 }
 
+.show-text-50 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50px;
+}
+.show-text-100 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+.show-text-200 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.show-text-300 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
 .small-img {
   width: 48px;
   height: 48px;
@@ -542,12 +567,15 @@ SCSS Imports
     }
   }
 
-  .placement-wrapper>.multiselect>.multiselect-wrapper>.multiselect-search {
+  .placement-wrapper
+    > .multiselect
+    > .multiselect-wrapper
+    > .multiselect-search {
     background: transparent;
     outline: none;
   }
 
-  .placement-wrapper>.multiselect>.multiselect-dropdown {
+  .placement-wrapper > .multiselect > .multiselect-dropdown {
     border-radius: 0.8rem;
     margin-bottom: -1.5rem;
     box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
@@ -658,12 +686,15 @@ SCSS Imports
     }
   }
 
-  .placement-wrapper>.multiselect>.multiselect-wrapper>.multiselect-search {
+  .placement-wrapper
+    > .multiselect
+    > .multiselect-wrapper
+    > .multiselect-search {
     background: transparent;
     outline: none;
   }
 
-  .placement-wrapper>.multiselect>.multiselect-dropdown {
+  .placement-wrapper > .multiselect > .multiselect-dropdown {
     border-radius: 0.8rem;
     margin-bottom: -1.5rem;
     box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
@@ -681,7 +712,6 @@ SCSS Imports
 
 // apply on alll input fields =================================================
 .cu-all-input {
-
   /* General input styles */
   input {
     border-radius: 15px !important;
@@ -750,7 +780,8 @@ SCSS Imports
   }
 }
 
-.cus-tag-button {}
+.cus-tag-button {
+}
 
 // =====================================================================================
 // ==================================================================================

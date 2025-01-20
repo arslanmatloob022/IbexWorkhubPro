@@ -2,9 +2,12 @@
 import { popovers } from "/@src/data/users/userPopovers";
 import { getColumnName, getColumnData, costItems } from "../../proposalItems";
 import { forEach } from "cypress/types/lodash";
+import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 const props = defineProps<{
   columnsToShow?: any;
 }>();
+
+const useProposal = useProposalStore();
 const data = ref([
   {
     name: "Website Redesign",
@@ -271,12 +274,22 @@ const totalPrice = computed(() => {
                   </th>
                 </thead>
                 <tbody>
-                  <tr v-for="(user, index) in costItems" :key="user.id">
+                  <tr
+                    v-for="(cost, index) in useProposal.proposalCostItems"
+                    :key="cost.id"
+                  >
                     <td
                       v-for="(column, index) in props.columnsToShow"
                       :key="index"
                     >
-                      {{ user[getColumnData[column]] }}
+                      <div
+                        v-if="column === 'Description'"
+                        v-html="cost[getColumnData[column]]"
+                      ></div>
+                      <span v-else>
+                        {{ cost[getColumnData[column]] }}
+                      </span>
+                      <!-- {{ cost[getColumnData[column]] }} -->
                     </td>
                   </tr>
                 </tbody>

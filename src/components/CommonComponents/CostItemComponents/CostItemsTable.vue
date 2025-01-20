@@ -2,6 +2,7 @@
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { costItems } from "../../IbexJobsEstimates/proposalItems";
+import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 export interface UserData extends VAvatarProps {
   id: number;
   username: string;
@@ -16,17 +17,18 @@ export interface UserData extends VAvatarProps {
 
 const props = defineProps<{
   columnsToShow?: any;
+  itemsList?: any;
 }>();
 const notyf = useNotyf();
 const page = ref(42);
-
+const useProposal = useProposalStore();
 const tagsValue = ref([
   "ItemNumber",
   "Description",
   "Quantity",
   "Unit",
   "UnitCost",
-  "ClientPrice",
+  "TotalPrice",
 ]);
 const tagsOptions = [
   { value: "ItemNumber", label: "Item Number" },
@@ -36,15 +38,15 @@ const tagsOptions = [
   { value: "UnitCost", label: "Unit Cost" },
   { value: "Markup", label: "Markup" },
   { value: "Margin", label: "Margin" },
-  { value: "ClientPrice", label: "Client Price" },
+  { value: "TotalPrice", label: "Client Price" },
   { value: "Profit", label: "Profit" },
   { value: "Notes", label: "Notes" },
 ];
 
 const getColumnName = ref({
-  ItemNumber: "No#",
+  CostCode: "Cost Code",
   Title: "Title",
-  Unit: "Cost Code",
+  Unit: "Unit",
   Description: "Description",
   CostType: "Cost Type",
   MarkAs: "Mark As",
@@ -59,15 +61,14 @@ const getColumnName = ref({
   GroupPrice: "Group Price",
   TotalCost: "Total Cost",
   TotalMarkup: "Total Markup",
-  ClientPrice: "Client Price",
   Profit: "Profit",
   Notes: "Internal Notes",
 });
 
 const getColumnData = ref({
-  ItemNumber: "id",
+  CostCode: "cost_code",
   Title: "title",
-  Unit: "cost_code",
+  Unit: "unit",
   Description: "description",
   CostType: "cost_type",
   MarkAs: "mark_as",
@@ -76,13 +77,12 @@ const getColumnData = ref({
   BuilderCost: "builder_cost",
   Markup: "markup",
   MarkupAmount: "markup_amount",
-  UnitPrice: "unit_price",
+  UnitPrice: "unit_cost",
   Price: "price",
   TotalPrice: "total_price",
-  GroupPrice: "group_price",
+  GroupPrice: "group",
   TotalCost: "total_cost",
   TotalMarkup: "total_markup",
-  ClientPrice: "client_price",
   Profit: "profit",
   Notes: "internal_notes",
 });
@@ -114,6 +114,7 @@ onMounted(() => {});
     <div class="table-container">
       <table class="table datatable-table is-fullwidth" id="external-events">
         <thead>
+          <th>Item#</th>
           <th v-for="(column, index) in props.columnsToShow" :key="index">
             {{ getColumnName[column] }}
           </th>
@@ -121,55 +122,27 @@ onMounted(() => {});
         </thead>
         <tbody>
           <tr
+            v-if="useProposal.proposalCostItems.length > 0"
             class="events"
-            v-for="(user, index) in costItems"
-            :key="user.id"
-            :data-event="JSON.stringify(user)"
+            v-for="(cost, index) in useProposal.proposalCostItems"
+            :key="cost.id"
+            :data-event="JSON.stringify(cost)"
             draggable="true"
             @dragstart="handleDragStart(index)"
             @drop="() => handleDrop(index)"
             @dragover="handleDragOver"
           >
+            <td>{{ index + 1 }}</td>
             <td v-for="(column, index) in props.columnsToShow" :key="index">
-              {{ user[getColumnData[column]] }}
+              <div
+                v-if="column === 'Description'"
+                v-html="cost[getColumnData[column]]"
+              ></div>
+              <span v-else>
+                {{ cost[getColumnData[column]] }}
+              </span>
             </td>
 
-            <!-- <td>
-                <div class="is-flex">
-                  <i
-                    class="lnir lnir-sort"
-                    style="cursor: grab"
-                    aria-hidden="true"
-                  ></i>
-
-                  {{ user.id }}
-                </div>
-              </td>
-              <td>
-                <div class="flex-media">
-                  <div class="meta">
-                    <h3>{{ user.title }}</h3>
-                    <span>{{ user.approved_by }}</span>
-                  </div>
-                </div>
-              </td>
-              <td>{{ user.category }}</td>
-              <td>{{ user.cost_code }}</td>
-              <td>
-                {{ user.cost_type }}
-              </td>
-              <td>
-                {{ user.grand_total }}
-              </td>
-              <td>
-                {{ user.markup }}
-              </td>
-              <td>
-                {{ user.markup_value }}
-              </td>
-              <td>
-                {{ user.internal_notes }}
-              </td> -->
             <td>
               <FlexTableDropdown />
             </td>

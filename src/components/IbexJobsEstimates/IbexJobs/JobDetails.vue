@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import LeadProposalsList from "../LeadPropsalComponents/LeadProposalsList.vue";
 import { useTodoList } from "/@src/data/widgets/list/todoList";
+import { useApi } from "/@src/composable/useAPI";
+import { useUserSession } from "/@src/stores/userSession";
+import { useNotyf } from "/@src/composable/useNotyf";
+const route = useRoute();
+const router = useRouter();
+const api = useApi();
+const notyf = useNotyf();
 
+const userSession = useUserSession();
 const { todoList3, todoList4 } = useTodoList();
 
 const todoList3Selection = ref([todoList3.value[0], todoList3.value[2]]);
@@ -65,8 +73,48 @@ const drawMap = (lat: any, lng: any) => {
   }
 };
 
+const loading = ref(false);
+const leadDetail = ref({
+  id: "e0820b29-38e0-4868-88cb-8fcbe966328c",
+  title: "Test With propsoal",
+  address: "157 / C-Block, Main Boulevard, Guldasht Town",
+  current_state: "lead",
+  city: "Lahore",
+  state: "London",
+  status: "lost",
+  zip_code: "54000",
+  confidence: "0.00",
+  sale_date: "2025-01-16",
+  tags: [],
+  estimated_from: "9000.00",
+  estimated_to: "9500.00",
+  sources: "",
+  project_type: null,
+  notes: "",
+  attach_mail: "",
+  created_at: "2025-01-18T12:25:19.384075Z",
+  updated_at: "2025-01-18T12:25:19.384089Z",
+  created_by: "0feda007-d8a0-4b96-acb7-d7763614854e",
+  manager: "0d8a9a08-b932-463c-8795-5bd290f88c1a",
+  client: "a1af480c-4b20-4669-bcc6-db4402074fc7",
+  sales_people: [],
+});
+
+const getLeadDetailHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/job/${route.params.id}/`);
+    leadDetail.value = response.data;
+  } catch (error: any) {
+    notyf.error(` ${error}, Lead`);
+  } finally {
+    loading.value = false;
+  }
+};
+
 onMounted(() => {
   drawMap(32.80839, -83.650384);
+  getLeadDetailHandler();
 });
 </script>
 
@@ -86,7 +134,9 @@ onMounted(() => {
                     picture="/images/avatars/svg/vuero-1.svg"
                     squared
                   />
-                  <h3>Jonathan & Anita Home.</h3>
+                  <h3>
+                    {{ leadDetail.title ? leadDetail.title : "No Title" }}
+                  </h3>
                 </div>
               </div>
 
@@ -94,10 +144,13 @@ onMounted(() => {
               <div class="center">
                 <h4 class="block-heading">Address</h4>
                 <p class="block-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Praeclarae mortes.
+                  {{
+                    leadDetail.address ? leadDetail.address : "No Address Added"
+                  }}
                 </p>
-                <p class="block-text">City, State Colorado, ZIP Code: 803248</p>
+                <p class="block-text">
+                  {{ leadDetail.city ? leadDetail.city : "No City Added" }}
+                </p>
               </div>
 
               <!--Right-->
@@ -494,7 +547,7 @@ onMounted(() => {
           </div>
 
           <div v-if="tab === 'proposals'" class="column is-12">
-            <LeadProposalsList />
+            <LeadProposalsList :lead-id="route.params.id" />
           </div>
 
           <div v-if="tab === 'progress'" class="column is-12">

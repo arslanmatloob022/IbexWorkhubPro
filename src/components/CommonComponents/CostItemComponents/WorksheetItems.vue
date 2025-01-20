@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
-import ItemsTabuler from "./CostItemsTable.vue";
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const isLoading = ref(false);
 const FormData = ref({});
+const proposalStore = useProposalStore();
 const openAddContactModal = ref(false);
 
 const emit = defineEmits<{
@@ -20,15 +20,16 @@ const emit = defineEmits<{
 }>();
 const props = defineProps<{
   leadProposalModal?: boolean;
+  proposalId?: string;
 }>();
 
 const tagsValue = ref([
-  "ItemNumber",
+  "CostCode",
   "Description",
   "Quantity",
   "Unit",
   "UnitCost",
-  "ClientPrice",
+  "TotalPrice",
 ]);
 
 const tagsOptions = [
@@ -211,10 +212,52 @@ const editorConfig = {
 };
 const addCostItemModal = ref(false);
 const showDropdown = ref(false);
+const costItemsList = ref({
+  id: "",
+  type: "",
+  total_price: 0,
+  cost_code: "",
+  cost_type: "",
+  builder_cost: 0,
+  internal_notes: "",
+  mark_as: "",
+  state: "",
+  title: "",
+  costType: "",
+  description: "",
+  quantity: 0,
+  unit: 0,
+  unit_cost: 0,
+  markup: 0,
+  clientPrice: 0,
+  costCode: "",
+  builderCost: "",
+  margin: 0,
+  profit: 0,
+  internalNotes: "",
+  includeInCatalog: false,
+  markAs: "",
+  group: "",
+  proposal: "",
+});
+const getProposalCostItems = async () => {
+  try {
+    proposalStore.getProposalCostItems(props.proposalId);
+    // const resp = await api.get(`/api/cost/by-proposal/${props.proposalId}/`);
+    // costItemsList.value = resp.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    costItemsList.value = proposalStore.proposalCostItems;
+  }
+};
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
+  if (props.proposalId) {
+    getProposalCostItems();
+  }
 });
 </script>
 
@@ -323,7 +366,10 @@ onMounted(async () => {
 
       <TransitionGroup class="fade-slow" name="slide-x">
         <div v-if="tab === 'worksheet'" class="column is-12">
-          <CostItemsTable :columnsToShow="tagsValue" />
+          <CostItemsTable
+            :columnsToShow="tagsValue"
+            :proposalId="props.proposalId"
+          />
         </div>
       </TransitionGroup>
 
@@ -362,6 +408,7 @@ onMounted(async () => {
           </VCard>
         </div>
       </TransitionGroup>
+
       <TransitionGroup class="fade-slow" name="slide-x">
         <div v-if="tab === 'preview'" class="column is-12">
           <ProposalPreview :columnsToShow="tagsValue" />
@@ -371,7 +418,9 @@ onMounted(async () => {
     <EstimateCostItemModal
       v-if="addCostItemModal"
       :costItemModal="addCostItemModal"
+      :proposalId="props.proposalId"
       @update:modalHandler="addCostItemModal = false"
+      @update:OnSuccess="getProposalCostItems"
     >
     </EstimateCostItemModal>
   </div>

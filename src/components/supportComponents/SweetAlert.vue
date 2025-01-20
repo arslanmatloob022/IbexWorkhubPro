@@ -1,5 +1,3 @@
-<!-- SweetAlert.vue -->
-
 <script setup lang="ts">
 const props = defineProps({
   isSweetAlertOpen: {

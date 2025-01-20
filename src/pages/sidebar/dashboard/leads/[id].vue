@@ -1,21 +1,38 @@
 <route lang="yaml">
 meta:
   requiresAuth: true
+  isAdminAllowed: true
+  isManagerAllowed: true
+  isContractorAllowed: true
+  isPartnerAllowed: false
+  isWorkerAllowed: false
+  isClientAllowed: false
 </route>
 
 <script setup lang="ts">
-import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
-const layoutSwitcher = useLayoutSwitcher();
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Leads");
 
-useHead(() => ({
-  title: "Leads",
-}));
+viewWrapper.setPageTitle("Lead details ");
+useHead({
+  title: "Lead Details - Ibex",
+});
 </script>
 
 <template>
-  <div>This is the leads view</div>
+  <div>
+    <JobDetails />
+  </div>
 </template>
+
+<style lang="scss">
+.has-top-nav {
+  .flex-list-wrapper,
+  .list-flex-toolbar {
+    max-width: 880px;
+    margin-inline-end: auto;
+    margin-inline-start: auto;
+  }
+}
+</style>
