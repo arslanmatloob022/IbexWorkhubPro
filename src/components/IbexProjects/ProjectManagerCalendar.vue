@@ -639,6 +639,7 @@ onMounted(async () => {
                 !arg.event.extendedProps?.workers?.length &&
                 arg.event?.display != 'background'
               "
+              @click="eventClick(arg)"
               style="font-weight: 500; margin-bottom: 0px; padding-left: 10px"
             >
               No worker is assigned yet
