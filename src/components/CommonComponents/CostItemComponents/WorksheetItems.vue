@@ -23,33 +23,31 @@ const props = defineProps<{
   proposalId?: string;
 }>();
 
-const tagsValue = ref([
+const selectedColumnsToShow = ref([
+  "Title",
   "CostCode",
   "Description",
   "Quantity",
-  "Unit",
   "UnitCost",
-  "TotalPrice",
+  "Unit",
+  "ClientPrice",
 ]);
 
 const tagsOptions = [
   { value: "ItemNumber", label: "Item Number" },
   { value: "Title", label: "Title" },
-  { value: "Unit", label: "Unit" },
+  { value: "CostCode", label: "Cost Code" },
   { value: "Description", label: "Description" },
-  { value: "CostType", label: "Cost Type" },
   { value: "Quantity", label: "Quantity" },
   { value: "UnitCost", label: "Unit Cost" },
+  { value: "Unit", label: "Unit" },
   { value: "BuilderCost", label: "Builder Cost" },
   { value: "Markup", label: "Markup" },
-  { value: "MarkupAmount", label: "Markup Amount" },
-  { value: "UnitPrice", label: "Unit Price" },
-  { value: "Price", label: "Price" },
-  { value: "TotalPrice", label: "Total Price" },
-  { value: "GroupPrice", label: "Group Price" },
-  { value: "TotalCost", label: "Total Cost" },
-  { value: "TotalMarkup", label: "Total Markup" },
   { value: "ClientPrice", label: "Client Price" },
+  { value: "CostType", label: "Cost Type" },
+  { value: "GroupPrice", label: "Group Price" },
+  { value: "TotalMarkup", label: "Total Markup" },
+  { value: "MarkupAmount", label: "Markup Amount" },
   { value: "Profit", label: "Profit" },
   { value: "Notes", label: "Notes" },
 ];
@@ -320,13 +318,13 @@ onUnmounted(() => {
           >
             <VControl>
               <Multiselect
-                v-model="tagsValue"
+                v-model="selectedColumnsToShow"
                 :attrs="{ id }"
                 mode="tags"
                 :searchable="true"
                 :create-tag="true"
                 :options="tagsOptions"
-                placeholder="Add tags"
+                placeholder="Add columns"
               />
             </VControl>
           </VField>
@@ -371,7 +369,7 @@ onUnmounted(() => {
       <TransitionGroup class="fade-slow" name="slide-x">
         <div v-if="tab === 'worksheet'" class="column is-12">
           <CostItemsTable
-            :columnsToShow="tagsValue"
+            :columnsToShow="selectedColumnsToShow"
             :proposalId="props.proposalId"
           />
         </div>
@@ -387,7 +385,7 @@ onUnmounted(() => {
             >
               <VControl>
                 <Multiselect
-                  v-model="tagsValue"
+                  v-model="selectedColumnsToShow"
                   :attrs="{ id }"
                   mode="tags"
                   :searchable="true"
@@ -407,7 +405,7 @@ onUnmounted(() => {
               </h1>
             </div>
             <div class="column is-12">
-              <CostItemsTable :columnsToShow="tagsValue" />
+              <CostItemsTable :columnsToShow="selectedColumnsToShow" />
             </div>
           </VCard>
         </div>
@@ -415,7 +413,7 @@ onUnmounted(() => {
 
       <TransitionGroup class="fade-slow" name="slide-x">
         <div v-if="tab === 'preview'" class="column is-12">
-          <ProposalPreview :columnsToShow="tagsValue" />
+          <ProposalPreview :columnsToShow="selectedColumnsToShow" />
         </div>
       </TransitionGroup>
     </div>

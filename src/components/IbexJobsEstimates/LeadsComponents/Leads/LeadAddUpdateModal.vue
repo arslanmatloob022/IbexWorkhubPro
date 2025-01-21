@@ -106,7 +106,7 @@ interface leadData {
   zip_code: string;
   confidence: number;
   sale_date: string;
-  salesPeople: [];
+  sales_people: [];
   tags: tag[];
   estimated_from: string;
   estimated_to: string;
@@ -116,7 +116,7 @@ interface leadData {
   attachments: [];
   attach_mail: string;
   created_by: string;
-  manager: string;
+  manager: string | undefined;
   client: string;
 }
 
@@ -131,7 +131,7 @@ const leadFormData = ref<leadData>({
   zip_code: "",
   confidence: 0,
   sale_date: "",
-  salesPeople: [],
+  sales_people: [],
   tags: [],
   estimated_from: "",
   estimated_to: "",
@@ -176,9 +176,13 @@ interface contactPerson {
 const addUpdateLeadHandler = async () => {
   try {
     loading.value = true;
+    leadFormData.value.tags = JSON.stringify(tagsValue.value);
     const formDataAPI = convertToFormData(leadFormData.value, [""]);
-    if (props.leadId || leadFormData.value) {
-      const response = await api.patch("/api/job/", formDataAPI);
+    if (props.leadId || leadFormData.value.id) {
+      const response = await api.patch(
+        `/api/job/${props.leadId ? props.leadId : leadFormData.value.id}/`,
+        formDataAPI
+      );
       leadFormData.value = response.data;
     } else {
       const response = await api.post("/api/job/", formDataAPI);
@@ -395,42 +399,32 @@ onMounted(async () => {
 
             <!-- Salespeople -->
             <div class="field column is-12 mb-0">
-              <label>Sales people:</label>
-              <VField v-slot="{ id }" class="is-image-tags">
-                <VControl>
-                  <Multiselect
-                    v-model="tagsSlotValue"
-                    :attrs="{ id }"
-                    mode="tags"
-                    placeholder="Select language"
-                    track-by="name"
-                    label="name"
-                    :search="true"
-                    :options="tagsSlotOptions"
-                    :max-height="145"
-                  >
-                    <template #tag="{ option, remove, disabled }">
-                      <div class="multiselect-tag is-user">
-                        <img :src="option.image" alt="" />
-                        {{ option.name }}
-                        <i
-                          v-if="!disabled"
-                          role="button"
-                          tabindex="0"
-                          @click.prevent
-                          @mousedown.prevent.stop="remove(option)"
-                        />
-                      </div>
-                    </template>
-                  </Multiselect>
-                </VControl>
-              </VField>
+              <AdminsDropdown
+                v-if="props.addUpdateLeadModal"
+                :selectedAdmins="leadFormData.sales_people"
+                @update:OnSelectAdmins="
+                  (ids: any) => {
+                    leadFormData.sales_people = ids;
+                  }
+                "
+              />
             </div>
 
-            <div class="field column is-6 mb-0">
+            <div class="field column is-3 mb-0">
               <ContractorsDropDown
                 v-if="props.addUpdateLeadModal"
-                :selectedContractor="leadFormData.manager"
+                :selectedContractor="leadFormData.client"
+                @update:OnSelectContractor="
+                  (id: any) => {
+                    leadFormData.client = id;
+                  }
+                "
+              />
+            </div>
+            <div class="field column is-3 mb-0">
+              <ClientsDropdown
+                v-if="props.addUpdateLeadModal"
+                :selectedContractor="leadFormData.client"
                 @update:OnSelectContractor="
                   (id: any) => {
                     leadFormData.client = id;
@@ -502,9 +496,8 @@ onMounted(async () => {
               <VField v-slot="{ id }">
                 <VControl>
                   <Multiselect
-                    v-model="sourcesValue"
+                    v-model="leadFormData.sources"
                     :attrs="{ id }"
-                    mode="tags"
                     :searchable="true"
                     :create-tag="true"
                     :options="sourcesOptions"

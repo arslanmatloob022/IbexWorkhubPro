@@ -19,29 +19,8 @@ const props = defineProps<{
   columnsToShow?: any;
   itemsList?: any;
 }>();
-const notyf = useNotyf();
-const page = ref(42);
+
 const useProposal = useProposalStore();
-const tagsValue = ref([
-  "ItemNumber",
-  "Description",
-  "Quantity",
-  "Unit",
-  "UnitCost",
-  "TotalPrice",
-]);
-const tagsOptions = [
-  { value: "ItemNumber", label: "Item Number" },
-  { value: "Description", label: "Description" },
-  { value: "Quantity", label: "Quantity" },
-  { value: "Unit", label: "Unit" },
-  { value: "UnitCost", label: "Unit Cost" },
-  { value: "Markup", label: "Markup" },
-  { value: "Margin", label: "Margin" },
-  { value: "TotalPrice", label: "Client Price" },
-  { value: "Profit", label: "Profit" },
-  { value: "Notes", label: "Notes" },
-];
 
 const getColumnName = ref({
   CostCode: "Cost Code",
@@ -55,14 +34,14 @@ const getColumnName = ref({
   BuilderCost: "Builder Cost",
   Markup: "Markup",
   MarkupAmount: "Markup Amount",
-  UnitPrice: "Unit Price",
-  Price: "Price",
-  TotalPrice: "Total Price",
+  Status: "Status",
+  ClientPrice: "Client Price",
   GroupPrice: "Group Price",
   TotalCost: "Total Cost",
   TotalMarkup: "Total Markup",
   Profit: "Profit",
   Notes: "Internal Notes",
+  State: "State",
 });
 
 const getColumnData = ref({
@@ -74,17 +53,15 @@ const getColumnData = ref({
   MarkAs: "mark_as",
   Quantity: "quantity",
   UnitCost: "unit_cost",
+  ClientPrice: "total_price",
   BuilderCost: "builder_cost",
   Markup: "markup",
-  MarkupAmount: "markup_amount",
-  UnitPrice: "unit_cost",
-  Price: "price",
-  TotalPrice: "total_price",
-  GroupPrice: "group",
-  TotalCost: "total_cost",
+  Status: "status",
+  GroupPrice: "group_amount",
   TotalMarkup: "total_markup",
   Profit: "profit",
   Notes: "internal_notes",
+  MarkupAmount: "markup_amount",
 });
 
 const dragItem = ref<number | null>(null);

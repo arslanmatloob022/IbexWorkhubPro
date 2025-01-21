@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { useApi } from "/@src/composable/useAPI";
-import notyf from "/@src/plugins/notyf";
-import { useUserSession } from "/@src/stores/userSession";
 import { defineEmits, defineProps } from "vue";
 
 const api = useApi();
-const userSession = useUserSession();
 const loading = ref(false);
 const selectedManagerId = ref("");
 const companyManagersList = ref([
@@ -22,7 +19,7 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-  selectedManager?: string;
+  selectedManager?: string | undefined;
 }>();
 
 const closeModalHandler = () => {
@@ -53,6 +50,9 @@ const getManagersHandler = async () => {
         icon: manager.avatar,
       };
     });
+    // if (props.selectedManager) {
+    //   selectedManagerId.value = props.selectedManager;
+    // }
     selectedManagerId.value = props.selectedManager;
   } catch (err) {
     console.log(err);

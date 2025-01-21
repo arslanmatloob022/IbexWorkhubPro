@@ -53,7 +53,9 @@ const getContractorsHandler = async () => {
         icon: Contractor.avatar,
       };
     });
-    selectedContractorId.value = props.selectedContractor;
+    if (props.selectedContractor) {
+      selectedContractorId.value = props.selectedContractor;
+    }
   } catch (err) {
     console.log(err);
   } finally {
