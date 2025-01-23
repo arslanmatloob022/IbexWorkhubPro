@@ -472,6 +472,7 @@ declare module 'vue' {
     Promotion: typeof import('./../src/components/pages/layouts/actions/Promotion.vue')['default']
     ProposalDetailComponent: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/ProposalDetailComponent.vue')['default']
     ProposalPreview: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/Proposals/ProposalPreview.vue')['default']
+    ProposalViewModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/Proposals/ProposalViewModal.vue')['default']
     QuestionsOfMembers: typeof import('./../src/components/supportComponents/QuestionsOfMembers.vue')['default']
     RadioEventsDocumentation: typeof import('./../documentation/radio/radio-events-documentation.md')['default']
     RadioOutlinedDocumentation: typeof import('./../documentation/radio/radio-outlined-documentation.md')['default']

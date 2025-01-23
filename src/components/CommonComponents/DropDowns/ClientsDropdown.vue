@@ -33,7 +33,7 @@ const selectClient = () => {
 watch(selectedClientId, (oldVal, newVal) => {
   selectClient();
 });
-const getManagersHandler = async () => {
+const getClientsHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get("/api/users/by-role/client/", {});
@@ -51,7 +51,9 @@ const getManagersHandler = async () => {
       };
     });
 
-    selectedClientId.value = props.selectedClient;
+    if (props.selectedClient) {
+      selectedClientId.value = props.selectedClient;
+    }
   } catch (err) {
     console.log(err);
   } finally {
@@ -59,7 +61,7 @@ const getManagersHandler = async () => {
   }
 };
 onMounted(() => {
-  getManagersHandler();
+  getClientsHandler();
 });
 </script>
 <template>

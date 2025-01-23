@@ -139,6 +139,37 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
+// Reactive values for inputs
+const unitCost = ref(0); // Unit cost per item
+const quantity = ref(0); // Quantity of items
+const builderPrice = computed(
+  () => costItem.value.unit_cost * costItem.value.quantity
+); // Builder price calculation
+
+// Markup and margin inputs
+const markup = ref(0); // Markup percentage
+const margin = ref(0); // Margin percentage
+
+// Total price calculation based on markup
+const totalPrice = computed(() => {
+  if (costItem.value.markup > 0) {
+    return (
+      builderPrice.value + (builderPrice.value * costItem.value.markup) / 100
+    );
+  } else if (costItem.value.margin > 0) {
+    return builderPrice.value / (1 - costItem.value.margin / 100);
+  }
+  return builderPrice.value;
+});
+
+// Extract markup and margin dynamically
+const calculatedMarkup = computed(() => {
+  return ((totalPrice.value - builderPrice.value) / builderPrice.value) * 100;
+});
+
+const calculatedMargin = computed(() => {
+  return ((totalPrice.value - builderPrice.value) / totalPrice.value) * 100;
+});
 const CKEditor = defineAsyncComponent(() =>
   import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
 );
@@ -330,7 +361,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="costItem.builder_cost"
+                    v-model="builderPrice"
                     type="number"
                     name="builderCost"
                     placeholder="Builder cost"
@@ -339,7 +370,7 @@ onMounted(async () => {
               </VField>
             </div>
             <div class="field column is-6">
-              <label>Markup</label>
+              <label>Markup (%)</label>
               <VField>
                 <VControl>
                   <VInput
@@ -356,7 +387,7 @@ onMounted(async () => {
               <VField>
                 <VControl>
                   <VInput
-                    v-model="costItem.total_price"
+                    v-model="totalPrice"
                     type="number"
                     name="markup"
                     placeholder="Total Price"
@@ -365,7 +396,7 @@ onMounted(async () => {
               </VField>
             </div>
             <div class="field column is-6">
-              <label>Margin</label>
+              <label>Margin (%)</label>
               <VField>
                 <VControl>
                   <VInput

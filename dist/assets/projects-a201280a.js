@@ -1,0 +1,1 @@
+import{b as o}from"./route-block-83d24a4e.js";import{R as t,A as r,B as s,N as e}from"./index-5ef4b004.js";const n={};"function"==typeof o&&o(n);const a=t(n,[["render",function(o,t){const n=r("RouterView");return s(),e(n)}]]);export{a as default};

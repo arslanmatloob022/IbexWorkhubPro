@@ -7,6 +7,9 @@ import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import LeadActivityModal from "./LeadActivityModal.vue";
 import ContractorsDropDown from "/@src/components/CommonComponents/DropDowns/ContractorsDropDown.vue";
+import CKE from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -17,7 +20,10 @@ const openAddContactModal = ref(false);
 const openLeadProposalModal = ref(false);
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
-
+const selectedAdminsIds = ref<string[]>([]);
+const companyAdminsList = ref<{ value: string; name: string; icon: string }[]>(
+  []
+);
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
@@ -39,56 +45,27 @@ const updateOnSuccess = () => {
 const tab = ref("general");
 const tagsValue = ref([]);
 const tagsOptions = [
-  { value: "batman", label: "Batman" },
-  { value: "robin", label: "Robin" },
-  { value: "joker", label: "Joker" },
+  { id: 1, value: "Lead", label: "Lead" },
+  { id: 2, value: "Home", label: "Home" },
+  { id: 3, value: "Floor Work", label: "Floor Work" },
+  { id: 4, value: "Tile Work", label: "Tile Work" },
+  { id: 5, value: "Carpenter", label: "Carpenter" },
+  { id: 6, value: "Complete Renovation", label: "Complete Renovation" },
+  { id: 7, value: "Painting", label: "Painting" },
+  { id: 8, value: "Plumbing", label: "Plumbing" },
+  { id: 9, value: "New Construction", label: "New Construction" },
+  { id: 10, value: "Carpenter", label: "Carpenter" },
+  { id: 11, value: "Carpenter", label: "Carpenter" },
+  { id: 12, value: "Carpenter", label: "Carpenter" },
 ];
 
 const sourcesValue = ref([]);
 const sourcesOptions = [
   { value: "all", label: "All" },
-  { value: "contact", label: "Contact Form" },
-  { value: "google", label: "Google" },
-  { value: "referral", label: "Referral" },
-];
-
-const tagsSlotValue = ref([]);
-const tagsSlotOptions = [
-  {
-    value: "javascript",
-    name: "Javascript",
-    image: "/images/icons/stacks/js.svg",
-  },
-  {
-    value: "reactjs",
-    name: "ReactJS",
-    image: "/images/icons/stacks/reactjs.svg",
-  },
-  {
-    value: "vuejs",
-    name: "VueJS",
-    image: "/images/icons/stacks/vuejs.svg",
-  },
-  {
-    value: "angular",
-    name: "Angular",
-    image: "/images/icons/stacks/angular.svg",
-  },
-  {
-    value: "android",
-    name: "Android",
-    image: "/images/icons/stacks/android.svg",
-  },
-  {
-    value: "html5",
-    name: "Html5",
-    image: "/images/icons/stacks/html5.svg",
-  },
-  {
-    value: "css3",
-    name: "CSS3",
-    image: "/images/icons/stacks/css3.svg",
-  },
+  { value: "Contact Form", label: "Contact Form" },
+  { value: "Social Media", label: "Social Media" },
+  { value: "Referral", label: "Referral" },
+  { value: "Company Website", label: "Company Website" },
 ];
 
 interface tag {
@@ -107,11 +84,11 @@ interface leadData {
   confidence: number;
   sale_date: string;
   sales_people: [];
-  tags: tag[];
+  tags: [];
   estimated_from: string;
   estimated_to: string;
   sources: string;
-  projectType: string;
+  project_type: string;
   notes: string;
   attachments: [];
   attach_mail: string;
@@ -136,7 +113,7 @@ const leadFormData = ref<leadData>({
   estimated_from: "",
   estimated_to: "",
   sources: "",
-  projectType: "",
+  project_type: "",
   notes: "",
   attachments: [],
   attach_mail: "",
@@ -151,13 +128,21 @@ interface InitiatedByOption {
 }
 
 const status = ref([
-  { value: "open", label: "Open" },
-  { value: "onHold", label: "On Hold" },
-  { value: "lost", label: "Lost" },
-  { value: "sold", label: "sold" },
+  { value: "Open", label: "Open" },
+  { value: "OnHold", label: "On Hold" },
+  { value: "Lost", label: "Lost" },
+  { value: "Sold", label: "Sold" },
   // { value: "inProgress", label: "In Progress" },
   // { value: "pending", label: "Pending" },
   // { value: "noOpportunity", label: "No Opportunity" },
+]);
+
+const projectTypes = ref([
+  { value: "Residential", label: "Residential" },
+  { value: "Commercial", label: "Commercial" },
+  { value: "Government", label: "Government" },
+  { value: "Business Site", label: "Business Site" },
+  { value: "Company/Factories", label: "Company/Factories" },
 ]);
 
 interface contactPerson {
@@ -177,7 +162,7 @@ const addUpdateLeadHandler = async () => {
   try {
     loading.value = true;
     leadFormData.value.tags = JSON.stringify(tagsValue.value);
-    const formDataAPI = convertToFormData(leadFormData.value, [""]);
+    const formDataAPI = convertToFormData(leadFormData.value, []);
     if (props.leadId || leadFormData.value.id) {
       const response = await api.patch(
         `/api/job/${props.leadId ? props.leadId : leadFormData.value.id}/`,
@@ -188,10 +173,10 @@ const addUpdateLeadHandler = async () => {
       const response = await api.post("/api/job/", formDataAPI);
       leadFormData.value = response.data;
     }
-    updateOnSuccess();
+    // updateOnSuccess();
     notyf.success(
       `Lead ${
-        props.leadId || leadFormData.value ? "updated" : "created"
+        props.leadId || leadFormData.value.id ? "updated" : "created"
       } successfully`
     );
   } catch (error: any) {
@@ -206,6 +191,10 @@ const getLeadDetailHandler = async () => {
     loading.value = true;
     const response = await api.get(`/api/job/${props.leadId}/`);
     leadFormData.value = response.data;
+    tagsValue.value = response.data.tags;
+    getAdminsHandler();
+    getContractorsHandler();
+    getClientsHandler();
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
   } finally {
@@ -213,21 +202,152 @@ const getLeadDetailHandler = async () => {
   }
 };
 
-const editorConfig = {
-  fontFamily: {
-    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
+const getAdminsHandler = async () => {
+  try {
+    loading.value = true;
+
+    // API call to fetch admins
+    const response = await api.get("/api/users/by-role/admin/");
+    if (response && response.data) {
+      companyAdminsList.value = response.data.map((admin: any) => ({
+        value: admin.id,
+        name: `${admin.username || ""} ${admin.lastName || ""}`.trim(),
+        icon: admin.avatar || "",
+      }));
+
+      // Initialize selected admins if passed in props
+      if (leadFormData.value?.sales_people?.length) {
+        selectedAdminsIds.value = leadFormData.value?.sales_people;
+      }
+    } else {
+      notyf.error("Failed to fetch admin data.");
+    }
+  } catch (err) {
+    console.error("Error fetching admin data:", err);
+    notyf.error("An error occurred while fetching admins.");
+  } finally {
+    loading.value = false;
+  }
+};
+const selectedContractorId = ref<any>("");
+const companyContractorsList = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
   },
-  height: "400px",
-  minHeight: "400px",
+]);
+const getContractorsHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/contractor/", {});
+    companyContractorsList.value = response.data.map((Contractor: any) => {
+      return {
+        value: Contractor.id,
+        name: `${
+          Contractor.username
+            ? Contractor.username
+            : "" + Contractor.lastName
+            ? Contractor.lastName
+            : ""
+        }`,
+        icon: Contractor.avatar,
+      };
+    });
+    if (leadFormData.value?.client) {
+      selectedContractorId.value = leadFormData.value?.client;
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const selectedClientId = ref("");
+const companyClientsList = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const getClientsHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/client/", {});
+    companyClientsList.value = response.data.map((client) => {
+      return {
+        value: client.id,
+        name: `${
+          client.username
+            ? client.username
+            : "" + client.lastName
+            ? client.lastName
+            : ""
+        }`,
+        icon: client.avatar,
+      };
+    });
+
+    if (leadFormData.value?.client) {
+      selectedClientId.value = leadFormData.value?.client;
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+const selectedManagerId = ref("");
+const companyManagersList = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const getManagersHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role/manager/", {});
+    companyManagersList.value = response.data.map((manager) => {
+      return {
+        value: manager.id,
+        name: `${
+          manager.username
+            ? manager.username
+            : "" + manager.lastName
+            ? manager.lastName
+            : ""
+        }`,
+        icon: manager.avatar,
+      };
+    });
+
+    selectedManagerId.value = leadFormData.value.manager;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+const CKEditor = CKE.component;
+const content = ref(`<h2>Your HTML Content</h2>`);
+const config = {
+  fontFamily: {
+    options: [
+      '"Montserrat Variable", sans-serif',
+      '"Roboto Flex Variable", sans-serif',
+    ],
+  },
 };
 
 onMounted(async () => {
-  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
-    (m) => m.default
-  );
   if (props.leadId) {
     getLeadDetailHandler();
   }
+  getManagersHandler();
 });
 </script>
 
@@ -242,9 +362,9 @@ onMounted(async () => {
     @close="closeModalHandler"
   >
     <template #content>
-      <div class="modal-form columns is-multiline">
+      <div class="modal-form columns is-multiline" style="height: 80dvh">
         <div class="tabs-wrapper column is-12 m-0">
-          <div class="tabs-inner mt-4">
+          <div class="tabs-inner">
             <div class="tabs is-boxed">
               <ul>
                 <li :class="[tab === 'general' ? 'is-active' : 'not-active']">
@@ -383,9 +503,9 @@ onMounted(async () => {
                 <label>Project Type </label>
                 <VField>
                   <VControl>
-                    <VSelect v-model="leadFormData.projectType">
+                    <VSelect v-model="leadFormData.project_type">
                       <VOption
-                        v-for="(item, index) in status"
+                        v-for="(item, index) in projectTypes"
                         :key="index"
                         :value="item.value"
                       >
@@ -399,19 +519,90 @@ onMounted(async () => {
 
             <!-- Salespeople -->
             <div class="field column is-12 mb-0">
-              <AdminsDropdown
-                v-if="props.addUpdateLeadModal"
-                :selectedAdmins="leadFormData.sales_people"
-                @update:OnSelectAdmins="
-                  (ids: any) => {
-                    leadFormData.sales_people = ids;
-                  }
-                "
-              />
+              <VField
+                v-slot="{ id }"
+                class="is-image-select"
+                label="Sales people"
+              >
+                <VControl>
+                  <Multiselect
+                    v-model="leadFormData.sales_people"
+                    :attrs="{ id }"
+                    placeholder="Sales people"
+                    label="name"
+                    track="value"
+                    mode="tags"
+                    :options="companyAdminsList"
+                  >
+                    <template #singlelabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img
+                          class="select-label-icon"
+                          :src="value.icon"
+                          alt=""
+                        />
+                        <span class="select-label-text">
+                          {{ value.name }}
+                        </span>
+                      </div>
+                    </template>
+                    <template #option="{ option }">
+                      <img
+                        class="select-option-icon"
+                        :src="option.icon"
+                        alt=""
+                      />
+                      <span class="select-label-text">
+                        {{ option.name }}
+                      </span>
+                    </template>
+                  </Multiselect>
+                </VControl>
+              </VField>
             </div>
 
+            <!-- contractor -->
             <div class="field column is-3 mb-0">
-              <ContractorsDropDown
+              <VField
+                v-slot="{ id }"
+                class="is-image-select"
+                label="Contractors"
+              >
+                <VControl>
+                  <Multiselect
+                    v-model="leadFormData.client"
+                    :attrs="{ id }"
+                    placeholder="Select a contractor"
+                    label="name"
+                    :options="companyContractorsList"
+                  >
+                    <template #singlelabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img
+                          class="select-label-icon"
+                          :src="value.icon"
+                          alt=""
+                        />
+                        <span class="select-label-text">
+                          {{ value.name }}
+                        </span>
+                      </div>
+                    </template>
+                    <template #option="{ option }">
+                      <img
+                        class="select-option-icon"
+                        :src="option.icon"
+                        alt=""
+                      />
+                      <span class="select-label-text">
+                        {{ option.name }}
+                      </span>
+                    </template>
+                  </Multiselect>
+                </VControl>
+              </VField>
+
+              <!-- <ContractorsDropDown
                 v-if="props.addUpdateLeadModal"
                 :selectedContractor="leadFormData.client"
                 @update:OnSelectContractor="
@@ -419,10 +610,47 @@ onMounted(async () => {
                     leadFormData.client = id;
                   }
                 "
-              />
+              /> -->
             </div>
+
+            <!-- Client -->
             <div class="field column is-3 mb-0">
-              <ClientsDropdown
+              <VField v-slot="{ id }" class="is-image-select" label="Client">
+                <VControl>
+                  <Multiselect
+                    v-model="leadFormData.client"
+                    :attrs="{ id }"
+                    placeholder="Select a client"
+                    label="name"
+                    :options="companyClientsList"
+                  >
+                    <template #singlelabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img
+                          class="select-label-icon"
+                          :src="value.icon"
+                          alt=""
+                        />
+                        <span class="select-label-text">
+                          {{ value.name }}
+                        </span>
+                      </div>
+                    </template>
+                    <template #option="{ option }">
+                      <img
+                        class="select-option-icon"
+                        :src="option.icon"
+                        alt=""
+                      />
+                      <span class="select-label-text">
+                        {{ option.name }}
+                      </span>
+                    </template>
+                  </Multiselect>
+                </VControl>
+              </VField>
+
+              <!-- <ClientsDropdown
                 v-if="props.addUpdateLeadModal"
                 :selectedContractor="leadFormData.client"
                 @update:OnSelectContractor="
@@ -430,11 +658,46 @@ onMounted(async () => {
                     leadFormData.client = id;
                   }
                 "
-              />
+              /> -->
             </div>
 
             <div class="field column is-6 mb-0">
-              <ManagersDropDown
+              <VField v-slot="{ id }" class="is-image-select" label="Manager">
+                <VControl>
+                  <Multiselect
+                    v-model="selectedManagerId"
+                    :attrs="{ id }"
+                    placeholder="Select a manager"
+                    label="name"
+                    :options="companyManagersList"
+                  >
+                    <template #singlelabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img
+                          class="select-label-icon"
+                          :src="value.icon"
+                          alt=""
+                        />
+                        <span class="select-label-text">
+                          {{ value.name }}
+                        </span>
+                      </div>
+                    </template>
+                    <template #option="{ option }">
+                      <img
+                        class="select-option-icon"
+                        :src="option.icon"
+                        alt=""
+                      />
+                      <span class="select-label-text">
+                        {{ option.name }}
+                      </span>
+                    </template>
+                  </Multiselect>
+                </VControl>
+              </VField>
+
+              <!-- <ManagersDropDown
                 v-if="props.addUpdateLeadModal"
                 :selectedManager="leadFormData.manager"
                 @update:OnSelectManager="
@@ -442,7 +705,7 @@ onMounted(async () => {
                     leadFormData.manager = id;
                   }
                 "
-              />
+              /> -->
             </div>
 
             <!-- estimated revenue -->
@@ -498,7 +761,6 @@ onMounted(async () => {
                   <Multiselect
                     v-model="leadFormData.sources"
                     :attrs="{ id }"
-                    :searchable="true"
                     :create-tag="true"
                     :options="sourcesOptions"
                     placeholder="Sources"
@@ -530,10 +792,9 @@ onMounted(async () => {
             <h3 class="title is-6 mb-2">Notes</h3>
             <div class="field column is-12 mb-0">
               <CKEditor
-                v-if="editor"
                 v-model="leadFormData.notes"
-                :editor="editor"
-                :config="editorConfig"
+                :editor="ClassicEditor"
+                :config="config"
               />
             </div>
           </VCard>

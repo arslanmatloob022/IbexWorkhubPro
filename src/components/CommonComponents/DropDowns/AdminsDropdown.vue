@@ -1,69 +1,84 @@
 <script lang="ts" setup>
+import { ref, watch, onMounted, defineProps, defineEmits } from "vue";
 import { useApi } from "/@src/composable/useAPI";
-import notyf from "/@src/plugins/notyf";
+import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
-import { defineEmits, defineProps } from "vue";
 
+// API and user session hooks
 const api = useApi();
+const notyf = useNotyf();
 const userSession = useUserSession();
-const loading = ref(false);
-const selectedAdminsIds = ref([]);
-const companyAdminsList = ref([
-  {
-    value: "",
-    name: "",
-    icon: "",
-  },
-]);
 
+// Reactive variables
+const loading = ref(false);
+const selectedAdminsIds = ref<string[]>([]);
+const companyAdminsList = ref<{ value: string; name: string; icon: string }[]>(
+  []
+);
+
+// Emits
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
-  (e: "update:OnSelectAdmins", value: any): void;
+  (e: "update:OnSelectAdmins", value: string[]): void;
 }>();
 
+// Props
 const props = defineProps<{
-  selectedAdmins?: Array<string>;
+  selectedAdmins?: [];
 }>();
 
+// Close modal handler
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
 };
 
-const selectManager = () => {
+// Emit selected admins
+const updateSelectedAdmins = () => {
   emit("update:OnSelectAdmins", selectedAdminsIds.value);
+  notyf.info(`${selectedAdminsIds.value}`);
 };
 
-watch(selectedAdminsIds, (oldVal, newVal) => {
-  selectManager();
+watch(selectedAdminsIds, (newVal, oldVal) => {
+  if (newVal) {
+    updateSelectedAdmins();
+  }
 });
-const getManagersHandler = async () => {
+
+// Fetch admins data
+const getAdminsHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/users/by-role/admin/", {});
-    companyAdminsList.value = response.data.map((admin) => {
-      return {
+
+    // API call to fetch admins
+    const response = await api.get("/api/users/by-role/admin/");
+    if (response && response.data) {
+      companyAdminsList.value = response.data.map((admin: any) => ({
         value: admin.id,
-        name: `${
-          admin.username
-            ? admin.username
-            : "" + admin.lastName
-            ? admin.lastName
-            : ""
-        }`,
-        icon: admin.avatar,
-      };
-    });
-    selectedAdminsIds.value = props.selectedAdmins;
+        name: `${admin.username || ""} ${admin.lastName || ""}`.trim(),
+        icon: admin.avatar || "",
+      }));
+
+      // Initialize selected admins if passed in props
+      if (props.selectedAdmins?.length) {
+        selectedAdminsIds.value = props.selectedAdmins;
+      }
+    } else {
+      notyf.error("Failed to fetch admin data.");
+    }
   } catch (err) {
-    console.log(err);
+    console.error("Error fetching admin data:", err);
+    notyf.error("An error occurred while fetching admins.");
   } finally {
     loading.value = false;
   }
 };
+
+// On component mount, fetch admin list
 onMounted(() => {
-  getManagersHandler();
+  getAdminsHandler();
 });
 </script>
+
 <template>
   <div>
     <VField v-slot="{ id }" class="is-image-select" label="Sales people">

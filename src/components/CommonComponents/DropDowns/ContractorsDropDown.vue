@@ -34,7 +34,9 @@ const selectContractor = () => {
 };
 
 watch(selectedContractorId, (oldVal, newVal) => {
-  selectContractor();
+  if (newVal) {
+    selectContractor();
+  }
 });
 const getContractorsHandler = async () => {
   try {

@@ -70,7 +70,7 @@ const leadsStatusFilters = ref([
 
 const columns = {
   username: {
-    label: "Contractor",
+    label: "Contractor/Client",
     grow: true,
   },
   location: {
@@ -331,7 +331,11 @@ onMounted(() => {
                         <a
                           role="menuitem"
                           class="dropdown-item is-media"
-                          @click.prevent=""
+                          @click="
+                            () => {
+                              router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                            }
+                          "
                         >
                           <div class="icon">
                             <i aria-hidden="true" class="lnil lnil-eye" />
@@ -342,11 +346,7 @@ onMounted(() => {
                           </div>
                         </a>
 
-                        <a
-                          role="menuitem"
-                          class="dropdown-item is-media"
-                          @click.prevent=""
-                        >
+                        <a role="menuitem" class="dropdown-item is-media">
                           <div class="icon">
                             <i aria-hidden="true" class="lnil lnil-briefcase" />
                           </div>

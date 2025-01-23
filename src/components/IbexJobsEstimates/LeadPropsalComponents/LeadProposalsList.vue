@@ -152,6 +152,12 @@ const filteredData = computed(() => {
   }
 });
 
+const previewModal = ref(false);
+const selectedProposal = ref(false);
+const openProposalPreview = (id: any) => {
+  selectedProposal.value = id;
+  previewModal.value = !previewModal.value;
+};
 const getCompanyProposalList = () => {
   if (props.allProposal == true) {
     getCompanyProposals();
@@ -167,7 +173,6 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- <DraggableItem /> -->
     <div class="flex-toolbar is-reversed is-flex space-between my-4">
       <VControl icon="feather:search">
         <input
@@ -186,10 +191,11 @@ onMounted(() => {
         >
       </div>
     </div>
+    <div v-if="loading">
+      <PlaceloadV1 />
+    </div>
 
-    <div class="flex-list-wrapper flex-list-v2">
-      <!--List Empty Search Placeholder -->
-
+    <div v-else class="flex-list-wrapper flex-list-v2">
       <VFlexTable
         v-if="filteredData.length > 0 && proposalsList.length > 0"
         :data="filteredData"
@@ -259,16 +265,6 @@ onMounted(() => {
                   right
                 >
                   <template #content>
-                    <a role="menuitem" class="dropdown-item is-media">
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-briefcase" />
-                      </div>
-                      <div class="meta">
-                        <span>View Proposal</span>
-                        <span>View proposal detail</span>
-                      </div>
-                    </a>
-
                     <a
                       role="menuitem"
                       @click="openLeadProposalModalHandler(item.id)"
@@ -279,7 +275,7 @@ onMounted(() => {
                       </div>
                       <div class="meta">
                         <span>Edit</span>
-                        <span>Edit project details</span>
+                        <span>Edit Proposal Details</span>
                       </div>
                     </a>
                     <a
@@ -297,14 +293,28 @@ onMounted(() => {
                         <span>View detail in page</span>
                       </div>
                     </a>
+                    <a
+                      disabled
+                      role="menuitem"
+                      @click="openProposalPreview(item.id)"
+                      class="dropdown-item is-media"
+                    >
+                      <div class="icon">
+                        <i aria-hidden="true" class="lnil lnil-eye" />
+                      </div>
+                      <div class="meta">
+                        <span>Preview</span>
+                        <span>Preview proposal detail</span>
+                      </div>
+                    </a>
 
                     <a role="menuitem" href="#" class="dropdown-item is-media">
                       <div class="icon">
                         <i aria-hidden="true" class="lnil lnil-add-files" />
                       </div>
                       <div class="meta">
-                        <span>New Task</span>
-                        <span>Add a new task</span>
+                        <span>Add Cost Item</span>
+                        <span>Add a new cost item</span>
                       </div>
                     </a>
 
@@ -351,7 +361,6 @@ onMounted(() => {
         </template>
       </VPlaceholderPage>
 
-      <!--Table Pagination-->
       <VFlexPagination
         v-if="filteredData.length > 5"
         :item-per-page="10"
@@ -368,6 +377,12 @@ onMounted(() => {
       @update:modalHandler="openLeadProposalModal = false"
       @update:OnSuccess="getCompanyProposalList"
       @clearProposalId="selectedProposalId = ''"
+    />
+    <ProposalViewModal
+      v-if="previewModal"
+      :preview-modal="previewModal"
+      :proposalId="selectedProposal"
+      @update:modal-handler="previewModal = false"
     />
     <SweetAlert
       v-if="SweetAlertProps.isSweetAlertOpen"
