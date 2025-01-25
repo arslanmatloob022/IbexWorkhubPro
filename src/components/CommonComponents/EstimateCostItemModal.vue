@@ -469,7 +469,7 @@ onMounted(async () => {
     <template #action>
       <VButton
         :loading="isLoading"
-        v-if="props.previewCostItems"
+        v-if="props.previewCostItems && props.costItemId"
         type="submit"
         color="primary"
         :icon="props.costItemId ? '' : 'fas fa-plus'"
