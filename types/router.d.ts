@@ -245,6 +245,7 @@ declare module 'vue-router/auto/routes' {
     '/partner-signup/': RouteRecordInfo<'/partner-signup/', '/partner-signup', Record<never, never>, Record<never, never>>,
     '/payment-cancel': RouteRecordInfo<'/payment-cancel', '/payment-cancel', Record<never, never>, Record<never, never>>,
     '/payment-success': RouteRecordInfo<'/payment-success', '/payment-success', Record<never, never>, Record<never, never>>,
+    '/proposal-view': RouteRecordInfo<'/proposal-view', '/proposal-view', Record<never, never>, Record<never, never>>,
     '/roadmap': RouteRecordInfo<'/roadmap', '/roadmap', Record<never, never>, Record<never, never>>,
     '/sidebar': RouteRecordInfo<'/sidebar', '/sidebar', Record<never, never>, Record<never, never>>,
     '/sidebar/': RouteRecordInfo<'/sidebar/', '/sidebar', Record<never, never>, Record<never, never>>,

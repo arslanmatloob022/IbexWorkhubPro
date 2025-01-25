@@ -21,6 +21,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   leadProposalModal?: boolean;
   proposalId?: string;
+  proposalData?: any;
 }>();
 
 const selectedColumnsToShow = ref([
@@ -127,44 +128,6 @@ interface InitiatedByOption {
   value: string;
   label: string;
 }
-
-const sources = ref([
-  { value: "all", label: "All" },
-  { value: "contact", label: "Contact Form" },
-  { value: "google", label: "Google" },
-  { value: "referral", label: "Referral" },
-]);
-
-const status = ref([
-  { value: "open", label: "Open" },
-  { value: "inProgress", label: "In Progress" },
-  { value: "onHold", label: "On Hold" },
-  { value: "pending", label: "Pending" },
-  { value: "lost", label: "Lost" },
-  { value: "sold", label: "sold" },
-  { value: "noOpportunity", label: "No Opportunity" },
-]);
-
-const addUpdateLeadHandler = async () => {
-  try {
-    isLoading.value = true;
-    const formDataAPI = convertToFormData(leadProposalFormData.value, [
-      "profileImageURL",
-    ]);
-    const response = await api.post("/v3/api/worker/", formDataAPI);
-    closeModalHandler();
-    notyf.dismissAll();
-    notyf.success("New worker added, New Worker");
-  } catch (error: any) {
-    notyf.error(` ${error}, New Worker`);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const closeModalHandler = () => {
-  emit("update:modalHandler", false);
-};
 
 const handlePostCodeChange = async () => {
   try {
@@ -413,7 +376,10 @@ onUnmounted(() => {
 
       <TransitionGroup class="fade-slow" name="slide-x">
         <div v-if="tab === 'preview'" class="column is-12">
-          <ProposalPreview :columnsToShow="selectedColumnsToShow" />
+          <ProposalPreview
+            :proposalData="props.proposalData"
+            :columnsToShow="selectedColumnsToShow"
+          />
         </div>
       </TransitionGroup>
     </div>

@@ -17,6 +17,9 @@ const emit = defineEmits<{
 const props = defineProps<{
   costItemModal?: boolean;
   proposalId?: string;
+  previousItemIndex?: number;
+  costItemId?: string;
+  previewCostItems?: boolean;
 }>();
 
 const tagsValue = ref([]);
@@ -35,6 +38,8 @@ const sourcesOptions = [
 ];
 
 interface item {
+  previousItemIndex: number;
+  index: number;
   id: string;
   title: string;
   description: string;
@@ -57,6 +62,8 @@ interface item {
 }
 
 const costItem = ref<item>({
+  previousItemIndex: 0,
+  index: 0,
   id: "",
   type: "",
   total_price: 0,
@@ -119,8 +126,16 @@ const status = ref([
 const addUpdateLeadHandler = async () => {
   try {
     isLoading.value = true;
-    const formDataAPI = convertToFormData(costItem.value, [""]);
-    const response = await api.post("/api/cost/", formDataAPI);
+    const formDataAPI = convertToFormData(costItem.value, []);
+
+    if (props.costItemId) {
+      const response = await api.patch(
+        `/api/cost/${props.costItemId}/`,
+        formDataAPI
+      );
+    } else {
+      const response = await api.post("/api/cost/", formDataAPI);
+    }
     closeModalHandler();
     updateOnSuccess();
     notyf.success("Item added successfully.");
@@ -181,11 +196,28 @@ const editorConfig = {
   height: "400px",
   minHeight: "400px",
 };
-
+const loading = ref(false);
+const getCostItemDetail = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/cost/${props.costItemId}/`);
+    costItem.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
+  if (props.previousItemIndex) {
+    costItem.value.previousItemIndex = props.previousItemIndex;
+  }
+  if (props.costItemId) {
+    getCostItemDetail();
+  }
 });
 </script>
 
@@ -211,6 +243,7 @@ onMounted(async () => {
                   name="firstName"
                   v-model="costItem.title"
                   required
+                  :disabled="props.previewCostItems"
                   class="input is-primary-focus is-primary-focus"
                   placeholder="Proposal Title"
                 />
@@ -221,7 +254,10 @@ onMounted(async () => {
               <label for="">Cost Type</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.cost_type">
+                  <VSelect
+                    v-model="costItem.cost_type"
+                    :disabled="props.previewCostItems"
+                  >
                     <VOption
                       v-for="(item, index) in costType"
                       :value="item.value"
@@ -250,7 +286,10 @@ onMounted(async () => {
               <label for="">Mark As</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.mark_as">
+                  <VSelect
+                    v-model="costItem.mark_as"
+                    :disabled="props.previewCostItems"
+                  >
                     <VOption
                       v-for="(item, index) in markAsOption"
                       :value="item.value"
@@ -265,7 +304,10 @@ onMounted(async () => {
               <label for="">Cost Code *</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.cost_code">
+                  <VSelect
+                    v-model="costItem.cost_code"
+                    :disabled="props.previewCostItems"
+                  >
                     <VOption
                       v-for="(item, index) in costCode"
                       :value="item.value"
@@ -280,7 +322,10 @@ onMounted(async () => {
               <label for="">Group Cost</label>
               <VField>
                 <VControl>
-                  <VSelect v-model="costItem.group">
+                  <VSelect
+                    v-model="costItem.group"
+                    :disabled="props.previewCostItems"
+                  >
                     <VOption
                       v-for="(item, index) in itemGroup"
                       :value="item.value"
@@ -296,6 +341,7 @@ onMounted(async () => {
 
               <CKEditor
                 v-if="editor"
+                :disabled="props.previewCostItems"
                 v-model="costItem.description"
                 :editor="editor"
                 :config="editorConfig"
@@ -307,6 +353,7 @@ onMounted(async () => {
                 <VControl>
                   <VTextarea
                     v-model="costItem.internal_notes"
+                    :disabled="props.previewCostItems"
                     rows="4"
                     placeholder="Internal notes..."
                   />
@@ -323,6 +370,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="costItem.unit_cost"
+                    :disabled="props.previewCostItems"
                     type="number"
                     name="unitCost"
                     placeholder="Unit cost"
@@ -336,6 +384,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="costItem.quantity"
+                    :disabled="props.previewCostItems"
                     type="number"
                     name="quantity"
                     placeholder="Quantity"
@@ -349,6 +398,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="costItem.unit"
+                    :disabled="props.previewCostItems"
                     type="text"
                     name="unit"
                     placeholder="Unit"
@@ -362,6 +412,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="builderPrice"
+                    :disabled="props.previewCostItems"
                     type="number"
                     name="builderCost"
                     placeholder="Builder cost"
@@ -375,6 +426,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="costItem.markup"
+                    :disabled="props.previewCostItems"
                     type="number"
                     name="markup"
                     placeholder="Markup"
@@ -388,6 +440,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="totalPrice"
+                    :disabled="props.previewCostItems"
                     type="number"
                     name="markup"
                     placeholder="Total Price"
@@ -401,6 +454,7 @@ onMounted(async () => {
                 <VControl>
                   <VInput
                     v-model="costItem.margin"
+                    :disabled="props.previewCostItems"
                     type="number"
                     name="markup"
                     placeholder="Margin"
@@ -415,11 +469,12 @@ onMounted(async () => {
     <template #action>
       <VButton
         :loading="isLoading"
+        v-if="props.previewCostItems"
         type="submit"
         color="primary"
-        icon="fas fa-plus"
+        :icon="props.costItemId ? '' : 'fas fa-plus'"
         raised
-        >Add Item</VButton
+        >{{ props.costItemId ? "Update" : "Add" }}</VButton
       >
     </template>
   </VModal>

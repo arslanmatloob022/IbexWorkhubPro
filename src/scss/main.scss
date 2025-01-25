@@ -79,7 +79,9 @@ SCSS Imports
 .align-items-ceneter {
   align-items: center;
 }
-
+.capitalized {
+  text-transform: capitalize;
+}
 .show-text-50 {
   white-space: nowrap;
   overflow: hidden;

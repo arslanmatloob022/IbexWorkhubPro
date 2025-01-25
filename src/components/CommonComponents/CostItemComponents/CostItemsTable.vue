@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { costItems } from "../../IbexJobsEstimates/proposalItems";
+import { costItems } from "/@src/composable/LeadPropsalElements/costItems";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
+import { useApi } from "/@src/composable/useAPI";
 export interface UserData extends VAvatarProps {
   id: number;
   username: string;
@@ -21,7 +22,7 @@ const props = defineProps<{
 }>();
 
 const useProposal = useProposalStore();
-
+const notyf = useNotyf();
 const getColumnName = ref({
   CostCode: "Cost Code",
   Title: "Title",
@@ -63,24 +64,108 @@ const getColumnData = ref({
   Notes: "internal_notes",
   MarkupAmount: "markup_amount",
 });
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+const api = useApi();
+const dragItem = ref("");
+const addCostItemModal = ref(false);
+const costItems = ref<any[]>([]);
 
-const dragItem = ref<number | null>(null);
-
-const handleDragStart = (index: number) => {
-  dragItem.value = index;
+const handleDragStart = (id: string) => {
+  dragItem.value = id;
+  console.log("Drag started for ID:", id);
 };
 
-const handleDrop = (index: number) => {
-  if (dragItem.value !== null && dragItem.value !== index) {
-    const draggedItem = costItems.value[dragItem.value];
-    costItems.value.splice(dragItem.value, 1);
-    costItems.value.splice(index, 0, draggedItem);
+const handleDrop = (id: string) => {
+  console.log("Dropped on ID:", id);
+  const draggedItem = useProposal.proposalCostItems.find(
+    (item) => item.id === dragItem.value
+  );
+  const droppedItem = useProposal.proposalCostItems.find(
+    (item) => item.id === id
+  );
+
+  if (draggedItem && droppedItem) {
+    api.post("/api/cost/drag-drop-items/", {
+      dragged_item_id: draggedItem.id,
+      dropped_item_id: droppedItem.id,
+    });
+
+    // Reorder logic if needed
+    const draggedIndex = useProposal.proposalCostItems.indexOf(draggedItem);
+    const droppedIndex = useProposal.proposalCostItems.indexOf(droppedItem);
+    if (draggedIndex >= 0 && droppedIndex >= 0) {
+      useProposal.proposalCostItems.splice(draggedIndex, 1);
+      useProposal.proposalCostItems.splice(droppedIndex, 0, draggedItem);
+    }
+  } else {
+    console.error("Dragged or Dropped Item not found");
   }
   dragItem.value = null;
 };
 
 const handleDragOver = (event: DragEvent) => {
   event.preventDefault();
+};
+
+const handleDragEnter = (event: DragEvent) => {
+  event.preventDefault();
+  event.currentTarget?.classList.add("drag-over");
+};
+
+const handleDragLeave = (event: DragEvent) => {
+  event.preventDefault();
+  event.currentTarget?.classList.remove("drag-over");
+};
+
+const proposalId = ref("");
+const previousItemIndex = ref(0);
+const selectedCostItem = ref("");
+const previewCostItems = ref(false);
+
+const openDeleteCostItemAlert = (cost: any) => {
+  selectedCostItem.value = cost.id;
+  proposalId.value = cost.proposal;
+  SweetAlertProps.value = {
+    title: "Are you sure?",
+    subtitle: "You will not be able to recover this cost item!",
+    btntext: "Delete",
+    isSweetAlertOpen: true,
+  };
+};
+
+const loading = ref(false);
+const deleteCostItemHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.delete(`/api/cost/${selectedCostItem.value}/`);
+    getProposalCostItems();
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    notyf.success("Cost item deleted");
+  } catch (Err) {
+    console.log(Err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const openUpdateCostItem = (cost: any, preview: boolean = false) => {
+  selectedCostItem.value = cost.id;
+  previewCostItems.value = preview;
+  proposalId.value = cost.proposal;
+  addCostItemModal.value = !addCostItemModal.value;
+};
+const openProposalCostItems = (cost: any) => {
+  proposalId.value = cost.proposal;
+  previousItemIndex.value = cost.index;
+  addCostItemModal.value = !addCostItemModal.value;
+};
+const getProposalCostItems = () => {
+  useProposal.getProposalCostItems(proposalId.value);
 };
 
 onMounted(() => {});
@@ -100,16 +185,36 @@ onMounted(() => {});
         <tbody>
           <tr
             v-if="useProposal.proposalCostItems.length > 0"
-            class="events"
             v-for="(cost, index) in useProposal.proposalCostItems"
             :key="cost.id"
             :data-event="JSON.stringify(cost)"
             draggable="true"
-            @dragstart="handleDragStart(index)"
-            @drop="() => handleDrop(index)"
+            @dragstart="handleDragStart(cost.id)"
+            @drop="handleDrop(cost.id)"
             @dragover="handleDragOver"
+            @dragenter="handleDragEnter"
+            @dragleave="handleDragLeave"
+            class="draggable-item events"
           >
-            <td>{{ index + 1 }}</td>
+            <td class="is-relative">
+              <i
+                style="
+                  position: absolute;
+                  bottom: -7px;
+                  left: 1px;
+                  cursor: pointer;
+                  font-weight: 600;
+                "
+                @click="openProposalCostItems(cost)"
+                class="lnir lnir-circle-plus info-text"
+                aria-hidden="true"
+              ></i>
+              <i
+                style="cursor: grab"
+                class="lnir lnir-sort"
+                aria-hidden="true"
+              ></i>
+            </td>
             <td v-for="(column, index) in props.columnsToShow" :key="index">
               <div
                 v-if="column === 'Description'"
@@ -121,16 +226,116 @@ onMounted(() => {});
             </td>
 
             <td>
-              <FlexTableDropdown />
+              <VDropdown
+                icon="feather:more-vertical"
+                class="is-pushed-mobile"
+                spaced
+                right
+              >
+                <template #content="{ close }">
+                  <a
+                    role="menuitem"
+                    href="#"
+                    class="dropdown-item is-media"
+                    @click.prevent="
+                      () => {
+                        openUpdateCostItem(cost, true);
+                        close();
+                      }
+                    "
+                  >
+                    <div class="icon">
+                      <i aria-hidden="true" class="lnil lnil-eye" />
+                    </div>
+                    <div class="meta">
+                      <span>View</span>
+                      <span>View user details</span>
+                    </div>
+                  </a>
+
+                  <a
+                    role="menuitem"
+                    href="#"
+                    class="dropdown-item is-media"
+                    @click.prevent="
+                      () => {
+                        openUpdateCostItem(cost, false);
+                        close();
+                      }
+                    "
+                  >
+                    <div class="icon">
+                      <i aria-hidden="true" class="lnil lnil-briefcase" />
+                    </div>
+                    <div class="meta">
+                      <span>Edit</span>
+                      <span>Edit Cost Item</span>
+                    </div>
+                  </a>
+
+                  <hr class="dropdown-divider" />
+
+                  <a
+                    role="menuitem"
+                    href="#"
+                    class="dropdown-item is-media"
+                    @click.prevent="
+                      () => {
+                        openDeleteCostItemAlert(cost);
+                        close();
+                      }
+                    "
+                  >
+                    <div class="icon">
+                      <i aria-hidden="true" class="lnil lnil-trash-can-alt" />
+                    </div>
+                    <div class="meta">
+                      <span>Remove</span>
+                      <span>Remove from list</span>
+                    </div>
+                  </a>
+                </template>
+              </VDropdown>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="deleteCostItemHandler"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <EstimateCostItemModal
+      v-if="addCostItemModal"
+      :costItemModal="addCostItemModal"
+      :proposalId="proposalId"
+      :costItemId="selectedCostItem"
+      :previousItemIndex="previousItemIndex"
+      :previewCostItems="previewCostItems"
+      @update:modalHandler="addCostItemModal = false"
+      @update:OnSuccess="getProposalCostItems"
+    >
+    </EstimateCostItemModal>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.draggable-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  background-color: #f9f9f9;
+}
+
+.draggable-item.drag-over {
+  border: 2px dashed #007bff;
+  background-color: #eaf4ff;
+}
 .is-navbar {
   .datatable-toolbar {
     padding-top: 30px;

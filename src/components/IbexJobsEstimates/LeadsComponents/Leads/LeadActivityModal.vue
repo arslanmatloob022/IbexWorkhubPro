@@ -67,7 +67,7 @@ interface ActivityDataModel {
   activityDate: string;
   startTime: string;
   endTime: string;
-  reminder: string;
+  reminderTime: string;
   assignedUser: string;
   attendees: string[];
   initiatedBy: string;
@@ -85,7 +85,7 @@ const activityFormData = ref<ActivityDataModel>({
   activityDate: "",
   startTime: "",
   endTime: "",
-  reminder: "",
+  reminderTime: "",
   assignedUser: "",
   attendees: [],
   initiatedBy: "",

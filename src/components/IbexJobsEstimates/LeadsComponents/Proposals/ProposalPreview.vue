@@ -1,101 +1,15 @@
 <script setup lang="ts">
-import { popovers } from "/@src/data/users/userPopovers";
 import { getColumnName, getColumnData, costItems } from "../../proposalItems";
-import { forEach } from "cypress/types/lodash";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 const props = defineProps<{
   columnsToShow?: any;
+  proposalData?: any;
 }>();
 
 const useProposal = useProposalStore();
-const data = ref([
-  {
-    name: "Website Redesign",
-    unit: "hrs",
-    quantity: 54,
-    rate: 24,
-  },
-  {
-    name: "Logo Design",
-    unit: "hrs",
-    quantity: 12,
-    rate: 24,
-  },
-  {
-    name: "Custom Illustrations",
-    unit: "hrs",
-    quantity: 7,
-    rate: 32,
-  },
-]);
-
-const vatRate = 0.1;
-const totalData = computed(() => {
-  const subtotal = data.value.reduce((acc, item) => {
-    return acc + item.quantity * item.rate;
-  }, 0);
-  const vatValue = subtotal * vatRate;
-  const total = subtotal + vatValue;
-
-  return [
-    {
-      label: "Subtotal",
-      value: subtotal,
-    },
-    {
-      label: "Taxes",
-      value: vatValue,
-    },
-    {
-      label: "Total",
-      value: total,
-    },
-  ];
-});
-
-const usdFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
-const columns = {
-  Items: {
-    label: "Items",
-    grow: false,
-    inverted: true,
-  },
-  Description: {
-    label: "Description",
-    align: "start",
-    grow: true,
-  },
-  unitCost: "Unit Cost",
-  unit: {
-    label: "Unit/Qty",
-    inverted: true,
-  },
-  subtotal: {
-    label: "Price",
-    inverted: true,
-  },
-} as const;
-
-const totalColumns = {
-  label: {
-    label: "",
-    grow: "xl",
-    align: "end",
-  },
-  value: {
-    label: "",
-    bold: true,
-    format: (value: any) => usdFormatter.format(value),
-  },
-} as const;
-
 const header = ref("");
-
 const body = ref(true);
+const openSendProposalModal = ref(false);
 const contactInfo = ref(true);
 const showAddress = ref(true);
 const oneLiner = ref(true);
@@ -106,6 +20,16 @@ const totalPrice = computed(() => {
     0
   );
 });
+
+const proposalFormData = ref({});
+const openSendProposalModalHandler = () => {
+  proposalFormData.value = props.proposalData;
+  columnsToShow.value = props.columnsToShow;
+  openSendProposalModal.value = !openSendProposalModal.value;
+};
+
+const columnsToShow = ref([]);
+onMounted(() => {});
 </script>
 
 <template>
@@ -225,7 +149,7 @@ const totalPrice = computed(() => {
                   data-icon="feather:download-cloud"
                 />
               </a>
-              <a class="action">
+              <a class="action" @click="openSendProposalModalHandler">
                 <i
                   aria-hidden="true"
                   class="iconify"
@@ -233,6 +157,9 @@ const totalPrice = computed(() => {
                 />
               </a>
             </div>
+            <!-- <div>
+              {{ props.proposalData }}
+            </div> -->
           </div>
         </div>
         <div class="invoice-body">
@@ -296,13 +223,10 @@ const totalPrice = computed(() => {
               </table>
             </div>
             <div class="invoice-section is-flex mt-0 pt-0">
-              <!-- <div class="meta">
-                <h3>Client Name</h3>
-                <span>Client Phone</span>
-                <span>25724 Independence Trail Evergreen, CO 80439</span>
-              </div> -->
               <div class="end is-left">
-                <h3 class="text-right">Total Price: ${{ totalPrice }}</h3>
+                <h3 class="text-right">
+                  Total Price: ${{ props.proposalData.proposalAmount }}
+                </h3>
                 <p>Mentioned price are final</p>
               </div>
             </div>
@@ -310,6 +234,13 @@ const totalPrice = computed(() => {
         </div>
       </div>
     </div>
+    <SendProposalEmailModal
+      v-if="openSendProposalModal"
+      :proposalSenderModal="openSendProposalModal"
+      :proposalData="props.proposalData"
+      :columnsToShow="columnsToShow"
+      @update:modalHandler="openSendProposalModal = false"
+    />
   </div>
 </template>
 

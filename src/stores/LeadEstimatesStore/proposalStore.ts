@@ -20,6 +20,7 @@ export interface costItem {
 }
 
 export interface leadProposalData {
+  id: string;
   title: string;
   approval_deadline: string;
   approvalDeadline: string;
@@ -41,6 +42,7 @@ export const useProposalStore = defineStore("useProposal", () => {
   const companyProposalsList = ref([]);
   const leadProposalsList = ref([]);
   const leadProposalFormData = ref<leadProposalData>({
+    id: "",
     title: "",
     approval_deadline: "",
     attachments: [],
@@ -53,21 +55,54 @@ export const useProposalStore = defineStore("useProposal", () => {
     type: "proposal",
   });
 
-  const proposalCostItems = ref([
+  interface ProposalCostItem {
+    id: string;
+    index: number;
+    title: string;
+    description: string;
+    type: string;
+    quantity: number;
+    unit: string;
+    unit_cost: string;
+    markup: string;
+    total_price: string;
+    cost_code: string;
+    cost_type: string;
+    builder_cost: string;
+    margin: string;
+    profit: string;
+    internal_notes: string;
+    mark_as: string;
+    state: string;
+    group_amount: string;
+    status: string | null;
+    created_at: string;
+    proposal: string;
+  }
+  const proposalCostItems = ref<ProposalCostItem[]>([
     {
+      id: "",
+      index: 0,
       title: "",
       description: "",
+      type: "",
       quantity: 0,
-      unit: 0,
-      unitCost: 0,
-      markup: 0,
-      clientPrice: 0,
-      costCode: "",
-      costType: "",
-      builderCost: "",
-      margin: 0,
-      profit: 0,
-      internalNotes: "",
+      unit: "",
+      unit_cost: "",
+      markup: "",
+      total_price: "",
+      cost_code: "",
+      cost_type: "",
+      builder_cost: "",
+      margin: "",
+      profit: "",
+      internal_notes: "",
+      mark_as: "",
+      state: "",
+      group_amount: "",
+      status: null,
+      created_at: "",
+      proposal: "",
     },
   ]);
 

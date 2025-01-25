@@ -12,12 +12,148 @@ const notyf = useNotyf();
 const userSession = useUserSession();
 const { todoList3, todoList4 } = useTodoList();
 
-const todoList3Selection = ref([todoList3.value[0], todoList3.value[2]]);
-const todoList4Selection = ref([
-  todoList4.value[1],
-  todoList4.value[3],
-  todoList4.value[4],
-]);
+// Interface for a single user or person
+interface User {
+  id: string;
+  username: string;
+  last_name: string | null;
+  email: string;
+  role: string;
+  avatar: string | null;
+}
+
+// Interface for the client information
+interface ClientInfo {
+  id: string;
+  username: string;
+  last_name: string | null;
+  email: string;
+  role: string;
+  avatar: string | null;
+}
+
+// Interface for the main object
+interface ProjectDetails {
+  id: string;
+  sales_people_info: User[];
+  clientInfo: ClientInfo;
+  created_by_info: User;
+  managers_list: User[];
+  title: string;
+  address: string;
+  current_state: string;
+  city: string;
+  state: string;
+  status: string;
+  zip_code: string;
+  confidence: string;
+  sale_date: string;
+  tags: string[];
+  estimated_from: string;
+  estimated_to: string;
+  sources: string;
+  project_type: string;
+  notes: string;
+  attach_mail: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+  client: string;
+  contractor: string | null;
+  sales_people: string[];
+  managers: string[];
+}
+const leadDetail = ref<ProjectDetails>({
+  id: "",
+  sales_people_info: [
+    {
+      id: "",
+      username: "",
+      last_name: null,
+      email: "",
+      role: "",
+      avatar: null,
+    },
+    {
+      id: "",
+      username: "",
+      last_name: null,
+      email: "",
+      role: "",
+      avatar: "",
+    },
+    {
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+  ],
+  clientInfo: {
+    id: "",
+    username: "",
+    last_name: null,
+    email: "",
+    role: "",
+    avatar: null,
+  },
+  created_by_info: {
+    id: "",
+    username: "",
+    last_name: null,
+    email: "",
+    role: "",
+    avatar: "",
+  },
+  managers_list: [
+    {
+      id: "",
+      username: "",
+      last_name: null,
+      email: "",
+      role: "",
+      avatar: null,
+    },
+    {
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+  ],
+  title: "",
+  address: "",
+  current_state: "",
+  city: "",
+  state: "",
+  status: "",
+  zip_code: "",
+  confidence: "",
+  sale_date: "",
+  tags: [],
+  estimated_from: "",
+  estimated_to: "",
+  sources: "",
+  project_type: "",
+  notes: "",
+  attach_mail: "",
+  latitude: null,
+  longitude: null,
+  created_at: "",
+  updated_at: "",
+  created_by: "",
+  client: "",
+  contractor: null,
+  sales_people: [],
+  managers: [],
+});
+
 const tab = ref("management");
 const data = [
   {
@@ -74,37 +210,18 @@ const drawMap = (lat: any, lng: any) => {
 };
 
 const loading = ref(false);
-const leadDetail = ref({
-  id: "e0820b29-38e0-4868-88cb-8fcbe966328c",
-  title: "Test With propsoal",
-  address: "157 / C-Block, Main Boulevard, Guldasht Town",
-  current_state: "lead",
-  city: "Lahore",
-  state: "London",
-  status: "lost",
-  zip_code: "54000",
-  confidence: "0.00",
-  sale_date: "2025-01-16",
-  tags: [],
-  estimated_from: "9000.00",
-  estimated_to: "9500.00",
-  sources: "",
-  project_type: null,
-  notes: "",
-  attach_mail: "",
-  created_at: "2025-01-18T12:25:19.384075Z",
-  updated_at: "2025-01-18T12:25:19.384089Z",
-  created_by: "0feda007-d8a0-4b96-acb7-d7763614854e",
-  manager: "0d8a9a08-b932-463c-8795-5bd290f88c1a",
-  client: "a1af480c-4b20-4669-bcc6-db4402074fc7",
-  sales_people: [],
-});
 
 const getLeadDetailHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/job/${route.params.id}/`);
+    const response = await api.get(`/api/job/${route.params.id}/lead-detail/`);
     leadDetail.value = response.data;
+    if (response.data.latitude) {
+      drawMap(
+        response.data.latitude ?? 39.63,
+        response.data.longitude ?? -105.3199999
+      );
+    }
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
   } finally {
@@ -113,7 +230,6 @@ const getLeadDetailHandler = async () => {
 };
 
 onMounted(() => {
-  drawMap(32.80839, -83.650384);
   getLeadDetailHandler();
 });
 </script>
@@ -147,23 +263,32 @@ onMounted(() => {
                   {{
                     leadDetail.address ? leadDetail.address : "No Address Added"
                   }}
-                </p>
-                <p class="block-text">
-                  {{ leadDetail.city ? leadDetail.city : "No City Added" }}
+                  <br />
+                  {{ leadDetail.city ? leadDetail.city : "No City Added" }},
+                  {{ leadDetail.state ? leadDetail.state : "No State Added" }}
+                  <br />
+                  {{
+                    leadDetail.zip_code
+                      ? leadDetail.zip_code
+                      : "No Zip Code Added"
+                  }}
                 </p>
               </div>
 
               <!--Right-->
               <div class="right">
-                <h4 class="block-heading">Manager</h4>
-                <!-- <p class="block-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Praeclarae mortes.
-                </p> -->
+                <h4 class="block-heading">Managers</h4>
                 <div class="candidates">
-                  <VAvatar picture="/demo/avatars/13.jpg" squared />
-                  <VAvatar picture="/demo/avatars/32.jpg" squared />
-                  <VAvatar picture="/demo/avatars/9.jpg" squared />
+                  <VAvatar
+                    v-for="manager in leadDetail.managers_list"
+                    :picture="manager.avatar"
+                    :initials="manager.username.slice(0, 2)"
+                    v-tooltip.info.rounded="
+                      `${manager.username ?? 'N/A'} ${manager.last_name ?? ''}`
+                    "
+                    squared
+                  />
+
                   <button>
                     <i
                       aria-hidden="true"
@@ -172,7 +297,9 @@ onMounted(() => {
                     />
                   </button>
                 </div>
-                <VButton bold fullwidth dark-outlined> Manage Tasks </VButton>
+                <VButton class="mt-1" bold fullwidth dark-outlined>
+                  Update Job
+                </VButton>
               </div>
             </div>
           </div>
@@ -263,14 +390,12 @@ onMounted(() => {
                     <div class="feed-settings">
                       <h3 class="dark-inverted">Job feeds</h3>
                       <div class="buttons">
-                        <button class="button is-selected is-dark-outlined">
-                          Residential Remodeler
-                        </button>
-                        <button class="button is-selected is-dark-outlined">
-                          Fixed Price
-                        </button>
-                        <button class="button is-dark-outlined">
-                          Job Color
+                        <button
+                          v-for="(tag, index) in leadDetail.tags"
+                          :key="index"
+                          class="button is-selected is-light is-dark-outlined"
+                        >
+                          {{ tag }}
                         </button>
                       </div>
                     </div>
@@ -280,9 +405,7 @@ onMounted(() => {
                     <div class="side-text">
                       <h3 class="dark-inverted">Job Description</h3>
                       <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Perge porro; Oratio me istius philosophi non offendit;
-                        Duo Reges: constructio interrete.
+                        {{ leadDetail.notes }}
                       </p>
                       <a class="action-link" tabindex="0">Read More</a>
                     </div>
@@ -363,54 +486,24 @@ onMounted(() => {
                         class="columns user-grid user-grid-v4 is-flex-tablet-p"
                       >
                         <!--Rookie-->
-                        <div class="column is-4">
+                        <div
+                          v-for="user in leadDetail.sales_people_info"
+                          class="column is-4"
+                        >
                           <div class="grid-item">
                             <UserCardDropdown />
                             <VAvatar
-                              picture="/demo/avatars/13.jpg"
-                              badge="/images/icons/stacks/illustrator.svg"
+                              :picture="user.avatar"
+                              :initials="user.username.slice(0, 2)"
                               size="large"
                             />
-                            <h3 class="dark-inverted">Krystal Tamayo</h3>
-                            <p>Admin</p>
+                            <h3 class="dark-inverted">
+                              {{ user.username ?? "N/A" }}
+                              {{ user.last_name ?? "" }}
+                            </h3>
+                            <p class="capitalized">{{ user.role }}</p>
                             <div class="button-wrap has-text-centered">
                               <VButton color="primary" raised>
-                                View Profile
-                              </VButton>
-                            </div>
-                          </div>
-                        </div>
-                        <!--Rookie-->
-                        <div class="column is-4">
-                          <div class="grid-item">
-                            <UserCardDropdown />
-                            <VAvatar
-                              picture="/demo/avatars/37.jpg"
-                              badge="/images/icons/flags/france.svg"
-                              size="large"
-                            />
-                            <h3 class="dark-inverted">Juan</h3>
-                            <p>Project Manager</p>
-                            <div class="button-wrap has-text-centered">
-                              <VButton dark-outlined bold>
-                                View Profile
-                              </VButton>
-                            </div>
-                          </div>
-                        </div>
-                        <!--Rookie-->
-                        <div class="column is-4">
-                          <div class="grid-item">
-                            <UserCardDropdown />
-                            <VAvatar
-                              picture="/demo/avatars/25.jpg"
-                              badge="/images/icons/stacks/js.svg"
-                              size="large"
-                            />
-                            <h3 class="dark-inverted">Domus Builders</h3>
-                            <p>Contractor</p>
-                            <div class="button-wrap has-text-centered">
-                              <VButton dark-outlined bold>
                                 View Profile
                               </VButton>
                             </div>

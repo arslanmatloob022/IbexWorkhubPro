@@ -76,8 +76,8 @@ interface leadProposalData {
   worksheetItems: item[];
   type: string;
 }
-
-const leadProposalFormData = ref<leadProposalData>({
+// <leadProposalData>
+const leadProposalFormData = ref({
   title: "",
   approval_deadline: "",
   attachments: [],
@@ -92,51 +92,14 @@ const leadProposalFormData = ref<leadProposalData>({
 
 const getProposalDetail = async () => {
   try {
-    const response = await api.get(`/api/lead-proposal/${route.params.id}/`);
+    const response = await api.get(
+      `/api/lead-proposal/${route.params.id}/detail/`
+    );
     leadProposalFormData.value = response.data;
     useProposal.getProposalCostItems(route.params.id);
   } catch (err) {
     console.log(err);
   } finally {
-  }
-};
-
-const addUpdateProposalHandler = async () => {
-  try {
-    loading.value = true;
-    const formDataAPI = convertToFormData(leadProposalFormData.value, [""]);
-    const response = await api.patch(
-      `/api/lead-proposal/${props.proposalId || route.params.id}/`,
-      formDataAPI
-    );
-    notyf.success("Proposal updated successfully");
-  } catch (error: any) {
-    notyf.error(` ${error}, New Worker`);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const updateOnSuccess = () => {
-  emit("update:OnSuccess", null);
-};
-
-const handlePostCodeChange = async () => {
-  try {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${FormData.value.postCode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
-    );
-    if (response.data.status === "OK") {
-      //   FormData.value.homeAddress = response.data.results[0].formatted_address;
-      //   FormData.value.latitude = response.data.results[0].geometry.location.lat;
-      //   FormData.value.longitude = response.data.results[0].geometry.location.lng;
-      notyf.success("Address Added");
-    } else if (response.data.status === "ZERO_RESULTS") {
-      notyf.error("Invalid Post-Code");
-    }
-  } catch (error) {
-    notyf.error("Invalid Post-Code");
-    console.error(error);
   }
 };
 
@@ -300,6 +263,9 @@ onMounted(async () => {
         </div>
       </template>
     </VCollapse>
-    <WorksheetItems :proposalId="leadProposalFormData.id" />
+    <WorksheetItems
+      :proposalData="leadProposalFormData"
+      :proposalId="leadProposalFormData.id"
+    />
   </div>
 </template>

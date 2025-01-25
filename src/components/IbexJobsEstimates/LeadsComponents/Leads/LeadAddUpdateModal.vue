@@ -93,8 +93,10 @@ interface leadData {
   attachments: [];
   attach_mail: string;
   created_by: string;
-  manager: string | undefined;
+  managers: [];
   client: string;
+  latitude: number;
+  longitude: number;
 }
 
 const leadFormData = ref<leadData>({
@@ -118,23 +120,17 @@ const leadFormData = ref<leadData>({
   attachments: [],
   attach_mail: "",
   created_by: userSession.user.id,
-  manager: "",
+  managers: [],
   client: "",
+  latitude: 0,
+  longitude: 0,
 });
-
-interface InitiatedByOption {
-  value: string;
-  label: string;
-}
 
 const status = ref([
   { value: "Open", label: "Open" },
   { value: "OnHold", label: "On Hold" },
   { value: "Lost", label: "Lost" },
   { value: "Sold", label: "Sold" },
-  // { value: "inProgress", label: "In Progress" },
-  // { value: "pending", label: "Pending" },
-  // { value: "noOpportunity", label: "No Opportunity" },
 ]);
 
 const projectTypes = ref([
@@ -343,6 +339,33 @@ const config = {
   },
 };
 
+const handlePostCodeChange = async () => {
+  try {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${leadFormData.value.zip_code}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
+    );
+    if (response.data.status === "OK") {
+      leadFormData.value.address = response.data.results[0].formatted_address;
+      leadFormData.value.latitude =
+        response.data.results[0].geometry.location.lat;
+      leadFormData.value.longitude =
+        response.data.results[0].geometry.location.lng;
+
+      leadFormData.value.city =
+        response.data.results[0].address_components[1].long_name;
+      leadFormData.value.state =
+        response.data.results[0].address_components[3].long_name;
+
+      notyf.success("Address Added");
+    } else if (response.data.status === "ZERO_RESULTS") {
+      notyf.error("Invalid Post-Code");
+    }
+  } catch (error) {
+    notyf.error("Invalid Post-Code");
+    console.error(error);
+  }
+};
+
 onMounted(async () => {
   if (props.leadId) {
     getLeadDetailHandler();
@@ -418,6 +441,45 @@ onMounted(async () => {
                 </div>
               </div>
 
+              <div class="field column is-3 mb-0">
+                <label>Zip Code: without slash </label>
+                <div class="control">
+                  <input
+                    @blur="handlePostCodeChange"
+                    type="text"
+                    name="zipCode"
+                    v-model="leadFormData.zip_code"
+                    class="input is-primary-focus is-primary-focus"
+                    placeholder="Zip code"
+                  />
+                </div>
+              </div>
+
+              <div class="field column is-3 mb-0">
+                <label>City: </label>
+                <div class="control">
+                  <input
+                    type="text"
+                    name="city"
+                    v-model="leadFormData.city"
+                    class="input is-primary-focus is-primary-focus"
+                    placeholder="City"
+                  />
+                </div>
+              </div>
+
+              <div class="field column is-6 mb-0">
+                <label>State: </label>
+                <div class="control">
+                  <input
+                    type="text"
+                    name="state"
+                    v-model="leadFormData.state"
+                    class="input is-primary-focus is-primary-focus"
+                    placeholder="State"
+                  />
+                </div>
+              </div>
               <div class="field column is-6 mb-0">
                 <label>Address: </label>
                 <div class="control">
@@ -431,45 +493,19 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <div class="field column is-6 mb-0">
-                <label>City: </label>
+              <!-- <div class="field column is-3 mb-0">
+                <label>Zip Code: without '-' ( Slash ) </label>
                 <div class="control">
                   <input
-                    type="text"
-                    name="city"
-                    v-model="leadFormData.city"
-                    class="input is-primary-focus is-primary-focus"
-                    placeholder="City"
-                  />
-                </div>
-              </div>
-
-              <div class="field column is-3 mb-0">
-                <label>State: </label>
-                <div class="control">
-                  <input
-                    type="text"
-                    name="state"
-                    v-model="leadFormData.state"
-                    class="input is-primary-focus is-primary-focus"
-                    placeholder="State"
-                  />
-                </div>
-              </div>
-
-              <div class="field column is-3 mb-0">
-                <label>Zip Code: </label>
-                <div class="control">
-                  <input
+                    @blur="handlePostCodeChange"
                     type="text"
                     name="zipCode"
                     v-model="leadFormData.zip_code"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="Zip code"
                   />
-                  <!-- @blur="handlePostCodeChange" -->
                 </div>
-              </div>
+              </div> -->
 
               <div class="field column is-6 mb-0">
                 <label>Confidence </label>
@@ -661,14 +697,17 @@ onMounted(async () => {
               /> -->
             </div>
 
+            <!-- manager -->
             <div class="field column is-6 mb-0">
               <VField v-slot="{ id }" class="is-image-select" label="Manager">
                 <VControl>
                   <Multiselect
-                    v-model="selectedManagerId"
+                    v-model="leadFormData.managers"
                     :attrs="{ id }"
-                    placeholder="Select a manager"
+                    placeholder="Select managers"
                     label="name"
+                    track="value"
+                    mode="tags"
                     :options="companyManagersList"
                   >
                     <template #singlelabel="{ value }">

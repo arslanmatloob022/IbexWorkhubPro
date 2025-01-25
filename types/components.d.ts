@@ -509,6 +509,7 @@ declare module 'vue' {
     SelectMultipleDocumentation: typeof import('./../documentation/elements/forms/select/select-multiple-documentation.md')['default']
     SelectRoundedDocumentation: typeof import('./../documentation/elements/forms/select/select-rounded-documentation.md')['default']
     SelfEditWorker: typeof import('./../src/components/pages/networks/workers/SelfEditWorker.vue')['default']
+    SendProposalEmailModal: typeof import('./../src/components/CommonComponents/SendProposalEmailModal.vue')['default']
     SettingsProfile: typeof import('./../src/components/pages/layouts/profile/SettingsProfile.vue')['default']
     ShareWorkerProfile: typeof import('./../src/components/pages/networks/workers/ShareWorkerProfile.vue')['default']
     Sidebar: typeof import('./../src/components/navigation/desktop/Sidebar.vue')['default']

@@ -123,29 +123,33 @@ const workItem = ref({
 interface leadProposalData {
   title: string;
   approval_deadline: string;
-  approvalDeadline: string;
-  internalNotes: string;
-  introductoryText: string;
-  closingText: string;
+  internal_notes: string;
+  introductory_text: any;
+  closing_text: any;
   attachments: [];
-  paymentStatus: string;
+  payment_status: string;
   worksheetItems: item[];
   type: string;
   job: "";
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const leadProposalFormData = ref<leadProposalData>({
   title: "",
   approval_deadline: "",
-  attachments: [],
-  approvalDeadline: "",
-  internalNotes: "",
-  introductoryText: "",
-  closingText: "",
-  paymentStatus: "",
+  internal_notes: "",
+  introductory_text: null,
+  closing_text: null,
+  payment_status: "",
   worksheetItems: [],
   type: "proposal",
   job: "",
+  attachments: [],
+  status: "",
+  created_at: "",
+  updated_at: "",
 });
 
 interface ActivityModel {
@@ -193,11 +197,10 @@ const newCreatedLead = ref("");
 const addUpdateProposalHandler = async () => {
   try {
     isLoading.value = true;
-    // formDataAPI.append("job", props.leadId);
     if (props.leadId) {
       leadProposalFormData.value.job = props.leadId;
     }
-    const formDataAPI = convertToFormData(leadProposalFormData.value, [""]);
+    const formDataAPI = convertToFormData(leadProposalFormData.value, []);
     if (props.proposalId) {
       const response = await api.patch(
         `/api/lead-proposal/${props.proposalId}/`,
@@ -431,7 +434,7 @@ onUnmounted(() => {
                     <VField>
                       <VControl>
                         <VTextarea
-                          v-model="leadProposalFormData.internalNotes"
+                          v-model="leadProposalFormData.internal_notes"
                           rows="4"
                           placeholder="Internal notes..."
                         />
@@ -443,7 +446,7 @@ onUnmounted(() => {
 
                     <CKEditor
                       v-if="editor"
-                      v-model="leadProposalFormData.introductoryText"
+                      v-model="leadProposalFormData.introductory_text"
                       :editor="editor"
                       :config="editorConfig"
                     />
@@ -453,7 +456,7 @@ onUnmounted(() => {
 
                     <CKEditor
                       v-if="editor"
-                      v-model="leadProposalFormData.closingText"
+                      v-model="leadProposalFormData.closing_text"
                       :editor="editor"
                       :config="editorConfig"
                     />
@@ -470,6 +473,7 @@ onUnmounted(() => {
                 ? leadProposalFormData.id
                 : props.proposalId
             "
+            :proposalData="leadProposalFormData"
           />
         </div>
       </div>
