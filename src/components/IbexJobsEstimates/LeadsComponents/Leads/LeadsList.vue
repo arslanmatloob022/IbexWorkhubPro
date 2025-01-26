@@ -62,9 +62,9 @@ const openLeadModal = ref(false);
 const users = listData.users as UserData[];
 
 const leadsStatusFilters = ref([
-  { value: "open", label: "Open" },
-  { value: "sold", label: "Sold" },
-  { value: "lost", label: "Lost" },
+  { value: "Open", label: "Open" },
+  { value: "Sold", label: "Sold" },
+  { value: "Lost", label: "Lost" },
   { value: "onHold", label: "On hold" },
 ]);
 
@@ -143,8 +143,26 @@ const filteredData = computed(() => {
     return leadsList.value;
   } else {
     const filterRe = new RegExp(filters.value, "i");
-    return leadsList.value.filter((item) => {
-      return item.title.match(filterRe) || item.created_at.match(filterRe);
+    return leadsList.value.filter((item: any) => {
+      return (
+        item.title?.match(filterRe) ||
+        item.address?.match(filterRe) ||
+        item.clientInfo?.username?.match(filterRe) ||
+        item.clientInfo?.last_name?.match(filterRe) ||
+        item.clientInfo?.username?.match(filterRe) ||
+        item.city?.match(filterRe) ||
+        item.created_at?.match(filterRe)
+      );
+    });
+  }
+});
+
+const secondFiltered = computed(() => {
+  if (!statusFilter.value) {
+    return filteredData.value;
+  } else {
+    return filteredData.value?.filter((item: any) => {
+      return item.status == statusFilter.value;
     });
   }
 });
@@ -196,7 +214,7 @@ onMounted(() => {
         <div class="flex-list-wrapper flex-list-v1">
           <!--List Empty Search Placeholder -->
           <VPlaceholderPage
-            v-if="!filteredData.length"
+            v-if="!secondFiltered?.length"
             title="We couldn't find any matching results."
             subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
@@ -218,15 +236,15 @@ onMounted(() => {
           </VPlaceholderPage>
 
           <VFlexTable
-            v-if="filteredData.length"
-            :data="filteredData"
+            v-if="secondFiltered?.length"
+            :data="secondFiltered"
             :columns="columns"
             compact
           >
             <template #body>
               <TransitionGroup name="list" tag="div" class="flex-list-inner">
                 <div
-                  v-for="item in filteredData"
+                  v-for="item in secondFiltered"
                   :key="item.id"
                   class="flex-table-item"
                 >
@@ -305,7 +323,17 @@ onMounted(() => {
                       "
                       class="cu-pointer"
                     >
-                      <span class="item-name">{{
+                      <VAvatar
+                        v-for="manager in item.managers_list"
+                        :initials="manager.username.slice(0, 2)"
+                        :picture="manager.avatar"
+                        v-tooltip.center.primary.rounded="
+                          `${manager.username} ${manager.last_name ?? ''}`
+                        "
+                        color="primary"
+                        size="small"
+                      />
+                      <!-- <span class="item-name">{{
                         item.manager_info?.username
                           ? item.manager_info?.username
                           : "N/A"
@@ -316,7 +344,7 @@ onMounted(() => {
                             ? item.manager_info?.email
                             : "N/A"
                         }}</span>
-                      </span>
+                      </span> -->
                     </div>
                   </VFlexTableCell>
 
@@ -398,7 +426,7 @@ onMounted(() => {
 
           <!--Table Pagination-->
           <VFlexPagination
-            v-if="filteredData.length > 5"
+            v-if="secondFiltered?.length > 5"
             v-model:current-page="page"
             :item-per-page="10"
             :total-items="80"

@@ -4,7 +4,12 @@ import * as listData from "/@src/data/layouts/flex-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { formatDate, formatTime } from "/@src/composable/useSupportElement";
-
+import {
+  getProposalStatusColor,
+  getProposalStatusName,
+  getProposalTypeColor,
+  getProposalTypeName,
+} from "../estimatesScripts";
 const router = useRouter();
 const route = useRoute();
 const api = useApi();
@@ -105,7 +110,10 @@ const columns = {
   industry: "Type",
   deadline: "Deadline",
   status: "Status",
-
+  amount: {
+    label: "Total Amount",
+    media: true,
+  },
   actions: {
     label: "Actions",
     align: "end",
@@ -158,6 +166,15 @@ const openProposalPreview = (id: any) => {
   selectedProposal.value = id;
   previewModal.value = !previewModal.value;
 };
+
+const addCostItemModal = ref(false);
+const proposalId = ref("");
+
+const openCostItemModal = (id: any) => {
+  proposalId.value = id;
+  addCostItemModal.value = !addCostItemModal.value;
+};
+
 const getCompanyProposalList = () => {
   if (props.allProposal == true) {
     getCompanyProposals();
@@ -236,27 +253,31 @@ onMounted(() => {
                 </div>
               </VFlexTableCell>
               <VFlexTableCell>
-                <VTag rounded>
-                  {{ item.type }}
+                <VTag rounded :color="getProposalTypeColor[item.type]">
+                  {{ getProposalTypeName[item.type] }}
                 </VTag>
               </VFlexTableCell>
               <VFlexTableCell>
                 <span class="light-text">{{ item.approval_deadline }}</span>
               </VFlexTableCell>
               <VFlexTableCell>
-                <VTag rounded color="info">
-                  {{ item.payment_status }}
+                <VTag
+                  class="capitalized"
+                  rounded
+                  :color="getProposalStatusColor[item.status]"
+                >
+                  {{ getProposalStatusName[item.status] }}
                 </VTag>
-                <!-- <span class="light-text">{{ item.payment_status }}</span> -->
+                <!-- <span class="light-text"></span> -->
               </VFlexTableCell>
-              <!-- <VFlexTableCell class="h-hidden-tablet-p">
-                <VAvatarStack
-                  :avatars="item.team"
-                  size="small"
-                  :limit="3"
-                  class="is-pushed-mobile"
-                />
-              </VFlexTableCell> -->
+              <VFlexTableCell :column="{ media: true }">
+                <div>
+                  <span class="item-name dark-inverted"
+                    >${{ item.proposalAmount }}</span
+                  >
+                  <span class="light-text">{{ item.payment_status }}</span>
+                </div>
+              </VFlexTableCell>
               <VFlexTableCell :column="{ align: 'end' }">
                 <VDropdown
                   class="is-pushed-mobile"
@@ -308,7 +329,11 @@ onMounted(() => {
                       </div>
                     </a>
 
-                    <a role="menuitem" href="#" class="dropdown-item is-media">
+                    <a
+                      role="menuitem"
+                      @click="openCostItemModal(item.id)"
+                      class="dropdown-item is-media"
+                    >
                       <div class="icon">
                         <i aria-hidden="true" class="lnil lnil-add-files" />
                       </div>
@@ -384,6 +409,14 @@ onMounted(() => {
       :proposalId="selectedProposal"
       @update:modal-handler="previewModal = false"
     />
+    <EstimateCostItemModal
+      v-if="addCostItemModal"
+      :costItemModal="addCostItemModal"
+      :proposalId="proposalId"
+      @update:modalHandler="addCostItemModal = false"
+      @update:OnSuccess="getCompanyProposalList"
+    >
+    </EstimateCostItemModal>
     <SweetAlert
       v-if="SweetAlertProps.isSweetAlertOpen"
       :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"

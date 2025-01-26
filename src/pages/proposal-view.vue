@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { popovers } from "/@src/data/users/userPopovers";
-import { forEach } from "cypress/types/lodash";
-import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { useApi } from "/@src/composable/useAPI";
 import {
   getColumnName,
@@ -9,6 +6,9 @@ import {
   costItems,
 } from "../components/IbexJobsEstimates/proposalItems";
 
+import { useNotyf } from "../composable/useNotyf";
+const selectedStatus = ref("");
+const notyf = useNotyf();
 const route = useRoute();
 const api = useApi();
 const props = withDefaults(
@@ -26,56 +26,6 @@ const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
-const useProposal = useProposalStore();
-const data = ref([
-  {
-    name: "Website Redesign",
-    unit: "hrs",
-    quantity: 54,
-    rate: 24,
-  },
-  {
-    name: "Logo Design",
-    unit: "hrs",
-    quantity: 12,
-    rate: 24,
-  },
-  {
-    name: "Custom Illustrations",
-    unit: "hrs",
-    quantity: 7,
-    rate: 32,
-  },
-]);
-
-const vatRate = 0.1;
-const totalData = computed(() => {
-  const subtotal = data.value.reduce((acc, item) => {
-    return acc + item.quantity * item.rate;
-  }, 0);
-  const vatValue = subtotal * vatRate;
-  const total = subtotal + vatValue;
-
-  return [
-    {
-      label: "Subtotal",
-      value: subtotal,
-    },
-    {
-      label: "Taxes",
-      value: vatValue,
-    },
-    {
-      label: "Total",
-      value: total,
-    },
-  ];
-});
-
-const usdFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 const columns = [
   "Item",
@@ -87,6 +37,12 @@ const columns = [
   "Markup",
   "Total Price",
 ];
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
 
 const totalPrice = computed(() => {
   return costItems.value.reduce(
@@ -96,18 +52,18 @@ const totalPrice = computed(() => {
 });
 const loading = ref(false);
 const proposalDetail = ref({
-  id: "c897de41-609f-4a20-8d79-0537b6a873d6",
-  title: "Test Lead's Proposal",
-  approval_deadline: "2025-01-30",
+  id: "",
+  title: "",
+  approval_deadline: "",
   internal_notes: null,
   introductory_text: null,
   closing_text: null,
-  payment_status: "Pending",
-  type: "proposal",
-  status: "pending",
-  created_at: "2025-01-21T19:08:06.509861Z",
-  updated_at: "2025-01-21T19:08:06.509875Z",
-  job: "da0aa7c1-3744-4856-a637-e5a821f5ec7e",
+  payment_status: "",
+  type: "",
+  status: "",
+  created_at: "",
+  updated_at: "",
+  job: "",
 });
 
 const proposalCostItems = ref([
@@ -150,6 +106,38 @@ const getProposalDetail = async () => {
   }
 };
 
+const openProposalAlert = (status: any) => {
+  selectedStatus.value = status;
+  SweetAlertProps.value = {
+    title: `${selectedStatus.value.toLocaleUpperCase()} proposal ?`,
+    subtitle: `${
+      selectedStatus.value == "approve"
+        ? "You are going to approve this proposal and as you do so Ibex Team will start working on mentioned work."
+        : "You are about to Disapprove the proposal that will identify us that you are not going to have done the mentioned work at your site."
+    }`,
+    btntext: `${selectedStatus.value == "approve" ? "Approve" : "Disapprove"}`,
+    isSweetAlertOpen: true,
+  };
+};
+
+const updateProposalStatus = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.patch(
+      `/api/lead-proposal/${route.query.proposal}/`,
+      {
+        status: selectedStatus.value,
+      }
+    );
+    notyf.success(`You have ${selectedStatus.value} this proposal.`);
+    SweetAlertProps.value.isSweetAlertOpen = false;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 const getProposalCostItems = async () => {
   try {
     const resp = await api.get(`api/cost/by-proposal/${route.query.proposal}/`);
@@ -176,12 +164,28 @@ onMounted(() => {
           </div>
           <div class="right">
             <div class="controls">
-              <VButton size="xsmall" outlined color="primary">Accept</VButton>
-              <VButton size="xsmall" class="ml-2" outlined color="info"
+              <VButton
+                size="xsmall"
+                @click="openProposalAlert('approve')"
+                outlined
+                color="primary"
+                >Approve</VButton
+              >
+              <VButton
+                size="xsmall"
+                @click="openProposalAlert('review')"
+                class="ml-2"
+                outlined
+                color="info"
                 >Review</VButton
               >
-              <VButton size="xsmall" class="ml-2" outlined color="danger"
-                >Reject</VButton
+              <VButton
+                @click="openProposalAlert('disapprove')"
+                size="xsmall"
+                class="ml-2"
+                outlined
+                color="danger"
+                >Disapprove</VButton
               >
             </div>
           </div>
@@ -214,11 +218,6 @@ onMounted(() => {
                 </p>
               </div>
             </div>
-
-            <!-- <div>
-              {{ proposalDetail }}
-              {{ proposalCostItems.length }}
-            </div> -->
             <div class="invoice-section" v-if="proposalCostItems.length">
               <table class="responsive-table">
                 <thead>
@@ -272,6 +271,15 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="updateProposalStatus"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
   </div>
 </template>
 

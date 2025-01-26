@@ -8,9 +8,7 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const notyf = useNotyf();
-
-const userSession = useUserSession();
-const { todoList3, todoList4 } = useTodoList();
+const loading = ref(false);
 
 // Interface for a single user or person
 interface User {
@@ -32,7 +30,6 @@ interface ClientInfo {
   avatar: string | null;
 }
 
-// Interface for the main object
 interface ProjectDetails {
   id: string;
   sales_people_info: User[];
@@ -192,10 +189,10 @@ const drawMap = (lat: any, lng: any) => {
     leafLetMap.remove();
   }
 
-  leafLetMap = L.map("workerProfileMap").setView([51.4497984, -0.3464489], 10);
+  leafLetMap = L.map("workerProfileMap").setView([51.4497984, -0.3464489], 24);
 
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 24,
+    maxZoom: 17,
     attribution:
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(leafLetMap);
@@ -203,13 +200,11 @@ const drawMap = (lat: any, lng: any) => {
   if (lat && lng) {
     const position = [lat, lng];
     L.marker(position).addTo(leafLetMap);
-    leafLetMap.setView(position, 12);
+    leafLetMap.setView(position, 34);
   } else {
     console.log("Invalid latitude or longitude for supplier");
   }
 };
-
-const loading = ref(false);
 
 const getLeadDetailHandler = async () => {
   try {
@@ -227,6 +222,13 @@ const getLeadDetailHandler = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const selectedLeadId = ref("");
+const openLeadModal = ref(false);
+const openLeadUpdateModal = (id: any) => {
+  selectedLeadId.value = id;
+  openLeadModal.value = true;
 };
 
 onMounted(() => {
@@ -287,6 +289,7 @@ onMounted(() => {
                       `${manager.username ?? 'N/A'} ${manager.last_name ?? ''}`
                     "
                     squared
+                    color="warning"
                   />
 
                   <button>
@@ -297,7 +300,13 @@ onMounted(() => {
                     />
                   </button>
                 </div>
-                <VButton class="mt-1" bold fullwidth dark-outlined>
+                <VButton
+                  class="mt-1"
+                  @click="openLeadUpdateModal(route.params.id)"
+                  bold
+                  fullwidth
+                  dark-outlined
+                >
                   Update Job
                 </VButton>
               </div>
@@ -519,9 +528,15 @@ onMounted(() => {
               <div class="column is-4">
                 <!--Widget-->
                 <div
+                  v-if="tab === 'management'"
                   class="card mb-4"
                   id="workerProfileMap"
-                  style="height: 300px; width: 100%; border-radius: 10px"
+                  style="
+                    height: 300px;
+                    width: 100%;
+                    border-radius: 10px;
+                    z-index: 9;
+                  "
                 ></div>
 
                 <!--Widget-->
@@ -659,6 +674,13 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <LeadAddUpdateModal
+      v-if="openLeadModal"
+      :addUpdateLeadModal="openLeadModal"
+      :leadId="selectedLeadId"
+      @update:modalHandler="openLeadModal = false"
+      @update:OnSuccess="getCompanyLeads"
+    />
   </div>
 </template>
 
