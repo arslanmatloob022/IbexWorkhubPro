@@ -1,1 +1,0 @@
-import{_ as e}from"./SoccerDashboard-2eb90367.js";import{u as r}from"./viewWrapper-9193d714.js";import{e as s,z as a,B as o,C as t,E as c}from"./index-e0cd5955.js";const i={class:"page-content-inner"},n=s({__name:"soccer",setup:s=>(r().setPageTitle("Soccer"),a({title:"Soccer - Navbar - Arez"}),(r,s)=>{const a=e;return o(),t("div",i,[c(a)])})});export{n as default};

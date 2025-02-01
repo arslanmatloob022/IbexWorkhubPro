@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
-
+import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 const props = defineProps<{
   proposalSenderModal?: boolean;
   proposalData?: any;
   columnsToShow?: any;
 }>();
+
+const useProposal = useProposalStore();
 const api = useApi();
 const loading = ref(false);
 const notyf = useNotyf();
@@ -36,9 +38,19 @@ const mailData = ref({
   scheduleAt: "",
   sendToGroup: [],
   link: "",
-  sendTo: "",
+  sendTo: useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
+    ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
+    : "N/A",
   subject: "",
-  message: `<p><b>Dear [Client's Name],</b></p>
+  message: `<p><b>Hi ${
+    useProposal.leadProposalFormData?.jobInfo?.clientInfo?.username
+      ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.username
+      : "N/A"
+  } ${
+    useProposal.leadProposalFormData?.jobInfo?.clientInfo?.last_name
+      ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.last_name
+      : ""
+  },</b></p>
   
   <p>We hope this message finds you well.</p>
   
@@ -49,14 +61,20 @@ const mailData = ref({
   
   <p>
     You can review the full proposal, including the cost breakdown, by clicking the link below: <br />
-    <a href="${proposalLink.value}" style="color: #007bff; text-decoration: none; font-weight: bold;">View Proposal</a>
+    <a href="${
+      proposalLink.value
+    }" style="color: #007bff; text-decoration: none; font-weight: bold;">View Proposal</a>
   </p>
 
   
   <p><b>Summary of Charges:</b></p>
   <ul>
-    <li><b>Total Items:</b> [Number of Items]</li>
-    <li><b>Total Amount:</b> [Total Cost]</li>
+    <li><b>Total Items:</b> ${
+      useProposal.leadProposalFormData.proposalAmount ?? 0
+    }</li>
+    <li><b>Total Amount:</b>$${
+      useProposal.leadProposalFormData.proposalAmount ?? 0
+    }</li>
   </ul>
   
   <p>
@@ -119,7 +137,7 @@ onMounted(async () => {
       <VModal
         is="form"
         :open="props.proposalSenderModal"
-        title="Schedule Email"
+        title="Send Proposal"
         size="large"
         actions="right"
         @submit.prevent="sendProposalMailHandler"

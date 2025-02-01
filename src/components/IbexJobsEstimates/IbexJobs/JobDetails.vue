@@ -248,8 +248,12 @@ onMounted(() => {
               <div class="left">
                 <div class="current-user">
                   <VAvatar
-                    size="medium"
-                    picture="/images/avatars/svg/vuero-1.svg"
+                    size="large"
+                    :picture="
+                      leadDetail.current_state == 'lead'
+                        ? '/icons/lead-shield-96.png'
+                        : '/icons/job-sheild.png'
+                    "
                     squared
                   />
                   <h3>
@@ -307,7 +311,8 @@ onMounted(() => {
                   fullwidth
                   dark-outlined
                 >
-                  Update Job
+                  Update
+                  {{ leadDetail.current_state == "lead" ? "lead" : "job" }}
                 </VButton>
               </div>
             </div>
@@ -343,6 +348,15 @@ onMounted(() => {
                         @keydown.space.prevent="tab = 'proposals'"
                         @click="tab = 'proposals'"
                         ><span>Proposals</span></a
+                      >
+                    </li>
+                    <li :class="[tab === 'activities' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'activities'"
+                        @click="tab = 'activities'"
+                        ><span>Activities</span></a
                       >
                     </li>
                     <li :class="[tab === 'finance' && 'is-active']">
@@ -413,9 +427,9 @@ onMounted(() => {
                   <div class="column is-4">
                     <div class="side-text">
                       <h3 class="dark-inverted">Job Description</h3>
-                      <p>
-                        {{ leadDetail.notes }}
-                      </p>
+
+                      <div v-html="leadDetail.notes"></div>
+
                       <a class="action-link" tabindex="0">Read More</a>
                     </div>
                   </div>
@@ -657,7 +671,9 @@ onMounted(() => {
           <div v-if="tab === 'proposals'" class="column is-12">
             <LeadProposalsList :lead-id="route.params.id" />
           </div>
-
+          <div v-if="tab === 'activities'" class="column is-12">
+            <JobLeadActivities :jobId="route.params.id" />
+          </div>
           <div v-if="tab === 'progress'" class="column is-12">
             <JobProgress />
           </div>

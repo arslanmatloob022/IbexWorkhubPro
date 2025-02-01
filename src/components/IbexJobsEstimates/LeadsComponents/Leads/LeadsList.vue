@@ -138,6 +138,13 @@ const deleteLeadHandler = async () => {
 const filters = ref("");
 const statusFilter = ref("");
 
+const openLeadProposalModal = ref(false);
+
+const openAddProposalModalHandler = (id: any) => {
+  selectedLeadId.value = id;
+  openLeadProposalModal.value = !openLeadProposalModal.value;
+};
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return leadsList.value;
@@ -257,7 +264,7 @@ onMounted(() => {
                     class="cu-pointer"
                     :column="{ media: true, grow: true }"
                   >
-                    <div class="show-text-200">
+                    <div v-if="item.clientInfo" class="show-text-200">
                       <span class="item-name">{{
                         item.clientInfo?.username
                           ? item.clientInfo?.username
@@ -271,17 +278,32 @@ onMounted(() => {
                         }}</span>
                       </span>
                     </div>
+                    <div v-if="item.contractorInfo" class="show-text-200">
+                      <span class="item-name">{{
+                        item.contractorInfo?.username
+                          ? item.contractorInfo?.username
+                          : "N/A"
+                      }}</span>
+                      <span class="item-meta">
+                        <span>{{
+                          item.contractorInfo?.email
+                            ? item.contractorInfo?.email
+                            : "N/A"
+                        }}</span>
+                      </span>
+                    </div>
                   </VFlexTableCell>
 
-                  <VFlexTableCell :column="{ media: true, grow: true }">
-                    <div
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                    >
+                  <VFlexTableCell
+                    @click="
+                      () => {
+                        router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                      }
+                    "
+                    class="cu-pointer"
+                    :column="{ media: true, grow: true }"
+                  >
+                    <div>
                       <span class="item-name dark-inverted show-text-200">{{
                         item.title ? item.title : "N/A"
                       }}</span>
@@ -290,15 +312,16 @@ onMounted(() => {
                       </span>
                     </div>
                   </VFlexTableCell>
-                  <VFlexTableCell :column="{ media: true }">
-                    <div
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                    >
+                  <VFlexTableCell
+                    @click="
+                      () => {
+                        router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                      }
+                    "
+                    class="cu-pointer"
+                    :column="{ media: true }"
+                  >
+                    <div>
                       <span class="item-name">{{
                         formatDate(item.created_at)
                       }}</span>
@@ -308,21 +331,29 @@ onMounted(() => {
                     </div>
                   </VFlexTableCell>
 
-                  <VFlexTableCell>
+                  <VFlexTableCell
+                    @click="
+                      () => {
+                        router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                      }
+                    "
+                    class="cu-pointer"
+                  >
                     <VTag :color="getStatusColor[item.status]" rounded>
                       {{ item.status ? item.status : "N/A" }}
                     </VTag>
                   </VFlexTableCell>
 
-                  <VFlexTableCell :column="{ media: true }">
-                    <div
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                    >
+                  <VFlexTableCell
+                    @click="
+                      () => {
+                        router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                      }
+                    "
+                    class="cu-pointer"
+                    :column="{ media: true }"
+                  >
+                    <div>
                       <VAvatar
                         v-for="manager in item.managers_list"
                         :initials="manager.username.slice(0, 2)"
@@ -333,18 +364,6 @@ onMounted(() => {
                         color="primary"
                         size="small"
                       />
-                      <!-- <span class="item-name">{{
-                        item.manager_info?.username
-                          ? item.manager_info?.username
-                          : "N/A"
-                      }}</span>
-                      <span class="item-meta">
-                        <span>{{
-                          item.manager_info?.email
-                            ? item.manager_info?.email
-                            : "N/A"
-                        }}</span>
-                      </span> -->
                     </div>
                   </VFlexTableCell>
 
@@ -374,13 +393,17 @@ onMounted(() => {
                           </div>
                         </a>
 
-                        <a role="menuitem" class="dropdown-item is-media">
+                        <a
+                          role="menuitem"
+                          @click="openAddProposalModalHandler(item.id)"
+                          class="dropdown-item is-media"
+                        >
                           <div class="icon">
-                            <i aria-hidden="true" class="lnil lnil-briefcase" />
+                            <i class="lnil lnil-copy" aria-hidden="true"></i>
                           </div>
                           <div class="meta">
-                            <span>Proposals</span>
-                            <span>View proposal of lead</span>
+                            <span>Add Proposals</span>
+                            <span>Add new proposal to lead</span>
                           </div>
                         </a>
 
@@ -452,6 +475,13 @@ onMounted(() => {
       :btntext="SweetAlertProps.btntext"
       :onConfirm="deleteLeadHandler"
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <LeadProposalModal
+      v-if="openLeadProposalModal"
+      :lead-proposal-modal="openLeadProposalModal"
+      :lead-id="selectedLeadId"
+      @update:modal-handler="openLeadProposalModal = false"
+      @update:OnSuccess="getCompanyLeads"
     />
   </div>
 </template>

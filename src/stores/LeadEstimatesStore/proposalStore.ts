@@ -3,36 +3,6 @@ import { ref, computed } from "vue";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 
-export interface costItem {
-  title: string;
-  description: string;
-  quantity: number;
-  unit: number;
-  unitCost: number;
-  markup: number;
-  clientPrice: number;
-  costCode: string;
-  costType: string;
-  builderCost: string;
-  margin: number;
-  profit: number;
-  internalNotes: string;
-}
-
-export interface leadProposalData {
-  id: string;
-  title: string;
-  approval_deadline: string;
-  approvalDeadline: string;
-  internalNotes: string;
-  introductoryText: string;
-  closingText: string;
-  attachments: [];
-  paymentStatus: string;
-  worksheetItems: costItem[];
-  type: string;
-}
-
 export const useProposalStore = defineStore("useProposal", () => {
   const loading = ref(true);
   const notyf = useNotyf();
@@ -41,18 +11,160 @@ export const useProposalStore = defineStore("useProposal", () => {
   const leadId = ref("");
   const companyProposalsList = ref([]);
   const leadProposalsList = ref([]);
-  const leadProposalFormData = ref<leadProposalData>({
+  interface costItem {
+    title: string;
+    description: string;
+    quantity: number;
+    unit: number;
+    unitCost: number;
+    markup: number;
+    clientPrice: number;
+    costCode: string;
+    costType: string;
+    builderCost: string;
+    margin: number;
+    profit: number;
+    internalNotes: string;
+  }
+
+  interface SalesPerson {
+    id: string;
+    username: string;
+    last_name: string | null;
+    email: string;
+    role: string;
+    avatar: string | null;
+  }
+
+  interface ClientInfo {
+    id: string;
+    username: string;
+    last_name: string | null;
+    email: string;
+    role: string;
+    avatar: string | null;
+  }
+
+  interface Manager {
+    id: string;
+    username: string;
+    last_name: string | null;
+    email: string;
+    role: string;
+    avatar: string | null;
+  }
+
+  interface JobInfo {
+    id: string;
+    sales_people_info: SalesPerson[];
+    clientInfo: ClientInfo;
+    created_by_info: SalesPerson;
+    managers_list: Manager[];
+    title: string;
+    address: string;
+    current_state: string;
+    city: string;
+    state: string;
+    status: string;
+    zip_code: string;
+    confidence: string;
+    sale_date: string;
+    tags: string[];
+    estimated_from: string;
+    estimated_to: string;
+    sources: string;
+    project_type: string;
+    notes: string;
+    attach_mail: string;
+    latitude: number;
+    longitude: number;
+    created_at: string;
+    updated_at: string;
+    created_by: string;
+    client: string;
+    contractor: string | null;
+    sales_people: string[];
+    managers: string[];
+  }
+
+  interface ProposalData {
+    id: string;
+    jobInfo: JobInfo;
+    proposalAmount: number;
+    title: string;
+    approval_deadline: string;
+    internal_notes: string;
+    introductory_text: string;
+    closing_text: string;
+    payment_status: string;
+    type: string;
+    status: string;
+    columns_to_show: string[];
+    created_at: string;
+    updated_at: string;
+    job: string;
+  }
+  const leadProposalFormData = ref<ProposalData>({
     id: "",
+    jobInfo: {
+      id: "",
+      sales_people_info: [],
+      clientInfo: {
+        id: "",
+        username: "",
+        last_name: null,
+        email: "",
+        role: "",
+        avatar: null,
+      },
+      created_by_info: {
+        id: "",
+        username: "",
+        last_name: null,
+        email: "",
+        role: "",
+        avatar: null,
+      },
+      managers_list: [],
+      title: "",
+      address: "",
+      current_state: "",
+      city: "",
+      state: "",
+      status: "",
+      zip_code: "",
+      confidence: "",
+      sale_date: "",
+      tags: [],
+      estimated_from: "",
+      estimated_to: "",
+      sources: "",
+      project_type: "",
+      notes: "",
+      attach_mail: "",
+      latitude: 0,
+      longitude: 0,
+      created_at: "",
+      updated_at: "",
+      created_by: "",
+      client: "",
+      contractor: null,
+      sales_people: [],
+      managers: [],
+    },
+    proposalAmount: 0,
     title: "",
     approval_deadline: "",
-    attachments: [],
-    approvalDeadline: "",
-    internalNotes: "",
-    introductoryText: "",
-    closingText: "",
-    paymentStatus: "",
-    worksheetItems: [],
-    type: "proposal",
+    internal_notes: "",
+    introductory_text: "",
+    closing_text: "",
+    payment_status: "",
+    type: "",
+    status: "",
+    columns_to_show: [],
+    created_at: "",
+    updated_at: "",
+    job: "",
   });
 
   interface ProposalCostItem {
@@ -133,6 +245,17 @@ export const useProposalStore = defineStore("useProposal", () => {
     }
   };
 
+  const getProposalDetail = async (id: any) => {
+    try {
+      const response = await api.get(`/api/lead-proposal/${id}/detail/`);
+      leadProposalFormData.value = response.data;
+      // notyf.blue("calling");
+    } catch (err) {
+      console.log(err);
+    } finally {
+    }
+  };
+
   async function getProposalCostItems(proposal: any) {
     try {
       proposalId.value = proposal;
@@ -155,6 +278,7 @@ export const useProposalStore = defineStore("useProposal", () => {
     companyProposalsList,
     leadProposalsList,
     getLeadProposals,
+    getProposalDetail,
     getCompanyProposals,
     getProposalCostItems,
     clearProposalId,

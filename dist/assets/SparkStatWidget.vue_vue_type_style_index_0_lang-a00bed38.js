@@ -1,0 +1,1 @@
+import{e as t,B as s,C as a,Y as e,H as i}from"./index-bd02fd97.js";const r=t({__name:"SparkStatWidget",props:{straight:{type:Boolean}},setup(t){const r=t;return(t,o)=>(s(),a("div",{class:i(["stat-widget spark-tile-widget",[r.straight&&"is-straight"]])},[e(t.$slots,"default")],2))}});export{r as _};

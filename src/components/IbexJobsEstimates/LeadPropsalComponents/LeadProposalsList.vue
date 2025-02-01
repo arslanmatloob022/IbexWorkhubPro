@@ -50,6 +50,11 @@ const openLeadProposalModalHandler = (id: any) => {
   openLeadProposalModal.value = true;
 };
 
+const openProposalGroupModal = ref(false);
+const openProposalGroupModalHandler = () => {
+  openProposalGroupModal.value = true;
+};
+
 const props = withDefaults(
   defineProps<{
     activeTab?: "active" | "closed";
@@ -205,6 +210,14 @@ onMounted(() => {
           @click="openLeadProposalModal = !openLeadProposalModal"
           icon="fas fa-plus"
           >Lead Proposal</VButton
+        >
+        <VButton
+          color="warning"
+          class="ml-2"
+          v-if="props.leadId"
+          @click="openProposalGroupModalHandler()"
+          icon="fas fa-plus"
+          >Group</VButton
         >
       </div>
     </div>
@@ -425,6 +438,12 @@ onMounted(() => {
       :btntext="SweetAlertProps.btntext"
       :onConfirm="DeleteProposalHandler"
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <ProposalGroupModal
+      v-if="openProposalGroupModal"
+      :leadID="props.leadId"
+      :group-proposal-modal="openProposalGroupModal"
+      @update:modal-handler="openProposalGroupModal = false"
     />
   </div>
 </template>

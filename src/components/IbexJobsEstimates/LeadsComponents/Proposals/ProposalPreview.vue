@@ -1,34 +1,27 @@
 <script setup lang="ts">
-import { getColumnName, getColumnData, costItems } from "../../proposalItems";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
+import {
+  selectedColumnsToShow,
+  getColumnName,
+  getColumnData,
+} from "/@src/components/CommonComponents/CostItemComponents/costItems";
+import { formatDate } from "/@src/composable/useSupportElement";
 const props = defineProps<{
   columnsToShow?: any;
   proposalData?: any;
 }>();
 
 const useProposal = useProposalStore();
-const header = ref("");
-const body = ref(true);
 const openSendProposalModal = ref(false);
-const contactInfo = ref(true);
-const showAddress = ref(true);
-const oneLiner = ref(true);
-
-const totalPrice = computed(() => {
-  return costItems.value.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-});
+const columnsToShow = ref([]);
 
 const proposalFormData = ref({});
 const openSendProposalModalHandler = () => {
   proposalFormData.value = props.proposalData;
-  columnsToShow.value = props.columnsToShow;
+  columnsToShow.value = selectedColumnsToShow;
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
-const columnsToShow = ref([]);
 onMounted(() => {});
 </script>
 
@@ -42,7 +35,7 @@ onMounted(() => {});
         through the link while it is Released.
       </p>
     </div>
-    <div class="column is-4">
+    <!-- <div class="column is-4">
       <h1 class="subtitle is-5 is-bold">Layout Options</h1>
       <h1 class="subtitle is-6 mb-0">Header</h1>
       <VField>
@@ -126,12 +119,14 @@ onMounted(() => {});
           />
         </VControl>
       </VField>
-    </div>
+    </div> -->
     <div class="column is-12">
       <div class="invoice-wrapper">
         <div class="invoice-header">
           <div class="left">
-            <h3>Proposal-ID PD-456-14</h3>
+            <h3>
+              Proposal-ID {{ useProposal.leadProposalFormData?.id.slice(1, 8) }}
+            </h3>
           </div>
           <div class="right">
             <div class="controls">
@@ -158,7 +153,7 @@ onMounted(() => {});
               </a>
             </div>
             <!-- <div>
-              {{ props.proposalData }}
+              {{ useProposal.leadProposalFormData }}
             </div> -->
           </div>
         </div>
@@ -168,7 +163,7 @@ onMounted(() => {});
               <VAvatar size="xl" picture="/logos/IbexFavicon.png" />
 
               <div class="meta"></div>
-              <div class="end">
+              <div class="end is-right">
                 <span>PO Box 242</span>
                 <span>Evergreen, CO 80437-0242</span>
                 <span>Phone: 720 272-9061</span>
@@ -178,15 +173,33 @@ onMounted(() => {});
 
             <div class="invoice-section is-flex is-bordered">
               <div class="meta">
-                <h3>Client Name</h3>
-                <span>Client Phone</span>
-                <span>25724 Independence Trail Evergreen, CO 80439</span>
+                <h3>
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                      ?.username ?? "N/A"
+                  }}
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                      ?.last_name ?? ""
+                  }}
+                </h3>
+                <span>{{
+                  useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
+                    ? useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                        ?.email
+                    : "N/A"
+                }}</span>
+                <!-- <span>25724 Independence Trail Evergreen, CO 80439</span> -->
               </div>
               <div class="end is-left">
-                <h3>Friday Jan 17, 2025</h3>
+                <h3>
+                  {{ formatDate(useProposal.leadProposalFormData?.created_at) }}
+                </h3>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quod
-                  equidem non reprehendo.
+                  Job Address:
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.address ?? "N/A"
+                  }}
                 </p>
               </div>
             </div>
@@ -194,7 +207,7 @@ onMounted(() => {});
               <table class="responsive-table">
                 <thead>
                   <th
-                    v-for="(column, index) in props.columnsToShow"
+                    v-for="(column, index) in selectedColumnsToShow"
                     :key="index"
                   >
                     {{ getColumnName[column] }}
@@ -206,7 +219,7 @@ onMounted(() => {});
                     :key="cost.id"
                   >
                     <td
-                      v-for="(column, index) in props.columnsToShow"
+                      v-for="(column, index) in selectedColumnsToShow"
                       :key="index"
                     >
                       <div
@@ -225,9 +238,33 @@ onMounted(() => {});
             <div class="invoice-section is-flex mt-0 pt-0">
               <div class="end is-left">
                 <h3 class="text-right">
-                  Total Price: ${{ props.proposalData.proposalAmount }}
+                  Total Price: ${{
+                    useProposal.leadProposalFormData?.proposalAmount
+                  }}
                 </h3>
-                <p>Mentioned price are final</p>
+                <!-- <p>Mentioned price are final</p> -->
+              </div>
+            </div>
+            <div class="invoice-section is-flex mt-0 pt-0">
+              <div class="footer">
+                <div class="footer-meta">
+                  <p>Signature:</p>
+                  <div>
+                    ___________________________________________________________________________________
+                  </div>
+                </div>
+                <div class="footer-meta">
+                  <p>Date:</p>
+                  <div>
+                    ___________________________________________________________________________________
+                  </div>
+                </div>
+                <div class="footer-meta">
+                  <p class="no-wrap">Print Name:</p>
+                  <div>
+                    ___________________________________________________________________________________
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -244,8 +281,25 @@ onMounted(() => {});
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "/@src/scss/abstracts/all";
+
+.footer {
+  width: 100%;
+  background-color: #fff;
+}
+.footer-meta {
+  margin-bottom: 8px;
+  display: flex;
+}
+.footer-meta p {
+  width: 15%;
+  color: black;
+  padding-top: 6px;
+}
+.footer-meta div {
+  width: 80%;
+}
 
 .responsive-table {
   width: 100%;

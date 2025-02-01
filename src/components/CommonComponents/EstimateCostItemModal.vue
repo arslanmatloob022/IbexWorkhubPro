@@ -268,21 +268,15 @@ onMounted(async () => {
                 </VControl>
               </VField>
             </div>
-            <div class="field column is-6">
+            <div class="field column is-3">
               <label for="">Catalog</label>
               <div>
-                <VButton size="small">Add in Catalog</VButton>
+                <VButton color="info" light raised size="small"
+                  >Add in Catalog</VButton
+                >
               </div>
-              <!-- <VField class="is-flex">
-                <VControl raw subcontrol>
-                  <VCheckbox
-                    v-model="costItem"
-                    label="Include item in Catalog"
-                  />
-                </VControl>
-              </VField> -->
             </div>
-            <div class="field column is-6">
+            <div class="field column is-3">
               <label for="">Mark As</label>
               <VField>
                 <VControl>
@@ -373,6 +367,7 @@ onMounted(async () => {
                     :disabled="props.previewCostItems"
                     type="number"
                     name="unitCost"
+                    step="any"
                     placeholder="Unit cost"
                   />
                 </VControl>
@@ -387,6 +382,7 @@ onMounted(async () => {
                     :disabled="props.previewCostItems"
                     type="number"
                     name="quantity"
+                    step="any"
                     placeholder="Quantity"
                   />
                 </VControl>
@@ -414,6 +410,7 @@ onMounted(async () => {
                     v-model="builderPrice"
                     :disabled="props.previewCostItems"
                     type="number"
+                    step="any"
                     name="builderCost"
                     placeholder="Builder cost"
                   />
@@ -429,6 +426,7 @@ onMounted(async () => {
                     :disabled="props.previewCostItems"
                     type="number"
                     name="markup"
+                    step="any"
                     placeholder="Markup"
                   />
                 </VControl>
@@ -443,6 +441,7 @@ onMounted(async () => {
                     :disabled="props.previewCostItems"
                     type="number"
                     name="markup"
+                    step="any"
                     placeholder="Total Price"
                   />
                 </VControl>
@@ -457,6 +456,7 @@ onMounted(async () => {
                     :disabled="props.previewCostItems"
                     type="number"
                     name="markup"
+                    step="any"
                     placeholder="Margin"
                   />
                 </VControl>

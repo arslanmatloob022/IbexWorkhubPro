@@ -9,15 +9,14 @@ import LeadActivityModal from "./LeadActivityModal.vue";
 import ContractorsDropDown from "/@src/components/CommonComponents/DropDowns/ContractorsDropDown.vue";
 import CKE from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { selectedColumnsToShow } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const loading = ref(false);
-const FormData = ref({});
 const openAddContactModal = ref(false);
-const openLeadProposalModal = ref(false);
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
 const selectedAdminsIds = ref<string[]>([]);
@@ -128,8 +127,8 @@ const leadFormData = ref<leadData>({
 
 const status = ref([
   { value: "Open", label: "Open" },
-  { value: "OnHold", label: "On Hold" },
-  { value: "Lost", label: "Lost" },
+  { value: "On Hold", label: "On Hold" },
+  { value: "lost", label: "Lost" },
   { value: "Sold", label: "Sold" },
 ]);
 
@@ -154,6 +153,15 @@ interface contactPerson {
   loginAllowed: boolean;
 }
 
+watch(
+  () => leadFormData.value.status,
+  (newStatus) => {
+    if (newStatus === "Sold") {
+      leadFormData.value.current_state = "job";
+    }
+  }
+);
+
 const addUpdateLeadHandler = async () => {
   try {
     loading.value = true;
@@ -169,7 +177,8 @@ const addUpdateLeadHandler = async () => {
       const response = await api.post("/api/job/", formDataAPI);
       leadFormData.value = response.data;
     }
-    // updateOnSuccess();
+
+    updateOnSuccess();
     notyf.success(
       `Lead ${
         props.leadId || leadFormData.value.id ? "updated" : "created"
@@ -329,7 +338,6 @@ const getManagersHandler = async () => {
   }
 };
 const CKEditor = CKE.component;
-const content = ref(`<h2>Your HTML Content</h2>`);
 const config = {
   fontFamily: {
     options: [
@@ -911,7 +919,7 @@ onMounted(async () => {
               <VButton
                 @click="showAddUpdateContactModal = !showAddUpdateContactModal"
                 color="warning"
-                icon="fas fa-exchange-alt"
+                icon="lnir lnir-alarm"
               >
                 Create Activity
               </VButton>
@@ -926,9 +934,9 @@ onMounted(async () => {
             </div>
             <div class="column is-3"></div>
           </VCard>
-          <LeadActivityModal
+          <ScheduleEmailModal
             v-if="showAddUpdateContactModal"
-            :addUpdateContactModal="showAddUpdateContactModal"
+            :mailSchedulerModal="showAddUpdateContactModal"
             @update:modal-handler="showAddUpdateContactModal = false"
           />
           <GenericEmailSender
@@ -957,11 +965,19 @@ onMounted(async () => {
       <VButton
         :loading="loading"
         type="submit"
-        color="primary"
-        icon="fas fa-plus"
+        :color="props.leadId ? 'info' : 'primary'"
         raised
-        >Create Lead</VButton
+        >{{ props.leadId ? "Update" : "Create" }} Lead</VButton
       >
     </template>
   </VModal>
 </template>
+
+<style lang="scss">
+.ck-editor__editable {
+  color: black !important;
+  p {
+    color: black !important;
+  }
+}
+</style>

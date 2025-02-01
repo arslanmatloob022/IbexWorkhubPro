@@ -133,6 +133,7 @@ onMounted(async () => {
   );
   if (props.proposalId || route.params.id) {
     getProposalDetail();
+    useProposal.getProposalDetail(props.proposalId || route.params.id);
   }
 });
 </script>
@@ -218,51 +219,52 @@ onMounted(async () => {
         </VControl>
       </VField>
     </div>
-    <VCollapse
-      :items="data"
-      with-chevron
-      style="border-radius: 14px"
-      class="m-3"
-    >
-      <template #collapse-item-content="item">
-        <div class="body-inner-content">
-          <div class="field columns is-multiline mb-0">
-            <div class="field column is-12 mb-0">
-              <label for="" class="label">Internal Notes</label>
-              <VField>
-                <VControl>
-                  <VTextarea
-                    v-model="leadProposalFormData.internalNotes"
-                    rows="4"
-                    placeholder="Internal notes..."
-                  />
-                </VControl>
-              </VField>
-            </div>
-            <div class="field column is-12 mb-0">
-              <label for="" class="label">Introductory Text</label>
+    <div class="field column is-12">
+      <VCollapse
+        :items="data"
+        with-chevron
+        style="border-radius: 14px"
+        class="m-3"
+      >
+        <template #collapse-item-content="item">
+          <div class="body-inner-content">
+            <div class="field columns is-multiline mb-0">
+              <div class="field column is-11 mb-0">
+                <label for="" class="label">Internal Notes</label>
+                <VField>
+                  <VControl>
+                    <VTextarea
+                      v-model="leadProposalFormData.internalNotes"
+                      rows="4"
+                      placeholder="Internal notes..."
+                    />
+                  </VControl>
+                </VField>
+              </div>
+              <div class="field column is-11 mb-0">
+                <label for="" class="label">Introductory Text</label>
 
-              <CKEditor
-                v-if="editor"
-                v-model="leadProposalFormData.introductoryText"
-                :editor="editor"
-                :config="editorConfig"
-              />
-            </div>
-            <div class="field column is-12 mb-0">
-              <label for="" class="label">Closing Text</label>
-
-              <CKEditor
-                v-if="editor"
-                v-model="leadProposalFormData.closingText"
-                :editor="editor"
-                :config="editorConfig"
-              />
+                <CKEditor
+                  v-if="editor"
+                  v-model="leadProposalFormData.introductoryText"
+                  :editor="editor"
+                  :config="editorConfig"
+                />
+              </div>
+              <div class="field column is-11 mb-0">
+                <label for="" class="label">Closing Text</label>
+                <CKEditor
+                  v-if="editor"
+                  v-model="leadProposalFormData.closingText"
+                  :editor="editor"
+                  :config="editorConfig"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-    </VCollapse>
+        </template>
+      </VCollapse>
+    </div>
     <WorksheetItems
       :proposalData="leadProposalFormData"
       :proposalId="leadProposalFormData.id"

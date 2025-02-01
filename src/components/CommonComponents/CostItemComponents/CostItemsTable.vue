@@ -4,6 +4,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { costItems } from "/@src/composable/LeadPropsalElements/costItems";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { useApi } from "/@src/composable/useAPI";
+import { getColumnData, getColumnName } from "./costItems";
 export interface UserData extends VAvatarProps {
   id: number;
   username: string;
@@ -23,53 +24,55 @@ const props = defineProps<{
 
 const useProposal = useProposalStore();
 const notyf = useNotyf();
-const getColumnName = ref({
-  CostCode: "Cost Code",
-  Title: "Title",
-  Unit: "Unit",
-  Description: "Description",
-  CostType: "Cost Type",
-  MarkAs: "Mark As",
-  Quantity: "Quantity",
-  UnitCost: "Unit Cost",
-  BuilderCost: "Builder Cost",
-  Markup: "Markup",
-  MarkupAmount: "Markup Amount",
-  Status: "Status",
-  ClientPrice: "Client Price",
-  GroupPrice: "Group Price",
-  TotalCost: "Total Cost",
-  TotalMarkup: "Total Markup",
-  Profit: "Profit",
-  Notes: "Internal Notes",
-  State: "State",
-});
+// const getColumnName = ref({
+//   CostCode: "Cost Code",
+//   Title: "Title",
+//   Unit: "Unit",
+//   Description: "Description",
+//   CostType: "Cost Type",
+//   MarkAs: "Mark As",
+//   Quantity: "Quantity",
+//   UnitCost: "Unit Cost",
+//   BuilderCost: "Builder Cost",
+//   Markup: "Markup",
+//   MarkupAmount: "Markup Amount",
+//   Status: "Status",
+//   ClientPrice: "Client Price",
+//   GroupPrice: "Group Price",
+//   TotalCost: "Total Cost",
+//   TotalMarkup: "Total Markup",
+//   Profit: "Profit",
+//   Notes: "Internal Notes",
+//   State: "State",
+// });
 
-const getColumnData = ref({
-  CostCode: "cost_code",
-  Title: "title",
-  Unit: "unit",
-  Description: "description",
-  CostType: "cost_type",
-  MarkAs: "mark_as",
-  Quantity: "quantity",
-  UnitCost: "unit_cost",
-  ClientPrice: "total_price",
-  BuilderCost: "builder_cost",
-  Markup: "markup",
-  Status: "status",
-  GroupPrice: "group_amount",
-  TotalMarkup: "total_markup",
-  Profit: "profit",
-  Notes: "internal_notes",
-  MarkupAmount: "markup_amount",
-});
+// const getColumnData = ref({
+//   CostCode: "cost_code",
+//   Title: "title",
+//   Unit: "unit",
+//   Description: "description",
+//   CostType: "cost_type",
+//   MarkAs: "mark_as",
+//   Quantity: "quantity",
+//   UnitCost: "unit_cost",
+//   ClientPrice: "total_price",
+//   BuilderCost: "builder_cost",
+//   Markup: "markup",
+//   Status: "status",
+//   GroupPrice: "group_amount",
+//   TotalMarkup: "total_markup",
+//   Profit: "profit",
+//   Notes: "internal_notes",
+//   MarkupAmount: "markup_amount",
+// });
+
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
 });
+
 const api = useApi();
 const dragItem = ref("");
 const addCostItemModal = ref(false);
@@ -209,15 +212,17 @@ onMounted(() => {});
                 class="lnir lnir-circle-plus info-text"
                 aria-hidden="true"
               ></i>
+
               <i
                 style="cursor: grab"
                 class="lnir lnir-sort"
                 aria-hidden="true"
               ></i>
+              {{ index + 1 }}
             </td>
             <td v-for="(column, index) in props.columnsToShow" :key="index">
               <div
-                v-if="column === 'Description'"
+                v-if="column === 'description'"
                 v-html="cost[getColumnData[column]]"
               ></div>
               <span v-else>

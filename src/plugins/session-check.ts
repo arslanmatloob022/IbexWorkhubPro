@@ -139,13 +139,13 @@ export default definePlugin(async ({ router, pinia }) => {
   router.beforeEach((to) => {
     if (to.meta.requiresAuth && !userSession.isLoggedIn) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }
     if (userSession.user.role === "admin" && to.meta.isAdminAllowed === false) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }
@@ -154,7 +154,7 @@ export default definePlugin(async ({ router, pinia }) => {
       to.meta.isPartnerAllowed === false
     ) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }
@@ -163,7 +163,7 @@ export default definePlugin(async ({ router, pinia }) => {
       to.meta.isManagerAllowed === false
     ) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }
@@ -172,7 +172,7 @@ export default definePlugin(async ({ router, pinia }) => {
       to.meta.isContractorAllowed === false
     ) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }
@@ -181,7 +181,7 @@ export default definePlugin(async ({ router, pinia }) => {
       to.meta.isWorkerAllowed === false
     ) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }
@@ -190,7 +190,7 @@ export default definePlugin(async ({ router, pinia }) => {
       to.meta.isClientAllowed === false
     ) {
       return {
-        name: "/auth/login",
+        name: "/",
         query: { redirect: to.fullPath },
       };
     }

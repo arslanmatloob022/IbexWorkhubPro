@@ -1,152 +1,21 @@
 <script setup lang="ts">
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
-import axios from "axios";
-import { useApi } from "/@src/composable/useAPI";
-import { useNotyf } from "/@src/composable/useNotyf";
-import { convertToFormData } from "/@src/composable/useSupportElement";
-import { useUserSession } from "/@src/stores/userSession";
+import { selectedColumnsToShow, columnsTitle } from "./costItems";
 const editor = shallowRef<any>();
-const userSession = useUserSession();
-const notyf = useNotyf();
-const api = useApi();
-const isLoading = ref(false);
-const FormData = ref({});
 const proposalStore = useProposalStore();
-const openAddContactModal = ref(false);
+const addCostItemModal = ref(false);
+const showDropdown = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
+
 const props = defineProps<{
   leadProposalModal?: boolean;
   proposalId?: string;
   proposalData?: any;
 }>();
-
-const selectedColumnsToShow = ref([
-  "Title",
-  "CostCode",
-  "Description",
-  "Quantity",
-  "UnitCost",
-  "Unit",
-  "ClientPrice",
-]);
-
-const tagsOptions = [
-  { value: "ItemNumber", label: "Item Number" },
-  { value: "Title", label: "Title" },
-  { value: "CostCode", label: "Cost Code" },
-  { value: "Description", label: "Description" },
-  { value: "Quantity", label: "Quantity" },
-  { value: "UnitCost", label: "Unit Cost" },
-  { value: "Unit", label: "Unit" },
-  { value: "BuilderCost", label: "Builder Cost" },
-  { value: "Markup", label: "Markup" },
-  { value: "ClientPrice", label: "Client Price" },
-  { value: "CostType", label: "Cost Type" },
-  { value: "GroupPrice", label: "Group Price" },
-  { value: "TotalMarkup", label: "Total Markup" },
-  { value: "MarkupAmount", label: "Markup Amount" },
-  { value: "Profit", label: "Profit" },
-  { value: "Notes", label: "Notes" },
-];
-
-interface item {
-  title: string;
-  description: string;
-  quantity: number;
-  unit: number;
-  unitCost: number;
-  markup: number;
-  clientPrice: number;
-  costCode: string;
-  costType: string;
-  builderCost: string;
-  margin: number;
-  profit: number;
-  internalNotes: string;
-}
-
-const workItem = ref({
-  title: "",
-  description: "",
-  quantity: 0,
-  unit: 0,
-  unitCost: 0,
-  markup: 0,
-  clientPrice: 0,
-  costCode: "",
-  costType: "",
-  builderCost: "",
-  margin: 0,
-  profit: 0,
-  internalNotes: "",
-});
-
-interface leadProposalData {
-  title: string;
-  approvalDeadline: string;
-  internalNotes: string;
-  introductoryText: string;
-  closingText: string;
-  attachments: [];
-  paymentStatus: string;
-  worksheetItems: item[];
-}
-
-const leadProposalFormData = ref<leadProposalData>({
-  title: "",
-  attachments: [],
-  approvalDeadline: "",
-  internalNotes: "",
-  introductoryText: "",
-  closingText: "",
-  paymentStatus: "",
-  worksheetItems: [],
-});
-
-interface ActivityModel {
-  type: string;
-  color: string;
-  activityDate: string;
-  startTime: string;
-  endTime: string;
-  reminder: string;
-  assignedUser: string;
-  attendees: string[];
-  initiatedBy: InitiatedByOption;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  description: string;
-}
-
-interface InitiatedByOption {
-  value: string;
-  label: string;
-}
-
-const handlePostCodeChange = async () => {
-  try {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${FormData.value.postCode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
-    );
-    if (response.data.status === "OK") {
-      //   FormData.value.homeAddress = response.data.results[0].formatted_address;
-      //   FormData.value.latitude = response.data.results[0].geometry.location.lat;
-      //   FormData.value.longitude = response.data.results[0].geometry.location.lng;
-      notyf.success("Address Added");
-    } else if (response.data.status === "ZERO_RESULTS") {
-      notyf.error("Invalid Post-Code");
-    }
-  } catch (error) {
-    notyf.error("Invalid Post-Code");
-    console.error(error);
-  }
-};
 
 function DataURIToBlob(dataURI: string) {
   const splitDataURI = dataURI.split(",");
@@ -171,46 +40,13 @@ const editorConfig = {
   height: "400px",
   minHeight: "400px",
 };
-const addCostItemModal = ref(false);
-const showDropdown = ref(false);
-const costItemsList = ref({
-  id: "",
-  type: "",
-  total_price: 0,
-  cost_code: "",
-  cost_type: "",
-  builder_cost: 0,
-  internal_notes: "",
-  mark_as: "",
-  state: "",
-  title: "",
-  costType: "",
-  description: "",
-  quantity: 0,
-  unit: 0,
-  unit_cost: 0,
-  markup: 0,
-  clientPrice: 0,
-  costCode: "",
-  builderCost: "",
-  margin: 0,
-  profit: 0,
-  internalNotes: "",
-  includeInCatalog: false,
-  markAs: "",
-  group: "",
-  proposal: "",
-});
 
 const getProposalCostItems = async () => {
   try {
     proposalStore.getProposalCostItems(props.proposalId);
-    // const resp = await api.get(`/api/cost/by-proposal/${props.proposalId}/`);
-    // costItemsList.value = resp.data;
   } catch (err) {
     console.log(err);
   } finally {
-    // costItemsList.value = proposalStore.proposalCostItems;
   }
 };
 onMounted(async () => {
@@ -219,6 +55,7 @@ onMounted(async () => {
   );
   if (props.proposalId) {
     getProposalCostItems();
+    proposalStore.getProposalDetail(props.proposalId);
   }
 });
 onUnmounted(() => {
@@ -286,7 +123,7 @@ onUnmounted(() => {
                 mode="tags"
                 :searchable="true"
                 :create-tag="true"
-                :options="tagsOptions"
+                :options="columnsTitle"
                 placeholder="Add columns"
               />
             </VControl>
@@ -353,7 +190,7 @@ onUnmounted(() => {
                   mode="tags"
                   :searchable="true"
                   :create-tag="true"
-                  :options="tagsOptions"
+                  :options="columnsTitle"
                   placeholder="Add tags"
                 />
               </VControl>

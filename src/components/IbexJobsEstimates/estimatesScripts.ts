@@ -30,3 +30,11 @@ export const getProposalTypeName = {
   change_order: "Change Order",
   draft: "Draft",
 };
+
+export const activityTypes = [
+  { value: "call", label: "Phone Call" },
+  { value: "email", label: "Email" },
+  { value: "followup", label: "Follow Up" },
+  { value: "visit", label: "Site Visit" },
+  { value: "form", label: "Website Form" },
+];

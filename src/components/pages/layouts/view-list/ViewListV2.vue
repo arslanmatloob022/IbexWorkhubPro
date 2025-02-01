@@ -1,26 +1,30 @@
 <script setup lang="ts">
-import { retails } from '/@src/data/layouts/view-list-v2'
+import { retails } from "/@src/data/layouts/view-list-v2";
 
-type TabId = 'active' | 'inactive'
-const activeTab = ref<TabId>('active')
-const filters = ref('')
+type TabId = "active" | "inactive";
+const activeTab = ref<TabId>("active");
+const filters = ref("");
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return retails
+    return retails;
   } else {
     return retails.filter((item) => {
       return (
-        item.name.match(new RegExp(filters.value, 'i')) ||
-        item.location.match(new RegExp(filters.value, 'i')) ||
-        ('parking'.match(new RegExp(filters.value, 'i')) && item.comodities.parking) ||
-        ('wifi'.match(new RegExp(filters.value, 'i')) && item.comodities.wifi) ||
-        ('heater'.match(new RegExp(filters.value, 'i')) && item.comodities.heater) ||
-        ('cleaning'.match(new RegExp(filters.value, 'i')) && item.comodities.cleaning)
-      )
-    })
+        item.name.match(new RegExp(filters.value, "i")) ||
+        item.location.match(new RegExp(filters.value, "i")) ||
+        ("parking".match(new RegExp(filters.value, "i")) &&
+          item.comodities.parking) ||
+        ("wifi".match(new RegExp(filters.value, "i")) &&
+          item.comodities.wifi) ||
+        ("heater".match(new RegExp(filters.value, "i")) &&
+          item.comodities.heater) ||
+        ("cleaning".match(new RegExp(filters.value, "i")) &&
+          item.comodities.cleaning)
+      );
+    });
   }
-})
+});
 </script>
 
 <template>
@@ -31,7 +35,7 @@ const filteredData = computed(() => {
           v-model="filters"
           class="input custom-text-filter"
           placeholder="Search..."
-        >
+        />
       </VControl>
     </VField>
 
@@ -44,7 +48,8 @@ const filteredData = computed(() => {
               role="button"
               @keydown.space.prevent="activeTab = 'active'"
               @click="activeTab = 'active'"
-            ><span>Active</span></a>
+              ><span>Active</span></a
+            >
           </li>
           <li :class="[activeTab === 'inactive' && 'is-active']">
             <a
@@ -52,7 +57,8 @@ const filteredData = computed(() => {
               role="button"
               @keydown.space.prevent="activeTab = 'inactive'"
               @click="activeTab = 'inactive'"
-            ><span>Inactive</span></a>
+              ><span>Inactive</span></a
+            >
           </li>
           <li class="tab-naver" />
         </ul>
@@ -61,9 +67,7 @@ const filteredData = computed(() => {
   </div>
 
   <div class="page-content-inner">
-    <!--List-->
     <div class="list-view list-view-v2">
-      <!--List Empty Search Placeholder -->
       <VPlaceholderPage
         :class="[filteredData.length !== 0 && 'is-hidden']"
         title="We couldn't find any matching results."
@@ -77,47 +81,34 @@ const filteredData = computed(() => {
             class="light-image"
             src="/@src/assets/illustrations/placeholders/search-2.svg"
             alt=""
-          >
+          />
           <img
             class="dark-image"
             src="/@src/assets/illustrations/placeholders/search-2-dark.svg"
             alt=""
-          >
+          />
         </template>
       </VPlaceholderPage>
 
-      <!--Active Tab-->
       <div
         id="active-items-tab"
         class="tab-content"
         :class="[activeTab === 'active' && 'is-active']"
       >
         <div class="list-view-inner">
-          <TransitionGroup
-            name="list-complete"
-            tag="div"
-          >
+          <TransitionGroup name="list-complete" tag="div">
             <div
               v-for="item in filteredData"
               :key="item.id"
               class="list-view-item"
             >
               <div class="list-view-item-inner">
-                <img
-                  :src="item.picture"
-                  alt=""
-                >
+                <img :src="item.picture" alt="" />
                 <div class="meta-left">
                   <h3>
                     <span>{{ item.name }}</span>
-                    <VRangeRating
-                      v-model="item.rating"
-                      class="is-inline"
-                    >
-                      <i
-                        class="fas fa-star"
-                        aria-hidden="true"
-                      />
+                    <VRangeRating v-model="item.rating" class="is-inline">
+                      <i class="fas fa-star" aria-hidden="true" />
                     </VRangeRating>
                   </h3>
                   <p>
@@ -162,87 +153,60 @@ const filteredData = computed(() => {
 
                   <div class="icon-list">
                     <span v-if="item.comodities.parking">
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-car"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-car" />
                       <span>Parking</span>
                     </span>
                     <span v-if="item.comodities.wifi">
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-signal"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-signal" />
                       <span>Wifi</span>
                     </span>
                     <span v-if="item.comodities.heater">
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-air-flow"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-air-flow" />
                       <span>Heater</span>
                     </span>
                     <span v-if="item.comodities.cleaning">
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-sun"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-sun" />
                       <span>Cleaning</span>
                     </span>
                     <span
                       v-if="
                         item.comodities.other &&
-                          item.comodities.otherThing &&
-                          item.comodities.otherCoolThing &&
-                          item.comodities.otherGreatCoolThing
+                        item.comodities.otherThing &&
+                        item.comodities.otherCoolThing &&
+                        item.comodities.otherGreatCoolThing
                       "
                     >
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-more"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-more" />
                       <span>4 more</span>
                     </span>
                     <span
                       v-else-if="
                         item.comodities.other &&
-                          item.comodities.otherThing &&
-                          item.comodities.otherCoolThing
+                        item.comodities.otherThing &&
+                        item.comodities.otherCoolThing
                       "
                     >
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-more"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-more" />
                       <span>3 more</span>
                     </span>
-                    <span v-else-if="item.comodities.other && item.comodities.otherThing">
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-more"
-                      />
+                    <span
+                      v-else-if="
+                        item.comodities.other && item.comodities.otherThing
+                      "
+                    >
+                      <i aria-hidden="true" class="lnil lnil-more" />
                       <span>2 more</span>
                     </span>
                     <span v-else-if="item.comodities.other">
-                      <i
-                        aria-hidden="true"
-                        class="lnil lnil-more"
-                      />
+                      <i aria-hidden="true" class="lnil lnil-more" />
                       <span>1 more</span>
                     </span>
                   </div>
                 </div>
                 <div class="meta-right">
                   <div class="buttons">
-                    <VButton light>
-                      More Info
-                    </VButton>
-                    <VButton
-                      color="primary"
-                      raised
-                    >
-                      Book Now
-                    </VButton>
+                    <VButton light> More Info </VButton>
+                    <VButton color="primary" raised> Book Now </VButton>
                   </div>
                 </div>
               </div>
@@ -278,12 +242,12 @@ const filteredData = computed(() => {
                 class="light-image"
                 src="/@src/assets/illustrations/placeholders/having-coffee.svg"
                 alt=""
-              >
+              />
               <img
                 class="dark-image"
                 src="/@src/assets/illustrations/placeholders/having-coffee-dark.svg"
                 alt=""
-              >
+              />
             </template>
           </VPlaceholderPage>
         </div>
@@ -293,7 +257,7 @@ const filteredData = computed(() => {
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
+@import "/@src/scss/abstracts/all";
 
 .list-view-v2 {
   .list-view-item {

@@ -4,6 +4,8 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
+import { activityTypes } from "../../estimatesScripts";
+
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -15,80 +17,61 @@ const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
+
 const props = defineProps<{
   addUpdateContactModal?: boolean;
   userId?: string;
 }>();
 
-const tab = ref<"general" | "email">("general");
-const tagsSlotValue = ref([]);
-const tagsSlotOptions = [
+const closeModalHandler = () => {
+  emit("update:modalHandler", false);
+};
+const updateOnSuccessHandler = () => {
+  emit("update:OnSuccess", null);
+};
+
+const selectedUsers = ref([]);
+const companyUsersOptions = ref([
   {
-    value: "alice",
-    name: "Alice Carasca",
-    image: "https://media.cssninja.io/content/avatars/7.jpg",
+    value: "",
+    name: "",
+    image: "",
   },
-  {
-    value: "erik",
-    name: "Erik Kovalsky",
-    image: "/images/avatars/svg/vuero-1.svg",
-  },
-  {
-    value: "melany",
-    name: "melany Wallace",
-    image: "https://media.cssninja.io/content/avatars/25.jpg",
-  },
-  {
-    value: "tara",
-    name: "Tara Svenson",
-    image: "https://media.cssninja.io/content/avatars/13.jpg",
-  },
-  {
-    value: "mary",
-    name: "Mary Lebowski",
-    image: "https://media.cssninja.io/content/avatars/5.jpg",
-  },
-  {
-    value: "irina",
-    name: "Irina Vierbovsky",
-    image: "https://media.cssninja.io/content/avatars/23.jpg",
-  },
-  {
-    value: "jonathan",
-    name: "Jonathan Krugger",
-    image: "https://media.cssninja.io/content/avatars/32.jpg",
-  },
-];
+]);
 
 interface ActivityDataModel {
+  title: string;
+  objectId: string;
+  description: string;
   type: string;
   color: string;
   status: string;
-  activityDate: string;
-  startTime: string;
-  endTime: string;
-  reminderTime: string;
-  assignedUser: string;
-  attendees: string[];
-  initiatedBy: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  reminder_time: string;
   address: string;
   city: string;
   state: string;
   zipCode: string;
-  description: string;
+  assignedUser: string;
+  initiated_by: string;
+  attendees: string[];
 }
 
 const activityFormData = ref<ActivityDataModel>({
+  title: "",
+  objectId: "",
   type: "",
   color: "",
   status: "",
-  activityDate: "",
-  startTime: "",
-  endTime: "",
-  reminderTime: "",
+  date: "",
+  start_time: "",
+  end_time: "",
+  reminder_time: "",
   assignedUser: "",
   attendees: [],
-  initiatedBy: "",
+  initiated_by: "",
   address: "",
   city: "",
   state: "",
@@ -96,19 +79,15 @@ const activityFormData = ref<ActivityDataModel>({
   description: "",
 });
 
-interface InitiatedByOption {
-  value: string;
-  label: string;
-}
-
-const addUpdateContactHandler = async () => {
+const addUpdateActivityHandler = async () => {
   try {
     isLoading.value = true;
-    const formDataAPI = convertToFormData(FormData.value, ["profileImageURL"]);
-    const response = await api.post("/v3/api/worker/", formDataAPI);
+    const formDataAPI = convertToFormData(activityFormData.value, []);
+    const response = await api.post("/api/activity/", formDataAPI);
+    updateOnSuccessHandler();
     closeModalHandler();
     notyf.dismissAll();
-    notyf.success("New worker added, New Worker");
+    notyf.success("Activity added successfully");
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);
   } finally {
@@ -116,8 +95,22 @@ const addUpdateContactHandler = async () => {
   }
 };
 
-const closeModalHandler = () => {
-  emit("update:modalHandler", false);
+const getAllUsersHandler = async () => {
+  try {
+    isLoading.value = true;
+    const response = await api.get("/api/users/");
+    companyUsersOptions.value = response.data.map((user: any) => {
+      return {
+        value: user.id,
+        name: `${user.username ?? "N/A"} ${user.last_name ?? ""}`,
+        icon: user.avatar,
+      };
+    });
+  } catch (error: any) {
+    notyf.error(`something get wrong`);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const handlePostCodeChange = async () => {
@@ -126,13 +119,13 @@ const handlePostCodeChange = async () => {
       `https://maps.googleapis.com/maps/api/geocode/json?address=${FormData.value.postCode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
     );
     if (response.data.status === "OK") {
-      //   activityFormData.value.address =
-      //     response.data.results[0].formatted_address;
-      //   activityFormData.value.latitude =
-      //     response.data.results[0].geometry.location.lat;
-      //   activityFormData.value.longitude =
-      //     response.data.results[0].geometry.location.lng;
-      //   notyf.success("Address Added");
+      activityFormData.value.address =
+        response.data.results[0].formatted_address;
+      // activityFormData.value.latitude =
+      //   response.data.results[0].geometry.location.lat;
+      // activityFormData.value.longitude =
+      //   response.data.results[0].geometry.location.lng;
+      notyf.success("Address Added");
     } else if (response.data.status === "ZERO_RESULTS") {
       notyf.error("Invalid Post-Code");
     }
@@ -142,7 +135,9 @@ const handlePostCodeChange = async () => {
   }
 };
 
-onMounted(() => {});
+onMounted(() => {
+  getAllUsersHandler();
+});
 </script>
 
 <template>
@@ -152,7 +147,7 @@ onMounted(() => {});
     title="Lead Activity"
     size="large"
     actions="right"
-    @submit.prevent="addUpdateContactHandler"
+    @submit.prevent="addUpdateActivityHandler"
     @close="closeModalHandler"
   >
     <template #content>
@@ -162,102 +157,116 @@ onMounted(() => {});
             <div class="column is-12">
               <h3 class="title is-6 mb-2">Activity Information</h3>
             </div>
+            <div class="field column is-6 mb-0">
+              <label>Title *</label>
+              <div class="control">
+                <input
+                  type="text"
+                  name="title"
+                  v-model="activityFormData.title"
+                  required
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Activity Title"
+                />
+              </div>
+            </div>
 
             <div class="field column is-6 mb-0">
               <label>Activity Type *</label>
-              <div class="control">
-                <input
-                  type="text"
-                  name="firstName"
-                  v-model="activityFormData.type"
-                  required
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Activity Type"
-                />
-              </div>
-            </div>
-
-            <div class="field column is-6 mb-0">
-              <label>Color </label>
-              <div class="control">
-                <input
-                  type="text"
-                  name="color"
-                  v-model="activityFormData.color"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Color"
-                />
-              </div>
-            </div>
-            <div class="field column is-6 mb-0">
-              <label>Activity Date * </label>
-              <div class="control">
-                <input
-                  required
-                  type="date"
-                  name="date"
-                  v-model="activityFormData.activityDate"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Activity Date"
-                />
-              </div>
-            </div>
-            <div class="field column is-6 mb-0">
-              <label>Reminder: </label>
               <VField>
                 <VControl>
-                  <VSelect v-model="activityFormData.reminder">
-                    <VOption value=""> Select a time </VOption>
-                    <VOption value="1"> 1 Hrs </VOption>
-                    <VOption value="2"> 2 Hrs </VOption>
-                    <VOption value="4"> 4 Hrs </VOption>
-                    <VOption value="6"> 6 Hrs </VOption>
-                    <VOption value="8"> 8 Hrs </VOption>
-                    <VOption value="12">12 Hrs </VOption>
+                  <VSelect v-model="activityFormData.type" required>
+                    <VOption v-for="item in activityTypes" :value="item.value">
+                      {{ item.label }}
+                    </VOption>
                   </VSelect>
                 </VControl>
               </VField>
             </div>
+
+            <div class="field column is-3 mb-0">
+              <label>Color </label>
+              <VField>
+                <VControl>
+                  <VInput
+                    v-model="activityFormData.color"
+                    list="colors-list"
+                    type="color"
+                    placeholder="Pick a color"
+                  />
+                  <datalist id="colors-list">
+                    <option value="#84cc16" />
+                    <option value="#22c55e" />
+                    <option value="#0ea5e9" />
+                    <option value="#6366f1" />
+                    <option value="#8b5cf6" />
+                    <option value="#d946ef" />
+                    <option value="#f43f5e" />
+                    <option value="#facc15" />
+                    <option value="#fb923c" />
+                    <option value="#9ca3af" />
+                  </datalist>
+                </VControl>
+              </VField>
+            </div>
+            <div class="field column is-3 mb-0">
+              <label>Reminder time: </label>
+              <input
+                type="time"
+                name="date"
+                v-model="activityFormData.reminder_time"
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
+            </div>
             <div class="field column is-6 mb-0">
-              <label>Start Time </label>
-              <div class="control">
-                <input
-                  type="time"
-                  name="starttime"
-                  v-model="activityFormData.startTime"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Start Time"
-                />
-              </div>
+              <label>Date </label>
+              <input
+                type="date"
+                name="date"
+                v-model="activityFormData.date"
+                required
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
             </div>
 
             <div class="field column is-6 mb-0">
+              <label>Start Time </label>
+              <input
+                type="time"
+                name="date"
+                v-model="activityFormData.start_time"
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
+            </div>
+            <div class="field column is-6 mb-0">
               <label>End Time </label>
-              <div class="control">
-                <input
-                  required
-                  type="time"
-                  name="endtime"
-                  v-model="activityFormData.endTime"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="End Time"
-                />
-              </div>
+              <input
+                type="time"
+                name="date"
+                v-model="activityFormData.end_time"
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
             </div>
 
             <div class="field column is-12 mb-0">
-              <label>Assigned User * </label>
-              <VField v-slot="{ id }" class="is-image-tags">
+              <label>Assigned * </label>
+              <VField v-slot="{ id }">
                 <VControl>
                   <Multiselect
-                    v-model="tagsSlotValue"
+                    required
+                    v-model="activityFormData.attendees"
                     :attrs="{ id }"
                     mode="tags"
                     placeholder="Select a user"
                     track-by="name"
                     label="name"
                     :search="true"
-                    :options="tagsSlotOptions"
+                    :searchable="true"
+                    :options="companyUsersOptions"
                     :max-height="145"
                   >
                     <template #tag="{ option, remove, disabled }">
@@ -276,27 +285,6 @@ onMounted(() => {});
                   </Multiselect>
                 </VControl>
               </VField>
-            </div>
-
-            <div class="field column is-12 mb-0">
-              <label>Attendees: </label>
-              <div class="control">
-                <!-- <input
-                  type="tel"
-                  name="zipCode"
-                  @blur="handlePostCodeChange"
-                  v-model="activityFormData.zipCode"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Zip code"
-                /> -->
-                <input
-                  type="text"
-                  name="phone"
-                  v-model="activityFormData.attendees"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Activity attendees"
-                />
-              </div>
             </div>
           </VCard>
 

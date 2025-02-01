@@ -28,30 +28,21 @@ Ibex Management <br />
 </b>`;
 
 const mailData = ref({
-  scheduleAt: "",
-  sendToGroup: [],
-  sendTo: "",
+  scheduled_at: "",
+  mailGroup: [],
+  mail: "",
   subject: "",
-  message: `<b>Hi  <br />
-  Here you can enter your message that you want to deliver your recipient.
-
-  <br />
-  <br />
-  Best Regards:
-  <br />
-
-Ibex Team <br />
-</b>`,
+  message: ``,
 });
 
 const sendGenericMailHandler = async () => {
   try {
     mailLoading.value = true;
     const response = await api.post(``, {
-      sendTo: mailData.value.sendTo,
+      mail: mailData.value.mail,
       subject: mailData.value.subject,
       message: mailData.value.message,
-      scheduleAt: mailData.value.scheduleAt,
+      scheduled_at: mailData.value.scheduled_at,
     });
     notyf.success("Email sent to worker successfully");
     closeModalHandler();
@@ -87,7 +78,7 @@ onMounted(async () => {
       <VModal
         is="form"
         :open="props.mailSenderModal"
-        title="Schedule Email"
+        title="Send Email"
         size="large"
         actions="right"
         @submit.prevent="sendGenericMailHandler"
@@ -98,7 +89,7 @@ onMounted(async () => {
             <div class="field column is-full">
               <label class="label">Schedule Mail </label>
               <ClientOnly>
-                <VDatePicker v-model="mailData.scheduleAt" mode="dateTime">
+                <VDatePicker v-model="mailData.scheduled_at" mode="dateTime">
                   <template #default="{ inputValue, inputEvents }">
                     <VField>
                       <VControl icon="lucide:calendar">
@@ -123,7 +114,7 @@ onMounted(async () => {
                     required
                     class="input"
                     placeholder="Enter Mail"
-                    v-model="mailData.sendTo"
+                    v-model="mailData.mail"
                   />
                 </div>
               </div>
