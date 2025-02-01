@@ -21,10 +21,18 @@ const proposalList = ref([
     job: "",
   },
 ]);
+
 const group_by = ref("combine");
 const loading = ref(false);
 const tab = ref("active");
 const api = useApi();
+const tagsValue = [];
+const tagsOptions = [
+  { value: "title", label: "Tile" },
+  { value: "carpentry", label: "Carpentry" },
+  { value: "floor", label: "Flooring" },
+];
+
 const props = withDefaults(
   defineProps<{
     groupProposalModal?: boolean;
@@ -153,7 +161,38 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-          <VButton color="warning" size="small"> Merge </VButton>
+          <div class="is-flex">
+            <VField
+              v-if="group_by == 'trade'"
+              v-slot="{ id }"
+              style="width: 340px"
+            >
+              <VControl>
+                <Multiselect
+                  v-model="tagsValue"
+                  :attrs="{ id }"
+                  mode="tags"
+                  :searchable="true"
+                  :create-tag="true"
+                  :options="tagsOptions"
+                  placeholder="Select Trades"
+                />
+              </VControl>
+            </VField>
+            <VButton class="ml-2" raised color="warning" light outlined>
+              Merge
+            </VButton>
+            <VButton
+              class="ml-2"
+              raised
+              icon="fas fa-envelope"
+              color="info"
+              light
+              outlined
+            >
+              Send
+            </VButton>
+          </div>
         </div>
         <div class="column is-12">
           <div class="flex-list-wrapper flex-list-v2">

@@ -216,8 +216,8 @@ onMounted(() => {
           class="ml-2"
           v-if="props.leadId"
           @click="openProposalGroupModalHandler()"
-          icon="fas fa-plus"
-          >Group</VButton
+          icon="fas fa-cogs"
+          >Proposals</VButton
         >
       </div>
     </div>

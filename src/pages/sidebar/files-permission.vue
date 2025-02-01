@@ -1,14 +1,14 @@
 <route lang="yaml">
-    meta:
-      requiresAuth: true
-    </route>
-    
-    <script setup lang="ts">
+meta:
+  requiresAuth: true
+</route>
+
+<script setup lang="ts">
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 const layoutSwitcher = useLayoutSwitcher();
 </script>
-    
-    <template>
+
+<template>
   <component
     :is="layoutSwitcher.dynamicLayoutComponent as any"
     v-bind="layoutSwitcher.dynamicLayoutProps"
@@ -23,4 +23,3 @@ const layoutSwitcher = useLayoutSwitcher();
     </RouterView>
   </component>
 </template>
-    

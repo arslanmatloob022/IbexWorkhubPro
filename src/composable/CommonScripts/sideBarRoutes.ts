@@ -173,22 +173,21 @@ export const routerLinks = ref([
     collapseId: "setting",
     class: "collapse-wrap",
     headerIcon: "lnir lnir-cogs",
-    headerTitle: "Settings",
-
+    headerTitle: "Company Settings",
     linkType: "collapse",
     children: [
       {
-        title: "Company Settings",
-        icon: "lnir lnir-cogs",
+        title: "Settings",
+        icon: "lnir lnir-cog",
         class: "is-submenu",
         route: "/sidebar/dashboard/company-settings",
       },
-      {
-        title: "Files",
-        icon: "lnir lnir-add-files",
-        class: "is-submenu",
-        route: "/sidebar/files-permission",
-      },
+      // {
+      //   title: "Files",
+      //   icon: "lnir lnir-add-files",
+      //   class: "is-submenu",
+      //   route: "/sidebar/files-permission",
+      // },
     ],
   },
 ]);

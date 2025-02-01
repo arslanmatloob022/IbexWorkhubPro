@@ -1,190 +1,133 @@
 <script setup lang="ts">
-import {useCompany} from '/@src/stores/company'
-const company = useCompany()
-const tab = ref<'Team Members' | 'docs' | 'partners' | 'setting'>('setting');
-
+import { useCompany } from "/@src/stores/company";
+const company = useCompany();
+const tab = ref<"Team Members" | "docs" | "partners" | "setting">("setting");
 </script>
 <template>
-<div class="profile-wrapper">
-
-
+  <div class="profile-wrapper">
     <div class="profile-body">
-      <div v-if="tab==='setting'" class="settings-section">
+      <div v-if="tab === 'setting'" class="settings-section">
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-apartment"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-apartment" />
 
           <span>Company</span>
           <h3>Manage Company</h3>
         </a>
-        <a class="settings-box" @click="tab='Team Members'">
+        <a class="settings-box" @click="tab = 'Team Members'">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-users"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-users" />
 
           <span>Team</span>
           <h3>Manage Team</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-briefcase-alt"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-briefcase-alt" />
 
           <span>Projects</span>
           <h3>Project Settings</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-lock-alt-1"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-lock-alt-1" />
 
           <span>Permissions</span>
           <h3>Manage Permissions</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-file-name"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-file-name" />
 
           <span>Document</span>
           <h3>Document Policies</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-file-upload"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-file-upload" />
 
           <span>Upload</span>
           <h3>Upload Policies</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-credit-card"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-credit-card" />
 
           <span>Billing</span>
           <h3>Billing and Plans</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-bubble"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-bubble" />
 
           <span>Messaging</span>
           <h3>Messaging Settings</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-shield"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-shield" />
 
           <span>Security</span>
           <h3>Security Settings</h3>
         </a>
         <a class="settings-box">
           <div class="edit-icon">
-            <i
-              aria-hidden="true"
-              class="lnil lnil-pencil"
-            />
+            <i aria-hidden="true" class="lnil lnil-pencil" />
           </div>
 
-          <VIconWrap
-            dark="6"
-            icon="lnil lnil-cogs"
-          />
+          <VIconWrap dark="6" icon="lnil lnil-cogs" />
 
           <span>Preferences</span>
           <h3>General Settings</h3>
         </a>
       </div>
       <section v-else id="tabs-section">
-        <div style="color: var(--light-text); gap: 10px; 
-          display: flex; font-size: 15px; cursor: pointer;
-          align-items: center;
-          margin-bottom: 20px;"
-          @click="tab='setting'"
-          >
+        <div
+          style="
+            color: var(--light-text);
+            gap: 10px;
+            display: flex;
+            font-size: 15px;
+            cursor: pointer;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+          @click="tab = 'setting'"
+        >
           <i class="fas fa-arrow-left" aria-hidden="true"></i>
           <span class="is-3">
-            {{ tab }}  
+            {{ tab }}
           </span>
         </div>
         <div v-if="tab === 'Team Members'">
-          <TeamMembaresNetwork/>
+          <TeamMembaresNetwork />
         </div>
       </section>
     </div>
@@ -192,8 +135,8 @@ const tab = ref<'Team Members' | 'docs' | 'partners' | 'setting'>('setting');
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
-@import '/@src/scss/components/profile-stats';
+@import "/@src/scss/abstracts/all";
+@import "/@src/scss/components/profile-stats";
 
 .profile-wrapper {
   .profile-body {

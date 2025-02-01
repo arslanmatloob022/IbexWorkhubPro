@@ -337,7 +337,6 @@ declare module 'vue-router/auto/routes' {
     '/sidebar/dashboards/widgets-sample-ui': RouteRecordInfo<'/sidebar/dashboards/widgets-sample-ui', '/sidebar/dashboards/widgets-sample-ui', Record<never, never>, Record<never, never>>,
     '/sidebar/dashboards/writer': RouteRecordInfo<'/sidebar/dashboards/writer', '/sidebar/dashboards/writer', Record<never, never>, Record<never, never>>,
     '/sidebar/files-permission': RouteRecordInfo<'/sidebar/files-permission', '/sidebar/files-permission', Record<never, never>, Record<never, never>>,
-    '/sidebar/files-permission/': RouteRecordInfo<'/sidebar/files-permission/', '/sidebar/files-permission', Record<never, never>, Record<never, never>>,
     '/sidebar/layouts': RouteRecordInfo<'/sidebar/layouts', '/sidebar/layouts', Record<never, never>, Record<never, never>>,
     '/sidebar/layouts/': RouteRecordInfo<'/sidebar/layouts/', '/sidebar/layouts', Record<never, never>, Record<never, never>>,
     '/sidebar/layouts/action-page-1': RouteRecordInfo<'/sidebar/layouts/action-page-1', '/sidebar/layouts/action-page-1', Record<never, never>, Record<never, never>>,
