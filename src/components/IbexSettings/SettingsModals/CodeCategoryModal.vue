@@ -9,7 +9,7 @@ const mailLoading = ref(false);
 
 const props = defineProps<{
   addUpdateCategoryModal?: boolean;
-  costCodeId?: string;
+  categoryId?: string;
 }>();
 
 const emit = defineEmits<{
@@ -21,21 +21,28 @@ const closeModalHandler = () => {
   emit("update:modalHandler", false);
 };
 
+const onSuccessUpdateHandler = () => {
+  emit("update:OnSuccess", null);
+};
+
 interface category {
   id: string;
-  title: string;
-  category: string;
+  name: string;
   trade: string;
   description: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const categoryFormData = ref<category>({
   id: "",
-  title: "",
-  category: ``,
+  name: "",
   trade: "",
   description: "",
+  created_at: ``,
+  updated_at: "",
 });
+
 const selectedParentCostCode = ref("");
 const costCodesList = [
   { id: 1, value: "Lead", label: "Lead" },
@@ -51,10 +58,38 @@ const costCodesList = [
   { id: 11, value: "Carpenter", label: "Carpenter" },
   { id: 12, value: "Carpenter", label: "Carpenter" },
 ];
+
 const createCategoryHandler = async () => {
   try {
     mailLoading.value = true;
-    const response = await api.post(`/api/`, {});
+    if (props.categoryId) {
+      const response = await api.patch(
+        `/api/cost-category/${props.categoryId}/`,
+        categoryFormData.value
+      );
+    } else {
+      const response = await api.post(
+        `/api/cost-category/`,
+        categoryFormData.value
+      );
+    }
+    onSuccessUpdateHandler();
+    notyf.success(
+      `Category  ${props.categoryId ? "updated" : "created"} successfully`
+    );
+    closeModalHandler();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    mailLoading.value = false;
+  }
+};
+
+const getCategoryInfoHandler = async () => {
+  try {
+    mailLoading.value = true;
+    const response = await api.get(`/api/cost-category/${props.categoryId}/`);
+    categoryFormData.value = response.data;
     notyf.success("Cost code created successfully");
     closeModalHandler();
   } catch (err) {
@@ -64,12 +99,20 @@ const createCategoryHandler = async () => {
   }
 };
 
-const getCostCodeInfoHandler = async () => {
+const tardeList = ref([
+  {
+    id: "",
+    name: "",
+    description: "",
+    created_at: "",
+    updated_at: "",
+  },
+]);
+const getCostTradesHandler = async () => {
   try {
     mailLoading.value = true;
-    const response = await api.get(`/api/`, {});
-    notyf.success("Cost code created successfully");
-    closeModalHandler();
+    const response = await api.get(`/api/cost-trade/`);
+    tardeList.value = response.data;
   } catch (err) {
     console.log(err);
   } finally {
@@ -78,9 +121,10 @@ const getCostCodeInfoHandler = async () => {
 };
 
 onMounted(() => {
-  if (props.costCodeId) {
-    getCostCodeInfoHandler();
+  if (props.categoryId) {
+    getCategoryInfoHandler();
   }
+  getCostTradesHandler();
 });
 </script>
 <template>
@@ -104,7 +148,7 @@ onMounted(() => {
                 required
                 class="input"
                 placeholder="Enter Title"
-                v-model="categoryFormData.title"
+                v-model="categoryFormData.name"
               />
             </div>
           </div>
@@ -113,36 +157,30 @@ onMounted(() => {
         <div class="column is-6">
           <div class="field">
             <label class="label">Category </label>
-            <div class="control">
-              <VField>
-                <VControl>
-                  <VSelect v-model="categoryFormData.category" required>
-                    <VOption value=""> Select a category </VOption>
-                    <VOption value="Superman"> Superman </VOption>
-                    <VOption value="Batman"> Batman </VOption>
-                    <VOption value="Spiderman"> Spiderman </VOption>
-                    <VOption value="Deadpool"> Deadpool </VOption>
-                    <VOption value="Spawn"> Spawn </VOption>
-                    <VOption value="Galactus"> Galactus </VOption>
-                  </VSelect>
-                </VControl>
-              </VField>
-            </div>
+            <VControl>
+              <VSelect v-model="categoryFormData">
+                <VOption value=""> Select a category </VOption>
+                <VOption value="Superman"> Superman </VOption>
+                <VOption value="Batman"> Batman </VOption>
+                <VOption value="Spiderman"> Spiderman </VOption>
+                <VOption value="Deadpool"> Deadpool </VOption>
+                <VOption value="Spawn"> Spawn </VOption>
+                <VOption value="Galactus"> Galactus </VOption>
+              </VSelect>
+            </VControl>
           </div>
         </div>
 
         <div class="column is-6">
           <div class="field">
-            <label class="label">Trade Type</label>
-            <div class="control">
-              <input
-                type="text"
-                required
-                class="input"
-                placeholder="Enter trade type"
-                v-model="categoryFormData.trade"
-              />
-            </div>
+            <label class="label">Trade *</label>
+            <VControl>
+              <VSelect v-model="categoryFormData.trade" required>
+                <VOption v-for="item in tardeList" :value="item.id"
+                  >{{ item.name }}
+                </VOption>
+              </VSelect>
+            </VControl>
           </div>
         </div>
 

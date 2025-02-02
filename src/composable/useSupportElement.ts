@@ -135,24 +135,39 @@ export const sendWhatsappMessage = (phoneNum: any) => {
   window.open("https://wa.me/" + phoneNumber.replace(/\s/g), "_blank");
 };
 
-export const handlePostCodeChange = async (postcode: any) => {
+export const getAddressComponents = async (zip_code: any) => {
   try {
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${postcode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${zip_code}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
     );
-    if (response.data.status === "OK") {
-      const address = response.data.results[0].formatted_address;
-      const lat = response.data.results[0].geometry.location.lat;
-      const lng = response.data.results[0].geometry.location.lng;
-      notyf.success("valid post code");
-      return { status: true, data: { address, lat, lng } };
-    } else if (response.data.status === "ZERO_RESULTS") {
-      notyf.error("Invalid Post-Code");
-      return { status: true };
+
+    console.log("Full API Response:", response); // Debugging line
+
+    if (!response || !response.data) {
+      throw new Error("Invalid API response");
     }
-  } catch (error) {
-    notyf.error("Invalid Post-Code");
-    return { status: true };
+
+    if (response.data.status === "OK" && response.data.results.length > 0) {
+      const result = response.data.results[0];
+
+      const lat = result.geometry?.location?.lat ?? null;
+      const lng = result.geometry?.location?.lng ?? null;
+      const city =
+        result.address_components?.find((c: any) =>
+          c.types.includes("locality")
+        )?.long_name ?? "";
+      const state =
+        result.address_components?.find((c: any) =>
+          c.types.includes("administrative_area_level_1")
+        )?.long_name ?? "";
+      const address = result.formatted_address ?? "";
+      return { status: true, data: { city, state, address, lat, lng } };
+    } else {
+      return { status: false, data: null };
+    }
+  } catch (err: any) {
+    console.error("Error fetching address:", err);
+    return { status: false, data: null };
   }
 };
 

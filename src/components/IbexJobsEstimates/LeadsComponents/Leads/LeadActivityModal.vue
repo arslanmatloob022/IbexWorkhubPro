@@ -5,13 +5,12 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import { activityTypes } from "../../estimatesScripts";
-
-const editor = shallowRef<any>();
+import { getAddressComponents } from "/@src/composable/useSupportElement";
+const fileInput = ref<HTMLInputElement | null>(null);
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const isLoading = ref(false);
-const FormData = ref({});
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -20,7 +19,8 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   addUpdateContactModal?: boolean;
-  userId?: string;
+  activityId?: string;
+  objectId?: string;
 }>();
 
 const closeModalHandler = () => {
@@ -29,8 +29,6 @@ const closeModalHandler = () => {
 const updateOnSuccessHandler = () => {
   emit("update:OnSuccess", null);
 };
-
-const selectedUsers = ref([]);
 const companyUsersOptions = ref([
   {
     value: "",
@@ -41,8 +39,8 @@ const companyUsersOptions = ref([
 
 interface ActivityDataModel {
   title: string;
-  objectId: string;
   description: string;
+  objectId: string;
   type: string;
   color: string;
   status: string;
@@ -53,15 +51,18 @@ interface ActivityDataModel {
   address: string;
   city: string;
   state: string;
-  zipCode: string;
+  zip_code: string;
   assignedUser: string;
   initiated_by: string;
   attendees: string[];
+  latitude: number;
+  longitude: number;
+  file: null | File | string;
 }
 
 const activityFormData = ref<ActivityDataModel>({
   title: "",
-  objectId: "",
+  objectId: props.objectId ?? "",
   type: "",
   color: "",
   status: "",
@@ -71,12 +72,15 @@ const activityFormData = ref<ActivityDataModel>({
   reminder_time: "",
   assignedUser: "",
   attendees: [],
-  initiated_by: "",
+  initiated_by: userSession.user.id,
   address: "",
   city: "",
   state: "",
-  zipCode: "",
+  zip_code: "",
   description: "",
+  latitude: 0.0,
+  longitude: 0.0,
+  file: "",
 });
 
 const addUpdateActivityHandler = async () => {
@@ -114,29 +118,39 @@ const getAllUsersHandler = async () => {
 };
 
 const handlePostCodeChange = async () => {
-  try {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${FormData.value.postCode}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
-    );
-    if (response.data.status === "OK") {
-      activityFormData.value.address =
-        response.data.results[0].formatted_address;
-      // activityFormData.value.latitude =
-      //   response.data.results[0].geometry.location.lat;
-      // activityFormData.value.longitude =
-      //   response.data.results[0].geometry.location.lng;
-      notyf.success("Address Added");
-    } else if (response.data.status === "ZERO_RESULTS") {
-      notyf.error("Invalid Post-Code");
-    }
-  } catch (error) {
-    notyf.error("Invalid Post-Code");
-    console.error(error);
+  if (!activityFormData.value.zip_code) return;
+  const response = await getAddressComponents(activityFormData.value.zip_code);
+  console.log("API Response:", response);
+  if (response?.status && response.data) {
+    activityFormData.value.latitude = response.data.lat;
+    activityFormData.value.longitude = response.data.lng;
+    activityFormData.value.address = response.data.address;
+    activityFormData.value.city = response.data.city;
+    activityFormData.value.state = response.data.state;
+    notyf.success("Address fetched successfully");
+  } else {
+    console.log("Address not found.");
+  }
+};
+
+const fileName = ref("");
+const fileSize = ref(0);
+
+const handleFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const selectedFile = input.files?.[0];
+  input.value = "";
+  if (selectedFile) {
+    activityFormData.value.file = selectedFile;
+    fileName.value = selectedFile.name;
+    fileSize.value = selectedFile.size;
   }
 };
 
 onMounted(() => {
   getAllUsersHandler();
+  if (props.activityId) {
+  }
 });
 </script>
 
@@ -144,7 +158,7 @@ onMounted(() => {
   <VModal
     is="form"
     :open="props.addUpdateContactModal"
-    title="Lead Activity"
+    title="Activity Details"
     size="large"
     actions="right"
     @submit.prevent="addUpdateActivityHandler"
@@ -184,6 +198,39 @@ onMounted(() => {
               </VField>
             </div>
 
+            <!-- Date -->
+            <div class="field column is-6 mb-0">
+              <label>Date </label>
+              <input
+                type="date"
+                name="date"
+                v-model="activityFormData.date"
+                required
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
+            </div>
+
+            <div class="field column is-3 mb-0">
+              <label>Start Time </label>
+              <input
+                type="time"
+                name="date"
+                v-model="activityFormData.start_time"
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
+            </div>
+            <div class="field column is-3 mb-0">
+              <label>End Time </label>
+              <input
+                type="time"
+                name="date"
+                v-model="activityFormData.end_time"
+                class="input is-primary-focus is-primary-focus"
+                placeholder="Activity Type"
+              />
+            </div>
             <div class="field column is-3 mb-0">
               <label>Color </label>
               <VField>
@@ -219,37 +266,34 @@ onMounted(() => {
                 placeholder="Activity Type"
               />
             </div>
-            <div class="field column is-6 mb-0">
-              <label>Date </label>
+            <div class="field column is-3 mb-0">
               <input
-                type="date"
-                name="date"
-                v-model="activityFormData.date"
-                required
-                class="input is-primary-focus is-primary-focus"
-                placeholder="Activity Type"
+                ref="fileInput"
+                type="file"
+                style="display: none"
+                @change="handleFileChange"
+                accept="image/*,application/pdf"
               />
-            </div>
-
-            <div class="field column is-6 mb-0">
-              <label>Start Time </label>
-              <input
-                type="time"
-                name="date"
-                v-model="activityFormData.start_time"
-                class="input is-primary-focus is-primary-focus"
-                placeholder="Activity Type"
-              />
-            </div>
-            <div class="field column is-6 mb-0">
-              <label>End Time </label>
-              <input
-                type="time"
-                name="date"
-                v-model="activityFormData.end_time"
-                class="input is-primary-focus is-primary-focus"
-                placeholder="Activity Type"
-              />
+              <label>Attachment </label>
+              <VField grouped>
+                <VControl>
+                  <div class="file has-name">
+                    <label class="file-label">
+                      <input class="file-input" type="file" name="resume" />
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-cloud-upload-alt" />
+                        </span>
+                        <span class="file-label"> Choose file </span>
+                      </span>
+                      <span class="file-name light-text">
+                        {{ fileName ? fileName : "No file" }}
+                        {{ fileSize }} Kbs
+                      </span>
+                    </label>
+                  </div>
+                </VControl>
+              </VField>
             </div>
 
             <div class="field column is-12 mb-0">
@@ -292,19 +336,19 @@ onMounted(() => {
             <div class="column is-12">
               <h3 class="title is-6 mb-2">Location</h3>
             </div>
-            <div class="field column is-12 mb-0">
-              <label>Street Address</label>
+            <div class="field column is-4 mb-0">
+              <label>Zip Code </label>
               <div class="control">
                 <input
-                  type="tel"
-                  name="phone"
-                  v-model="activityFormData.address"
+                  type="text"
+                  name="state"
+                  @blur="handlePostCodeChange"
+                  v-model="activityFormData.zip_code"
                   class="input is-primary-focus is-primary-focus"
-                  placeholder="Street Address"
+                  placeholder="Zip Code"
                 />
               </div>
             </div>
-
             <div class="field column is-4 mb-0">
               <label>City </label>
               <div class="control">
@@ -329,29 +373,30 @@ onMounted(() => {
                 />
               </div>
             </div>
-            <div class="field column is-4 mb-0">
-              <label>Zip Code </label>
+
+            <div class="field column is-12 mb-0">
+              <label>Street Address</label>
               <div class="control">
                 <input
-                  type="text"
-                  name="state"
-                  v-model="activityFormData.state"
+                  type="tel"
+                  name="phone"
+                  v-model="activityFormData.address"
                   class="input is-primary-focus is-primary-focus"
-                  placeholder="Zip Code"
+                  placeholder="Street Address"
                 />
               </div>
             </div>
             <div class="field column is-12 mb-0">
               <label>Description </label>
-              <div class="control">
-                <input
-                  type="text"
-                  name="state"
-                  v-model="activityFormData.description"
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Description"
-                />
-              </div>
+              <VField>
+                <VControl>
+                  <VTextarea
+                    v-model="activityFormData.description"
+                    rows="3"
+                    placeholder="Enter description..."
+                  />
+                </VControl>
+              </VField>
             </div>
           </VCard>
         </div>

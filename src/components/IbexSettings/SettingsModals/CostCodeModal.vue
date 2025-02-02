@@ -21,49 +21,40 @@ const closeModalHandler = () => {
   emit("update:modalHandler", false);
 };
 
+const updateOnSuccessHandler = () => {
+  emit("update:OnSuccess", null);
+};
+
 interface costCode {
   id: string;
-  title: string;
+  name: string;
   category: string;
-  child_of: string;
-  is_hourly_cost: boolean;
-  hourly_cost: number;
+  parent_code: string;
+  is_labour_code: boolean;
+  labour_cost: number;
   description: string;
   unit_cost: number;
   is_active: boolean;
 }
 const costCodeFormData = ref<costCode>({
   id: "",
-  title: "",
+  name: "",
   category: ``,
-  child_of: "",
-  is_hourly_cost: false,
-  hourly_cost: 0.0,
+  parent_code: "",
+  is_labour_code: false,
+  labour_cost: 0.0,
   description: "",
   unit_cost: 0.0,
   is_active: true,
 });
-const selectedParentCostCode = ref("");
-const costCodesList = [
-  { id: 1, value: "Lead", label: "Lead" },
-  { id: 2, value: "Home", label: "Home" },
-  { id: 3, value: "Floor Work", label: "Floor Work" },
-  { id: 4, value: "Tile Work", label: "Tile Work" },
-  { id: 5, value: "Carpenter", label: "Carpenter" },
-  { id: 6, value: "Complete Renovation", label: "Complete Renovation" },
-  { id: 7, value: "Painting", label: "Painting" },
-  { id: 8, value: "Plumbing", label: "Plumbing" },
-  { id: 9, value: "New Construction", label: "New Construction" },
-  { id: 10, value: "Carpenter", label: "Carpenter" },
-  { id: 11, value: "Carpenter", label: "Carpenter" },
-  { id: 12, value: "Carpenter", label: "Carpenter" },
-];
+
 const createCostCodeHandler = async () => {
   try {
     mailLoading.value = true;
-    const response = await api.post(`/api/`, {});
+    const response = await api.post(`/api/cost-code/`, costCodeFormData.value);
     notyf.success("Cost code created successfully");
     closeModalHandler();
+    updateOnSuccessHandler();
   } catch (err) {
     console.log(err);
   } finally {
@@ -74,9 +65,47 @@ const createCostCodeHandler = async () => {
 const getCostCodeInfoHandler = async () => {
   try {
     mailLoading.value = true;
-    const response = await api.get(`/api/`, {});
-    notyf.success("Cost code created successfully");
-    closeModalHandler();
+    const response = await api.get(`/api/cost-code/${props.costCodeId}/`);
+    costCodeFormData.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    mailLoading.value = false;
+  }
+};
+const categoriesList = ref([
+  {
+    id: "",
+    name: "",
+    description: "",
+    created_at: "",
+    updated_at: "",
+    trade: "",
+  },
+]);
+const getCostCategoriesHandler = async () => {
+  try {
+    mailLoading.value = true;
+    const response = await api.get(`/api/cost-category/`);
+    categoriesList.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    mailLoading.value = false;
+  }
+};
+
+const costCodesList = ref([]);
+const getCostCodesHandler = async () => {
+  try {
+    mailLoading.value = true;
+    const response = await api.get(`/api/cost-code/`);
+    costCodesList.value = response.data.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
   } catch (err) {
     console.log(err);
   } finally {
@@ -88,6 +117,8 @@ onMounted(() => {
   if (props.costCodeId) {
     getCostCodeInfoHandler();
   }
+  getCostCategoriesHandler();
+  getCostCodesHandler();
 });
 </script>
 <template>
@@ -111,7 +142,7 @@ onMounted(() => {
                 required
                 class="input"
                 placeholder="Enter Title"
-                v-model="costCodeFormData.title"
+                v-model="costCodeFormData.name"
               />
             </div>
           </div>
@@ -125,12 +156,9 @@ onMounted(() => {
                 <VControl>
                   <VSelect v-model="costCodeFormData.category" required>
                     <VOption value=""> Select a category </VOption>
-                    <VOption value="Superman"> Superman </VOption>
-                    <VOption value="Batman"> Batman </VOption>
-                    <VOption value="Spiderman"> Spiderman </VOption>
-                    <VOption value="Deadpool"> Deadpool </VOption>
-                    <VOption value="Spawn"> Spawn </VOption>
-                    <VOption value="Galactus"> Galactus </VOption>
+                    <VOption v-for="item in categoriesList" :value="item.id">{{
+                      item.name
+                    }}</VOption>
                   </VSelect>
                 </VControl>
               </VField>
@@ -143,7 +171,7 @@ onMounted(() => {
             <VField v-slot="{ id }">
               <VControl>
                 <Multiselect
-                  v-model="costCodeFormData.child_of"
+                  v-model="costCodeFormData.parent_code"
                   :attrs="{ id }"
                   :searchable="true"
                   :options="costCodesList"
@@ -158,13 +186,13 @@ onMounted(() => {
           <VField class="is-flex">
             <VControl raw subcontrol>
               <VCheckbox
-                v-model="costCodeFormData.is_hourly_cost"
+                v-model="costCodeFormData.is_labour_code"
                 label="Hourly charged labour code"
               />
             </VControl>
           </VField>
         </div>
-        <div v-if="costCodeFormData.is_hourly_cost" class="column is-6">
+        <div v-if="costCodeFormData.is_labour_code" class="column is-6">
           <div class="field">
             <label class="label">Default labour cost ($)</label>
             <div class="control">
@@ -174,7 +202,7 @@ onMounted(() => {
                 step="any"
                 class="input"
                 placeholder="Enter amount"
-                v-model="costCodeFormData.hourly_cost"
+                v-model="costCodeFormData.labour_cost"
               />
             </div>
           </div>
