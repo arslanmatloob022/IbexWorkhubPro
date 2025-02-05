@@ -77,6 +77,14 @@ const SweetAlertProps = ref({
   isSweetAlertOpen: false,
   btntext: "text",
 });
+
+const TasksSweetAlertProps = ref({
+  title: "",
+  subtitle: "",
+  isSweetAlertOpen: false,
+  btntext: "",
+});
+
 const openProposalDeleteAlert = (id: any) => {
   selectedDeleteProposalId.value = id;
   SweetAlertProps.value = {
@@ -84,6 +92,17 @@ const openProposalDeleteAlert = (id: any) => {
     subtitle:
       "Are you sure to delete this proposal? After delete you will not be able to recover it again.",
     btntext: "Yes delete",
+    isSweetAlertOpen: true,
+  };
+};
+
+const createTasksOfProposal = (id: any) => {
+  selectedDeleteProposalId.value = id;
+  TasksSweetAlertProps.value = {
+    title: "Generate Tasks?",
+    subtitle:
+      "Tasks will be generated of all cost items are listed in this proposal.",
+    btntext: "Yes Generate",
     isSweetAlertOpen: true,
   };
 };
@@ -180,6 +199,9 @@ const openCostItemModal = (id: any) => {
   addCostItemModal.value = !addCostItemModal.value;
 };
 
+const gotoDetail = (id: any) => {
+  router.push(`/sidebar/dashboard/proposals/${id}`);
+};
 const getCompanyProposalList = () => {
   if (props.allProposal == true) {
     getCompanyProposals();
@@ -240,7 +262,11 @@ onMounted(() => {
               :key="item.id"
               class="flex-table-item"
             >
-              <VFlexTableCell :column="{ media: true, grow: true }">
+              <VFlexTableCell
+                :column="{ media: true, grow: true }"
+                class="cu-pointer"
+                @click="gotoDetail(item.id)"
+              >
                 <!-- <VAvatar :picture="item.picture" /> -->
                 <div>
                   <span class="item-name dark-inverted">{{ item.title }}</span>
@@ -255,7 +281,11 @@ onMounted(() => {
                   </span> -->
                 </div>
               </VFlexTableCell>
-              <VFlexTableCell :column="{ media: true }">
+              <VFlexTableCell
+                :column="{ media: true }"
+                class="cu-pointer"
+                @click="gotoDetail(item.id)"
+              >
                 <div>
                   <span class="item-name dark-inverted">{{
                     formatDate(item.created_at)
@@ -265,15 +295,15 @@ onMounted(() => {
                   }}</span>
                 </div>
               </VFlexTableCell>
-              <VFlexTableCell>
+              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <VTag rounded :color="getProposalTypeColor[item.type]">
                   {{ getProposalTypeName[item.type] }}
                 </VTag>
               </VFlexTableCell>
-              <VFlexTableCell>
+              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <span class="light-text">{{ item.approval_deadline }}</span>
               </VFlexTableCell>
-              <VFlexTableCell>
+              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <VTag
                   class="capitalized"
                   rounded
@@ -283,7 +313,11 @@ onMounted(() => {
                 </VTag>
                 <!-- <span class="light-text"></span> -->
               </VFlexTableCell>
-              <VFlexTableCell :column="{ media: true }">
+              <VFlexTableCell
+                class="cu-pointer"
+                @click="gotoDetail(item.id)"
+                :column="{ media: true }"
+              >
                 <div>
                   <span class="item-name dark-inverted"
                     >${{ item.proposalAmount }}</span
@@ -301,6 +335,19 @@ onMounted(() => {
                   <template #content>
                     <a
                       role="menuitem"
+                      @click="gotoDetail(item.id)"
+                      class="dropdown-item is-media"
+                    >
+                      <div class="icon">
+                        <i aria-hidden="true" class="lnil lnil-briefcase" />
+                      </div>
+                      <div class="meta">
+                        <span>View Detail</span>
+                        <span>View detail in page</span>
+                      </div>
+                    </a>
+                    <a
+                      role="menuitem"
                       @click="openLeadProposalModalHandler(item.id)"
                       class="dropdown-item is-media"
                     >
@@ -312,21 +359,7 @@ onMounted(() => {
                         <span>Edit Proposal Details</span>
                       </div>
                     </a>
-                    <a
-                      role="menuitem"
-                      @click="
-                        router.push(`/sidebar/dashboard/proposals/${item.id}`)
-                      "
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-briefcase" />
-                      </div>
-                      <div class="meta">
-                        <span>View Detail</span>
-                        <span>View detail in page</span>
-                      </div>
-                    </a>
+
                     <a
                       disabled
                       role="menuitem"
@@ -339,6 +372,24 @@ onMounted(() => {
                       <div class="meta">
                         <span>Preview</span>
                         <span>Preview proposal detail</span>
+                      </div>
+                    </a>
+
+                    <a
+                      disabled
+                      role="menuitem"
+                      @click="createTasksOfProposal(item.id)"
+                      class="dropdown-item is-media"
+                    >
+                      <div class="icon">
+                        <i
+                          class="lnil lnil-calender-alt-1"
+                          aria-hidden="true"
+                        ></i>
+                      </div>
+                      <div class="meta">
+                        <span>Create Tasks</span>
+                        <span>Create tasks in chart </span>
                       </div>
                     </a>
 
@@ -439,8 +490,19 @@ onMounted(() => {
       :onConfirm="DeleteProposalHandler"
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
     />
+    <SweetAlert
+      v-if="TasksSweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="TasksSweetAlertProps.isSweetAlertOpen"
+      :title="TasksSweetAlertProps.title"
+      :subtitle="TasksSweetAlertProps.subtitle"
+      :btntext="TasksSweetAlertProps.btntext"
+      :onConfirm="DeleteProposalHandler"
+      :onCancel="() => (TasksSweetAlertProps.isSweetAlertOpen = false)"
+    />
+
     <ProposalGroupModal
       v-if="openProposalGroupModal"
+      :leadProposalListModal="openProposalGroupModal"
       :leadID="props.leadId"
       :group-proposal-modal="openProposalGroupModal"
       @update:modal-handler="openProposalGroupModal = false"

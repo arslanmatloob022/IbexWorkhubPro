@@ -90,8 +90,6 @@ const getCategoryInfoHandler = async () => {
     mailLoading.value = true;
     const response = await api.get(`/api/cost-category/${props.categoryId}/`);
     categoryFormData.value = response.data;
-    notyf.success("Cost code created successfully");
-    closeModalHandler();
   } catch (err) {
     console.log(err);
   } finally {
@@ -154,7 +152,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="column is-6">
+        <!-- <div class="column is-6">
           <div class="field">
             <label class="label">Category </label>
             <VControl>
@@ -169,7 +167,7 @@ onMounted(() => {
               </VSelect>
             </VControl>
           </div>
-        </div>
+        </div> -->
 
         <div class="column is-6">
           <div class="field">
@@ -191,7 +189,7 @@ onMounted(() => {
               <VControl>
                 <VTextarea
                   v-model="categoryFormData.description"
-                  rows="2"
+                  rows="3"
                   placeholder="Enter Description"
                 />
               </VControl>
@@ -202,7 +200,7 @@ onMounted(() => {
     </template>
     <template #action>
       <VButton type="submit" color="primary" :loading="loading" raised>
-        Add Category
+        {{ props.categoryId ? "Update Category" : "Add Category" }}
       </VButton>
     </template>
     <template #cancel>

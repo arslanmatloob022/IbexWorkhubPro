@@ -51,8 +51,19 @@ const costCodeFormData = ref<costCode>({
 const createCostCodeHandler = async () => {
   try {
     mailLoading.value = true;
-    const response = await api.post(`/api/cost-code/`, costCodeFormData.value);
-    notyf.success("Cost code created successfully");
+    if (props.costCodeId) {
+      const response = await api.patch(
+        `/api/cost-code/${props.costCodeId}/`,
+        costCodeFormData.value
+      );
+      notyf.info("Cost code updated successfully");
+    } else {
+      const response = await api.post(
+        `/api/cost-code/`,
+        costCodeFormData.value
+      );
+      notyf.success("Cost code created successfully");
+    }
     closeModalHandler();
     updateOnSuccessHandler();
   } catch (err) {

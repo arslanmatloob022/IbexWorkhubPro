@@ -7,26 +7,12 @@ import { projects } from "/@src/data/layouts/card-grid-v3";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
+import { formatDate } from "/@src/composable/useSupportElement";
 
-const props = defineProps<{
-  jobId?: "";
-}>();
 const filters = ref("");
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
 const activitiesList = ref([]);
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return projects;
-  } else {
-    return projects.filter((item) => {
-      return (
-        item.name.match(new RegExp(filters.value, "i")) ||
-        item.remaining.match(new RegExp(filters.value, "i"))
-      );
-    });
-  }
-});
 const api = useApi();
 const notyf = useNotyf();
 const userSession = useUserSession();
@@ -40,6 +26,10 @@ const optionsSingle = [
   "Landing Pages",
 ];
 
+const props = defineProps<{
+  jobId?: "";
+}>();
+
 function getAvatarData(user: any): VAvatarProps {
   return {
     picture: user?.picture,
@@ -48,7 +38,7 @@ function getAvatarData(user: any): VAvatarProps {
   };
 }
 
-const getAllActivitiesHandler = async () => {
+const getLeadActivitiesHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get(`/api/activity/by-object/${props.jobId}/`);
@@ -60,10 +50,41 @@ const getAllActivitiesHandler = async () => {
   }
 };
 
-onMounted(() => {
+const getAllActivitiesHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/activity/`);
+    activitiesList.value = response.data;
+  } catch (error: any) {
+    notyf.error(`something get wrong`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const filteredData = computed(() => {
+  if (!filters.value) {
+    return projects;
+  } else {
+    return projects.filter((item) => {
+      return (
+        item.name.match(new RegExp(filters.value, "i")) ||
+        item.remaining.match(new RegExp(filters.value, "i"))
+      );
+    });
+  }
+});
+
+const getActivitiesHandler = () => {
   if (props.jobId) {
+    getLeadActivitiesHandler();
+  } else {
     getAllActivitiesHandler();
   }
+};
+
+onMounted(() => {
+  getActivitiesHandler();
 });
 </script>
 
@@ -130,6 +151,79 @@ onMounted(() => {
           />
         </template>
       </VPlaceholderPage>
+
+      <!-- <TransitionGroup
+        name="list"
+        tag="div"
+        class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
+      >
+        <div v-for="item in activitiesList" :key="item.id" class="column is-4">
+          <div class="card-grid-item">
+            <label v-if="item.lockable" class="h-toggle">
+              <input type="checkbox" :checked="item.status === 'pending'" />
+              <span class="toggler">
+                <span class="active">
+                  <i
+                    aria-hidden="true"
+                    class="iconify"
+                    data-icon="feather:lock"
+                  />
+                </span>
+                <span class="inactive">
+                  <i
+                    aria-hidden="true"
+                    class="iconify"
+                    data-icon="feather:check"
+                  />
+                </span>
+              </span>
+            </label>
+            <VAvatar
+              size="large"
+              :picture="item.image"
+              :badge="item.badge"
+              squared
+            />
+            <h3 class="dark-inverted">
+              {{ item.title }}
+            </h3>
+            <p>{{ formatDate(item.date) }} remaining</p>
+            <div class="description">
+              <p>{{ item.description ?? "Not Added" }}</p>
+            </div>
+            <div class="people">
+              <VAvatar
+                v-for="user in item.attendees_info"
+                :key="user.id"
+                size="small"
+                :picture="user.avatar"
+              />
+            </div>
+            <div class="buttons">
+              <button class="button v-button is-dark-outlined">
+                <span class="icon">
+                  <i
+                    aria-hidden="true"
+                    class="iconify"
+                    data-icon="feather:eye"
+                  />
+                </span>
+                <span>View</span>
+              </button>
+              <button class="button v-button is-dark-outlined">
+                <span class="icon">
+                  <i
+                    aria-hidden="true"
+                    class="iconify"
+                    data-icon="feather:edit-2"
+                  />
+                </span>
+                <span>Edit</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </TransitionGroup> -->
 
       <!--Card Grid v3-->
       <TransitionGroup
@@ -211,6 +305,7 @@ onMounted(() => {
       :addUpdateContactModal="showAddUpdateContactModal"
       :objectId="props.jobId"
       @update:modalHandler="showAddUpdateContactModal = false"
+      @update:OnSuccess="getActivitiesHandler"
     />
     <ScheduleEmailModal
       v-if="showMailSenderModal"

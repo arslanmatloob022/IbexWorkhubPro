@@ -93,7 +93,7 @@ const costType = ref([
   { value: "other", label: "Others" },
 ]);
 
-const costCode = ref([
+const costCodesList = ref([
   { value: "11011", label: "Labour" },
   { value: "11012", label: "Material" },
   { value: "11013", label: "Equipment" },
@@ -154,18 +154,15 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
-// Reactive values for inputs
 const unitCost = ref(0); // Unit cost per item
 const quantity = ref(0); // Quantity of items
 const builderPrice = computed(
   () => costItem.value.unit_cost * costItem.value.quantity
 ); // Builder price calculation
 
-// Markup and margin inputs
 const markup = ref(0); // Markup percentage
 const margin = ref(0); // Margin percentage
 
-// Total price calculation based on markup
 const totalPrice = computed(() => {
   if (costItem.value.markup > 0) {
     return (
@@ -208,6 +205,24 @@ const getCostItemDetail = async () => {
     loading.value = false;
   }
 };
+
+const Loading = ref(false);
+const getCostCodesHandler = async () => {
+  try {
+    Loading.value = true;
+    const response = await api.get(`/api/cost-code/`);
+    costCodesList.value = response.data.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    Loading.value = false;
+  }
+};
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -218,6 +233,7 @@ onMounted(async () => {
   if (props.costItemId) {
     getCostItemDetail();
   }
+  getCostCodesHandler();
 });
 </script>
 
@@ -295,20 +311,18 @@ onMounted(async () => {
               </VField>
             </div>
             <div class="field column is-6">
-              <label for="">Cost Code *</label>
-              <VField>
+              <label>Cost Code *</label>
+              <VField v-slot="{ id }">
                 <VControl>
-                  <VSelect
+                  <Multiselect
+                    required
                     v-model="costItem.cost_code"
                     :disabled="props.previewCostItems"
-                  >
-                    <VOption
-                      v-for="(item, index) in costCode"
-                      :value="item.value"
-                    >
-                      {{ item.label }}
-                    </VOption>
-                  </VSelect>
+                    :attrs="{ id }"
+                    :searchable="true"
+                    :options="costCodesList"
+                    placeholder="Select a cost code"
+                  />
                 </VControl>
               </VField>
             </div>

@@ -363,6 +363,7 @@ declare module 'vue' {
     MarketingMockup: typeof import('./../src/components/partials/marketing/MarketingMockup.vue')['default']
     MarketingPricings: typeof import('./../src/components/partials/marketing/MarketingPricings.vue')['default']
     MarketingSideFeatures: typeof import('./../src/components/partials/marketing/MarketingSideFeatures.vue')['default']
+    MergeProposalModal: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/MergeProposalModal.vue')['default']
     Message1: typeof import('./../src/components/partials/inbox/message-details/Message1.vue')['default']
     Message10: typeof import('./../src/components/partials/inbox/message-details/Message10.vue')['default']
     Message2: typeof import('./../src/components/partials/inbox/message-details/Message2.vue')['default']

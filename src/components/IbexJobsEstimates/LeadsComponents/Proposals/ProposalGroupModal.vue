@@ -26,16 +26,13 @@ const group_by = ref("combine");
 const loading = ref(false);
 const tab = ref("active");
 const api = useApi();
-const tagsValue = [];
-const tagsOptions = [
-  { value: "title", label: "Tile" },
-  { value: "carpentry", label: "Carpentry" },
-  { value: "floor", label: "Flooring" },
-];
-
+const tagsValue = ref([]);
+const tagsOptions = ref([{ value: "", label: "" }]);
+const openMergeProposalsModal = ref(false);
+const selectedProposals = ref([]);
 const props = withDefaults(
   defineProps<{
-    groupProposalModal?: boolean;
+    leadProposalListModal?: boolean;
     leadID: string;
   }>(),
   {
@@ -105,16 +102,32 @@ const getLeadProposals = async () => {
   }
 };
 
+const getCostTradesHandler = async () => {
+  try {
+    const response = await api.get(`/api/cost-trade/`);
+    tagsOptions.value = response.data.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+  }
+};
+
 onMounted(() => {
   getLeadProposals();
+  getCostTradesHandler();
 });
 </script>
 
 <template>
   <VModal
     is="form"
-    :open="props.groupProposalModal"
-    title="Group Proposal"
+    :open="props.leadProposalListModal"
+    title="Proposal List"
     size="xl"
     actions="right"
     @close="closeModalHandler"
@@ -122,45 +135,7 @@ onMounted(() => {
     <template #content>
       <div class="columns is-multiline">
         <div class="column is-12 is-flex space-between">
-          <VField>
-            <VControl>
-              <VRadio
-                v-model="group_by"
-                value="combine"
-                label="Combine Proposals"
-                name="outlined_squared_radio"
-                color="warning"
-                square
-              />
-
-              <VRadio
-                v-model="group_by"
-                value="trade"
-                label="Trade Proposal"
-                name="outlined_squared_radio"
-                color="primary"
-                square
-              />
-
-              <VRadio
-                v-model="group_by"
-                value="summary"
-                label="Summary Proposal"
-                name="outlined_squared_radio"
-                color="info"
-                square
-              />
-
-              <VRadio
-                v-model="group_by"
-                value="report"
-                label="Report"
-                name="outlined_squared_radio"
-                color="success"
-                square
-              />
-            </VControl>
-          </VField>
+          <div></div>
           <div class="is-flex">
             <VField
               v-if="group_by == 'trade'"
@@ -179,8 +154,15 @@ onMounted(() => {
                 />
               </VControl>
             </VField>
-            <VButton class="ml-2" raised color="warning" light outlined>
-              Merge
+            <VButton
+              class="ml-2"
+              @click="openMergeProposalsModal = !openMergeProposalsModal"
+              raised
+              color="warning"
+              light
+              outlined
+            >
+              Group Proposal
             </VButton>
             <VButton
               class="ml-2"
@@ -272,6 +254,11 @@ onMounted(() => {
                       <VFlexTableCell :column="{ align: 'end' }">
                         <VControl raw subcontrol>
                           <VCheckbox
+                            @click="
+                              () => {
+                                selectedProposals.push(item);
+                              }
+                            "
                             v-model="item.payment_status"
                             label=""
                             color="primary"
@@ -317,6 +304,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
+        <MergeProposalModal
+          v-if="openMergeProposalsModal"
+          :group-proposal-modal="openMergeProposalsModal"
+          :selectedProposals="selectedProposals"
+          @update:modal-handler="openMergeProposalsModal = false"
+        />
       </div>
     </template>
     <template #action>

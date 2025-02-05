@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { files } from "/@src/data/layouts/tile-grid-v2";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
+import { useApi } from "/@src/composable/useAPI";
 
+const api = useApi();
+const props = defineProps<{
+  leadId?: string;
+}>();
 const filters = ref("");
 const tab = ref("contracts");
 const filteredData = computed(() => {
@@ -25,6 +30,20 @@ const optionsSingle = [
   "Team Files",
   "Deprecated",
 ];
+
+const getGroupedProposals = async () => {
+  try {
+    const resp = await api.get(
+      `/api/attachment/by-object/${props.leadId}/?type=proposal_formats`
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(() => {
+  getGroupedProposals();
+});
 </script>
 
 <template>

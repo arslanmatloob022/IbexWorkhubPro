@@ -665,7 +665,7 @@ onMounted(() => {
             </div>
           </div>
           <div v-if="tab === 'documents'" class="column is-12">
-            <JobDocuments />
+            <JobDocuments :leadId="route.params.id" />
           </div>
 
           <div v-if="tab === 'proposals'" class="column is-12">
