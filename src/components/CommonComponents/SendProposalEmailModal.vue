@@ -6,6 +6,7 @@ const props = defineProps<{
   proposalSenderModal?: boolean;
   proposalData?: any;
   columnsToShow?: any;
+  selectedProposalsIds?: any;
 }>();
 
 const useProposal = useProposalStore();
@@ -165,6 +166,7 @@ onMounted(async () => {
               </ClientOnly>
             </div> -->
             <div class="column is-full">
+              {{ selectedProposalsIds }}
               <div class="field">
                 <label class="label">Send To </label>
                 <div class="control">

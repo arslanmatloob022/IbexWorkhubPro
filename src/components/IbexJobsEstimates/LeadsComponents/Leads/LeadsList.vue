@@ -89,7 +89,7 @@ const columns = {
 const getCompanyLeads = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/job/leads/");
+    const response = await api.get("/api/project/project-leads/");
     leadsList.value = response.data;
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);

@@ -92,8 +92,11 @@ interface leadData {
   attachments: [];
   attach_mail: string;
   created_by: string;
+  startDate: string;
+  endDate: string;
   managers: [];
   client: string;
+  lead_status: string;
   latitude: number;
   longitude: number;
 }
@@ -102,6 +105,7 @@ const leadFormData = ref<leadData>({
   id: "",
   title: "",
   address: "",
+  lead_status: "",
   current_state: "",
   city: "",
   state: "",
@@ -123,13 +127,15 @@ const leadFormData = ref<leadData>({
   client: "",
   latitude: 0,
   longitude: 0,
+  startDate: "",
+  endDate: "",
 });
 
-const status = ref([
-  { value: "Open", label: "Open" },
-  { value: "On Hold", label: "On Hold" },
+const lead_status = ref([
+  { value: "open", label: "Open" },
+  { value: "onHold", label: "On Hold" },
   { value: "lost", label: "Lost" },
-  { value: "Sold", label: "Sold" },
+  { value: "sold", label: "Sold" },
 ]);
 
 const projectTypes = ref([
@@ -153,15 +159,6 @@ interface contactPerson {
   loginAllowed: boolean;
 }
 
-watch(
-  () => leadFormData.value.status,
-  (newStatus) => {
-    if (newStatus === "Sold") {
-      leadFormData.value.current_state = "job";
-    }
-  }
-);
-
 const addUpdateLeadHandler = async () => {
   try {
     loading.value = true;
@@ -169,12 +166,12 @@ const addUpdateLeadHandler = async () => {
     const formDataAPI = convertToFormData(leadFormData.value, []);
     if (props.leadId || leadFormData.value.id) {
       const response = await api.patch(
-        `/api/job/${props.leadId ? props.leadId : leadFormData.value.id}/`,
+        `/api/project/${props.leadId ? props.leadId : leadFormData.value.id}/`,
         formDataAPI
       );
       leadFormData.value = response.data;
     } else {
-      const response = await api.post("/api/job/", formDataAPI);
+      const response = await api.post("/api/project/", formDataAPI);
       leadFormData.value = response.data;
     }
 
@@ -194,12 +191,11 @@ const addUpdateLeadHandler = async () => {
 const getLeadDetailHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/job/${props.leadId}/`);
+    const response = await api.get(
+      `/api/project/${props.leadId}/single-project/`
+    );
     leadFormData.value = response.data;
     tagsValue.value = response.data.tags;
-    getAdminsHandler();
-    getContractorsHandler();
-    getClientsHandler();
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
   } finally {
@@ -374,11 +370,22 @@ const handlePostCodeChange = async () => {
   }
 };
 
+watch(
+  () => leadFormData.value.status,
+  (newStatus) => {
+    if (newStatus === "sold") {
+      leadFormData.value.current_state = "job";
+    }
+  }
+);
 onMounted(async () => {
   if (props.leadId) {
     getLeadDetailHandler();
   }
   getManagersHandler();
+  getAdminsHandler();
+  getContractorsHandler();
+  getClientsHandler();
 });
 </script>
 
@@ -536,6 +543,30 @@ onMounted(async () => {
                     type="date"
                     name="saleDate"
                     v-model="leadFormData.sale_date"
+                    class="input is-primary-focus is-primary-focus"
+                    placeholder="Post code"
+                  />
+                </div>
+              </div>
+              <div class="field column is-6 mb-0">
+                <label>Start Date: </label>
+                <div class="control">
+                  <input
+                    type="date"
+                    name="saleDate"
+                    v-model="leadFormData.startDate"
+                    class="input is-primary-focus is-primary-focus"
+                    placeholder="Post code"
+                  />
+                </div>
+              </div>
+              <div class="field column is-6 mb-0">
+                <label>End Date: </label>
+                <div class="control">
+                  <input
+                    type="date"
+                    name="saleDate"
+                    v-model="leadFormData.endDate"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="Post code"
                   />
@@ -821,9 +852,9 @@ onMounted(async () => {
               <label>Status </label>
               <VField>
                 <VControl>
-                  <VSelect v-model="leadFormData.status">
+                  <VSelect v-model="leadFormData.lead_status">
                     <VOption
-                      v-for="(item, index) in status"
+                      v-for="(item, index) in lead_status"
                       :key="index"
                       :value="item.value"
                     >

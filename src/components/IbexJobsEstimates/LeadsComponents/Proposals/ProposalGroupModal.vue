@@ -29,7 +29,8 @@ const api = useApi();
 const tagsValue = ref([]);
 const tagsOptions = ref([{ value: "", label: "" }]);
 const openMergeProposalsModal = ref(false);
-const selectedProposals = ref([]);
+const selectedProposals = ref<any[]>([]);
+const proposalIds = selectedProposals.value.map((proposal) => proposal.id);
 const props = withDefaults(
   defineProps<{
     leadProposalListModal?: boolean;
@@ -74,6 +75,23 @@ const columns = {
     align: "end",
   },
 } as const;
+
+const openSendProposalModal = ref(false);
+const openSendProposalModalHandler = () => {
+  openSendProposalModal.value = !openSendProposalModal.value;
+};
+
+const selectProposal = (item: any) => {
+  const index = selectedProposals.value.findIndex(
+    (proposal) => proposal.id === item.id
+  );
+
+  if (index !== -1) {
+    selectedProposals.value.splice(index, 1);
+  } else {
+    selectedProposals.value.push(item);
+  }
+};
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -161,6 +179,8 @@ onMounted(() => {
               color="warning"
               light
               outlined
+              icon="lnil lnil-files-alt"
+              :disabled="selectedProposals.length ? false : true"
             >
               Group Proposal
             </VButton>
@@ -170,7 +190,9 @@ onMounted(() => {
               icon="fas fa-envelope"
               color="info"
               light
+              :disabled="selectedProposals.length ? false : true"
               outlined
+              @click="openSendProposalModalHandler()"
             >
               Send
             </VButton>
@@ -256,7 +278,7 @@ onMounted(() => {
                           <VCheckbox
                             @click="
                               () => {
-                                selectedProposals.push(item);
+                                selectProposal(item);
                               }
                             "
                             v-model="item.payment_status"
@@ -308,7 +330,14 @@ onMounted(() => {
           v-if="openMergeProposalsModal"
           :group-proposal-modal="openMergeProposalsModal"
           :selectedProposals="selectedProposals"
+          @removeProposal="selectProposal"
           @update:modal-handler="openMergeProposalsModal = false"
+        />
+        <SendProposalEmailModal
+          v-if="openSendProposalModal"
+          :proposalSenderModal="openSendProposalModal"
+          :selectedProposalsIds="proposalIds"
+          @update:modalHandler="openSendProposalModal = false"
         />
       </div>
     </template>

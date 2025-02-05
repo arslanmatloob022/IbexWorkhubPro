@@ -89,7 +89,7 @@ const columns = {
 const getCompanyJobs = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/job/");
+    const response = await api.get("/api/project/project-leads/");
     leadsList.value = response.data;
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
@@ -123,7 +123,7 @@ const openLeadDeleteAlert = (id: any) => {
 const deleteLeadHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.delete(`/api/job/${selectedLeadId.value}/`);
+    const response = await api.delete(`/api/project/${selectedLeadId.value}/`);
 
     notyf.success("Proposal delete successfully");
     getCompanyJobs();

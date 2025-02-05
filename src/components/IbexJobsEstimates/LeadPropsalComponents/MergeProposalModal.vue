@@ -1,15 +1,48 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
-import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import * as listData from "/@src/data/layouts/flex-list-v2";
-import { formatDate } from "/@src/composable/useSupportElement";
 import {
   selectedColumnsToShow,
   columnsTitle,
 } from "../../CommonComponents/CostItemComponents/costItems";
 import { useNotyf } from "/@src/composable/useNotyf";
-
+const loading = ref(false);
+const api = useApi();
 const notyf = useNotyf();
+const proposalCreated = ref("");
+const openSendProposalModal = ref(false);
+const columnsToShow = ref([]);
+const proposalFormData = ref({});
+const tardeList = ref([
+  {
+    value: "",
+    label: "",
+  },
+]);
+interface Proposal {
+  id: string;
+  title: string;
+}
+const props = withDefaults(
+  defineProps<{
+    groupProposalModal?: boolean;
+    leadID: string;
+    selectedProposals?: Proposal[];
+  }>(),
+  {
+    groupProposalModal: false,
+    leadID: "",
+    selectedProposals: () => [],
+  }
+);
+const emit = defineEmits<{
+  (e: "update:modalHandler", value: boolean): void;
+  (e: "update:OnSuccess", value: null): void;
+  (e: "removeProposal", value: any): void;
+}>();
+
+const removeItem = (item: any) => {
+  emit("removeProposal", item);
+};
 const proposalList = ref([
   {
     id: "",
@@ -27,84 +60,27 @@ const proposalList = ref([
     job: "",
   },
 ]);
-
+const proposalIds = props.selectedProposals.map((proposal) => proposal.id);
 const groupProposalData = ref({
   title: "",
-  type: "combine",
+  type: "combined",
   description: "",
-  proposalsIds: [],
+  proposalsIds: proposalIds,
   trades: [],
+  columns_to_show: [],
 });
-
-const group_by = ref("combine");
-const loading = ref(false);
-const tab = ref("active");
-const api = useApi();
-const tagsValue = ref([]);
-const tagsOptions = ref([{ value: "", label: "" }]);
-
-interface Proposal {
-  id: number;
-  name: string;
-}
-
-const props = withDefaults(
-  defineProps<{
-    groupProposalModal?: boolean;
-    leadID: string;
-    selectedProposals?: Proposal[];
-  }>(),
-  {
-    groupProposalModal: false,
-    leadID: "",
-    selectedProposals: () => [],
-  }
-);
-const emit = defineEmits<{
-  (e: "update:modalHandler", value: boolean): void;
-  (e: "update:OnSuccess", value: null): void;
-}>();
-
-export interface ProjectData {
-  id: number;
-  name: string;
-  customer: string;
-  duration: string;
-  picture: string;
-  industry: string;
-  status: string;
-  team: VAvatarProps[];
-}
-
-const filters = ref("");
-const columns = {
-  picture: {
-    label: "Proposal",
-    grow: true,
-    media: true,
-  },
-  customer: "Type",
-  industry: "Amount",
-  status: "Status",
-  team: {
-    label: "Payment",
-  },
-  actions: {
-    label: "Select",
-    align: "end",
-  },
-} as const;
 
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
 };
 
-const proposalCreated = ref("");
-
 const mergeProposals = async () => {
   try {
     loading.value = true;
-    const resp = await api.get(`/api/lead-proposal/merge-proposals/`);
+    const resp = await api.post(
+      `/api/lead-proposal/merge-proposals/`,
+      groupProposalData.value
+    );
     proposalCreated.value = resp.data;
     notyf.success("Proposal grouped successfully");
   } catch (err) {
@@ -126,12 +102,6 @@ const getLeadProposals = async () => {
   }
 };
 
-const tardeList = ref([
-  {
-    value: "",
-    label: "",
-  },
-]);
 const getCostTradesHandler = async () => {
   try {
     const response = await api.get(`/api/cost-trade/`);
@@ -148,7 +118,7 @@ const getCostTradesHandler = async () => {
 };
 
 onMounted(() => {
-  getCostTradesHandler;
+  getCostTradesHandler();
 });
 </script>
 
@@ -164,6 +134,21 @@ onMounted(() => {
   >
     <template #content>
       <div class="columns is-multiline">
+        <div class="column is-12">
+          <VGrid>
+            <VGridItem>
+              <VSnack
+                v-for="item in props.selectedProposals"
+                :title="item.title"
+                white
+                class="m-1"
+                icon="lnir lnir-envelope"
+              >
+                <VIcon @click="removeItem(item)" icon="lucide:x" />
+              </VSnack>
+            </VGridItem>
+          </VGrid>
+        </div>
         <div class="column is-12">
           <VField label="Select Group Type">
             <VControl>
@@ -205,13 +190,14 @@ onMounted(() => {
           </VField>
         </div>
         <div class="column is-12">
-          <VField label="Proposal Title">
+          <VField label="Proposal Title *">
             <VControl>
               <VInput
                 v-model="groupProposalData.title"
                 placeholder="Enter Group Proposal Title"
                 type="text"
                 name="title"
+                required
               />
             </VControl>
           </VField>
@@ -220,7 +206,7 @@ onMounted(() => {
           <VField v-slot="{ id }" label="Choose what to show to recipients">
             <VControl>
               <Multiselect
-                v-model="selectedColumnsToShow"
+                v-model="groupProposalData.columns_to_show"
                 :attrs="{ id }"
                 mode="tags"
                 :searchable="true"
