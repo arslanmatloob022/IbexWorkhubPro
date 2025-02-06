@@ -152,7 +152,7 @@ onMounted(() => {
         </template>
       </VPlaceholderPage>
 
-      <!-- <TransitionGroup
+      <TransitionGroup
         name="list"
         tag="div"
         class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
@@ -223,7 +223,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </TransitionGroup> -->
+      </TransitionGroup>
 
       <!--Card Grid v3-->
       <TransitionGroup

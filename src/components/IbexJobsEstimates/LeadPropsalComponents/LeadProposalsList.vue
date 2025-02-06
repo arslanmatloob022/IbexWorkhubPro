@@ -148,7 +148,7 @@ const getLeadProposals = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/lead-proposal/by-job/${props.leadId}/`
+      `/api/lead-proposal/by-project/${props.leadId}/`
     );
     proposalsList.value = response.data;
   } catch (error: any) {

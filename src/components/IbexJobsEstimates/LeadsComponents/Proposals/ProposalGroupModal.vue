@@ -111,7 +111,9 @@ const closeModalHandler = () => {
 const getLeadProposals = async () => {
   try {
     loading.value = true;
-    const resp = await api.get(`/api/lead-proposal/by-job/${props.leadID}/`);
+    const resp = await api.get(
+      `/api/lead-proposal/by-project/${props.leadID}/`
+    );
     proposalList.value = resp.data;
   } catch (err) {
     console.log(err);

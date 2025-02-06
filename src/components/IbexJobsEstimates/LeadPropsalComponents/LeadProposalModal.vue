@@ -63,7 +63,7 @@ interface leadProposalData {
   payment_status: string;
   worksheetItems: item[];
   type: string;
-  job: "";
+  project: "";
   status: string;
   created_at: string;
   updated_at: string;
@@ -79,7 +79,7 @@ const leadProposalFormData = ref<leadProposalData>({
   payment_status: "",
   worksheetItems: [],
   type: "proposal",
-  job: "",
+  project: "",
   attachments: [],
   columns_to_show: <any>[],
   status: "",
@@ -94,7 +94,7 @@ const addUpdateProposalHandler = async (showNotyf: any = true) => {
       return;
     }
     if (props.leadId) {
-      leadProposalFormData.value.job = props.leadId;
+      leadProposalFormData.value.project = props.leadId;
     }
     leadProposalFormData.value.columns_to_show = JSON.stringify(
       selectedColumnsToShow.value

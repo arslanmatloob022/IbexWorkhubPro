@@ -209,7 +209,7 @@ const drawMap = (lat: any, lng: any) => {
 const getLeadDetailHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/job/${route.params.id}/lead-detail/`);
+    const response = await api.get(`/api/project/${route.params.id}/detail/`);
     leadDetail.value = response.data;
     if (response.data.latitude) {
       drawMap(

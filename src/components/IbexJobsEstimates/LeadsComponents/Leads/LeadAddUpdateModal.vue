@@ -96,7 +96,8 @@ interface leadData {
   endDate: string;
   managers: [];
   client: string;
-  lead_status: string;
+  leadStatus: string;
+  contractor: string;
   latitude: number;
   longitude: number;
 }
@@ -105,12 +106,13 @@ const leadFormData = ref<leadData>({
   id: "",
   title: "",
   address: "",
-  lead_status: "",
+  leadStatus: "",
   current_state: "",
   city: "",
   state: "",
   status: "",
   zip_code: "",
+  contractor: "",
   confidence: 0,
   sale_date: "",
   sales_people: [],
@@ -645,7 +647,7 @@ onMounted(async () => {
               >
                 <VControl>
                   <Multiselect
-                    v-model="leadFormData.client"
+                    v-model="leadFormData.contractor"
                     :attrs="{ id }"
                     placeholder="Select a contractor"
                     label="name"
@@ -852,7 +854,7 @@ onMounted(async () => {
               <label>Status </label>
               <VField>
                 <VControl>
-                  <VSelect v-model="leadFormData.lead_status">
+                  <VSelect v-model="leadFormData.leadStatus">
                     <VOption
                       v-for="(item, index) in lead_status"
                       :key="index"

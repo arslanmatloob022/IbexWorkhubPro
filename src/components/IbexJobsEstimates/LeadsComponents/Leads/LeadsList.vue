@@ -123,7 +123,9 @@ const openLeadDeleteAlert = (id: any) => {
 const deleteLeadHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.delete(`/api/job/${selectedLeadId.value}/`);
+    const response = await api.delete(
+      `/api/project/${selectedLeadId.value}/remove/`
+    );
 
     notyf.success("Proposal delete successfully");
     getCompanyLeads();

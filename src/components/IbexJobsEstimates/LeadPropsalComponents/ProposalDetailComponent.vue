@@ -265,9 +265,11 @@ onMounted(async () => {
         </template>
       </VCollapse>
     </div>
-    <WorksheetItems
-      :proposalData="leadProposalFormData"
-      :proposalId="leadProposalFormData.id"
-    />
+    <div class="column is-12">
+      <WorksheetItems
+        :proposalData="leadProposalFormData"
+        :proposalId="leadProposalFormData.id"
+      />
+    </div>
   </div>
 </template>
