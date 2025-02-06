@@ -22,7 +22,7 @@
         </thead>
         <tbody>
           <tr v-for="item in section.items" :key="item.name">
-            <td>{{ item.name }}</td>
+            <td class="pt-5">{{ item.name }}</td>
             <td>
               <VField>
                 <VControl raw subcontrol>
@@ -195,12 +195,13 @@ const permissions = reactive([
 .role-table th,
 .role-table td {
   padding: 10px;
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+
   text-align: left;
 }
 
 .role-table th {
-  background: #f1f1f1;
+  // background: #f1f1f1;
 }
 </style>
   

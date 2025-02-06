@@ -165,7 +165,7 @@ const updateCompany = (updatedCompany: typeof company) => {
       </div>
       <div v-if="tab === 'general'">General</div>
       <div v-if="tab === 'costCodes'">
-        <CostCodes />
+        <IdentityList />
       </div>
       <div v-if="tab === 'proposalsTemplates'">Templates/Catalog</div>
       <div v-if="tab === 'permissions'">
