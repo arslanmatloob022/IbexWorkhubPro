@@ -55,19 +55,19 @@ const openCostCodeModal = ref(false);
 const openCategoryModal = ref(false);
 const openTradeModal = ref(false);
 const currentSelectedId = ref("");
-
-const deleteCostCode = async (id: any) => {
+const deleteCategory = async (id: any) => {
   try {
     loading.value = true;
-    const response = await api.delete(`/api/cost-code/${id}/`);
+    const response = await api.delete(`/api/cost-category/${id}/`);
     getCostCodesItems();
-    notyf.success("delete cost code");
+    notyf.success("delete category");
   } catch (err) {
     console.log(err);
   } finally {
     loading.value = false;
   }
 };
+
 const getCostCodesItems = async () => {
   try {
     loading.value = true;
@@ -80,9 +80,9 @@ const getCostCodesItems = async () => {
   }
 };
 
-const openCostCodeModalHandler = (id: any) => {
+const openCategoryModalHandler = (id: any) => {
   currentSelectedId.value = id;
-  openCostCodeModal.value = !openCostCodeModal.value;
+  openCategoryModal.value = !openCategoryModal.value;
 };
 
 const filteredData = computed(() => {
@@ -102,112 +102,113 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="list-flex-toolbar flex-list-v1">
-      <VField>
-        <VControl icon="feather:search">
-          <input
-            v-model="filters"
-            class="input custom-text-filter"
-            placeholder="Search..."
-          />
-        </VControl>
-      </VField>
+    <div class="">
+      <div class="list-flex-toolbar flex-list-v1">
+        <VField>
+          <VControl icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </VControl>
+        </VField>
 
-      <VButtons>
-        <VButton
-          color="primary"
-          @click="openCostCodeModal = !openCostCodeModal"
-          icon="fas fa-plus"
-          elevated
-          outlined
-        >
-          Cost Code
-        </VButton>
-      </VButtons>
-    </div>
-
-    <div class="page-content-inner">
-      <VPlaceholderPage
-        v-if="!filteredData.length"
-        title="We couldn't find any matching results."
-        subtitle="Too bad. Looks like we couldn't find any matching results for the
+        <VButtons>
+          <VButton
+            @click="openCategoryModal = !openCategoryModal"
+            color="info"
+            icon="fas fa-plus"
+            elevated
+            outlined
+          >
+            Category
+          </VButton>
+        </VButtons>
+      </div>
+      <div class="page-content-inner">
+        <VPlaceholderPage
+          v-if="!filteredData.length"
+          title="We couldn't find any matching results."
+          subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
           criteria."
-        larger
-      >
-        <template #image>
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/search-4.svg"
-            alt=""
-          />
-          <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-            alt=""
-          />
-        </template>
-      </VPlaceholderPage>
+          larger
+        >
+          <template #image>
+            <img
+              class="light-image"
+              src="/@src/assets/illustrations/placeholders/search-4.svg"
+              alt=""
+            />
+            <img
+              class="dark-image"
+              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+              alt=""
+            />
+          </template>
+        </VPlaceholderPage>
 
-      <table class="table is-hoverable is-fullwidth">
-        <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Children</th>
-            <th scope="col" class="is-end">
-              <div class="dark-inverted is-flex is-justify-content-flex-end">
-                Actions
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Main List -->
-          <template v-for="item in costCodeItemsList" :key="item.id">
-            <!-- Sub-items -->
-            <template
-              v-if="item?.codes?.length"
-              v-for="code in item.codes"
-              :key="code?.id"
-            >
-              <tr class="sub-item">
-                <td class="pl-5">
-                  <p class="dark-text text-primary">
-                    {{ code.name }}
+        <table class="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th scope="col">Children</th>
+              <th scope="col" class="is-end">
+                <div class="dark-inverted is-flex is-justify-content-flex-end">
+                  Actions
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Main List -->
+            <template v-for="item in costCodeItemsList" :key="item.id">
+              <tr>
+                <td>
+                  <p class="info-text is-bold">
+                    {{ item.name ?? "n/a" }}
                   </p>
                 </td>
-                <td>{{ code.description || "No description" }}</td>
-                <td>{{ code.child_codes?.length || 0 }}</td>
+                <td>
+                  <p>
+                    {{ item.description || "No description" }}
+                  </p>
+                </td>
+                <td>{{ item.codes?.length || 0 }}</td>
                 <td class="is-end">
                   <div class="is-flex is-justify-content-flex-end">
                     <VIconWrap
-                      @click="openCostCodeModalHandler(code.id)"
+                      @click="openCategoryModalHandler(item?.id)"
                       icon="lucide:pen"
                       color="warning"
+                      has-background
                       dark-card-bordered
                     />
 
                     <VIconWrap
                       icon="lucide:trash"
-                      color="info"
+                      color="danger"
                       class="ml-1"
                       dark-card-bordered
-                      @click="deleteCostCode(code.id)"
+                      has-background
+                      @click="deleteCategory(item?.id)"
                     />
                   </div>
                 </td>
               </tr>
             </template>
-          </template>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <CostCodeModal
-      v-if="openCostCodeModal"
-      :addUpdateCostCodeModal="openCostCodeModal"
-      :cost-code-id="currentSelectedId"
-      @update:modal-handler="openCostCodeModal = false"
+
+    <CodeCategoryModal
+      v-if="openCategoryModal"
+      :addUpdateCategoryModal="openCategoryModal"
+      :category-id="currentSelectedId"
+      @update:modal-handler="openCategoryModal = false"
       @update:OnSuccess="getCostCodesItems()"
     />
   </div>

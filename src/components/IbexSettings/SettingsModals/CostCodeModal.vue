@@ -10,6 +10,9 @@ const mailLoading = ref(false);
 const props = defineProps<{
   addUpdateCostCodeModal?: boolean;
   costCodeId?: string;
+  selectedCatCostCode?: string;
+  selectedCostCodeID?: string;
+  CategoryMode?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -39,8 +42,8 @@ interface costCode {
 const costCodeFormData = ref<costCode>({
   id: "",
   name: "",
-  category: ``,
-  parent_code: "",
+  category: props.selectedCatCostCode || "",
+  parent_code: props.selectedCostCodeID || "",
   is_labour_code: false,
   labour_cost: 0.0,
   description: "",
@@ -125,6 +128,7 @@ const getCostCodesHandler = async () => {
 };
 
 onMounted(() => {
+  console.log(props.selectedCatCostCode);
   if (props.costCodeId) {
     getCostCodeInfoHandler();
   }
@@ -146,7 +150,7 @@ onMounted(() => {
       <div class="modal-form columns is-multiline">
         <div class="column is-6">
           <div class="field">
-            <label class="label">Title *</label>
+            <label class="label">Title * </label>
             <div class="control">
               <input
                 type="text"
@@ -182,6 +186,7 @@ onMounted(() => {
             <VField v-slot="{ id }">
               <VControl>
                 <Multiselect
+                  :disabled="CategoryMode ? true : false"
                   v-model="costCodeFormData.parent_code"
                   :attrs="{ id }"
                   :searchable="true"
