@@ -49,7 +49,12 @@ const openLeadProposalModalHandler = (id: any) => {
   selectedProposalId.value = id;
   openLeadProposalModal.value = true;
 };
+const openCreateTasksModal = ref(false);
 
+const openCreateTasksModalHandler = (id: any) => {
+  selectedProposalId.value = id;
+  openCreateTasksModal.value = true;
+};
 const openProposalGroupModal = ref(false);
 const openProposalGroupModalHandler = () => {
   openProposalGroupModal.value = true;
@@ -113,7 +118,6 @@ const DeleteProposalHandler = async () => {
     const response = await api.delete(
       `/api/lead-proposal/${selectedDeleteProposalId.value}/`
     );
-    proposalsList.value = response.data;
     notyf.success("Proposal delete successfully");
     getCompanyProposalList();
   } catch (error: any) {
@@ -194,6 +198,19 @@ const openProposalPreview = (id: any) => {
 const addCostItemModal = ref(false);
 const proposalId = ref("");
 
+const updateProposalStatus = async (proposal: any, id: any) => {
+  try {
+    const resp = await api.patch(`/api/lead-proposal/${id}/`, {
+      status: proposal,
+    });
+    notyf.success(`You have ${proposal} this proposal.`);
+    getCompanyProposalList();
+  } catch (err) {
+    console.log(err);
+  } finally {
+  }
+};
+
 const openCostItemModal = (id: any) => {
   proposalId.value = id;
   addCostItemModal.value = !addCostItemModal.value;
@@ -231,8 +248,8 @@ onMounted(() => {
           color="primary"
           @click="openLeadProposalModal = !openLeadProposalModal"
           icon="fas fa-plus"
-          >Lead Proposal</VButton
-        >
+          >Lead Proposal
+        </VButton>
         <VButton
           color="warning"
           class="ml-2"
@@ -333,7 +350,7 @@ onMounted(() => {
                   right
                 >
                   <template #content>
-                    <a
+                    <!-- <a
                       role="menuitem"
                       @click="gotoDetail(item.id)"
                       class="dropdown-item is-media"
@@ -345,7 +362,7 @@ onMounted(() => {
                         <span>View Detail</span>
                         <span>View detail in page</span>
                       </div>
-                    </a>
+                    </a> -->
                     <a
                       role="menuitem"
                       @click="openLeadProposalModalHandler(item.id)"
@@ -376,9 +393,9 @@ onMounted(() => {
                     </a>
 
                     <a
-                      disabled
+                      v-if="item.status == 'approve'"
                       role="menuitem"
-                      @click="createTasksOfProposal(item.id)"
+                      @click="openCreateTasksModalHandler(item.id)"
                       class="dropdown-item is-media"
                     >
                       <div class="icon">
@@ -408,6 +425,23 @@ onMounted(() => {
                     </a>
 
                     <hr class="dropdown-divider" />
+
+                    <a
+                      role="menuitem"
+                      @click="updateProposalStatus('approve', item.id)"
+                      class="dropdown-item is-media"
+                    >
+                      <div class="icon">
+                        <i
+                          class="lnir lnir-round-box-check"
+                          aria-hidden="true"
+                        ></i>
+                      </div>
+                      <div class="meta">
+                        <span>Mark Approved</span>
+                        <span>Mark Proposal As Approved</span>
+                      </div>
+                    </a>
 
                     <a
                       role="menuitem"
@@ -458,6 +492,13 @@ onMounted(() => {
         :max-links-displayed="7"
       />
     </div>
+    <CreateProposalTasksModal
+      v-if="openCreateTasksModal"
+      :createProposalTasksModal="openCreateTasksModal"
+      :proposalId="selectedProposalId"
+      @closeModalHandler="openCreateTasksModal = false"
+      @update:OnSuccess="getCompanyProposalList"
+    />
     <LeadProposalModal
       v-if="openLeadProposalModal"
       :leadId="props.leadId"

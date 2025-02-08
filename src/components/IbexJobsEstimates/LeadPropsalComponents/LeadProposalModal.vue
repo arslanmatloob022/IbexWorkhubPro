@@ -13,15 +13,14 @@ const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const isLoading = ref(false);
-const FormData = ref({});
-const newCreatedLead = ref("");
-const tab = ref("general");
+const Loading = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
   (e: "clearProposalId", value: null): void;
 }>();
+
 const props = defineProps<{
   leadProposalModal?: boolean;
   proposalId?: string;
@@ -87,12 +86,10 @@ const leadProposalFormData = ref<leadProposalData>({
   updated_at: "",
 });
 
-const addUpdateProposalHandler = async (showNotyf: any = true) => {
+const addUpdateProposalHandler = async (closeModal: boolean = false) => {
   try {
     isLoading.value = true;
-    if (!leadProposalFormData.value.title && !showNotyf) {
-      return;
-    }
+
     if (props.leadId) {
       leadProposalFormData.value.project = props.leadId;
     }
@@ -111,17 +108,19 @@ const addUpdateProposalHandler = async (showNotyf: any = true) => {
     } else {
       const response = await api.post("/api/lead-proposal/", formDataAPI);
       leadProposalFormData.value = response.data;
+      scrollToItemsDiv(100);
     }
     updateOnSuccess();
-    if (showNotyf) {
-      notyf.success(
-        `Proposal ${
-          props.proposalId || leadProposalFormData.value.id
-            ? "updated"
-            : "created"
-        } successfully`
-      );
+    if (closeModal) {
+      closeModalHandler();
     }
+    notyf.success(
+      `Proposal ${
+        props.proposalId || leadProposalFormData.value.id
+          ? "updated"
+          : "created"
+      } successfully`
+    );
   } catch (error: any) {
     notyf.error(`Something went wrong, try again`);
   } finally {
@@ -140,6 +139,14 @@ const getProposalDetail = async () => {
   }
 };
 
+const scrollToItemsDiv = (extraOffset: number = 0) => {
+  const element = document.getElementById("items-div");
+  if (element) {
+    const topPosition = element.offsetTop - extraOffset; // Subtracting extra offset
+    window.scrollTo({ top: topPosition, behavior: "smooth" });
+  }
+};
+
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
 };
@@ -148,17 +155,6 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
-function DataURIToBlob(dataURI: string) {
-  const splitDataURI = dataURI.split(",");
-  const byteString =
-    splitDataURI[0].indexOf("base64") >= 0
-      ? atob(splitDataURI[1])
-      : decodeURI(splitDataURI[1]);
-  const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
-  const ia = new Uint8Array(byteString.length);
-  for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-  return new Blob([ia], { type: mimeString });
-}
 const CKEditor = defineAsyncComponent(() =>
   import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
 );
@@ -193,12 +189,12 @@ onUnmounted(() => {
     title="Lead Proposal"
     size="xl"
     actions="right"
-    @submit.prevent="addUpdateProposalHandler"
+    @submit.prevent="addUpdateProposalHandler(false)"
     @close="closeModalHandler"
   >
     <template #content>
       <div class="modal-form columns is-multiline">
-        <div class="tabs-wrapper column is-12 m-0">
+        <!-- <div class="tabs-wrapper column is-12 m-0">
           <div class="tabs-inner">
             <div class="tabs is-boxed">
               <ul>
@@ -233,8 +229,9 @@ onUnmounted(() => {
               </ul>
             </div>
           </div>
-        </div>
-        <div v-if="tab == 'general'" class="column is-12">
+        </div> -->
+        <!-- <div v-if="tab == 'general'" class="column is-12"> -->
+        <div class="column is-12">
           <div class="columns is-multiline">
             <div class="field column is-6 mb-0">
               <label>Title: *</label>
@@ -357,8 +354,11 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <div class="column is-12">
-          <div v-if="tab == 'CostWorksheet'" class="columns is-multiline">
+        <!-- </div> -->
+        <!-- <div class="column is-12"> -->
+        <!-- <div v-if="tab == 'CostWorksheet'" class="columns is-multiline"> -->
+        <div class="column is-12" id="items-div">
+          <div v-if="leadProposalFormData.id || props.proposalId">
             <WorksheetItems
               :proposalId="
                 leadProposalFormData.id
@@ -369,12 +369,22 @@ onUnmounted(() => {
             />
           </div>
         </div>
+        <!-- </div> -->
+        <!-- </div> -->
       </div>
     </template>
     <template #action>
       <VButton :loading="isLoading" type="submit" color="primary" raised>{{
         props.proposalId ? "Update Proposal" : "Create Proposal"
       }}</VButton>
+
+      <VButton
+        :loading="Loading"
+        @click="addUpdateProposalHandler(true)"
+        color="info"
+        raised
+        >{{ props.proposalId ? "Update & Close" : "Create & Close" }}</VButton
+      >
     </template>
     <template #cancel>
       <VButton @click="closeModalHandler()" raised>Close</VButton>

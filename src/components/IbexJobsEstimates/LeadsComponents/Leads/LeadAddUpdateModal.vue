@@ -2,20 +2,15 @@
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
-import LeadActivityModal from "./LeadActivityModal.vue";
-import ContractorsDropDown from "/@src/components/CommonComponents/DropDowns/ContractorsDropDown.vue";
 import CKE from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { selectedColumnsToShow } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 
-const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
-const loading = ref(false);
+const isLoading = ref(0);
 const openAddContactModal = ref(false);
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
@@ -41,6 +36,7 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
+const selectedManagerId = ref("");
 const tab = ref("general");
 const tagsValue = ref([]);
 const tagsOptions = [
@@ -58,7 +54,6 @@ const tagsOptions = [
   { id: 12, value: "Carpenter", label: "Carpenter" },
 ];
 
-const sourcesValue = ref([]);
 const sourcesOptions = [
   { value: "all", label: "All" },
   { value: "Contact Form", label: "Contact Form" },
@@ -66,11 +61,44 @@ const sourcesOptions = [
   { value: "Referral", label: "Referral" },
   { value: "Company Website", label: "Company Website" },
 ];
+const companyContractorsList = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const companyClientsList = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const companyManagersList = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const CKEditor = CKE.component;
+const config = {
+  fontFamily: {
+    options: [
+      '"Montserrat Variable", sans-serif',
+      '"Roboto Flex Variable", sans-serif',
+    ],
+  },
+};
 
-interface tag {
-  value: string;
-  label: string;
+interface clientInfo {
+  id: string;
+  username: string;
+  last_name: string;
+  email: string;
 }
+
 interface leadData {
   id: string;
   title: string;
@@ -79,6 +107,10 @@ interface leadData {
   city: string;
   state: string;
   status: string;
+  is_active: boolean;
+  wifiAvaliabe: boolean;
+  parkingAvaliable: boolean;
+  property_features: boolean;
   zip_code: string;
   confidence: number;
   sale_date: string;
@@ -94,6 +126,9 @@ interface leadData {
   created_by: string;
   startDate: string;
   endDate: string;
+  description: string;
+  image: string;
+  color: string;
   managers: [];
   client: string;
   leadStatus: string;
@@ -131,6 +166,13 @@ const leadFormData = ref<leadData>({
   longitude: 0,
   startDate: "",
   endDate: "",
+  description: "",
+  image: "",
+  color: "",
+  is_active: true,
+  wifiAvaliabe: false,
+  parkingAvaliable: false,
+  property_features: false,
 });
 
 const lead_status = ref([
@@ -161,11 +203,11 @@ interface contactPerson {
   loginAllowed: boolean;
 }
 
-const addUpdateLeadHandler = async () => {
+const addUpdateLeadHandler = async (loading: number = 0) => {
   try {
-    loading.value = true;
+    isLoading.value = loading;
     leadFormData.value.tags = JSON.stringify(tagsValue.value);
-    const formDataAPI = convertToFormData(leadFormData.value, []);
+    const formDataAPI = convertToFormData(leadFormData.value, ["image"]);
     if (props.leadId || leadFormData.value.id) {
       const response = await api.patch(
         `/api/project/${props.leadId ? props.leadId : leadFormData.value.id}/`,
@@ -176,23 +218,25 @@ const addUpdateLeadHandler = async () => {
       const response = await api.post("/api/project/", formDataAPI);
       leadFormData.value = response.data;
     }
-
-    updateOnSuccess();
     notyf.success(
       `Lead ${
         props.leadId || leadFormData.value.id ? "updated" : "created"
       } successfully`
     );
+    updateOnSuccess();
+    if (loading == 3) {
+      closeModalHandler();
+    }
   } catch (error: any) {
-    notyf.error(` ${error}, Lead`);
+    notyf.error(`${error}, Lead`);
   } finally {
-    loading.value = false;
+    isLoading.value = 0;
   }
 };
 
 const getLeadDetailHandler = async () => {
   try {
-    loading.value = true;
+    isLoading.value = 1;
     const response = await api.get(
       `/api/project/${props.leadId}/single-project/`
     );
@@ -201,15 +245,13 @@ const getLeadDetailHandler = async () => {
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
   } finally {
-    loading.value = false;
+    isLoading.value = 0;
   }
 };
 
 const getAdminsHandler = async () => {
   try {
-    loading.value = true;
-
-    // API call to fetch admins
+    isLoading.value = 1;
     const response = await api.get("/api/users/by-role/admin/");
     if (response && response.data) {
       companyAdminsList.value = response.data.map((admin: any) => ({
@@ -217,8 +259,6 @@ const getAdminsHandler = async () => {
         name: `${admin.username || ""} ${admin.lastName || ""}`.trim(),
         icon: admin.avatar || "",
       }));
-
-      // Initialize selected admins if passed in props
       if (leadFormData.value?.sales_people?.length) {
         selectedAdminsIds.value = leadFormData.value?.sales_people;
       }
@@ -229,20 +269,13 @@ const getAdminsHandler = async () => {
     console.error("Error fetching admin data:", err);
     notyf.error("An error occurred while fetching admins.");
   } finally {
-    loading.value = false;
+    isLoading.value = 0;
   }
 };
-const selectedContractorId = ref<any>("");
-const companyContractorsList = ref([
-  {
-    value: "",
-    name: "",
-    icon: "",
-  },
-]);
+
 const getContractorsHandler = async () => {
   try {
-    loading.value = true;
+    isLoading.value = 1;
     const response = await api.get("/api/users/by-role/contractor/", {});
     companyContractorsList.value = response.data.map((Contractor: any) => {
       return {
@@ -257,27 +290,16 @@ const getContractorsHandler = async () => {
         icon: Contractor.avatar,
       };
     });
-    if (leadFormData.value?.client) {
-      selectedContractorId.value = leadFormData.value?.client;
-    }
   } catch (err) {
     console.log(err);
   } finally {
-    loading.value = false;
+    isLoading.value = 0;
   }
 };
 
-const selectedClientId = ref("");
-const companyClientsList = ref([
-  {
-    value: "",
-    name: "",
-    icon: "",
-  },
-]);
 const getClientsHandler = async () => {
   try {
-    loading.value = true;
+    isLoading.value = 1;
     const response = await api.get("/api/users/by-role/client/", {});
     companyClientsList.value = response.data.map((client) => {
       return {
@@ -292,27 +314,16 @@ const getClientsHandler = async () => {
         icon: client.avatar,
       };
     });
-
-    if (leadFormData.value?.client) {
-      selectedClientId.value = leadFormData.value?.client;
-    }
   } catch (err) {
     console.log(err);
   } finally {
-    loading.value = false;
+    isLoading.value = 0;
   }
 };
-const selectedManagerId = ref("");
-const companyManagersList = ref([
-  {
-    value: "",
-    name: "",
-    icon: "",
-  },
-]);
+
 const getManagersHandler = async () => {
   try {
-    loading.value = true;
+    isLoading.value = 1;
     const response = await api.get("/api/users/by-role/manager/", {});
     companyManagersList.value = response.data.map((manager) => {
       return {
@@ -327,22 +338,12 @@ const getManagersHandler = async () => {
         icon: manager.avatar,
       };
     });
-
     selectedManagerId.value = leadFormData.value.manager;
   } catch (err) {
     console.log(err);
   } finally {
-    loading.value = false;
+    isLoading.value = 0;
   }
-};
-const CKEditor = CKE.component;
-const config = {
-  fontFamily: {
-    options: [
-      '"Montserrat Variable", sans-serif',
-      '"Roboto Flex Variable", sans-serif',
-    ],
-  },
 };
 
 const handlePostCodeChange = async () => {
@@ -372,14 +373,14 @@ const handlePostCodeChange = async () => {
   }
 };
 
-watch(
-  () => leadFormData.value.status,
-  (newStatus) => {
-    if (newStatus === "sold") {
-      leadFormData.value.current_state = "job";
-    }
-  }
-);
+// watch(
+//   () => leadFormData.value.status,
+//   (newStatus) => {
+//     if (newStatus === "sold") {
+//       leadFormData.value.current_state = "job";
+//     }
+//   }
+// );
 onMounted(async () => {
   if (props.leadId) {
     getLeadDetailHandler();
@@ -398,7 +399,7 @@ onMounted(async () => {
     title="Lead Information"
     size="xl"
     actions="right"
-    @submit.prevent="addUpdateLeadHandler"
+    @submit.prevent="addUpdateLeadHandler(1)"
     @close="closeModalHandler"
   >
     <template #content>
@@ -510,20 +511,6 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <!-- <div class="field column is-3 mb-0">
-                <label>Zip Code: without '-' ( Slash ) </label>
-                <div class="control">
-                  <input
-                    @blur="handlePostCodeChange"
-                    type="text"
-                    name="zipCode"
-                    v-model="leadFormData.zip_code"
-                    class="input is-primary-focus is-primary-focus"
-                    placeholder="Zip code"
-                  />
-                </div>
-              </div> -->
-
               <div class="field column is-6 mb-0">
                 <label>Confidence </label>
                 <div class="control">
@@ -550,6 +537,23 @@ onMounted(async () => {
                   />
                 </div>
               </div>
+              <!-- Project type -->
+              <div class="field column is-6 mb-0">
+                <label>Project Type </label>
+                <VField>
+                  <VControl>
+                    <VSelect v-model="leadFormData.project_type">
+                      <VOption
+                        v-for="(item, index) in projectTypes"
+                        :key="index"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </VOption>
+                    </VSelect>
+                  </VControl>
+                </VField>
+              </div>
               <div class="field column is-6 mb-0">
                 <label>Start Date: </label>
                 <div class="control">
@@ -573,24 +577,6 @@ onMounted(async () => {
                     placeholder="Post code"
                   />
                 </div>
-              </div>
-
-              <!-- Project type -->
-              <div class="field column is-6 mb-0">
-                <label>Project Type </label>
-                <VField>
-                  <VControl>
-                    <VSelect v-model="leadFormData.project_type">
-                      <VOption
-                        v-for="(item, index) in projectTypes"
-                        :key="index"
-                        :value="item.value"
-                      >
-                        {{ item.label }}
-                      </VOption>
-                    </VSelect>
-                  </VControl>
-                </VField>
               </div>
             </div>
 
@@ -987,7 +973,7 @@ onMounted(async () => {
           <VCard class="columns is-multiline">
             <div class="column is-12">
               <LeadProposalsList
-                :leadId="leadFormData.id ? props.leadId : props.leadId"
+                :leadId="leadFormData.id ? leadFormData.id : props.leadId"
               />
             </div>
           </VCard>
@@ -996,11 +982,19 @@ onMounted(async () => {
     </template>
     <template #action>
       <VButton
-        :loading="loading"
+        :loading="isLoading == 1"
         type="submit"
         :color="props.leadId ? 'info' : 'primary'"
         raised
         >{{ props.leadId ? "Update" : "Create" }} Lead</VButton
+      >
+
+      <VButton
+        :loading="isLoading == 3"
+        @click="addUpdateLeadHandler(3)"
+        color="warning"
+        raised
+        >{{ props.leadId ? "Update & Close" : "Create & Close" }}</VButton
       >
     </template>
   </VModal>

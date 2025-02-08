@@ -3,9 +3,7 @@ import { useApi } from "/@src/composable/useAPI";
 import {
   getColumnName,
   getColumnData,
-  costItems,
-} from "../components/IbexJobsEstimates/proposalItems";
-
+} from "../components/CommonComponents/CostItemComponents/costItems";
 import { useNotyf } from "../composable/useNotyf";
 const selectedStatus = ref("");
 const notyf = useNotyf();
@@ -44,12 +42,7 @@ const SweetAlertProps = ref({
   btntext: "text",
 });
 
-const totalPrice = computed(() => {
-  return costItems.value.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-});
+const openReviewModal = ref(false);
 const loading = ref(false);
 const proposalDetail = ref({
   id: "",
@@ -58,6 +51,7 @@ const proposalDetail = ref({
   internal_notes: null,
   introductory_text: null,
   closing_text: null,
+  columns_to_show: [],
   payment_status: "",
   type: "",
   status: "",
@@ -96,7 +90,9 @@ const proposalCostItems = ref([
 const getProposalDetail = async () => {
   try {
     loading.value = true;
-    const resp = await api.get(`/api/lead-proposal/${route.query.proposal}/`);
+    const resp = await api.get(
+      `/api/lead-proposal/${route.query.proposal}/detail/`
+    );
     proposalDetail.value = resp.data;
     getProposalCostItems();
   } catch (err) {
@@ -173,7 +169,7 @@ onMounted(() => {
               >
               <VButton
                 size="xsmall"
-                @click="openProposalAlert('review')"
+                @click="openReviewModal = !openReviewModal"
                 class="ml-2"
                 outlined
                 color="info"
@@ -211,51 +207,33 @@ onMounted(() => {
                 <span>25724 Independence Trail Evergreen, CO 80439</span>
               </div>
               <div class="end is-left">
-                <h3>Friday Jan 17, 2025</h3>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quod
-                  equidem non reprehendo.
-                </p>
+                <h3>Job: {{ proposalDetail.jobInfo?.title ?? "N/A" }}</h3>
+                <p>Address: {{ proposalDetail.jobInfo?.address ?? "N/A" }}</p>
               </div>
             </div>
             <div class="invoice-section" v-if="proposalCostItems.length">
               <table class="responsive-table">
                 <thead>
-                  <th v-for="(column, index) in columns" :key="index">
-                    {{ column }}
+                  <th
+                    v-for="(column, index) in proposalDetail.columns_to_show"
+                    :key="index"
+                  >
+                    {{ getColumnName[column] }}
                   </th>
                 </thead>
                 <tbody>
                   <tr v-for="(cost, index) in proposalCostItems" :key="cost.id">
-                    <td>
-                      <span>
-                        {{ cost.title }}
+                    <td
+                      v-for="(column, index) in proposalDetail.columns_to_show"
+                      :key="index"
+                    >
+                      <div
+                        v-if="column === 'Description'"
+                        v-html="cost[getColumnData[column]]"
+                      ></div>
+                      <span v-else>
+                        {{ cost[getColumnData[column]] }}
                       </span>
-                      <br />
-                      <span>
-                        {{ cost.cost_code }}
-                      </span>
-                    </td>
-                    <td>
-                      <span v-html="cost.description"> </span>
-                    </td>
-                    <td>
-                      <span> ${{ cost.unit_cost }}</span>
-                    </td>
-                    <td>
-                      <span> {{ cost.quantity }}</span>
-                    </td>
-                    <td>
-                      <span> {{ cost.unit }}</span>
-                    </td>
-                    <td>
-                      <span> ${{ cost.builder_cost }}</span>
-                    </td>
-                    <td>
-                      <span> ${{ cost.markup }}</span>
-                    </td>
-                    <td>
-                      <span> ${{ cost.total_price }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -263,8 +241,10 @@ onMounted(() => {
             </div>
             <div class="invoice-section is-flex mt-0 pt-0">
               <div class="end is-left">
-                <h3 class="text-right">Total Price: ${{ totalPrice }}</h3>
-                <p>Mentioned price are final</p>
+                <h3 class="text-right">
+                  Total Price: ${{ proposalDetail.proposalAmount ?? 0 }}
+                </h3>
+                <!-- <p>Mentioned price are final</p> -->
               </div>
             </div>
           </div>
@@ -279,6 +259,13 @@ onMounted(() => {
       :btntext="SweetAlertProps.btntext"
       :onConfirm="updateProposalStatus"
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <ProposalReviewModal
+      v-if="openReviewModal"
+      :proposalReviewModal="openReviewModal"
+      :proposalId="route.query.proposal"
+      @closeModalHandler="openReviewModal = false"
+      @update:OnSuccess=""
     />
   </div>
 </template>

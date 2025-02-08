@@ -226,7 +226,7 @@ onMounted(() => {
             </VPlaceholderPage>
 
             <!--Active Tab-->
-            <div v-if="tab === 'active'" class="tab-content is-active">
+            <div class="tab-content is-active">
               <VFlexTable
                 v-if="filteredData.length"
                 :data="filteredData"
@@ -303,29 +303,6 @@ onMounted(() => {
                 :max-links-displayed="7"
               />
             </div>
-
-            <!--inactive Tab-->
-            <div v-else-if="tab === 'closed'" class="tab-content is-active">
-              <!--Empty placeholder-->
-              <VPlaceholderPage
-                title="No closed projects."
-                subtitle="Looks like you don't have any closed project yet. When you'll
-              start closing off projects, they will be showing up in here."
-              >
-                <template #image>
-                  <img
-                    class="light-image is-larger"
-                    src="/@src/assets/illustrations/placeholders/projects.svg"
-                    alt=""
-                  />
-                  <img
-                    class="dark-image is-larger"
-                    src="/@src/assets/illustrations/placeholders/projects-dark.svg"
-                    alt=""
-                  />
-                </template>
-              </VPlaceholderPage>
-            </div>
           </div>
         </div>
         <MergeProposalModal
@@ -338,7 +315,7 @@ onMounted(() => {
         <SendProposalEmailModal
           v-if="openSendProposalModal"
           :proposalSenderModal="openSendProposalModal"
-          :selectedProposalsIds="proposalIds"
+          :selectedProposalsIds="selectedProposals"
           @update:modalHandler="openSendProposalModal = false"
         />
       </div>

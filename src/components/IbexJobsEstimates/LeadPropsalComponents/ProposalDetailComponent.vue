@@ -31,7 +31,12 @@ const data = [
     content: "Add additional information about rota, rate or worker",
   },
 ];
-
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
 interface item {
   title: string;
   description: string;
@@ -71,6 +76,7 @@ interface leadProposalData {
   internalNotes: string;
   introductoryText: string;
   closingText: string;
+  client_note: string;
   attachments: [];
   paymentStatus: string;
   worksheetItems: item[];
@@ -86,7 +92,9 @@ const leadProposalFormData = ref({
   introductoryText: "",
   closingText: "",
   paymentStatus: "",
+  client_note: "",
   worksheetItems: [],
+  columns_to_show: [],
   type: "proposal",
 });
 
@@ -101,6 +109,102 @@ const getProposalDetail = async () => {
     console.log(err);
   } finally {
   }
+};
+
+const updateProposalHandler = async () => {
+  try {
+    loading.value = true;
+    leadProposalFormData.value.columns_to_show = JSON.stringify(
+      selectedColumnsToShow.value
+    );
+    const formDataAPI = convertToFormData(leadProposalFormData.value, []);
+    if (props.proposalId || leadProposalFormData.value.id) {
+      const response = await api.patch(
+        `/api/lead-proposal/${
+          props.proposalId ? props.proposalId : leadProposalFormData.value.id
+        }/`,
+        formDataAPI
+      );
+      leadProposalFormData.value = response.data;
+    }
+
+    notyf.success(`Proposal updated successfully`);
+  } catch (error: any) {
+    notyf.error(`Something went wrong, try again`);
+  } finally {
+    loading.value = false;
+  }
+};
+const selectedStatus = ref("");
+
+const selectedDeleteProposalId = ref("");
+const DeleteSweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+const openProposalDeleteAlert = (id: any) => {
+  selectedDeleteProposalId.value = id;
+  DeleteSweetAlertProps.value = {
+    title: "Delete Proposal?",
+    subtitle:
+      "Are you sure to delete this proposal? After delete you will not be able to recover it again.",
+    btntext: "Yes delete",
+    isSweetAlertOpen: true,
+  };
+};
+
+const DeleteProposalHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.delete(
+      `/api/lead-proposal/${selectedDeleteProposalId.value}/`
+    );
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    notyf.success("Proposal delete successfully");
+    router.go(-1);
+  } catch (error: any) {
+    notyf.error(` ${error}, Proposal`);
+    notyf.error("Something went wrong please try later");
+  } finally {
+    loading.value = false;
+  }
+};
+const openProposalAlert = (status: any) => {
+  selectedStatus.value = status;
+  SweetAlertProps.value = {
+    title: `${selectedStatus.value.toLocaleUpperCase()} proposal ?`,
+    subtitle: `${
+      selectedStatus.value == "approve"
+        ? "You are going to approve this proposal and as you do so Ibex Team will start working on mentioned work."
+        : "You are about to Disapprove the proposal that will identify us that you are not going to have done the mentioned work at your site."
+    }`,
+    btntext: `${selectedStatus.value == "approve" ? "Approve" : "Disapprove"}`,
+    isSweetAlertOpen: true,
+  };
+};
+
+const updateProposalStatus = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.patch(`/api/lead-proposal/${route.params.id}/`, {
+      status: selectedStatus.value,
+    });
+    notyf.success(`You have ${selectedStatus.value} this proposal.`);
+    SweetAlertProps.value.isSweetAlertOpen = false;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const openCreateTasksModal = ref(false);
+const selectedProposalId = ref("");
+const openCreateTasksModalHandler = (id: any) => {
+  selectedProposalId.value = id;
+  openCreateTasksModal.value = true;
 };
 
 function DataURIToBlob(dataURI: string) {
@@ -140,6 +244,76 @@ onMounted(async () => {
 
 <template>
   <div class="modal-form columns is-multiline">
+    <div class="column is-12 is-flex space-between align-items-center">
+      <div>
+        <VButton
+          @click="openProposalAlert('approve')"
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="info"
+          raised
+        >
+          Approve
+        </VButton>
+        <VButton
+          @click="openProposalAlert('disapprove')"
+          size="small"
+          light
+          outlined
+          color="warning"
+          raised
+        >
+          Disapprove
+        </VButton>
+      </div>
+      <div>
+        <VButton
+          @click="updateProposalHandler"
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="primary"
+          raised
+        >
+          Update
+        </VButton>
+        <VButton
+          @click="openCreateTasksModalHandler(route.params.id)"
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="success"
+          raised
+        >
+          Generate Tasks
+        </VButton>
+        <VButton
+          size="small"
+          @click="openProposalDeleteAlert(leadProposalFormData.id)"
+          light
+          outlined
+          color="danger"
+          raised
+        >
+          Delete
+        </VButton>
+      </div>
+    </div>
+    <div
+      v-if="
+        leadProposalFormData.client_note &&
+        leadProposalFormData.status == 'review'
+      "
+      class="column is-12"
+    >
+      <VMessage color="warning">
+        {{ leadProposalFormData.client_note }}</VMessage
+      >
+    </div>
     <div class="field column is-6 mb-0">
       <label>Title: *</label>
       <div class="control">
@@ -271,5 +445,31 @@ onMounted(async () => {
         :proposalId="leadProposalFormData.id"
       />
     </div>
+
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="updateProposalStatus"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <SweetAlert
+      v-if="DeleteSweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="DeleteSweetAlertProps.isSweetAlertOpen"
+      :title="DeleteSweetAlertProps.title"
+      :subtitle="DeleteSweetAlertProps.subtitle"
+      :btntext="DeleteSweetAlertProps.btntext"
+      :onConfirm="DeleteProposalHandler"
+      :onCancel="() => (DeleteSweetAlertProps.isSweetAlertOpen = false)"
+    />
+    <CreateProposalTasksModal
+      v-if="openCreateTasksModal"
+      :createProposalTasksModal="openCreateTasksModal"
+      :proposalId="selectedProposalId"
+      @closeModalHandler="openCreateTasksModal = false"
+      @update:OnSuccess="getCompanyProposalList"
+    />
   </div>
 </template>

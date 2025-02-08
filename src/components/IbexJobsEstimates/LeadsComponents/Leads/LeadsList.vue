@@ -8,8 +8,8 @@ import {
   formatDateTime,
   formatTime,
 } from "/@src/composable/useSupportElement";
-import { getStatusColor } from "../../estimatesScripts";
-
+import { getLeadStatusName, getStatusColor } from "../../estimatesScripts";
+const selectedLeadId = ref("");
 const router = useRouter();
 const notyf = useNotyf();
 const api = useApi();
@@ -48,7 +48,7 @@ const leadsList = ref({
   project_type: null,
   notes: null,
   attach_mail: null,
-  created_at: "2025-01-15T19:55:18.448485Z",
+  created: "2025-01-15T19:55:18.448485Z",
   updated_at: "2025-01-15T19:55:18.448510Z",
   created_by: null,
   manager: null,
@@ -57,14 +57,16 @@ const leadsList = ref({
 });
 
 const page = ref(42);
-
+const filters = ref("");
+const statusFilter = ref("");
+const openLeadProposalModal = ref(false);
 const openLeadModal = ref(false);
 const users = listData.users as UserData[];
 
 const leadsStatusFilters = ref([
-  { value: "Open", label: "Open" },
-  { value: "Sold", label: "Sold" },
-  { value: "Lost", label: "Lost" },
+  { value: "open", label: "Open" },
+  { value: "sold", label: "Sold" },
+  { value: "lost", label: "Lost" },
   { value: "onHold", label: "On hold" },
 ]);
 
@@ -98,7 +100,6 @@ const getCompanyLeads = async () => {
   }
 };
 
-const selectedLeadId = ref("");
 const openLeadUpdateModal = (id: any) => {
   selectedLeadId.value = id;
   openLeadModal.value = true;
@@ -112,10 +113,10 @@ const SweetAlertProps = ref({
 const openLeadDeleteAlert = (id: any) => {
   selectedLeadId.value = id;
   SweetAlertProps.value = {
-    title: "Delete Proposal?",
+    title: "Delete Lead?",
     subtitle:
-      "Are you sure to delete this proposal? After delete you will not be able to recover it again.",
-    btntext: "Yes delete",
+      "Are you sure to delete this Lead? After delete you will not be able to recover it again.",
+    btntext: "Delete",
     isSweetAlertOpen: true,
   };
 };
@@ -123,24 +124,17 @@ const openLeadDeleteAlert = (id: any) => {
 const deleteLeadHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.delete(
-      `/api/project/${selectedLeadId.value}/remove/`
-    );
-
-    notyf.success("Proposal delete successfully");
+    const response = await api.delete(`/api/project/${selectedLeadId.value}/`);
+    notyf.info("Lead deleted successfully");
     getCompanyLeads();
   } catch (error: any) {
-    notyf.error(` ${error}, Proposal`);
+    notyf.error(` ${error}, Lead`);
     notyf.error("Something went wrong please try later");
   } finally {
     loading.value = false;
     SweetAlertProps.value.isSweetAlertOpen = false;
   }
 };
-const filters = ref("");
-const statusFilter = ref("");
-
-const openLeadProposalModal = ref(false);
 
 const openAddProposalModalHandler = (id: any) => {
   selectedLeadId.value = id;
@@ -160,7 +154,7 @@ const filteredData = computed(() => {
         item.clientInfo?.last_name?.match(filterRe) ||
         item.clientInfo?.username?.match(filterRe) ||
         item.city?.match(filterRe) ||
-        item.created_at?.match(filterRe)
+        item.created?.match(filterRe)
       );
     });
   }
@@ -171,7 +165,7 @@ const secondFiltered = computed(() => {
     return filteredData.value;
   } else {
     return filteredData.value?.filter((item: any) => {
-      return item.status == statusFilter.value;
+      return item.leadStatus == statusFilter.value;
     });
   }
 });
@@ -325,10 +319,10 @@ onMounted(() => {
                   >
                     <div>
                       <span class="item-name">{{
-                        formatDate(item.created_at)
+                        formatDate(item.created)
                       }}</span>
                       <span class="item-meta">
-                        <span>At:{{ formatTime(item.created_at) }}</span>
+                        <span>At:{{ formatTime(item.created) }}</span>
                       </span>
                     </div>
                   </VFlexTableCell>
@@ -341,8 +335,8 @@ onMounted(() => {
                     "
                     class="cu-pointer"
                   >
-                    <VTag :color="getStatusColor[item.status]" rounded>
-                      {{ item.status ? item.status : "N/A" }}
+                    <VTag :color="getStatusColor[item.leadStatus]" rounded>
+                      {{ getLeadStatusName[item.leadStatus] }}
                     </VTag>
                   </VFlexTableCell>
 

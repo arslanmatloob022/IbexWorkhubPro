@@ -5,6 +5,13 @@ export const getStatusColor = {
   lost: "danger",
 };
 
+export const getLeadStatusName = {
+  onHold: "On Hold",
+  open: "Open",
+  sold: "Sold",
+  lost: "Lost",
+};
+
 export const getProposalStatusColor = {
   pending: "info",
   approve: "success",

@@ -1010,9 +1010,9 @@ onMounted(() => {
             <div class="toolbar">
               <SearchWorkerInput />
 
-              <!-- <ToolbarNotification /> -->
+              <ToolbarNotification />
 
-              <!-- <a
+              <a
                 class="toolbar-link right-panel-trigger"
                 aria-label="View activity panel"
                 tabindex="0"
@@ -1025,7 +1025,7 @@ onMounted(() => {
                   class="iconify"
                   data-icon="feather:grid"
                 />
-              </a> -->
+              </a>
               <!-- darkmode -->
               <div class="toolbar-link">
                 <label

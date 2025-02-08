@@ -5,13 +5,11 @@ import {
   columnsTitle,
 } from "../../CommonComponents/CostItemComponents/costItems";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { convertToFormData } from "/@src/composable/useSupportElement";
 const loading = ref(false);
 const api = useApi();
 const notyf = useNotyf();
 const proposalCreated = ref("");
-const openSendProposalModal = ref(false);
-const columnsToShow = ref([]);
-const proposalFormData = ref({});
 const tardeList = ref([
   {
     value: "",
@@ -26,12 +24,12 @@ const props = withDefaults(
   defineProps<{
     groupProposalModal?: boolean;
     leadID: string;
-    selectedProposals?: Proposal[];
+    selectedProposals?: any;
   }>(),
   {
     groupProposalModal: false,
     leadID: "",
-    selectedProposals: () => [],
+    selectedProposals: [],
   }
 );
 const emit = defineEmits<{
@@ -65,7 +63,7 @@ const groupProposalData = ref({
   title: "",
   type: "combined",
   description: "",
-  proposalsIds: proposalIds,
+  proposals: proposalIds,
   trades: [],
   columns_to_show: [],
 });
@@ -74,13 +72,11 @@ const closeModalHandler = () => {
   emit("update:modalHandler", false);
 };
 
-const mergeProposals = async () => {
+const mergeProposalsHandler = async () => {
   try {
     loading.value = true;
-    const resp = await api.post(
-      `/api/lead-proposal/merge-proposals/`,
-      groupProposalData.value
-    );
+    const payload = convertToFormData(groupProposalData.value, []);
+    const resp = await api.post(`/api/lead-proposal/merge-proposals/`, payload);
     proposalCreated.value = resp.data;
     notyf.success("Proposal grouped successfully");
   } catch (err) {
@@ -129,11 +125,14 @@ onMounted(() => {
     title="Group Proposal"
     size="large"
     actions="right"
-    @submit.prevent="mergeProposals()"
+    @submit.prevent="mergeProposalsHandler"
     @close="closeModalHandler()"
   >
     <template #content>
       <div class="columns is-multiline">
+        <!-- <div class="column is-12">
+          {{ proposalIds }}
+        </div> -->
         <div class="column is-12">
           <VGrid>
             <VGridItem>
@@ -203,7 +202,10 @@ onMounted(() => {
           </VField>
         </div>
         <div class="column is-12">
-          <VField v-slot="{ id }" label="Choose what to show to recipients">
+          <VField
+            v-slot="{ id }"
+            label="Choose what to merge in show in group proposal"
+          >
             <VControl>
               <Multiselect
                 v-model="groupProposalData.columns_to_show"
@@ -222,7 +224,7 @@ onMounted(() => {
           <VField
             v-if="groupProposalData.type == 'trade'"
             v-slot="{ id }"
-            label="Choose what to show to recipients"
+            label="Select the trades to merge"
           >
             <VControl>
               <Multiselect

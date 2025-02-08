@@ -14,11 +14,12 @@ const props = defineProps<{
 const useProposal = useProposalStore();
 const openSendProposalModal = ref(false);
 const columnsToShow = ref([]);
-
+const selectedProposalsIds = ref([]);
 const proposalFormData = ref({});
 const openSendProposalModalHandler = () => {
+  selectedProposalsIds.value.push(props.proposalData.id);
   proposalFormData.value = props.proposalData;
-  columnsToShow.value = selectedColumnsToShow;
+  columnsToShow.value = useProposal.leadProposalFormData.columns_to_show;
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
@@ -207,7 +208,8 @@ onMounted(() => {});
               <table class="responsive-table">
                 <thead>
                   <th
-                    v-for="(column, index) in selectedColumnsToShow"
+                    v-for="(column, index) in useProposal.leadProposalFormData
+                      .columns_to_show"
                     :key="index"
                   >
                     {{ getColumnName[column] }}
@@ -219,7 +221,8 @@ onMounted(() => {});
                     :key="cost.id"
                   >
                     <td
-                      v-for="(column, index) in selectedColumnsToShow"
+                      v-for="(column, index) in useProposal.leadProposalFormData
+                        .columns_to_show"
                       :key="index"
                     >
                       <div
@@ -274,8 +277,9 @@ onMounted(() => {});
     <SendProposalEmailModal
       v-if="openSendProposalModal"
       :proposalSenderModal="openSendProposalModal"
+      :selectedProposalsIds="selectedProposalsIds"
       :proposalData="props.proposalData"
-      :columnsToShow="columnsToShow"
+      :columnsToShow="props.columnsToShow"
       @update:modalHandler="openSendProposalModal = false"
     />
   </div>
