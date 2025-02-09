@@ -330,17 +330,11 @@ onMounted(async () => {
               <label for="">Group Cost</label>
               <VField>
                 <VControl>
-                  <VSelect
+                  <VInput
                     v-model="costItem.group"
-                    :disabled="props.previewCostItems"
-                  >
-                    <VOption
-                      v-for="(item, index) in itemGroup"
-                      :value="item.value"
-                    >
-                      {{ item.label }}
-                    </VOption>
-                  </VSelect>
+                    name="gcost"
+                    placeholder="Group Cost"
+                  />
                 </VControl>
               </VField>
             </div>

@@ -37,3 +37,30 @@ export const downloadProposalPdf = async (proposal: any) => {
     console.error("Error downloading PDF:", error);
   }
 };
+
+export const printPDF = async (proposalId: any) => {
+  try {
+    const response = await api.get(
+      `/api/lead-proposal/${proposalId}/download/`,
+      {
+        responseType: "blob", // Ensure response is a binary PDF
+      }
+    );
+
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    const fileURL = URL.createObjectURL(blob);
+
+    // Create an invisible iframe
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = fileURL;
+    document.body.appendChild(iframe);
+
+    iframe.onload = () => {
+      iframe.contentWindow?.print();
+      document.body.removeChild(iframe); // Cleanup
+    };
+  } catch (error) {
+    console.error("Error printing PDF:", error);
+  }
+};

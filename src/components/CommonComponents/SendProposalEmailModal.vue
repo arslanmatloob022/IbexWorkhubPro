@@ -33,13 +33,22 @@ const closeModalHandler = () => {
 };
 
 const proposalIds = props.selectedProposalsIds.map((proposal) => proposal.id);
+const proposalAmounts = props.selectedProposalsIds.map(
+  (proposal) => proposal.proposalAmount
+);
+
+const amounts = proposalAmounts
+  .map(
+    (item, index) => `<li>Total of proposal ${index + 1}:<b> $${item} </b></li>`
+  )
+  .join("<br>");
 
 const proposalLinks = proposalIds
   .map(
     (id, index) =>
       `<a href="${baseURL}/proposal-view/?proposal=${id}" style="color: #007bff; text-decoration: none; font-weight: bold;">View Proposal ${
         index + 1
-      }</a>`
+      }, </a>`
   )
   .join("<br>"); // Join all links with line breaks
 
@@ -50,52 +59,45 @@ const mailData = ref({
     ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
     : "N/A",
   subject: `Proposal ${useProposal.leadProposalFormData?.jobInfo?.title} `,
-  // message: `<p><b>Hi ${
-  //   useProposal.leadProposalFormData?.jobInfo?.clientInfo?.username
-  //     ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.username
-  //     : "N/A"
-  // } ${
-  //   useProposal.leadProposalFormData?.jobInfo?.clientInfo?.last_name
-  //     ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.last_name
-  //     : ""
-  // },</b></p>
+  message: `<p><b>Hi ${
+    useProposal.leadProposalFormData?.jobInfo?.clientInfo?.username
+      ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.username
+      : "N/A"
+  } ${
+    useProposal.leadProposalFormData?.jobInfo?.clientInfo?.last_name
+      ? useProposal.leadProposalFormData?.jobInfo?.clientInfo?.last_name
+      : ""
+  },</b></p>
 
-  // <p>We hope this message finds you well.</p>
+  <p>We hope this message finds you well.</p>
 
-  // <p>
-  //   Please find attached a detailed proposal outlining the cost items associated with the services/products we will be providing.
-  //   We have carefully curated this proposal to ensure complete transparency and alignment with your expectations.
-  // </p>
+  <p>
+    Please find attached a detailed proposal outlining the cost items associated with the services/products we will be providing.
+    We have carefully curated this proposal to ensure complete transparency and alignment with your expectations.
+  </p>
 
-  // <p>
-  //   You can review the full proposal, including the cost breakdown, by clicking the link below: <br />
-  //   <a href="${
-  //     proposalLink.value
-  //   }" style="color: #007bff; text-decoration: none; font-weight: bold;">View Proposal</a>
-  // </p>
+  <p>
+    Actions required for all proposals, and uou can review the full proposal(s), including the cost breakdown, by clicking the link below: <br />
+    ${proposalLinks}
+  </p>
 
-  // <p><b>Summary of Charges:</b></p>
-  // <ul>
-  //   <li><b>Total Items:</b> ${
-  //     useProposal.leadProposalFormData.proposalAmount ?? 0
-  //   }</li>
-  //   <li><b>Total Amount:</b>$${
-  //     useProposal.leadProposalFormData.proposalAmount ?? 0
-  //   }</li>
-  // </ul>
+  <p><b>Respectively proposal(s) amount are:</b></p>
+  <ul>
+    ${amounts}
+  </ul>
 
-  // <p>
-  //   If you have any questions or require further clarification, feel free to reach out to us at your earliest convenience.
-  //   We are here to assist you.
-  // </p>
+  <p>
+    If you have any questions or require further clarification, feel free to reach out to us at your earliest convenience.
+    We are here to assist you.
+  </p>
 
-  // <p>Thank you for trusting <b>Ibex Team</b> with your project.</p>
+  <p>Thank you for trusting <b>Ibex Team</b> with your project.</p>
 
-  // <p><b>Best Regards,</b><br />
-  //   Ibex Team
-  // </p>`,
-  link: proposalLinks,
-  message: `${proposalLinks}`,
+  <p><b>Best Regards,</b><br />
+    Ibex Team
+  </p>`,
+  link: proposalLinks[0],
+  // message: `${proposalLinks}`,
   columns: ["cost_code", "title", "description", "unit_cost"],
   showClient: true,
   proposal_ids: proposalIds,
@@ -104,12 +106,15 @@ const mailData = ref({
 const sendProposalMailHandler = async () => {
   try {
     mailLoading.value = true;
-    const payload = convertToFormData(mailData.value, []);
+    // const payload = convertToFormData(mailData.value, []);
+    let payload = mailData.value;
+    payload.proposal_ids = JSON.stringify(mailData.value.proposal_ids);
+    payload.columns = JSON.stringify(mailData.value.columns);
     const response = await api.post(
       `/api/lead-proposal/send-proposal-template/`,
       payload
     );
-    notyf.success("Email sent to worker successfully");
+    notyf.success("Email sent successfully");
     closeModalHandler();
   } catch (err) {
     console.log(err);

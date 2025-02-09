@@ -9,32 +9,16 @@ const selectedStatus = ref("");
 const notyf = useNotyf();
 const route = useRoute();
 const api = useApi();
-const props = withDefaults(
-  defineProps<{
-    previewModal?: boolean;
-    columnsToShow: any;
-    proposalId: string;
-  }>(),
-  {
-    columnsToShow: false,
-    proposalId: "",
-  }
-);
+const selectedAction = ref("");
+const selectedMessage = ref("");
+const openReviewModal = ref(false);
+const loading = ref(false);
+
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
 
-const columns = [
-  "Item",
-  "Description",
-  "Unit Cost",
-  "Qty",
-  "Unit",
-  "Builder Cost",
-  "Markup",
-  "Total Price",
-];
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
@@ -42,8 +26,6 @@ const SweetAlertProps = ref({
   btntext: "text",
 });
 
-const openReviewModal = ref(false);
-const loading = ref(false);
 const proposalDetail = ref({
   id: "",
   title: "",
@@ -87,14 +69,33 @@ const proposalCostItems = ref([
   },
 ]);
 
+const getActionMessage = ref({
+  review: {
+    short: "Thank you for submitting your review.",
+    full: "Your request for a review has been received. Our team at Ibex Builders Studios will carefully assess the proposal and make any necessary adjustments to align with your expectations. We’ll get back to you shortly with an updated version.",
+  },
+  disapprove: {
+    short: "Thank you for your feedback.",
+    full: "We appreciate your time in reviewing our proposal. If there are any concerns or adjustments needed, please let us know. Ibex Builders Studios is happy to revise and accommodate your requirements.",
+  },
+  approve: {
+    short: "Thank you for approving the proposal!",
+    full: "Your approval confirms the agreed cost items and expenditures. Our team at Ibex Builders Studios will now proceed with the next steps to ensure a smooth and efficient construction process.",
+  },
+});
+const currentStatus = ref("");
 const getProposalDetail = async () => {
   try {
     loading.value = true;
     const resp = await api.get(
       `/api/lead-proposal/${route.query.proposal}/detail/`
     );
-    proposalDetail.value = resp.data;
     getProposalCostItems();
+    proposalDetail.value = resp.data;
+    currentStatus.value = resp.data.status;
+    let message = getActionMessage.value[resp.data.status];
+    selectedAction.value = message.short;
+    selectedMessage.value = message.full;
   } catch (err) {
     console.log(err);
   } finally {
@@ -125,6 +126,8 @@ const updateProposalStatus = async () => {
         status: selectedStatus.value,
       }
     );
+    getProposalDetail();
+    // getProposalCostItems();
     notyf.success(`You have ${selectedStatus.value} this proposal.`);
     SweetAlertProps.value.isSweetAlertOpen = false;
   } catch (err) {
@@ -186,7 +189,13 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="invoice-body">
+        <div v-if="currentStatus != 'pending'">
+          <ClientProposalsActionsMessage
+            :actions="selectedAction"
+            :message="selectedMessage"
+          />
+        </div>
+        <div v-else class="invoice-body">
           <div class="invoice-card">
             <div class="invoice-section is-flex is-bordered">
               <VAvatar size="xl" picture="/logos/IbexFavicon.png" />
@@ -201,10 +210,25 @@ onMounted(() => {
             </div>
 
             <div class="invoice-section is-flex is-bordered">
-              <div class="meta">
-                <h3>Client Name</h3>
-                <span>Client Phone</span>
-                <span>25724 Independence Trail Evergreen, CO 80439</span>
+              <div v-if="proposalDetail?.jobInfo?.clientInfo" class="meta">
+                <h3>
+                  {{ proposalDetail?.jobInfo?.clientInfo?.username ?? "N/A" }}
+                </h3>
+                <span>{{
+                  proposalDetail?.jobInfo?.clientInfo?.email ?? "N/A"
+                }}</span>
+                <!-- <span>25724 Independence Trail Evergreen, CO 80439</span> -->
+              </div>
+              <div v-else class="meta">
+                <h3>
+                  {{
+                    proposalDetail?.jobInfo?.contractor_info?.username ?? "N/A"
+                  }}
+                </h3>
+                <span>{{
+                  proposalDetail?.jobInfo?.contractor_info?.email ?? "N/A"
+                }}</span>
+                <!-- <span>25724 Independence Trail Evergreen, CO 80439</span> -->
               </div>
               <div class="end is-left">
                 <h3>Job: {{ proposalDetail.jobInfo?.title ?? "N/A" }}</h3>
@@ -218,21 +242,24 @@ onMounted(() => {
                     v-for="(column, index) in proposalDetail.columns_to_show"
                     :key="index"
                   >
-                    {{ getColumnName[column] }}
+                    {{ column }}
                   </th>
                 </thead>
                 <tbody>
                   <tr v-for="(cost, index) in proposalCostItems" :key="cost.id">
                     <td
-                      v-for="(column, index) in proposalDetail.columns_to_show"
-                      :key="index"
+                      v-for="(column, key) in proposalDetail.columns_to_show"
+                      :key="key"
                     >
                       <div
                         v-if="column === 'Description'"
-                        v-html="cost[getColumnData[column]]"
+                        v-html="cost[getColumnData[key]]"
                       ></div>
                       <span v-else>
-                        {{ cost[getColumnData[column]] }}
+                        {{ cost[getColumnData[key]] }}
+                      </span>
+                      <span v-if="column === 'Cost Code'">
+                        {{ cost?.cost_code_info?.name }}
                       </span>
                     </td>
                   </tr>
@@ -244,7 +271,6 @@ onMounted(() => {
                 <h3 class="text-right">
                   Total Price: ${{ proposalDetail.proposalAmount ?? 0 }}
                 </h3>
-                <!-- <p>Mentioned price are final</p> -->
               </div>
             </div>
           </div>
@@ -265,7 +291,7 @@ onMounted(() => {
       :proposalReviewModal="openReviewModal"
       :proposalId="route.query.proposal"
       @closeModalHandler="openReviewModal = false"
-      @update:OnSuccess=""
+      @update:OnSuccess="getProposalDetail"
     />
   </div>
 </template>

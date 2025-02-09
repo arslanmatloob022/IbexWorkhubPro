@@ -75,10 +75,14 @@ const closeModalHandler = () => {
 const mergeProposalsHandler = async () => {
   try {
     loading.value = true;
-    const payload = convertToFormData(groupProposalData.value, []);
+    let payload = groupProposalData.value;
+    payload.columns_to_show = JSON.stringify(
+      groupProposalData.value.columns_to_show
+    );
+    payload.proposals = JSON.stringify(groupProposalData.value.proposals);
     const resp = await api.post(`/api/lead-proposal/merge-proposals/`, payload);
-    proposalCreated.value = resp.data;
-    notyf.success("Proposal grouped successfully");
+    // proposalCreated.value = resp.data;
+    notyf.success("Proposal grouped successfully and saved in documents list");
   } catch (err) {
     console.log(err);
   } finally {

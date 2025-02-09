@@ -366,6 +366,43 @@ const handlePostCodeChange = async () => {
   }
 };
 
+const getAddressFromZip = async (zipCode: string) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&format=json`
+    );
+    const data = await response.json();
+
+    if (data.length === 0) {
+      console.error("No results found for the provided ZIP/postal code.");
+      return null;
+    }
+
+    const location = data[0]; // Get first result
+
+    leadFormData.value.latitude = location.lat;
+    leadFormData.value.longitude = location.lon;
+    leadFormData.value.city =
+      location.address?.city || location.address?.town || "N/A";
+    leadFormData.value.state = location.address?.state || "N/A";
+    // leadFormData.value.country= location.address?.country || "N/A",
+    leadFormData.value.address = location.display_name;
+  } catch (error) {
+    console.error("Error fetching location data:", error);
+    return null;
+  }
+};
+
+watch(
+  () => leadFormData.value.leadStatus,
+
+  () => {
+    if (leadFormData.value.leadStatus == "sold") {
+      leadFormData.value.current_state = "job";
+    }
+  }
+);
+
 onMounted(async () => {
   if (props.leadId) {
     getLeadDetailHandler();

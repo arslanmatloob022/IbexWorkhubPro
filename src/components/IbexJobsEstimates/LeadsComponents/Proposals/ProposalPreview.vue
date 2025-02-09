@@ -6,7 +6,7 @@ import {
   getColumnData,
 } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 import { formatDate } from "/@src/composable/useSupportElement";
-import { downloadProposalPdf } from "../../proposalsComponents";
+import { downloadProposalPdf, printPDF } from "../../proposalsComponents";
 
 const props = defineProps<{
   columnsToShow?: any;
@@ -128,12 +128,15 @@ onMounted(() => {});
         <div class="invoice-header">
           <div class="left">
             <h3>
-              Proposal-ID {{ useProposal.leadProposalFormData?.id.slice(1, 8) }}
+              Proposal-ID {{ useProposal.leadProposalFormData?.id.slice(0, 8) }}
             </h3>
           </div>
           <div class="right">
             <div class="controls">
-              <a class="action">
+              <a
+                class="action"
+                @click="printPDF(useProposal.leadProposalFormData?.id)"
+              >
                 <i
                   aria-hidden="true"
                   class="iconify"

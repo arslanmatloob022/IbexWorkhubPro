@@ -71,12 +71,12 @@ const leadsStatusFilters = ref([
 ]);
 
 const columns = {
-  username: {
-    label: "Contractor/Client",
-    grow: true,
-  },
   location: {
     label: "Job",
+    grow: true,
+  },
+  username: {
+    label: "Contractor/Client",
     grow: true,
   },
   contacts: "Date Created",
@@ -260,6 +260,24 @@ onMounted(() => {
                     class="cu-pointer"
                     :column="{ media: true, grow: true }"
                   >
+                    <div>
+                      <span class="item-name dark-inverted show-text-200">{{
+                        item.title ? item.title : "N/A"
+                      }}</span>
+                      <span class="item-meta show-text-200">
+                        <span>{{ item.address ? item.address : "N/A" }}</span>
+                      </span>
+                    </div>
+                  </VFlexTableCell>
+                  <VFlexTableCell
+                    @click="
+                      () => {
+                        router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                      }
+                    "
+                    class="cu-pointer"
+                    :column="{ media: true, grow: true }"
+                  >
                     <div v-if="item.clientInfo" class="show-text-200">
                       <span class="item-name">{{
                         item.clientInfo?.username
@@ -290,24 +308,6 @@ onMounted(() => {
                     </div>
                   </VFlexTableCell>
 
-                  <VFlexTableCell
-                    @click="
-                      () => {
-                        router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                      }
-                    "
-                    class="cu-pointer"
-                    :column="{ media: true, grow: true }"
-                  >
-                    <div>
-                      <span class="item-name dark-inverted show-text-200">{{
-                        item.title ? item.title : "N/A"
-                      }}</span>
-                      <span class="item-meta show-text-200">
-                        <span>{{ item.address ? item.address : "N/A" }}</span>
-                      </span>
-                    </div>
-                  </VFlexTableCell>
                   <VFlexTableCell
                     @click="
                       () => {

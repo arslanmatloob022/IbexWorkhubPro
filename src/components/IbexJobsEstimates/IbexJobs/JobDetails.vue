@@ -695,7 +695,7 @@ onMounted(() => {
       :addUpdateLeadModal="openLeadModal"
       :leadId="selectedLeadId"
       @update:modalHandler="openLeadModal = false"
-      @update:OnSuccess="getCompanyLeads"
+      @update:OnSuccess="getLeadDetailHandler"
     />
   </div>
 </template>

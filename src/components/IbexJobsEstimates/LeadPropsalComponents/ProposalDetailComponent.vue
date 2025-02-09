@@ -130,6 +130,7 @@ const updateProposalHandler = async () => {
     }
 
     notyf.success(`Proposal updated successfully`);
+    getProposalDetail();
   } catch (error: any) {
     notyf.error(`Something went wrong, try again`);
   } finally {
@@ -192,6 +193,7 @@ const updateProposalStatus = async () => {
     const resp = await api.patch(`/api/lead-proposal/${route.params.id}/`, {
       status: selectedStatus.value,
     });
+    getProposalDetail();
     notyf.success(`You have ${selectedStatus.value} this proposal.`);
     SweetAlertProps.value.isSweetAlertOpen = false;
   } catch (err) {
@@ -267,21 +269,45 @@ onMounted(async () => {
           icon="fas fa-check-circle"
         >
         </VSnack>
+        <VSnack
+          v-if="leadProposalFormData.is_task_created"
+          title="Calendar Tasks Created "
+          white
+          class="ml-2"
+          color="info"
+          icon="fas fa-calendar-check"
+        >
+        </VSnack>
 
-        <VButton
+        <!-- <VButton
           @click="openProposalAlert('disapprove')"
           size="small"
           v-if="leadProposalFormData.status != 'disapprove'"
           light
-          class="mt-1 ml-2"
+          class="ml-2"
           outlined
           color="warning"
           raised
         >
           Disapprove
-        </VButton>
+        </VButton> -->
       </div>
       <div>
+        <VButton
+          @click="openCreateTasksModalHandler(route.params.id)"
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="success"
+          raised
+          v-if="
+            !leadProposalFormData.is_task_created &&
+            leadProposalFormData.status != 'approve'
+          "
+        >
+          Generate Tasks
+        </VButton>
         <VButton
           @click="updateProposalHandler"
           size="small"
@@ -292,18 +318,6 @@ onMounted(async () => {
           raised
         >
           Update
-        </VButton>
-        <VButton
-          @click="openCreateTasksModalHandler(route.params.id)"
-          size="small"
-          class="mr-2"
-          light
-          outlined
-          color="success"
-          raised
-          v-if="!leadProposalFormData.is_task_created"
-        >
-          Generate Tasks
         </VButton>
         <VButton
           size="small"
