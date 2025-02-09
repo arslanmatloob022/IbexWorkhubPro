@@ -28,7 +28,7 @@ export const columnsTitle = [
 ];
 
 export const getColumnData = ref({
-  cost_code: "cost_code",
+  // cost_code: "cost_code",
   title: "title",
   unit: "unit",
   description: "description",

@@ -80,7 +80,7 @@ const columns = {
     grow: true,
   },
   contacts: "Date Created",
-  status: "Status",
+  status: "Lead Status",
   industry: "Manager",
   actions: {
     label: "Actions",

@@ -6,6 +6,8 @@ import {
   getColumnData,
 } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 import { formatDate } from "/@src/composable/useSupportElement";
+import { downloadProposalPdf } from "../../proposalsComponents";
+
 const props = defineProps<{
   columnsToShow?: any;
   proposalData?: any;
@@ -138,7 +140,10 @@ onMounted(() => {});
                   data-icon="feather:printer"
                 />
               </a>
-              <a class="action">
+              <a
+                class="action"
+                @click="downloadProposalPdf(useProposal.leadProposalFormData)"
+              >
                 <i
                   aria-hidden="true"
                   class="iconify"
@@ -194,7 +199,7 @@ onMounted(() => {});
               </div>
               <div class="end is-left">
                 <h3>
-                  {{ formatDate(useProposal.leadProposalFormData?.created_at) }}
+                  {{ useProposal.leadProposalFormData?.title }}
                 </h3>
                 <p>
                   Job Address:
@@ -212,7 +217,7 @@ onMounted(() => {});
                       .columns_to_show"
                     :key="index"
                   >
-                    {{ getColumnName[column] }}
+                    {{ column }}
                   </th>
                 </thead>
                 <tbody>
@@ -221,16 +226,20 @@ onMounted(() => {});
                     :key="cost.id"
                   >
                     <td
-                      v-for="(column, index) in useProposal.leadProposalFormData
+                      v-for="(column, key) in useProposal.leadProposalFormData
                         .columns_to_show"
-                      :key="index"
+                      :key="key"
                     >
                       <div
                         v-if="column === 'Description'"
-                        v-html="cost[getColumnData[column]]"
+                        v-html="cost[getColumnData[key]]"
                       ></div>
+
                       <span v-else>
-                        {{ cost[getColumnData[column]] }}
+                        {{ cost[getColumnData[key]] }}
+                      </span>
+                      <span v-if="column === 'Cost Code'">
+                        {{ cost?.cost_code_info?.name }}
                       </span>
                       <!-- {{ cost[getColumnData[column]] }} -->
                     </td>

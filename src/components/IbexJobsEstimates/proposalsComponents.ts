@@ -16,3 +16,24 @@ export const createProposalTasks = async (startDate: any, proposalId: any) => {
     notyf.error("Something went wrong, please review the cost codes");
   }
 };
+
+export const downloadProposalPdf = async (proposal: any) => {
+  try {
+    const response = await api.get(
+      `/api/lead-proposal/${proposal.id}/download/`,
+      {
+        responseType: "blob",
+      }
+    );
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Proposal-${proposal.title}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+  }
+};

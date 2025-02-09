@@ -323,10 +323,10 @@ onMounted(() => {
                   >
                     <div>
                       <span class="item-name">{{
-                        formatDate(item.created_at)
+                        formatDate(item.created)
                       }}</span>
                       <span class="item-meta">
-                        <span>At:{{ formatTime(item.created_at) }}</span>
+                        <span>At:{{ formatTime(item.created) }}</span>
                       </span>
                     </div>
                   </VFlexTableCell>

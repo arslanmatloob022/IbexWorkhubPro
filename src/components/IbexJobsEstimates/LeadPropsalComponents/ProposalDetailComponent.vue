@@ -92,6 +92,7 @@ const leadProposalFormData = ref({
   introductoryText: "",
   closingText: "",
   paymentStatus: "",
+  is_task_created: "",
   client_note: "",
   worksheetItems: [],
   columns_to_show: [],
@@ -249,6 +250,7 @@ onMounted(async () => {
         <VButton
           @click="openProposalAlert('approve')"
           size="small"
+          v-if="leadProposalFormData.status != 'approve'"
           class="mr-2"
           light
           outlined
@@ -257,10 +259,21 @@ onMounted(async () => {
         >
           Approve
         </VButton>
+        <VSnack
+          v-else
+          title="Approved"
+          white
+          color="primary"
+          icon="fas fa-check-circle"
+        >
+        </VSnack>
+
         <VButton
           @click="openProposalAlert('disapprove')"
           size="small"
+          v-if="leadProposalFormData.status != 'disapprove'"
           light
+          class="mt-1 ml-2"
           outlined
           color="warning"
           raised
@@ -288,6 +301,7 @@ onMounted(async () => {
           outlined
           color="success"
           raised
+          v-if="!leadProposalFormData.is_task_created"
         >
           Generate Tasks
         </VButton>

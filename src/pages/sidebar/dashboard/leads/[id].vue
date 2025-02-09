@@ -11,9 +11,7 @@ meta:
 
 <script setup lang="ts">
 import { useViewWrapper } from "/@src/stores/viewWrapper";
-
 const viewWrapper = useViewWrapper();
-
 viewWrapper.setPageTitle("Lead details ");
 useHead({
   title: "Lead Details - Ibex",

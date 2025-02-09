@@ -228,6 +228,9 @@ onMounted(() => {});
               <span v-else>
                 {{ cost[getColumnData[column]] }}
               </span>
+              <span v-if="column === 'cost_code'">
+                {{ cost?.cost_code_info?.name }}
+              </span>
             </td>
 
             <td>

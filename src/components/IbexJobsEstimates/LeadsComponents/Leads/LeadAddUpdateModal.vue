@@ -190,24 +190,17 @@ const projectTypes = ref([
   { value: "Company/Factories", label: "Company/Factories" },
 ]);
 
-interface contactPerson {
-  firstName: string;
-  lastName: string;
-  displayName: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  phone: string;
-  cellPhone: string;
-  loginAllowed: boolean;
-}
-
 const addUpdateLeadHandler = async (loading: number = 0) => {
   try {
     isLoading.value = loading;
     leadFormData.value.tags = JSON.stringify(tagsValue.value);
     const formDataAPI = convertToFormData(leadFormData.value, ["image"]);
+    if (!leadFormData.value.client) {
+      formDataAPI.append("client", "");
+    }
+    if (!leadFormData.value.contractor) {
+      formDataAPI.append("contractor", "");
+    }
     if (props.leadId || leadFormData.value.id) {
       const response = await api.patch(
         `/api/project/${props.leadId ? props.leadId : leadFormData.value.id}/`,
@@ -373,14 +366,6 @@ const handlePostCodeChange = async () => {
   }
 };
 
-// watch(
-//   () => leadFormData.value.status,
-//   (newStatus) => {
-//     if (newStatus === "sold") {
-//       leadFormData.value.current_state = "job";
-//     }
-//   }
-// );
 onMounted(async () => {
   if (props.leadId) {
     getLeadDetailHandler();
@@ -689,22 +674,14 @@ onMounted(async () => {
                   >
                     <template #singlelabel="{ value }">
                       <div class="multiselect-single-label">
-                        <img
-                          class="select-label-icon"
-                          :src="value.icon"
-                          alt=""
-                        />
+                        <img class="select-label-icon" :src="value.icon" />
                         <span class="select-label-text">
                           {{ value.name }}
                         </span>
                       </div>
                     </template>
                     <template #option="{ option }">
-                      <img
-                        class="select-option-icon"
-                        :src="option.icon"
-                        alt=""
-                      />
+                      <img class="select-option-icon" :src="option.icon" />
                       <span class="select-label-text">
                         {{ option.name }}
                       </span>
