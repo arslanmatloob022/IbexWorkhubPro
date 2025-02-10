@@ -78,7 +78,7 @@ const getActionMessage = ref({
     short: "Thank you for your feedback.",
     full: "We appreciate your time in reviewing our proposal. If there are any concerns or adjustments needed, please let us know. Ibex Builders Studios is happy to revise and accommodate your requirements.",
   },
-  approve: {
+  approved: {
     short: "Thank you for approving the proposal!",
     full: "Your approval confirms the agreed cost items and expenditures. Our team at Ibex Builders Studios will now proceed with the next steps to ensure a smooth and efficient construction process.",
   },
@@ -108,11 +108,11 @@ const openProposalAlert = (status: any) => {
   SweetAlertProps.value = {
     title: `${selectedStatus.value.toLocaleUpperCase()} proposal ?`,
     subtitle: `${
-      selectedStatus.value == "approve"
+      selectedStatus.value == "approved"
         ? "You are going to approve this proposal and as you do so Ibex Team will start working on mentioned work."
         : "You are about to Disapprove the proposal that will identify us that you are not going to have done the mentioned work at your site."
     }`,
-    btntext: `${selectedStatus.value == "approve" ? "Approve" : "Disapprove"}`,
+    btntext: `${selectedStatus.value == "approved" ? "Approve" : "Disapprove"}`,
     isSweetAlertOpen: true,
   };
 };
@@ -165,7 +165,7 @@ onMounted(() => {
             <div class="controls">
               <VButton
                 size="xsmall"
-                @click="openProposalAlert('approve')"
+                @click="openProposalAlert('approved')"
                 outlined
                 color="primary"
                 >Approve</VButton

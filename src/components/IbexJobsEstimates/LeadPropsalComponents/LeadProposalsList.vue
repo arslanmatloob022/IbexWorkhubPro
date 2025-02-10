@@ -424,7 +424,7 @@ onMounted(() => {
 
                     <a
                       role="menuitem"
-                      @click="updateProposalStatus('approve', item.id)"
+                      @click="updateProposalStatus('approved', item.id)"
                       class="dropdown-item is-media"
                     >
                       <div class="icon">

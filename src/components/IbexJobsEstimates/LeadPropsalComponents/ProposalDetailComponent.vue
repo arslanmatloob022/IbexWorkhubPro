@@ -178,11 +178,11 @@ const openProposalAlert = (status: any) => {
   SweetAlertProps.value = {
     title: `${selectedStatus.value.toLocaleUpperCase()} proposal ?`,
     subtitle: `${
-      selectedStatus.value == "approve"
+      selectedStatus.value == "approved"
         ? "You are going to approve this proposal and as you do so Ibex Team will start working on mentioned work."
         : "You are about to Disapprove the proposal that will identify us that you are not going to have done the mentioned work at your site."
     }`,
-    btntext: `${selectedStatus.value == "approve" ? "Approve" : "Disapprove"}`,
+    btntext: `${selectedStatus.value == "approved" ? "Approve" : "Disapprove"}`,
     isSweetAlertOpen: true,
   };
 };
@@ -250,16 +250,16 @@ onMounted(async () => {
     <div class="column is-12 is-flex space-between align-items-center">
       <div>
         <VButton
-          @click="openProposalAlert('approve')"
+          @click="openProposalAlert('approved')"
           size="small"
-          v-if="leadProposalFormData.status != 'approve'"
+          v-if="leadProposalFormData.status != 'approved'"
           class="mr-2"
           light
           outlined
           color="info"
           raised
         >
-          Approve
+          Approved
         </VButton>
         <VSnack
           v-else
@@ -280,16 +280,16 @@ onMounted(async () => {
         </VSnack>
 
         <!-- <VButton
-          @click="openProposalAlert('disapprove')"
+          @click="openProposalAlert('disapproved')"
           size="small"
-          v-if="leadProposalFormData.status != 'disapprove'"
+          v-if="leadProposalFormData.status != 'disapproved'"
           light
           class="ml-2"
           outlined
           color="warning"
           raised
         >
-          Disapprove
+          Disapproved
         </VButton> -->
       </div>
       <div>
@@ -303,7 +303,7 @@ onMounted(async () => {
           raised
           v-if="
             !leadProposalFormData.is_task_created &&
-            leadProposalFormData.status != 'approve'
+            leadProposalFormData.status != 'approved'
           "
         >
           Generate Tasks
