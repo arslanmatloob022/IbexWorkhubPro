@@ -71,7 +71,7 @@ const deleteCostCode = async (id: any) => {
 const getCostCodesItems = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/cost-category/list/`);
+    const response = await api.get(`/api/cost-code/`);
     costCodeItemsList.value = response.data;
   } catch (err) {
     console.log(err);
@@ -164,41 +164,34 @@ onMounted(() => {
         </thead>
         <tbody>
           <!-- Main List -->
-          <template v-for="item in costCodeItemsList" :key="item.id">
-            <!-- Sub-items -->
-            <template
-              v-if="item?.codes?.length"
-              v-for="code in item.codes"
-              :key="code?.id"
-            >
-              <tr class="sub-item">
-                <td class="pl-5">
-                  <p class="dark-text text-primary">
-                    {{ code.name }}
-                  </p>
-                </td>
-                <td>{{ code.description || "No description" }}</td>
-                <td>{{ code.child_codes?.length || 0 }}</td>
-                <td class="is-end">
-                  <div class="is-flex is-justify-content-flex-end">
-                    <VIconWrap
-                      @click="openCostCodeModalHandler(code.id)"
-                      icon="lucide:pen"
-                      color="warning"
-                      dark-card-bordered
-                    />
+          <template v-for="code in costCodeItemsList" :key="code.id">
+            <tr class="sub-item">
+              <td class="pl-5">
+                <p class="dark-text text-primary">
+                  {{ code.name }}
+                </p>
+              </td>
+              <td>{{ code.description || "No description" }}</td>
+              <td>{{ code.child_codes?.length || 0 }}</td>
+              <td class="is-end">
+                <div class="is-flex is-justify-content-flex-end">
+                  <VIconWrap
+                    @click="openCostCodeModalHandler(code.id)"
+                    icon="lucide:pen"
+                    color="warning"
+                    dark-card-bordered
+                  />
 
-                    <VIconWrap
-                      icon="lucide:trash"
-                      color="info"
-                      class="ml-1"
-                      dark-card-bordered
-                      @click="deleteCostCode(code.id)"
-                    />
-                  </div>
-                </td>
-              </tr>
-            </template>
+                  <VIconWrap
+                    icon="lucide:trash"
+                    color="info"
+                    class="ml-1"
+                    dark-card-bordered
+                    @click="deleteCostCode(code.id)"
+                  />
+                </div>
+              </td>
+            </tr>
           </template>
         </tbody>
       </table>

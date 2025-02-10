@@ -375,7 +375,9 @@ onUnmounted(() => {
     </template>
     <template #action>
       <VButton :loading="isLoading" type="submit" color="primary" raised>{{
-        props.proposalId ? "Update Proposal" : "Create Proposal"
+        props.proposalId || leadProposalFormData.id
+          ? "Update Proposal"
+          : "Create Proposal"
       }}</VButton>
 
       <VButton
@@ -383,7 +385,11 @@ onUnmounted(() => {
         @click="addUpdateProposalHandler(true)"
         color="info"
         raised
-        >{{ props.proposalId ? "Update & Close" : "Create & Close" }}</VButton
+        >{{
+          props.proposalId || leadProposalFormData.id
+            ? "Update & Close"
+            : "Create & Close"
+        }}</VButton
       >
     </template>
     <template #cancel>

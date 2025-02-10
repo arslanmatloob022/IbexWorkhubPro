@@ -14,6 +14,7 @@ export const getLeadStatusName = {
 
 export const getProposalStatusColor = {
   pending: "info",
+  approved: "success",
   approve: "success",
   review: "warning",
   disapprove: "danger",
@@ -21,6 +22,7 @@ export const getProposalStatusColor = {
 
 export const getProposalStatusName = {
   pending: "Pending",
+  approved: "Approved",
   approve: "Approved",
   review: "Require Review",
   disapprove: "Disapproved",
