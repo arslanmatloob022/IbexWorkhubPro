@@ -6,7 +6,11 @@ import {
   getColumnData,
 } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 import { formatDate } from "/@src/composable/useSupportElement";
-import { downloadProposalPdf, printPDF } from "../../proposalsComponents";
+import {
+  downloadProposalPdf,
+  printPDF,
+  fileLoading,
+} from "../../proposalsComponents";
 
 const props = defineProps<{
   columnsToShow?: any;
@@ -133,7 +137,17 @@ onMounted(() => {});
           </div>
           <div class="right">
             <div class="controls">
+              <VIconButton
+                v-if="fileLoading == 1"
+                color="primary"
+                outlined
+                size="small"
+                loading
+                circle
+                icon="lucide:plus"
+              />
               <a
+                v-else
                 class="action"
                 @click="printPDF(useProposal.leadProposalFormData?.id)"
               >
@@ -143,7 +157,18 @@ onMounted(() => {});
                   data-icon="feather:printer"
                 />
               </a>
+
+              <VIconButton
+                v-if="fileLoading == 3"
+                color="primary"
+                outlined
+                size="small"
+                loading
+                circle
+                icon="lucide:plus"
+              />
               <a
+                v-else
                 class="action"
                 @click="downloadProposalPdf(useProposal.leadProposalFormData)"
               >
@@ -220,7 +245,7 @@ onMounted(() => {});
                       .columns_to_show"
                     :key="index"
                   >
-                    {{ column }}
+                    {{ getColumnName[column] }}
                   </th>
                 </thead>
                 <tbody>
@@ -234,14 +259,14 @@ onMounted(() => {});
                       :key="key"
                     >
                       <div
-                        v-if="column === 'Description'"
-                        v-html="cost[getColumnData[key]]"
+                        v-if="column === 'description'"
+                        v-html="cost[getColumnData[column]]"
                       ></div>
 
                       <span v-else>
-                        {{ cost[getColumnData[key]] }}
+                        {{ cost[getColumnData[column]] }}
                       </span>
-                      <span v-if="column === 'Cost Code'">
+                      <span v-if="column === 'cost_code'">
                         {{ cost?.cost_code_info?.name }}
                       </span>
                       <!-- {{ cost[getColumnData[column]] }} -->
@@ -264,21 +289,15 @@ onMounted(() => {});
               <div class="footer">
                 <div class="footer-meta">
                   <p>Signature:</p>
-                  <div>
-                    ___________________________________________________________________________________
-                  </div>
+                  <div></div>
                 </div>
                 <div class="footer-meta">
                   <p>Date:</p>
-                  <div>
-                    ___________________________________________________________________________________
-                  </div>
+                  <div></div>
                 </div>
                 <div class="footer-meta">
                   <p class="no-wrap">Print Name:</p>
-                  <div>
-                    ___________________________________________________________________________________
-                  </div>
+                  <div></div>
                 </div>
               </div>
             </div>
@@ -312,9 +331,11 @@ onMounted(() => {});
   width: 15%;
   color: black;
   padding-top: 6px;
+  transform: translateY(10px);
 }
 .footer-meta div {
   width: 80%;
+  border-bottom: 1px solid #ddd;
 }
 
 .responsive-table {

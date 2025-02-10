@@ -60,7 +60,7 @@ export const getColumnName = ref({
   markup: "Markup",
   markup_amount: "Markup Amount",
   status: "Status",
-  total_price: "Client Price",
+  total_price: "Total Price",
   group_amount: "Group Price",
   TotalCost: "Total Cost",
   total_markup: "Total Markup",

@@ -2,8 +2,10 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 const api = useApi();
 const notyf = useNotyf();
+export const fileLoading = ref(0);
 export const createProposalTasks = async (startDate: any, proposalId: any) => {
   try {
+    fileLoading.value = 2;
     const resp = await api.post(`/api/lead-proposal/create-tasks/`, {
       start: startDate,
       proposal: proposalId,
@@ -14,11 +16,14 @@ export const createProposalTasks = async (startDate: any, proposalId: any) => {
   } catch (err) {
     console.log(err);
     notyf.error("Something went wrong, please review the cost codes");
+  } finally {
+    fileLoading.value = 0;
   }
 };
 
 export const downloadProposalPdf = async (proposal: any) => {
   try {
+    fileLoading.value = 3;
     const response = await api.get(
       `/api/lead-proposal/${proposal.id}/download/`,
       {
@@ -35,11 +40,14 @@ export const downloadProposalPdf = async (proposal: any) => {
     URL.revokeObjectURL(link.href);
   } catch (error) {
     console.error("Error downloading PDF:", error);
+  } finally {
+    fileLoading.value = 0;
   }
 };
 
 export const printPDF = async (proposalId: any) => {
   try {
+    fileLoading.value = 1;
     const response = await api.get(
       `/api/lead-proposal/${proposalId}/download/`,
       {
@@ -62,5 +70,7 @@ export const printPDF = async (proposalId: any) => {
     };
   } catch (error) {
     console.error("Error printing PDF:", error);
+  } finally {
+    fileLoading.value = 0;
   }
 };

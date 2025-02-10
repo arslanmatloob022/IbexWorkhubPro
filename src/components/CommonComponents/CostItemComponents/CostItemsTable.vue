@@ -167,6 +167,7 @@ const openProposalCostItems = (cost: any) => {
   previousItemIndex.value = cost.index;
   addCostItemModal.value = !addCostItemModal.value;
 };
+
 const getProposalCostItems = () => {
   useProposal.getProposalCostItems(proposalId.value);
 };
@@ -179,7 +180,7 @@ onMounted(() => {});
     <div class="table-container">
       <table class="table datatable-table is-fullwidth" id="external-events">
         <thead>
-          <th>Item#</th>
+          <th></th>
           <th v-for="(column, index) in props.columnsToShow" :key="index">
             {{ getColumnName[column] }}
           </th>
@@ -197,6 +198,7 @@ onMounted(() => {});
             @dragover="handleDragOver"
             @dragenter="handleDragEnter"
             @dragleave="handleDragLeave"
+            @dblclick="openUpdateCostItem(cost, false)"
             class="draggable-item events"
           >
             <td class="is-relative">
@@ -213,12 +215,12 @@ onMounted(() => {});
                 aria-hidden="true"
               ></i>
 
-              <i
+              <!-- <i
                 style="cursor: grab"
                 class="lnir lnir-sort"
                 aria-hidden="true"
-              ></i>
-              {{ index + 1 }}
+              ></i> -->
+              <!-- {{ index + 1 }} -->
             </td>
             <td v-for="(column, index) in props.columnsToShow" :key="index">
               <div
@@ -239,9 +241,10 @@ onMounted(() => {});
                 class="is-pushed-mobile"
                 spaced
                 right
+                up
               >
                 <template #content="{ close }">
-                  <a
+                  <!-- <a
                     role="menuitem"
                     href="#"
                     class="dropdown-item is-media"
@@ -259,7 +262,7 @@ onMounted(() => {});
                       <span>View</span>
                       <span>View user details</span>
                     </div>
-                  </a>
+                  </a> -->
 
                   <a
                     role="menuitem"
@@ -325,7 +328,10 @@ onMounted(() => {});
       :costItemId="selectedCostItem"
       :previousItemIndex="previousItemIndex"
       :previewCostItems="previewCostItems"
-      @update:modalHandler="addCostItemModal = false"
+      @update:modalHandler="
+        addCostItemModal = false;
+        selectedCostItem = '';
+      "
       @update:OnSuccess="getProposalCostItems"
     >
     </EstimateCostItemModal>
@@ -452,6 +458,7 @@ onMounted(() => {});
   td {
     font-family: var(--font);
     vertical-align: middle;
+    background-color: #fff;
     padding: 12px 20px;
     border-bottom: 1px solid var(--fade-grey);
 

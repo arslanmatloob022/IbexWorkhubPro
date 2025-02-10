@@ -247,8 +247,9 @@ onMounted(async () => {
 
 <template>
   <div class="modal-form columns is-multiline">
-    <div class="column is-12 is-flex space-between align-items-center">
+    <div class="column is-12 is-flex space-between align-items-center card">
       <div>
+        <!-- {{  }} -->
         <VButton
           @click="openProposalAlert('approved')"
           size="small"
@@ -278,19 +279,6 @@ onMounted(async () => {
           icon="fas fa-calendar-check"
         >
         </VSnack>
-
-        <!-- <VButton
-          @click="openProposalAlert('disapproved')"
-          size="small"
-          v-if="leadProposalFormData.status != 'disapproved'"
-          light
-          class="ml-2"
-          outlined
-          color="warning"
-          raised
-        >
-          Disapproved
-        </VButton> -->
       </div>
       <div>
         <VButton

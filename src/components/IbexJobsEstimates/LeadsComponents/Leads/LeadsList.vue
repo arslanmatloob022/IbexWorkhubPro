@@ -292,7 +292,7 @@ onMounted(() => {
                         }}</span>
                       </span>
                     </div>
-                    <div v-if="item.contractorInfo" class="show-text-200">
+                    <div v-else-if="item.contractorInfo" class="show-text-200">
                       <span class="item-name">{{
                         item.contractorInfo?.username
                           ? item.contractorInfo?.username
