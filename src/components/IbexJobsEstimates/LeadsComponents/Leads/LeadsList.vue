@@ -292,16 +292,16 @@ onMounted(() => {
                         }}</span>
                       </span>
                     </div>
-                    <div v-else-if="item.contractorInfo" class="show-text-200">
+                    <div v-else-if="item.contractor_info" class="show-text-200">
                       <span class="item-name">{{
-                        item.contractorInfo?.username
-                          ? item.contractorInfo?.username
+                        item.contractor_info?.username
+                          ? item.contractor_info?.username
                           : "N/A"
                       }}</span>
                       <span class="item-meta">
                         <span>{{
-                          item.contractorInfo?.email
-                            ? item.contractorInfo?.email
+                          item.contractor_info?.email
+                            ? item.contractor_info?.email
                             : "N/A"
                         }}</span>
                       </span>

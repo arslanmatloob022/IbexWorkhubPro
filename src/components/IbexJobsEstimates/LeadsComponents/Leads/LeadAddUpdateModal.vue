@@ -141,7 +141,7 @@ const leadFormData = ref<leadData>({
   id: "",
   title: "",
   address: "",
-  leadStatus: "",
+  leadStatus: "open",
   current_state: "",
   city: "",
   state: "",
