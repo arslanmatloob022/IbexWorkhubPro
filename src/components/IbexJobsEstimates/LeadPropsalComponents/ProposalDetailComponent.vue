@@ -234,6 +234,8 @@ const editorConfig = {
   minHeight: "400px",
 };
 
+const openCreateTemplate = ref(false);
+
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -281,6 +283,18 @@ onMounted(async () => {
         </VSnack>
       </div>
       <div>
+        <VButton
+          @click="openCreateTemplate = !openCreateTemplate"
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="success"
+          raised
+        >
+          Create Template
+        </VButton>
+
         <VButton
           @click="openCreateTasksModalHandler(route.params.id)"
           size="small"
@@ -488,4 +502,15 @@ onMounted(async () => {
       @update:OnSuccess="getCompanyProposalList"
     />
   </div>
+  <CreateTemplateModal
+    v-if="openCreateTemplate"
+    :proposalId="route.params.id"
+    :openCreateTemplate="openCreateTemplate"
+    @update:OnSuccess="
+      () => {
+        props.proposalId || route.params.id ? getProposalDetail() : '';
+      }
+    "
+    @update:modalHandler="openCreateTemplate = false"
+  ></CreateTemplateModal>
 </template>

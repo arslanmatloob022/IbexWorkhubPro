@@ -167,6 +167,11 @@ const editorConfig = {
   minHeight: "400px",
 };
 
+const opentempalte = ref(false);
+const loadTemplateSelection = (selectedTemplate: any) => {
+  leadProposalFormData.value = selectedTemplate;
+  console.log("test12");
+};
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -246,6 +251,19 @@ onUnmounted(() => {
                 />
               </div>
             </div>
+            <div class="field column is-6">
+              <label>Approval Deadline *</label>
+              <div class="control">
+                <input
+                  type="date"
+                  name="firstName"
+                  v-model="leadProposalFormData.approval_deadline"
+                  required
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Proposal Approval deadline"
+                />
+              </div>
+            </div>
             <div class="column is-6">
               <VField class="m-0 p-0" label="Type">
                 <VControl>
@@ -281,26 +299,19 @@ onUnmounted(() => {
                 </VControl>
               </VField>
             </div>
-            <div class="field column is-6">
-              <label>Approval Deadline *</label>
-              <div class="control">
-                <input
-                  type="date"
-                  name="firstName"
-                  v-model="leadProposalFormData.approval_deadline"
-                  required
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Proposal Approval deadline"
-                />
-              </div>
-            </div>
-            <div class="field column is-6">
-              <label>Attachments</label>
-              <VField grouped>
+
+            <div class="field column is-3">
+              <label class="mb-3">Attachments</label>
+              <VField grouped class="mt-3">
                 <VControl>
                   <div class="file">
                     <label class="file-label">
-                      <input class="file-input" type="file" name="resume" />
+                      <input
+                        class="file-input"
+                        type="file"
+                        name="resume"
+                        style="width: 100%"
+                      />
                       <span class="file-cta">
                         <span class="file-icon">
                           <i class="fas fa-cloud-upload-alt" />
@@ -311,6 +322,15 @@ onUnmounted(() => {
                   </div>
                 </VControl>
               </VField>
+            </div>
+            <div class="column is-3 pt-5">
+              <VButton
+                color="primary"
+                class="mt-5"
+                @click="opentempalte = !opentempalte"
+                style="width: 100%"
+                >Import Template</VButton
+              >
             </div>
             <div class="column is-12">
               <!-- <VCollapse :items="data" with-chevron>
@@ -372,6 +392,14 @@ onUnmounted(() => {
         <!-- </div> -->
         <!-- </div> -->
       </div>
+      <OpenTempalteModal
+        v-if="opentempalte"
+        :leadId="props.leadId"
+        :proposalId="props.proposalId"
+        :opentempalte="opentempalte"
+        @update:OnSuccess="loadTemplateSelection"
+        @update:modalHandler="opentempalte = false"
+      ></OpenTempalteModal>
     </template>
     <template #action>
       <VButton :loading="isLoading" type="submit" color="primary" raised>{{
