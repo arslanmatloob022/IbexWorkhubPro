@@ -178,7 +178,6 @@ onMounted(() => {
               <VLabel>Last Name</VLabel>
               <VControl>
                 <VInput
-                  required
                   v-model="userFormData.last_name"
                   type="text"
                   placeholder="Last name"

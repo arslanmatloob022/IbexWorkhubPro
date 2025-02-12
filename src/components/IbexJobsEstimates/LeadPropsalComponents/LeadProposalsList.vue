@@ -139,7 +139,7 @@ const columns = {
     media: true,
   },
   industry: "Type",
-  deadline: "Cost Items",
+  // deadline: "Cost Items",
   status: "Status",
   amount: {
     label: "Total Amount",
@@ -308,9 +308,9 @@ onMounted(() => {
                   {{ getProposalTypeName[item.type] }}
                 </VTag>
               </VFlexTableCell>
-              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
+              <!-- <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <span class="light-text">{{ item.cost_items }}</span>
-              </VFlexTableCell>
+              </VFlexTableCell> -->
               <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <VTag
                   class="capitalized"

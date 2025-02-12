@@ -12,7 +12,49 @@ import { formatDate } from "/@src/composable/useSupportElement";
 const filters = ref("");
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
-const activitiesList = ref([]);
+const activitiesList = ref([
+  {
+    id: "",
+    attendees_info: [
+      {
+        id: "",
+        username: "",
+        last_name: null,
+        email: "",
+        role: "",
+        avatar: "",
+      },
+    ],
+    initiated_by_info: {
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+    title: "",
+    description: "",
+    objectId: "",
+    type: "",
+    color: "",
+    status: "",
+    date: "",
+    start_time: "",
+    end_time: "",
+    reminder_time: "",
+    created_at: "",
+    address: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    file: null,
+    latitude: 0.0,
+    longitude: 0.0,
+    initiated_by: "",
+    attendees: [""],
+  },
+]);
 const api = useApi();
 const notyf = useNotyf();
 const userSession = useUserSession();
@@ -180,7 +222,7 @@ onMounted(() => {
             </label>
             <VAvatar
               size="large"
-              :picture="item.image"
+              :picture="`/IbexIcons/ActivitiesIcons/${item.type}.png`"
               :badge="item.badge"
               squared
             />
