@@ -388,7 +388,7 @@ onMounted(() => {
                       </div>
                     </a>
 
-                    <!-- <a
+                    <a
                       v-if="item.status == 'approve'"
                       role="menuitem"
                       @click="openCreateTasksModalHandler(item.id)"
@@ -404,7 +404,7 @@ onMounted(() => {
                         <span>Create Tasks</span>
                         <span>Create tasks in chart </span>
                       </div>
-                    </a> -->
+                    </a>
 
                     <!-- <a
                       role="menuitem"

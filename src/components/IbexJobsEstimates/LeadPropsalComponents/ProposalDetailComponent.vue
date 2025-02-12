@@ -278,14 +278,16 @@ onMounted(async () => {
         >
           Approved
         </VButton>
-        <VSnack
+        <VButton
           v-else
-          title="Approved"
-          white
+          light
+          size="xsmall"
           color="primary"
+          class="ml-1"
           icon="fas fa-check-circle"
         >
-        </VSnack>
+          Approved
+        </VButton>
         <VSnack
           v-if="leadProposalFormData.is_task_created"
           title="Calendar Tasks Created "
@@ -319,7 +321,7 @@ onMounted(async () => {
           raised
           v-if="
             !leadProposalFormData.is_task_created &&
-            leadProposalFormData.status != 'approved'
+            leadProposalFormData.status == 'approved'
           "
         >
           Generate Tasks
