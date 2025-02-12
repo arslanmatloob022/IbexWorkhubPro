@@ -596,6 +596,7 @@ declare module 'vue' {
     TeamCardDropdown: typeof import('./../src/components/partials/dropdowns/TeamCardDropdown.vue')['default']
     TeamMembaresNetwork: typeof import('./../src/components/pages/networks/team-members/TeamMembaresNetwork.vue')['default']
     TemplateIcons: typeof import('./../src/components/supportComponents/TemplateIcons.vue')['default']
+    TemplatePropsalsList: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/TemplatePropsalsList.vue')['default']
     TextareaAddonDocumentation: typeof import('./../documentation/elements/forms/textarea/textarea-addon-documentation.md')['default']
     TextareaBaseDocumentation: typeof import('./../documentation/elements/forms/textarea/textarea-base-documentation.md')['default']
     TextareaDisabledDocumentation: typeof import('./../documentation/elements/forms/textarea/textarea-disabled-documentation.md')['default']

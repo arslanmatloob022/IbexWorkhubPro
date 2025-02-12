@@ -145,12 +145,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/proposals",
       },
-      {
-        title: "Proposals Templates",
-        icon: "lnir lnir-files",
-        class: "is-submenu",
-        route: "/sidebar/dashboard/proposal-templates",
-      },
+
       {
         title: "Jobs",
         icon: "lnir lnir-suitcase",
@@ -181,6 +176,13 @@ export const routerLinks = ref([
         icon: "lnir lnir-cog",
         class: "is-submenu",
         route: "/sidebar/dashboard/company-settings",
+      },
+      {
+        title: "Proposals Templates",
+        icon: "lnir lnir-files",
+        class: "is-submenu",
+        route: "/sidebar/dashboard/company-settings?tab=proposals-template",
+
       },
       // {
       //   title: "Files",

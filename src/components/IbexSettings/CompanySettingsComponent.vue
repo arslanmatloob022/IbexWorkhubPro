@@ -6,6 +6,7 @@ meta:
 <script setup lang="ts">
 const tab = ref("general");
 const showModal = ref(false);
+const proposaltab = ref("proposals");
 const company = reactive({
   name: "ABC Corp",
   website: "https://example.com",
@@ -167,7 +168,7 @@ const updateCompany = (updatedCompany: typeof company) => {
       <div v-if="tab === 'costCodes'">
         <IdentityList />
       </div>
-      <div v-if="tab === 'proposalsTemplates'">Templates/Catalog</div>
+
       <div v-if="tab === 'permissions'">
         <UsersPermissions />
       </div>
@@ -176,6 +177,46 @@ const updateCompany = (updatedCompany: typeof company) => {
       </div>
       <div v-if="tab === 'manageRole'">
         <ManageRole />
+      </div>
+
+      <div class="" v-if="tab === 'proposalsTemplates'">
+        <div class="tabs-wrapper">
+          <div class="tabs-inner">
+            <div class="tabs">
+              <ul>
+                <li
+                  :class="[
+                    proposaltab === 'proposals' ? 'is-active' : 'not-active',
+                  ]"
+                >
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="proposaltab = 'proposals'"
+                    @click="proposaltab = 'proposals'"
+                    ><span>Templates</span></a
+                  >
+                </li>
+                <li
+                  :class="[
+                    proposaltab === 'Catalog' ? 'is-active' : 'not-active',
+                  ]"
+                >
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="proposaltab = 'Catalog'"
+                    @click="proposaltab = 'Catalog'"
+                    ><span>Catalog</span></a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="" v-if="proposaltab === 'proposals'">
+          <TemplatePropsalsList />
+        </div>
       </div>
     </div>
   </div>
