@@ -1,1 +1,0 @@
-import{a6 as e,u as n}from"./index-d5d6981c.js";const t=e("panels",(()=>{const e=n("active-panel","none");return{active:e,setActive:function(n){e.value=n},close:function(){e.value="none"}}}));export{t as u};
