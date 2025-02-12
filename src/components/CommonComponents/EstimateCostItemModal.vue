@@ -57,6 +57,7 @@ interface item {
   internal_notes: string;
   mark_as: string;
   state: string;
+  catalog: boolean;
   group: string;
   proposal: string | undefined;
 }
@@ -82,6 +83,7 @@ const costItem = ref<item>({
   margin: 0,
   profit: 0,
   group: "",
+  catalog: false,
   proposal: props.proposalId,
 });
 
@@ -135,6 +137,11 @@ const addUpdateLeadHandler = async () => {
       );
     } else {
       const response = await api.post("/api/cost/", formDataAPI);
+      if (costItem.value.catalog) {
+        const result = await api.post(
+          `/api/cost/${response.data.id}/create-catalog/`
+        );
+      }
     }
     closeModalHandler();
     updateOnSuccess();
@@ -287,9 +294,13 @@ onMounted(async () => {
             <div class="field column is-3">
               <label for="">Catalog</label>
               <div>
-                <VButton color="info" light raised size="small"
-                  >Add in Catalog</VButton
-                >
+                <VControl raw subcontrol>
+                  <VCheckbox
+                    v-model="costItem.catalog"
+                    label="Create Template"
+                    color="info"
+                  />
+                </VControl>
               </div>
             </div>
             <div class="field column is-3">
