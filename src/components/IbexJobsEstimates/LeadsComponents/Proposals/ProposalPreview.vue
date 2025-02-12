@@ -5,7 +5,6 @@ import {
   getColumnName,
   getColumnData,
 } from "/@src/components/CommonComponents/CostItemComponents/costItems";
-import { formatDate } from "/@src/composable/useSupportElement";
 import {
   downloadProposalPdf,
   printPDF,
@@ -23,7 +22,7 @@ const columnsToShow = ref([]);
 const selectedProposalsIds = ref([]);
 const proposalFormData = ref({});
 const openSendProposalModalHandler = () => {
-  selectedProposalsIds.value.push(props.proposalData.id);
+  selectedProposalsIds.value.push(props.proposalData);
   proposalFormData.value = props.proposalData;
   columnsToShow.value = useProposal.leadProposalFormData.columns_to_show;
   openSendProposalModal.value = !openSendProposalModal.value;
@@ -282,7 +281,6 @@ onMounted(() => {});
                     useProposal.leadProposalFormData?.proposalAmount
                   }}
                 </h3>
-                <!-- <p>Mentioned price are final</p> -->
               </div>
             </div>
             <div class="invoice-section is-flex mt-0 pt-0">
@@ -311,7 +309,10 @@ onMounted(() => {});
       :selectedProposalsIds="selectedProposalsIds"
       :proposalData="props.proposalData"
       :columnsToShow="props.columnsToShow"
-      @update:modalHandler="openSendProposalModal = false"
+      @update:modalHandler="
+        openSendProposalModal = false;
+        selectedProposalsIds = [];
+      "
     />
   </div>
 </template>

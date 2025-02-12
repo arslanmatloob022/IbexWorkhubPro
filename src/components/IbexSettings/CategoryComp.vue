@@ -119,7 +119,8 @@ onMounted(() => {
             @click="openCategoryModal = !openCategoryModal"
             color="info"
             icon="fas fa-plus"
-            elevated
+            raised
+            size="small"
             outlined
           >
             Category

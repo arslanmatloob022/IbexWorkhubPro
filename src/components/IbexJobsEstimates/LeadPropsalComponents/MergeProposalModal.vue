@@ -80,8 +80,24 @@ const mergeProposalsHandler = async () => {
       groupProposalData.value.columns_to_show
     );
     payload.proposals = JSON.stringify(groupProposalData.value.proposals);
-    const resp = await api.post(`/api/lead-proposal/merge-proposals/`, payload);
-    // proposalCreated.value = resp.data;
+    const resp = await api.post(
+      `/api/lead-proposal/merge-proposals/`,
+      payload,
+      {
+        responseType: "blob",
+      }
+    );
+
+    const blob = new Blob([resp.data], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Merged_Proposal.pdf"; // Set file name
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a); // Cleanup
+    window.URL.revokeObjectURL(url); // Free up memory
+    closeModalHandler();
     notyf.success("Proposal grouped successfully and saved in documents list");
   } catch (err) {
     console.log(err);
@@ -134,9 +150,6 @@ onMounted(() => {
   >
     <template #content>
       <div class="columns is-multiline">
-        <!-- <div class="column is-12">
-          {{ proposalIds }}
-        </div> -->
         <div class="column is-12">
           <VGrid>
             <VGridItem>
@@ -205,7 +218,7 @@ onMounted(() => {
             </VControl>
           </VField>
         </div>
-        <div class="column is-12">
+        <!-- <div class="column is-12">
           <VField
             v-slot="{ id }"
             label="Choose what to merge in show in group proposal"
@@ -222,7 +235,7 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-        </div>
+        </div> -->
 
         <div class="column is-12">
           <VField
@@ -244,7 +257,7 @@ onMounted(() => {
           </VField>
         </div>
         <div class="column is-12">
-          <VField label="Proposal Title">
+          <VField label="Group Description">
             <VControl>
               <VTextarea
                 v-model="groupProposalData.description"

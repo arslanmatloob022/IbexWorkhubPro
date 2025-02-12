@@ -72,7 +72,8 @@ onMounted(() => {
           color="warning"
           icon="fas fa-plus"
           outlined
-          elevated
+          size="small"
+          raised
         >
           Trade
         </VButton>

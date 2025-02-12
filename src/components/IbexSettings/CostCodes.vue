@@ -118,7 +118,8 @@ onMounted(() => {
           color="primary"
           @click="openCostCodeModal = !openCostCodeModal"
           icon="fas fa-plus"
-          elevated
+          raised
+          size="small"
           outlined
         >
           Cost Code

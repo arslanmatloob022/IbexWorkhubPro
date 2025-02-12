@@ -9,38 +9,38 @@ const loading = ref(false);
 const tab = ref("Items list");
 const costCodeItemsList = ref([
   {
-    id: "c1383c64-008b-4e70-8e63-58f129eec320",
-    name: "CAT-0001",
-    description: "string",
-    created_at: "2025-02-02T06:20:48.540838Z",
-    updated_at: "2025-02-02T06:20:48.540871Z",
+    id: "",
+    name: "",
+    description: "",
+    created_at: "",
+    updated_at: "",
     trade: null,
     codes: [
       {
-        id: "eb9f4bf2-e90d-4a23-83fd-b32d92ea32f3",
-        name: "Test under 001",
+        id: "",
+        name: "",
         description: "",
         is_labour_code: false,
         labour_cost: 0.0,
         unit_cost: 1200.0,
         is_active: true,
-        created_at: "2025-02-02T20:01:14.844462Z",
-        updated_at: "2025-02-02T20:01:14.844480Z",
-        category: "c1383c64-008b-4e70-8e63-58f129eec320",
+        created_at: "",
+        updated_at: "",
+        category: "",
         parent_code: null,
         child_codes: [
           {
-            id: "b8cc78ba-30cb-41cd-890d-4dd9af170721",
-            name: "tes under 00101",
+            id: "",
+            name: "",
             description: "",
             is_labour_code: true,
             labour_cost: 120.0,
             unit_cost: 0.0,
             is_active: true,
-            created_at: "2025-02-02T20:02:35.921742Z",
-            updated_at: "2025-02-02T20:02:35.921757Z",
-            category: "c1383c64-008b-4e70-8e63-58f129eec320",
-            parent_code: "eb9f4bf2-e90d-4a23-83fd-b32d92ea32f3",
+            created_at: "",
+            updated_at: "",
+            category: "",
+            parent_code: "",
           },
         ],
       },
@@ -209,8 +209,9 @@ onMounted(() => {
             color="primary"
             @click="openCostCodeModalFun()"
             icon="fas fa-plus"
-            elevated
+            raised
             outlined
+            size="small"
           >
             Cost Code
           </VButton>
@@ -218,8 +219,9 @@ onMounted(() => {
             @click="openCategoryModal = !openCategoryModal"
             color="info"
             icon="fas fa-plus"
-            elevated
+            raised
             outlined
+            size="small"
           >
             Category
           </VButton>
@@ -228,7 +230,8 @@ onMounted(() => {
             color="warning"
             icon="fas fa-plus"
             outlined
-            elevated
+            size="small"
+            raised
           >
             Trade
           </VButton>

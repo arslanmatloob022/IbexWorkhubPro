@@ -388,7 +388,7 @@ onMounted(() => {
                       </div>
                     </a>
 
-                    <a
+                    <!-- <a
                       v-if="item.status == 'approve'"
                       role="menuitem"
                       @click="openCreateTasksModalHandler(item.id)"
@@ -404,9 +404,9 @@ onMounted(() => {
                         <span>Create Tasks</span>
                         <span>Create tasks in chart </span>
                       </div>
-                    </a>
+                    </a> -->
 
-                    <a
+                    <!-- <a
                       role="menuitem"
                       @click="openCostItemModal(item.id)"
                       class="dropdown-item is-media"
@@ -418,7 +418,7 @@ onMounted(() => {
                         <span>Add Cost Item</span>
                         <span>Add a new cost item</span>
                       </div>
-                    </a>
+                    </a> -->
 
                     <hr class="dropdown-divider" />
 

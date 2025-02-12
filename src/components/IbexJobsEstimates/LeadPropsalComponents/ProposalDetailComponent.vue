@@ -2,20 +2,27 @@
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { useCompany } from "/@src/stores/company";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { I } from "@fullcalendar/resource/internal-common";
+import { downloadProposalPdf } from "../proposalsComponents";
+import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
 const editor = shallowRef<any>();
 const useProposal = useProposalStore();
-const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
 const router = useRouter();
-const FormData = ref({});
 const loading = ref(false);
+const selectedStatus = ref("");
+const selectedDeleteProposalId = ref("");
+const DeleteSweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
@@ -52,22 +59,6 @@ interface item {
   profit: number;
   internalNotes: string;
 }
-
-const workItem = ref({
-  title: "",
-  description: "",
-  quantity: 0,
-  unit: 0,
-  unitCost: 0,
-  markup: 0,
-  clientPrice: 0,
-  costCode: "",
-  costType: "",
-  builderCost: "",
-  margin: 0,
-  profit: 0,
-  internalNotes: "",
-});
 
 interface leadProposalData {
   title: string;
@@ -137,15 +128,7 @@ const updateProposalHandler = async () => {
     loading.value = false;
   }
 };
-const selectedStatus = ref("");
 
-const selectedDeleteProposalId = ref("");
-const DeleteSweetAlertProps = ref({
-  title: "",
-  subtitle: "test",
-  isSweetAlertOpen: false,
-  btntext: "text",
-});
 const openProposalDeleteAlert = (id: any) => {
   selectedDeleteProposalId.value = id;
   DeleteSweetAlertProps.value = {
@@ -234,6 +217,15 @@ const editorConfig = {
   minHeight: "400px",
 };
 
+const selectedProposalsIds = ref([]);
+const proposalData = ref({});
+const openSendProposalModal = ref(false);
+const openSendProposalModalHandler = () => {
+  proposalData.value = useProposal.leadProposalFormData;
+  selectedProposalsIds.value.push(useProposal.leadProposalFormData);
+  openSendProposalModal.value = !openSendProposalModal.value;
+};
+
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -249,12 +241,34 @@ onMounted(async () => {
   <div class="modal-form columns is-multiline">
     <div class="column is-12 is-flex space-between align-items-center card">
       <div>
-        <!-- {{  }} -->
+        <VButton
+          size="xsmall"
+          light
+          outlined
+          raised
+          color="warning"
+          icon="fa fa-cloud-download-alt"
+          @click="downloadProposalPdf(useProposal.leadProposalFormData)"
+        >
+          Download
+        </VButton>
+        <VButton
+          size="xsmall"
+          light
+          raised
+          @click="openSendProposalModalHandler"
+          class="ml-1"
+          outlined
+          color="success"
+          icon="fas fa-envelope"
+        >
+          Send
+        </VButton>
         <VButton
           @click="openProposalAlert('approved')"
-          size="small"
+          size="xsmall"
           v-if="leadProposalFormData.status != 'approved'"
-          class="mr-2"
+          class="mr-2 ml-1"
           light
           outlined
           color="info"
@@ -283,7 +297,7 @@ onMounted(async () => {
       <div>
         <VButton
           @click="openCreateTasksModalHandler(route.params.id)"
-          size="small"
+          size="xsmall"
           class="mr-2"
           light
           outlined
@@ -298,7 +312,7 @@ onMounted(async () => {
         </VButton>
         <VButton
           @click="updateProposalHandler"
-          size="small"
+          size="xsmall"
           class="mr-2"
           light
           outlined
@@ -308,14 +322,15 @@ onMounted(async () => {
           Update
         </VButton>
         <VButton
-          size="small"
+          size="xsmall"
           @click="openProposalDeleteAlert(leadProposalFormData.id)"
           light
           outlined
+          icon="fas fa-trash"
           color="danger"
           raised
         >
-          Delete
+          <i class="fas fa-"></i>
         </VButton>
       </div>
     </div>
@@ -485,7 +500,17 @@ onMounted(async () => {
       :createProposalTasksModal="openCreateTasksModal"
       :proposalId="selectedProposalId"
       @closeModalHandler="openCreateTasksModal = false"
-      @update:OnSuccess="getCompanyProposalList"
+      @update:OnSuccess=""
+    />
+    <SendProposalEmailModal
+      v-if="openSendProposalModal"
+      :proposalSenderModal="openSendProposalModal"
+      :selectedProposalsIds="selectedProposalsIds"
+      :proposalData="proposalData"
+      @update:modalHandler="
+        openSendProposalModal = false;
+        selectedProposalsIds = [];
+      "
     />
   </div>
 </template>

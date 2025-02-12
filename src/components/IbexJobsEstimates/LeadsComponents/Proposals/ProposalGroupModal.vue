@@ -310,7 +310,7 @@ onMounted(() => {
           :group-proposal-modal="openMergeProposalsModal"
           :selectedProposals="selectedProposals"
           @removeProposal="selectProposal"
-          @update:modal-handler="openMergeProposalsModal = false"
+          @update:modalHandler="openMergeProposalsModal = false"
         />
         <SendProposalEmailModal
           v-if="openSendProposalModal"

@@ -49,7 +49,7 @@ onMounted(() => {
 <template>
   <div>
     <div class="tabs-inner">
-      <div class="tabs is-toggle">
+      <div class="tabs">
         <ul>
           <li :class="[tab === 'contracts' && 'is-active']">
             <a
@@ -67,6 +67,15 @@ onMounted(() => {
               @keydown.space.prevent="tab = 'estimates'"
               @click="tab = 'estimates'"
               ><span>Customer Estimates</span></a
+            >
+          </li>
+          <li :class="[tab === 'proposals' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'proposals'"
+              @click="tab = 'proposals'"
+              ><span>Proposals</span></a
             >
           </li>
           <li :class="[tab === 'jobScope' && 'is-active']">
@@ -228,6 +237,10 @@ onMounted(() => {
               </div>
             </div>
           </div>
+        </TransitionGroup>
+      </div>
+      <div v-if="tab == 'proposals'">
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
         </TransitionGroup>
       </div>
       <div v-if="tab == 'jobScope'">
