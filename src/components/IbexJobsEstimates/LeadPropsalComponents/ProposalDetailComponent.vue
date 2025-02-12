@@ -217,6 +217,8 @@ const editorConfig = {
   minHeight: "400px",
 };
 
+const openCreateTemplate = ref(false);
+
 const selectedProposalsIds = ref([]);
 const proposalData = ref({});
 const openSendProposalModal = ref(false);
@@ -295,6 +297,18 @@ onMounted(async () => {
         </VSnack>
       </div>
       <div>
+        <VButton
+          @click="openCreateTemplate = !openCreateTemplate"
+          size="xsmall"
+          class="mr-2"
+          light
+          outlined
+          color="success"
+          raised
+        >
+          Create Template
+        </VButton>
+
         <VButton
           @click="openCreateTasksModalHandler(route.params.id)"
           size="xsmall"
@@ -513,4 +527,15 @@ onMounted(async () => {
       "
     />
   </div>
+  <CreateTemplateModal
+    v-if="openCreateTemplate"
+    :proposalId="route.params.id"
+    :openCreateTemplate="openCreateTemplate"
+    @update:OnSuccess="
+      () => {
+        props.proposalId || route.params.id ? getProposalDetail() : '';
+      }
+    "
+    @update:modalHandler="openCreateTemplate = false"
+  ></CreateTemplateModal>
 </template>
