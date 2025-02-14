@@ -10,6 +10,7 @@ const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
+const centeredActionsOpen = ref(false);
 
 const props = defineProps<{
   leadProposalModal?: boolean;
@@ -87,7 +88,7 @@ onUnmounted(() => {
             outlined
             class="mr-2"
             color="info"
-            @click="addCostItemModal = !addCostItemModal"
+            @click="centeredActionsOpen = !centeredActionsOpen"
             >Import</VButton
           >
           <VButton
@@ -228,5 +229,13 @@ onUnmounted(() => {
       @update:OnSuccess="getProposalCostItems"
     >
     </EstimateCostItemModal>
+    <CostByCatalog
+      v-if="centeredActionsOpen"
+      :centeredActionsOpen="centeredActionsOpen"
+      :proposalId="props.proposalId"
+      @update:modalHandler="centeredActionsOpen = false"
+      @update:OnSuccess="getProposalCostItems"
+    >
+    </CostByCatalog>
   </div>
 </template>
