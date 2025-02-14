@@ -163,6 +163,7 @@ declare module 'vue' {
     ContractorsDropDown: typeof import('./../src/components/CommonComponents/DropDowns/ContractorsDropDown.vue')['default']
     ContractorSidebar: typeof import('./../src/layouts/ContractorSidebar.vue')['default']
     ContractorsList: typeof import('./../src/components/pages/networks/Contractors/ContractorsList.vue')['default']
+    CostByCatalog: typeof import('./../src/components/CommonComponents/CostByCatalog.vue')['default']
     CostCodeComp: typeof import('./../src/components/Company/CostCodeComp.vue')['default']
     CostCodeModal: typeof import('./../src/components/IbexSettings/SettingsModals/CostCodeModal.vue')['default']
     CostCodes: typeof import('./../src/components/IbexSettings/CostCodes.vue')['default']

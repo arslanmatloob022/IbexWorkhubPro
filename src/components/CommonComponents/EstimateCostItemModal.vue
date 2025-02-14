@@ -241,6 +241,35 @@ onMounted(async () => {
     getCostItemDetail();
   }
   getCostCodesHandler();
+  getCataLogItemDetail();
+});
+const selectedCataLog = ref("");
+const assumeList = ref(<any>[]);
+const catalogList = ref(<any>[]);
+const getCataLogItemDetail = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/cost/catalogs/`);
+    assumeList.value = response.data;
+    catalogList.value = response.data.map((item: any) => {
+      return {
+        value: item.id,
+        name: item.title,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+watch(selectedCataLog, (oldVal, newVal) => {
+  let list = assumeList.value;
+  const matchedItem = list.find((item) => item.id == selectedCataLog.value);
+
+  const { id, ...newObj } = matchedItem;
+
+  costItem.value = newObj;
 });
 </script>
 
@@ -258,7 +287,7 @@ onMounted(async () => {
       <div class="modal-form columns is-multiline">
         <VCard class="column is-12">
           <div class="columns is-multiline">
-            <div class="field column is-12 mb-0">
+            <div class="field column is-6 mb-0">
               <label>Title: </label>
               <div class="control">
                 <input
@@ -272,6 +301,34 @@ onMounted(async () => {
                 />
               </div>
             </div>
+            <VField
+              v-slot="{ id }"
+              class="is-image-select column is-6"
+              label="Select Catalog"
+            >
+              <VControl>
+                <Multiselect
+                  v-model="selectedCataLog"
+                  :attrs="{ id }"
+                  placeholder="Select a catalog"
+                  label="name"
+                  :options="catalogList"
+                >
+                  <template #singlelabel="{ value }">
+                    <div class="multiselect-single-label">
+                      <span class="select-label-text">
+                        {{ value.name }}
+                      </span>
+                    </div>
+                  </template>
+                  <template #option="{ option }">
+                    <span class="select-label-text">
+                      {{ option.name }}
+                    </span>
+                  </template>
+                </Multiselect>
+              </VControl>
+            </VField>
 
             <div class="field column is-6">
               <label for="">Cost Type</label>
@@ -291,7 +348,7 @@ onMounted(async () => {
                 </VControl>
               </VField>
             </div>
-            <div class="field column is-3">
+            <div class="field column is-3" v-if="!props.costItemId">
               <label for="">Catalog</label>
               <div>
                 <VControl raw subcontrol>
