@@ -37,6 +37,7 @@ interface costCode {
   labour_cost: number;
   description: string;
   unit_cost: number;
+  worker_cost: number;
   is_active: boolean;
 }
 const costCodeFormData = ref<costCode>({
@@ -47,6 +48,7 @@ const costCodeFormData = ref<costCode>({
   is_labour_code: false,
   labour_cost: 0.0,
   description: "",
+  worker_cost: 0.0,
   unit_cost: 0.0,
   is_active: true,
 });
@@ -197,33 +199,37 @@ onMounted(() => {
             </VField>
           </div>
         </div>
-        <div class="field column is-6">
-          <label class="label"></label>
-          <VField class="is-flex">
-            <VControl raw subcontrol>
-              <VCheckbox
-                v-model="costCodeFormData.is_labour_code"
-                label="Hourly charged labour code"
-              />
-            </VControl>
-          </VField>
-        </div>
-        <div v-if="costCodeFormData.is_labour_code" class="column is-6">
-          <div class="field">
-            <label class="label">Default labour cost ($)</label>
-            <div class="control">
-              <input
-                type="number"
-                required
-                step="any"
-                class="input"
-                placeholder="Enter amount"
-                v-model="costCodeFormData.labour_cost"
-              />
+        <div class="column is-12">
+          <div class="columns is-multiline">
+            <div class="field column is-6">
+              <label class="label"></label>
+              <VField class="is-flex">
+                <VControl raw subcontrol>
+                  <VCheckbox
+                    v-model="costCodeFormData.is_labour_code"
+                    label="Hourly charged labour code"
+                  />
+                </VControl>
+              </VField>
+            </div>
+            <div v-if="costCodeFormData.is_labour_code" class="column is-6">
+              <div class="field">
+                <label class="label">Default labour cost ($)</label>
+                <div class="control">
+                  <input
+                    type="number"
+                    required
+                    step="any"
+                    class="input"
+                    placeholder="Enter amount"
+                    v-model="costCodeFormData.labour_cost"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="column is-12">
+        <div class="column is-6">
           <div class="field">
             <label class="label">Unit cost ($)</label>
             <div class="control">
@@ -233,6 +239,20 @@ onMounted(() => {
                 class="input"
                 placeholder="Unit Cost"
                 v-model="costCodeFormData.unit_cost"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="field">
+            <label class="label">Worker cost ($)</label>
+            <div class="control">
+              <input
+                type="number"
+                step="any"
+                class="input"
+                placeholder="Worker Cost"
+                v-model="costCodeFormData.worker_cost"
               />
             </div>
           </div>
