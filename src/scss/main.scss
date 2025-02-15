@@ -100,6 +100,12 @@ SCSS Imports
   text-overflow: ellipsis;
   max-width: 200px;
 }
+.show-text-250 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
 .show-text-300 {
   white-space: nowrap;
   overflow: hidden;

@@ -192,7 +192,7 @@ onMounted(() => {});
         </div>
         <div class="invoice-body">
           <div class="invoice-card">
-            <div class="invoice-section is-flex is-bordered">
+            <div class="invoice-section is-flex">
               <VAvatar size="xl" picture="/logos/IbexFavicon.png" />
 
               <div class="meta"></div>
@@ -204,7 +204,7 @@ onMounted(() => {});
               </div>
             </div>
 
-            <div class="invoice-section is-flex is-bordered">
+            <div class="invoice-section is-flex">
               <div class="meta">
                 <h3>
                   {{

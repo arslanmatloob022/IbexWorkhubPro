@@ -118,7 +118,7 @@ const updateCompany = (updatedCompany: typeof company) => {
                   ><span>Cost Codes</span></a
                 >
               </li>
-              <li
+              <!-- <li
                 :class="[
                   tab === 'proposalsTemplates' ? 'is-active' : 'not-active',
                 ]"
@@ -130,7 +130,7 @@ const updateCompany = (updatedCompany: typeof company) => {
                   @click="tab = 'proposalsTemplates'"
                   ><span>Templates/Catalog</span></a
                 >
-              </li>
+              </li> -->
               <li :class="[tab === 'permissions' ? 'is-active' : 'not-active']">
                 <a
                   tabindex="0"
@@ -179,7 +179,7 @@ const updateCompany = (updatedCompany: typeof company) => {
         <ManageRole />
       </div>
 
-      <div class="" v-if="tab === 'proposalsTemplates'">
+      <!-- <div class="" v-if="tab === 'proposalsTemplates'">
         <div class="tabs-wrapper">
           <div class="tabs-inner">
             <div class="tabs">
@@ -217,7 +217,7 @@ const updateCompany = (updatedCompany: typeof company) => {
         <div class="" v-if="proposaltab === 'proposals'">
           <TemplatePropsalsList />
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

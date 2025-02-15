@@ -9,8 +9,8 @@ const router = useRouter();
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
-
-// Interface for a single user or person
+const selectedLeadId = ref("");
+const openLeadModal = ref(false);
 interface User {
   id: string;
   username: string;
@@ -20,7 +20,6 @@ interface User {
   avatar: string | null;
 }
 
-// Interface for the client information
 interface ClientInfo {
   id: string;
   username: string;
@@ -218,14 +217,12 @@ const getLeadDetailHandler = async () => {
       );
     }
   } catch (error: any) {
-    notyf.error(` ${error}, Lead`);
+    console.error(error);
   } finally {
     loading.value = false;
   }
 };
 
-const selectedLeadId = ref("");
-const openLeadModal = ref(false);
 const openLeadUpdateModal = (id: any) => {
   selectedLeadId.value = id;
   openLeadModal.value = true;
@@ -669,7 +666,10 @@ onMounted(() => {
           </div>
 
           <div v-if="tab === 'proposals'" class="column is-12">
-            <LeadProposalsList :lead-id="route.params.id" />
+            <LeadProposalsList
+              :lead-id="route.params.id"
+              @updateCompany="getLeadDetailHandler"
+            />
           </div>
           <div v-if="tab === 'activities'" class="column is-12">
             <JobLeadActivities :jobId="route.params.id" />

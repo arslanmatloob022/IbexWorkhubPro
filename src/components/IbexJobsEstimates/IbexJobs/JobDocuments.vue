@@ -2,13 +2,21 @@
 import { files } from "/@src/data/layouts/tile-grid-v2";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useApi } from "/@src/composable/useAPI";
+import { useNotyf } from "/@src/composable/useNotyf";
 
+const notyf = useNotyf();
 const api = useApi();
 const props = defineProps<{
   leadId?: string;
 }>();
+
 const filters = ref("");
-const tab = ref("contracts");
+const valueSingle = ref(0);
+const selectedType = ref("");
+const tab = ref("proposal_formats");
+const openFileModal = ref(false);
+const mergedProposalsList = ref([]);
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return files;
@@ -22,7 +30,6 @@ const filteredData = computed(() => {
   }
 });
 
-const valueSingle = ref(0);
 const optionsSingle = [
   "All Files",
   "Recently Updated",
@@ -31,11 +38,28 @@ const optionsSingle = [
   "Deprecated",
 ];
 
-const getGroupedProposals = async () => {
+const openFileUploaderModal = (type: "") => {
+  selectedType.value = type;
+  openFileModal.value = !openFileModal.value;
+};
+
+const getGroupedProposals = async (type: any = "proposal_formats") => {
   try {
+    tab.value = type;
     const resp = await api.get(
-      `/api/attachment/by-object/${props.leadId}/?type=proposal_formats`
+      `/api/attachment/by-object/${props.leadId}/?type=${type}`
     );
+    mergedProposalsList.value = resp.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteSelectedDocumentHandler = async (id: any) => {
+  try {
+    const resp = await api.delete(`/api/attachment/${id}/`);
+    notyf.purple("File Deleted Successfully");
+    getGroupedProposals();
   } catch (err) {
     console.log(err);
   }
@@ -51,12 +75,21 @@ onMounted(() => {
     <div class="tabs-inner">
       <div class="tabs">
         <ul>
+          <li :class="[tab === 'proposal_formats' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="getGroupedProposals('proposal_formats')"
+              @click="getGroupedProposals('proposal_formats')"
+              ><span>Merge Proposals</span></a
+            >
+          </li>
           <li :class="[tab === 'contracts' && 'is-active']">
             <a
               tabindex="0"
               role="button"
-              @keydown.space.prevent="tab = 'contracts'"
-              @click="tab = 'contracts'"
+              @keydown.space.prevent="getGroupedProposals('contracts')"
+              @click="getGroupedProposals('contracts')"
               ><span>Contracts</span></a
             >
           </li>
@@ -64,20 +97,12 @@ onMounted(() => {
             <a
               tabindex="0"
               role="button"
-              @keydown.space.prevent="tab = 'estimates'"
-              @click="tab = 'estimates'"
+              @keydown.space.prevent="getGroupedProposals('estimates')"
+              @click="getGroupedProposals('estimates')"
               ><span>Customer Estimates</span></a
             >
           </li>
-          <li :class="[tab === 'proposals' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'proposals'"
-              @click="tab = 'proposals'"
-              ><span>Proposals</span></a
-            >
-          </li>
+
           <li :class="[tab === 'jobScope' && 'is-active']">
             <a
               tabindex="0"
@@ -148,7 +173,7 @@ onMounted(() => {
             />
           </VControl>
         </VField>
-        <VButton color="primary" raised>
+        <VButton @click="openFileUploaderModal(tab)" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
@@ -180,37 +205,21 @@ onMounted(() => {
           />
         </template>
       </VPlaceholderPage>
-
-      <!--Tile Grid v1-->
       <div v-if="tab == 'contracts'">
         <TransitionGroup name="list" tag="div" class="columns is-multiline">
           <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
+          <div
+            v-for="item in mergedProposalsList"
+            :key="item.id"
+            class="column is-4"
+          >
+            <DocumentTile
+              :document="item"
+              @deleteSelectedFile="deleteSelectedDocumentHandler"
+            />
           </div>
         </TransitionGroup>
       </div>
-
       <div v-if="tab == 'estimates'">
         <TransitionGroup name="list" tag="div" class="columns is-multiline">
           <!--Grid item-->
@@ -239,8 +248,18 @@ onMounted(() => {
           </div>
         </TransitionGroup>
       </div>
-      <div v-if="tab == 'proposals'">
+      <div v-if="tab == 'proposal_formats'">
         <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <div
+            v-for="item in mergedProposalsList"
+            :key="item.id"
+            class="column is-4"
+          >
+            <DocumentTile
+              :document="item"
+              @deleteSelectedFile="deleteSelectedDocumentHandler"
+            />
+          </div>
         </TransitionGroup>
       </div>
       <div v-if="tab == 'jobScope'">
@@ -384,6 +403,14 @@ onMounted(() => {
         </TransitionGroup>
       </div>
     </div>
+    <UploadDocumentModal
+      v-if="openFileModal"
+      :openFileModal="openFileModal"
+      :object="props.leadId"
+      :type="selectedType"
+      @close:ModalHandler="openFileModal = false"
+      @update:OnSuccess="getGroupedProposals"
+    />
   </div>
 </template>
 

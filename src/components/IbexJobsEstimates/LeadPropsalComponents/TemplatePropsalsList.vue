@@ -140,12 +140,12 @@ const columns = {
   },
   //   industry: "Type",
   deadline: "Cost Items",
-  status: "Status",
+  // status: "Status",
   amount: {
     label: "Total Amount",
     media: true,
   },
-  customer: "Calendar Tasks ",
+  customer: "Created At",
   actions: {
     label: "Actions",
     align: "end",
@@ -288,13 +288,7 @@ onMounted(() => {
                 <div>
                   <span class="item-name dark-inverted">{{ item.title }}</span>
                   <span class="item-meta">
-                    <span>
-                      <i
-                        aria-hidden="true"
-                        class="iconify"
-                        data-icon="feather:clock"
-                      />{{ formatDateTime(item.created_at) }}</span
-                    >
+                    <span v-html="item.introductory_text"></span>
                   </span>
                 </div>
               </VFlexTableCell>
@@ -308,7 +302,7 @@ onMounted(() => {
                 <span class="light-text">{{}}</span>
                 <VTag rounded color="primary" :label="item.cost_items"> </VTag>
               </VFlexTableCell>
-              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
+              <!-- <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <VTag
                   class="capitalized"
                   rounded
@@ -316,8 +310,7 @@ onMounted(() => {
                 >
                   {{ getProposalStatusName[item.status] }}
                 </VTag>
-                <!-- <span class="light-text"></span> -->
-              </VFlexTableCell>
+              </VFlexTableCell> -->
               <VFlexTableCell
                 class="cu-pointer"
                 @click="gotoDetail(item.id)"
@@ -330,10 +323,19 @@ onMounted(() => {
                   <span class="light-text">{{ item.payment_status }}</span>
                 </div>
               </VFlexTableCell>
-              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
-                <VTag color="purple" outlined>{{
-                  item.is_task_created ? "Created" : "Not Created"
-                }}</VTag>
+              <VFlexTableCell
+                :column="{ media: true }"
+                class="cu-pointer"
+                @click="gotoDetail(item.id)"
+              >
+                <div>
+                  <span class="item-name dark-inverted">{{
+                    formatDate(item.created_at)
+                  }}</span>
+                  <span class="light-text">{{
+                    formatTime(item.created_at)
+                  }}</span>
+                </div>
               </VFlexTableCell>
               <VFlexTableCell :column="{ align: 'end' }">
                 <VDropdown

@@ -168,21 +168,20 @@ export const routerLinks = ref([
     collapseId: "setting",
     class: "collapse-wrap",
     headerIcon: "lnir lnir-cogs",
-    headerTitle: "Company Settings",
+    headerTitle: "Settings",
     linkType: "collapse",
     children: [
       {
-        title: "Settings",
+        title: "Company Settings",
         icon: "lnir lnir-cog",
         class: "is-submenu",
         route: "/sidebar/dashboard/company-settings",
       },
       {
-        title: "Proposals Templates",
+        title: "Templates & Catalogs",
         icon: "lnir lnir-files",
         class: "is-submenu",
-        route: "/sidebar/dashboard/company-settings?tab=proposals-template",
-
+        route: "/sidebar/dashboard/proposal-templates",
       },
       // {
       //   title: "Files",

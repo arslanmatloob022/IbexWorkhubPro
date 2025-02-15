@@ -77,6 +77,10 @@ const props = withDefaults(
   }
 );
 
+const emits = defineEmits<{
+  (e: "updateCompany", value: null): void;
+}>();
+
 const filters = ref("");
 const selectedDeleteProposalId = ref("");
 const tab = ref(props.activeTab);
@@ -202,12 +206,15 @@ const openProposalPreview = (id: any) => {
 const addCostItemModal = ref(false);
 const proposalId = ref("");
 
-const updateProposalStatus = async (proposal: any, id: any) => {
+const updateProposalStatus = async (status: any, id: any) => {
   try {
     const resp = await api.patch(`/api/lead-proposal/${id}/`, {
-      status: proposal,
+      status: status,
     });
-    notyf.success(`You have ${proposal} this proposal.`);
+    notyf.success(`You have ${status} this proposal.`);
+    if (status == "approved") {
+      emits("updateCompany", null);
+    }
     getCompanyProposalList();
   } catch (err) {
     console.log(err);
@@ -289,8 +296,10 @@ onMounted(() => {
                 @click="gotoDetail(item.id)"
               >
                 <!-- <VAvatar :picture="item.picture" /> -->
-                <div>
-                  <span class="item-name dark-inverted">{{ item.title }}</span>
+                <div v-tooltip.rounded.light="`${item.title}`">
+                  <span class="item-name dark-inverted show-text-250">{{
+                    item.title
+                  }}</span>
                   <span class="item-meta">
                     <span>
                       <i
@@ -389,7 +398,7 @@ onMounted(() => {
                     </a>
 
                     <a
-                      v-if="item.status == 'approve'"
+                      v-if="item.status == 'approved'"
                       role="menuitem"
                       @click="openCreateTasksModalHandler(item.id)"
                       class="dropdown-item is-media"
@@ -423,6 +432,7 @@ onMounted(() => {
                     <hr class="dropdown-divider" />
 
                     <a
+                      v-if="item.status != 'approved'"
                       role="menuitem"
                       @click="updateProposalStatus('approved', item.id)"
                       class="dropdown-item is-media"
