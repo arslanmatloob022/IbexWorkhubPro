@@ -97,6 +97,7 @@ declare module 'vue' {
     CardStructuredDocumentation: typeof import('./../documentation/card/card-structured-documentation.md')['default']
     CardsView: typeof import('./../src/components/pages/networks/SEE-Services/kanbanEditor/CardsView.vue')['default']
     CartWidget: typeof import('./../src/components/partials/widgets/ui-creative/CartWidget.vue')['default']
+    CataLogList: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/CataLogList.vue')['default']
     CategoryComp: typeof import('./../src/components/IbexSettings/CategoryComp.vue')['default']
     ChangeMemberPassword: typeof import('./../src/components/pages/networks/team-members/ChangeMemberPassword.vue')['default']
     ChangePasswordModal: typeof import('./../src/components/IbexUsers/ChangePasswordModal.vue')['default']

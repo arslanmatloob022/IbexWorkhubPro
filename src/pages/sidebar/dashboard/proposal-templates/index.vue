@@ -51,6 +51,9 @@ useHead({
     <div class="" v-if="templatesTab === 'proposalsTemplates'">
       <TemplatePropsalsList />
     </div>
+    <div class="" v-if="templatesTab === 'catalog'">
+      <CataLogList />
+    </div>
   </div>
 </template>
 
