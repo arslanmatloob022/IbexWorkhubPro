@@ -8,6 +8,11 @@ import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore"
 import { I } from "@fullcalendar/resource/internal-common";
 import { downloadProposalPdf } from "../proposalsComponents";
 import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
+import { useDropdown } from "/@src/composable/useDropdown";
+import { onceImageErrored } from "/@src/utils/via-placeholder";
+
+const dropdownElement = ref<HTMLElement>();
+const dropdown = useDropdown(dropdownElement);
 const editor = shallowRef<any>();
 const useProposal = useProposalStore();
 const notyf = useNotyf();
@@ -241,113 +246,161 @@ onMounted(async () => {
 
 <template>
   <div class="modal-form columns is-multiline">
-    <div class="column is-12 is-flex space-between align-items-center card">
-      <div>
-        <VButton
-          size="xsmall"
-          light
-          outlined
-          raised
-          color="warning"
-          icon="fa fa-cloud-download-alt"
-          @click="downloadProposalPdf(useProposal.leadProposalFormData)"
-        >
-          Download
-        </VButton>
-        <VButton
-          size="xsmall"
-          light
-          raised
-          @click="openSendProposalModalHandler"
-          class="ml-1"
-          outlined
-          color="success"
-          icon="fas fa-envelope"
-        >
-          Send
-        </VButton>
-        <VButton
-          @click="openProposalAlert('approved')"
-          size="xsmall"
-          v-if="leadProposalFormData.status != 'approved'"
-          class="mr-2 ml-1"
-          light
-          outlined
-          color="info"
-          raised
-        >
-          Approved
-        </VButton>
-        <VButton
-          v-else
-          light
-          size="xsmall"
-          color="primary"
-          class="ml-1"
-          icon="fas fa-check-circle"
-        >
-          Approved
-        </VButton>
-        <VSnack
-          v-if="leadProposalFormData.is_task_created"
-          title="Calendar Tasks Created "
-          white
-          class="ml-2"
-          color="info"
-          icon="fas fa-calendar-check"
-        >
-        </VSnack>
-      </div>
-      <div>
-        <VButton
-          @click="openCreateTemplate = !openCreateTemplate"
-          size="xsmall"
-          class="mr-2"
-          light
-          outlined
-          color="success"
-          raised
-        >
-          Create Template
-        </VButton>
+    <div
+      class="column is-12 is-flex align-items-center"
+      style="justify-content: end"
+    >
+      <div class="is-flex" style="gap: 43px">
+        <div>
+          <VButton
+            @click="openCreateTasksModalHandler(route.params.id)"
+            size="xsmall"
+            class="mr-2"
+            light
+            outlined
+            color="success"
+            raised
+            v-if="
+              !leadProposalFormData.is_task_created &&
+              leadProposalFormData.status == 'approved'
+            "
+          >
+            Generate Tasks
+          </VButton>
+          <VButton
+            @click="updateProposalHandler"
+            size="xsmall"
+            class="mr-2"
+            light
+            outlined
+            color="primary"
+            raised
+          >
+            Update
+          </VButton>
+          <VButton
+            size="xsmall"
+            @click="openProposalDeleteAlert(leadProposalFormData.id)"
+            light
+            outlined
+            icon="fas fa-trash"
+            color="danger"
+            raised
+          >
+            <i class="fas fa-"></i>
+          </VButton>
+        </div>
 
-        <VButton
-          @click="openCreateTasksModalHandler(route.params.id)"
-          size="xsmall"
-          class="mr-2"
-          light
-          outlined
-          color="success"
-          raised
-          v-if="
-            !leadProposalFormData.is_task_created &&
-            leadProposalFormData.status == 'approved'
-          "
-        >
-          Generate Tasks
-        </VButton>
-        <VButton
-          @click="updateProposalHandler"
-          size="xsmall"
-          class="mr-2"
-          light
-          outlined
-          color="primary"
-          raised
-        >
-          Update
-        </VButton>
-        <VButton
-          size="xsmall"
-          @click="openProposalDeleteAlert(leadProposalFormData.id)"
-          light
-          outlined
-          icon="fas fa-trash"
-          color="danger"
-          raised
-        >
-          <i class="fas fa-"></i>
-        </VButton>
+        <div class="toolbar-notifications is-hidden-mobile">
+          <div
+            ref="dropdownElement"
+            class="dropdown is-spaced is-dots is-right dropdown-trigger"
+          >
+            <div
+              tabindex="0"
+              class="is-trigger"
+              aria-haspopup="true"
+              @click="dropdown.toggle"
+              @keydown.space.prevent="dropdown.toggle"
+            >
+              <VButton
+                size="xsmall"
+                class="mr-2"
+                light
+                style="margin-top: -6px"
+                outlined
+                color="success"
+                raised
+                >More Action</VButton
+              >
+            </div>
+            <div class="dropdown-menu" role="menu" style="min-width: 260px">
+              <div class="dropdown-content p-4">
+                <div class="columns is-multiline">
+                  <div class="column is-6 pl-3 pr-3 pb-2 pt-2">
+                    <VButton
+                      @click="openCreateTemplate = !openCreateTemplate"
+                      size="xsmall"
+                      class="mr-2"
+                      light
+                      outlined
+                      color="success"
+                      raised
+                    >
+                      <i class="fas fa-plus"></i>
+                      Create Template
+                    </VButton>
+                  </div>
+                  <div class="column is-6 pl-3 pr-0 pb-2 pt-2">
+                    <VButton
+                      size="xsmall"
+                      light
+                      outlined
+                      raised
+                      color="warning"
+                      icon="fa fa-cloud-download-alt"
+                      @click="
+                        downloadProposalPdf(useProposal.leadProposalFormData)
+                      "
+                    >
+                      Download
+                    </VButton>
+                  </div>
+                  <div class="column is-6 p-0 pl-3 pb-2">
+                    <VButton
+                      size="xsmall"
+                      light
+                      raised
+                      @click="openSendProposalModalHandler"
+                      class="ml-1"
+                      outlined
+                      color="success"
+                    >
+                      <i class="fas fa-envelope mr-1"></i>
+                      Send Mail &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </VButton>
+                  </div>
+                  <div class="column is-6 p-0 pl-3 pb-2 pr-0">
+                    <VButton
+                      @click="openProposalAlert('approved')"
+                      size="xsmall"
+                      v-if="leadProposalFormData.status != 'approved'"
+                      class="mr-2 ml-1"
+                      light
+                      outlined
+                      color="info"
+                      raised
+                    >
+                      <i class="fas fa-check"></i>
+                      Approved
+                    </VButton>
+                    <VButton
+                      v-else
+                      light
+                      size="xsmall"
+                      color="primary"
+                      class="ml-1"
+                      icon="fas fa-check-circle"
+                    >
+                      Approved
+                    </VButton>
+                  </div>
+                  <div class="column is-6 p-0">
+                    <VSnack
+                      v-if="leadProposalFormData.is_task_created"
+                      title="Calendar Tasks Created "
+                      white
+                      class="ml-2"
+                      color="info"
+                      icon="fas fa-calendar-check"
+                    >
+                    </VSnack>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div
