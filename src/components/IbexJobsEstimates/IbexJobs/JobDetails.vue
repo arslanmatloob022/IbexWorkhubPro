@@ -664,7 +664,6 @@ onMounted(() => {
           <div v-if="tab === 'documents'" class="column is-12">
             <JobDocuments :leadId="route.params.id" />
           </div>
-
           <div v-if="tab === 'proposals'" class="column is-12">
             <LeadProposalsList
               :lead-id="route.params.id"
@@ -683,7 +682,6 @@ onMounted(() => {
           <div v-if="tab === 'activityLogs'" class="column is-12">
             <JobActivities />
           </div>
-
           <div v-if="tab === 'report'" class="column is-12">
             <JobReport />
           </div>

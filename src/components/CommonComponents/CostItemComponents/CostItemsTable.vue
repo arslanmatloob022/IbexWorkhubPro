@@ -1,70 +1,26 @@
 <script setup lang="ts">
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { costItems } from "/@src/composable/LeadPropsalElements/costItems";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { useApi } from "/@src/composable/useAPI";
 import { getColumnData, getColumnName } from "./costItems";
-export interface UserData extends VAvatarProps {
-  id: number;
-  username: string;
-  position: string;
-  picture: string;
-  badge: string;
-  location: string;
-  industry: string;
-  status: string;
-  contacts: VAvatarProps[];
-}
+
+const api = useApi();
+const dragItem = ref("");
+const addCostItemModal = ref(false);
+const useProposal = useProposalStore();
+const notyf = useNotyf();
+const proposalId = ref("");
+const previousItemIndex = ref(0);
+const selectedCostItem = ref("");
+const previewCostItems = ref(false);
+const loading = ref(false);
 
 const props = defineProps<{
   columnsToShow?: any;
   itemsList?: any;
+  proposalId?: any;
 }>();
-
-const useProposal = useProposalStore();
-const notyf = useNotyf();
-// const getColumnName = ref({
-//   CostCode: "Cost Code",
-//   Title: "Title",
-//   Unit: "Unit",
-//   Description: "Description",
-//   CostType: "Cost Type",
-//   MarkAs: "Mark As",
-//   Quantity: "Quantity",
-//   UnitCost: "Unit Cost",
-//   BuilderCost: "Builder Cost",
-//   Markup: "Markup",
-//   MarkupAmount: "Markup Amount",
-//   Status: "Status",
-//   ClientPrice: "Client Price",
-//   GroupPrice: "Group Price",
-//   TotalCost: "Total Cost",
-//   TotalMarkup: "Total Markup",
-//   Profit: "Profit",
-//   Notes: "Internal Notes",
-//   State: "State",
-// });
-
-// const getColumnData = ref({
-//   CostCode: "cost_code",
-//   Title: "title",
-//   Unit: "unit",
-//   Description: "description",
-//   CostType: "cost_type",
-//   MarkAs: "mark_as",
-//   Quantity: "quantity",
-//   UnitCost: "unit_cost",
-//   ClientPrice: "total_price",
-//   BuilderCost: "builder_cost",
-//   Markup: "markup",
-//   Status: "status",
-//   GroupPrice: "group_amount",
-//   TotalMarkup: "total_markup",
-//   Profit: "profit",
-//   Notes: "internal_notes",
-//   MarkupAmount: "markup_amount",
-// });
 
 const SweetAlertProps = ref({
   title: "",
@@ -72,11 +28,6 @@ const SweetAlertProps = ref({
   isSweetAlertOpen: false,
   btntext: "text",
 });
-
-const api = useApi();
-const dragItem = ref("");
-const addCostItemModal = ref(false);
-const costItems = ref<any[]>([]);
 
 const handleDragStart = (id: string) => {
   dragItem.value = id;
@@ -125,11 +76,6 @@ const handleDragLeave = (event: DragEvent) => {
   event.currentTarget?.classList.remove("drag-over");
 };
 
-const proposalId = ref("");
-const previousItemIndex = ref(0);
-const selectedCostItem = ref("");
-const previewCostItems = ref(false);
-
 const openDeleteCostItemAlert = (cost: any) => {
   selectedCostItem.value = cost.id;
   proposalId.value = cost.proposal;
@@ -141,7 +87,6 @@ const openDeleteCostItemAlert = (cost: any) => {
   };
 };
 
-const loading = ref(false);
 const deleteCostItemHandler = async () => {
   try {
     loading.value = true;
@@ -171,6 +116,32 @@ const openProposalCostItems = (cost: any) => {
 const getProposalCostItems = () => {
   useProposal.getProposalCostItems(proposalId.value);
 };
+
+const addUpdateProposalHandler = async () => {
+  try {
+    if (props.proposalId) {
+      const response = await api.patch(
+        `/api/lead-proposal/${props.proposalId}/`,
+        {
+          columns_to_show: JSON.stringify(props.columnsToShow),
+        }
+      );
+    }
+    useProposal.getProposalDetail(props.proposalId);
+  } catch (error: any) {
+    notyf.error(`Something went wrong, try again`);
+  }
+};
+
+watch(
+  () => props.columnsToShow,
+  (newVal, oldVal) => {
+    if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+      addUpdateProposalHandler();
+    }
+  },
+  { deep: true } // Enable deep watching for nested objects/arrays
+);
 
 onMounted(() => {});
 </script>

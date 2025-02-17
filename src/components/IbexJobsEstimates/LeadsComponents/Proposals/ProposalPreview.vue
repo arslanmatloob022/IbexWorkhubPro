@@ -240,8 +240,7 @@ onMounted(() => {});
               <table class="responsive-table">
                 <thead>
                   <th
-                    v-for="(column, index) in useProposal.leadProposalFormData
-                      .columns_to_show"
+                    v-for="(column, index) in props.columnsToShow"
                     :key="index"
                   >
                     {{ getColumnName[column] }}
@@ -252,11 +251,7 @@ onMounted(() => {});
                     v-for="(cost, index) in useProposal.proposalCostItems"
                     :key="cost.id"
                   >
-                    <td
-                      v-for="(column, key) in useProposal.leadProposalFormData
-                        .columns_to_show"
-                      :key="key"
-                    >
+                    <td v-for="(column, key) in props.columnsToShow" :key="key">
                       <div
                         v-if="column === 'description'"
                         v-html="cost[getColumnData[column]]"

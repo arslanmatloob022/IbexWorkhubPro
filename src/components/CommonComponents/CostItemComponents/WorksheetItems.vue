@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { selectedColumnsToShow, columnsTitle } from "./costItems";
+import { useApi } from "/@src/composable/useAPI";
+import { useNotyf } from "/@src/composable/useNotyf";
+const api = useApi();
+const notyf = useNotyf();
+
 const editor = shallowRef<any>();
 const proposalStore = useProposalStore();
 const addCostItemModal = ref(false);
@@ -50,6 +55,33 @@ const getProposalCostItems = async () => {
   } finally {
   }
 };
+
+const addUpdateProposalHandler = async () => {
+  try {
+    if (props.proposalId) {
+      const response = await api.patch(
+        `/api/lead-proposal/${props.proposalId}/`,
+        {
+          columns_to_show: JSON.stringify(selectedColumnsToShow.value),
+        }
+      );
+    }
+    proposalStore.getProposalDetail(props.proposalId);
+  } catch (error: any) {
+    notyf.error(`Something went wrong, try again`);
+  }
+};
+
+watch(
+  () => selectedColumnsToShow.value,
+  (newVal, oldVal) => {
+    if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+      addUpdateProposalHandler();
+    }
+  },
+  { deep: true } // Enable deep watching for nested objects/arrays
+);
+
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -206,7 +238,10 @@ onUnmounted(() => {
               </h1>
             </div>
             <div class="column is-12">
-              <CostItemsTable :columnsToShow="selectedColumnsToShow" />
+              <CostItemsTable
+                :columnsToShow="selectedColumnsToShow"
+                :proposalId="props.proposalId"
+              />
             </div>
           </VCard>
         </div>
@@ -216,6 +251,7 @@ onUnmounted(() => {
         <div v-if="tab === 'preview'" class="column is-12">
           <ProposalPreview
             :proposalData="props.proposalData"
+            :proposalId="props.proposalId"
             :columnsToShow="selectedColumnsToShow"
           />
         </div>

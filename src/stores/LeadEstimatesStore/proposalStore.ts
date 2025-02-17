@@ -2,6 +2,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { selectedColumnsToShow } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 
 export const useProposalStore = defineStore("useProposal", () => {
   const loading = ref(true);
@@ -249,7 +250,7 @@ export const useProposalStore = defineStore("useProposal", () => {
     try {
       const response = await api.get(`/api/lead-proposal/${id}/detail/`);
       leadProposalFormData.value = response.data;
-      // notyf.blue("calling");
+      selectedColumnsToShow.value = response.data.columns_to_show;
     } catch (err) {
       console.log(err);
     } finally {

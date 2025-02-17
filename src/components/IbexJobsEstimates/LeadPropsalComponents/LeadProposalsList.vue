@@ -245,117 +245,118 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="flex-toolbar is-reversed is-flex space-between my-4">
-      <VControl icon="feather:search">
-        <input
-          v-model="filters"
-          class="input custom-text-filter"
-          placeholder="Search..."
-        />
-      </VControl>
-
-      <div>
-        <VButton
-          color="primary"
-          @click="openLeadProposalModal = !openLeadProposalModal"
-          icon="fas fa-plus"
-          >Lead Proposal
-        </VButton>
-        <VButton
-          color="warning"
-          class="ml-2"
-          v-if="props.leadId"
-          @click="openProposalGroupModalHandler()"
-          icon="fas fa-cogs"
-          >Proposals</VButton
-        >
-      </div>
-    </div>
     <div v-if="loading">
       <PlaceloadV1 />
     </div>
+    <div v-else>
+      <div class="flex-toolbar is-reversed is-flex space-between my-4">
+        <VControl icon="feather:search">
+          <input
+            v-model="filters"
+            class="input custom-text-filter"
+            placeholder="Search..."
+          />
+        </VControl>
 
-    <div v-else class="flex-list-wrapper flex-list-v2">
-      <VFlexTable
-        v-if="filteredData.length > 0 && proposalsList.length > 0"
-        :data="filteredData"
-        :columns="columns"
-        rounded
-      >
-        <template #body>
-          <TransitionGroup name="list" tag="div" class="flex-list-inner">
-            <!--Table item-->
-            <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="flex-table-item"
-            >
-              <VFlexTableCell
-                :column="{ media: true, grow: true }"
-                class="cu-pointer"
-                @click="gotoDetail(item.id)"
+        <div>
+          <VButton
+            color="primary"
+            @click="openLeadProposalModal = !openLeadProposalModal"
+            icon="fas fa-plus"
+            >Lead Proposal
+          </VButton>
+          <VButton
+            color="warning"
+            class="ml-2"
+            v-if="props.leadId"
+            @click="openProposalGroupModalHandler()"
+            icon="fas fa-cogs"
+            >Proposals</VButton
+          >
+        </div>
+      </div>
+
+      <div class="flex-list-wrapper flex-list-v2">
+        <VFlexTable
+          v-if="filteredData.length > 0 && proposalsList.length > 0"
+          :data="filteredData"
+          :columns="columns"
+          rounded
+        >
+          <template #body>
+            <TransitionGroup name="list" tag="div" class="flex-list-inner">
+              <!--Table item-->
+              <div
+                v-for="item in filteredData"
+                :key="item.id"
+                class="flex-table-item"
               >
-                <!-- <VAvatar :picture="item.picture" /> -->
-                <div v-tooltip.rounded.light="`${item.title}`">
-                  <span class="item-name dark-inverted show-text-250">{{
-                    item.title
-                  }}</span>
-                  <span class="item-meta">
-                    <span>
-                      <i
-                        aria-hidden="true"
-                        class="iconify"
-                        data-icon="feather:clock"
-                      />{{ formatDateTime(item.created_at) }}</span
-                    >
-                  </span>
-                </div>
-              </VFlexTableCell>
+                <VFlexTableCell
+                  :column="{ media: true, grow: true }"
+                  class="cu-pointer"
+                  @click="gotoDetail(item.id)"
+                >
+                  <!-- <VAvatar :picture="item.picture" /> -->
+                  <div v-tooltip.rounded.light="`${item.title}`">
+                    <span class="item-name dark-inverted show-text-250">{{
+                      item.title
+                    }}</span>
+                    <span class="item-meta">
+                      <span>
+                        <i
+                          aria-hidden="true"
+                          class="iconify"
+                          data-icon="feather:clock"
+                        />{{ formatDateTime(item.created_at) }}</span
+                      >
+                    </span>
+                  </div>
+                </VFlexTableCell>
 
-              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
-                <VTag rounded :color="getProposalTypeColor[item.type]">
-                  {{ getProposalTypeName[item.type] }}
-                </VTag>
-              </VFlexTableCell>
-              <!-- <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
+                <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
+                  <VTag rounded :color="getProposalTypeColor[item.type]">
+                    {{ getProposalTypeName[item.type] }}
+                  </VTag>
+                </VFlexTableCell>
+                <!-- <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                 <span class="light-text">{{ item.cost_items }}</span>
               </VFlexTableCell> -->
-              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
-                <VTag
-                  class="capitalized"
-                  rounded
-                  :color="getProposalStatusColor[item.status]"
-                >
-                  {{ getProposalStatusName[item.status] }}
-                </VTag>
-                <!-- <span class="light-text"></span> -->
-              </VFlexTableCell>
-              <VFlexTableCell
-                class="cu-pointer"
-                @click="gotoDetail(item.id)"
-                :column="{ media: true }"
-              >
-                <div>
-                  <span class="item-name dark-inverted"
-                    >${{ item.proposalAmount }}</span
+                <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
+                  <VTag
+                    class="capitalized"
+                    rounded
+                    :color="getProposalStatusColor[item.status]"
                   >
-                  <span class="light-text">{{ item.payment_status }}</span>
-                </div>
-              </VFlexTableCell>
-              <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
-                <VTag color="purple" outlined>{{
-                  item.is_task_created ? "Created" : "Not Created"
-                }}</VTag>
-              </VFlexTableCell>
-              <VFlexTableCell :column="{ align: 'end' }">
-                <VDropdown
-                  class="is-pushed-mobile"
-                  icon="feather:more-vertical"
-                  spaced
-                  right
+                    {{ getProposalStatusName[item.status] }}
+                  </VTag>
+                  <!-- <span class="light-text"></span> -->
+                </VFlexTableCell>
+                <VFlexTableCell
+                  class="cu-pointer"
+                  @click="gotoDetail(item.id)"
+                  :column="{ media: true }"
                 >
-                  <template #content>
-                    <!-- <a
+                  <div>
+                    <span class="item-name dark-inverted"
+                      >${{ item.proposalAmount }}</span
+                    >
+                    <span class="light-text">{{ item.payment_status }}</span>
+                  </div>
+                </VFlexTableCell>
+                <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
+                  <VTag color="purple" outlined>{{
+                    item.is_task_created ? "Created" : "Not Created"
+                  }}</VTag>
+                </VFlexTableCell>
+                <VFlexTableCell :column="{ align: 'end' }">
+                  <VDropdown
+                    class="is-pushed-mobile"
+                    icon="feather:more-vertical"
+                    spaced
+                    right
+                  >
+                    <template #content>
+                      <!-- <a
                       role="menuitem"
                       @click="gotoDetail(item.id)"
                       class="dropdown-item is-media"
@@ -368,54 +369,54 @@ onMounted(() => {
                         <span>View detail in page</span>
                       </div>
                     </a> -->
-                    <a
-                      role="menuitem"
-                      @click="openLeadProposalModalHandler(item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-pencil" />
-                      </div>
-                      <div class="meta">
-                        <span>Edit</span>
-                        <span>Edit Proposal Details</span>
-                      </div>
-                    </a>
+                      <a
+                        role="menuitem"
+                        @click="openLeadProposalModalHandler(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-pencil" />
+                        </div>
+                        <div class="meta">
+                          <span>Edit</span>
+                          <span>Edit Proposal Details</span>
+                        </div>
+                      </a>
 
-                    <a
-                      disabled
-                      role="menuitem"
-                      @click="openProposalPreview(item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-eye" />
-                      </div>
-                      <div class="meta">
-                        <span>Preview</span>
-                        <span>Preview proposal detail</span>
-                      </div>
-                    </a>
+                      <a
+                        disabled
+                        role="menuitem"
+                        @click="openProposalPreview(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-eye" />
+                        </div>
+                        <div class="meta">
+                          <span>Preview</span>
+                          <span>Preview proposal detail</span>
+                        </div>
+                      </a>
 
-                    <a
-                      v-if="item.status == 'approved'"
-                      role="menuitem"
-                      @click="openCreateTasksModalHandler(item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i
-                          class="lnil lnil-calender-alt-1"
-                          aria-hidden="true"
-                        ></i>
-                      </div>
-                      <div class="meta">
-                        <span>Create Tasks</span>
-                        <span>Create tasks in chart </span>
-                      </div>
-                    </a>
+                      <a
+                        v-if="item.status == 'approved'"
+                        role="menuitem"
+                        @click="openCreateTasksModalHandler(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i
+                            class="lnil lnil-calender-alt-1"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                        <div class="meta">
+                          <span>Create Tasks</span>
+                          <span>Create tasks in chart </span>
+                        </div>
+                      </a>
 
-                    <!-- <a
+                      <!-- <a
                       role="menuitem"
                       @click="openCostItemModal(item.id)"
                       class="dropdown-item is-media"
@@ -429,131 +430,135 @@ onMounted(() => {
                       </div>
                     </a> -->
 
-                    <hr class="dropdown-divider" />
+                      <hr class="dropdown-divider" />
 
-                    <a
-                      v-if="item.status != 'approved'"
-                      role="menuitem"
-                      @click="updateProposalStatus('approved', item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i
-                          class="lnir lnir-round-box-check"
-                          aria-hidden="true"
-                        ></i>
-                      </div>
-                      <div class="meta">
-                        <span>Mark Approved</span>
-                        <span>Mark Proposal As Approved</span>
-                      </div>
-                    </a>
+                      <a
+                        v-if="item.status != 'approved'"
+                        role="menuitem"
+                        @click="updateProposalStatus('approved', item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i
+                            class="lnir lnir-round-box-check"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+                        <div class="meta">
+                          <span>Mark Approved</span>
+                          <span>Mark Proposal As Approved</span>
+                        </div>
+                      </a>
 
-                    <a
-                      role="menuitem"
-                      @click="openProposalDeleteAlert(item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-trash-can-alt" />
-                      </div>
-                      <div class="meta">
-                        <span>Delete</span>
-                        <span>Delete from list</span>
-                      </div>
-                    </a>
-                  </template>
-                </VDropdown>
-              </VFlexTableCell>
-              <!-- openLeadProposalModalHandler -->
-            </div>
-          </TransitionGroup>
-        </template>
-      </VFlexTable>
-      <VPlaceholderPage
-        v-if="proposalsList.length < 1 && filteredData.length == 0"
-        title="There is no proposal created on this lead!"
-        subtitle="Too bad. Looks like we couldn't created any proposal on this Lead, please create proposal and release to the client"
-        larger
+                      <a
+                        role="menuitem"
+                        @click="openProposalDeleteAlert(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i
+                            aria-hidden="true"
+                            class="lnil lnil-trash-can-alt"
+                          />
+                        </div>
+                        <div class="meta">
+                          <span>Delete</span>
+                          <span>Delete from list</span>
+                        </div>
+                      </a>
+                    </template>
+                  </VDropdown>
+                </VFlexTableCell>
+                <!-- openLeadProposalModalHandler -->
+              </div>
+            </TransitionGroup>
+          </template>
+        </VFlexTable>
+        <VPlaceholderPage
+          v-if="proposalsList.length < 1 && filteredData.length == 0"
+          title="There is no proposal created on this lead!"
+          subtitle="Too bad. Looks like we couldn't created any proposal on this Lead, please create proposal and release to the client"
+          larger
+        >
+          <template #image>
+            <img
+              class="light-image"
+              src="/@src/assets/illustrations/placeholders/search-4.svg"
+              alt=""
+            />
+            <img
+              class="dark-image"
+              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+              alt=""
+            />
+          </template>
+        </VPlaceholderPage>
+
+        <VFlexPagination
+          v-if="filteredData.length > 5"
+          :item-per-page="10"
+          :total-items="873"
+          :current-page="42"
+          :max-links-displayed="7"
+        />
+      </div>
+      <CreateProposalTasksModal
+        v-if="openCreateTasksModal"
+        :createProposalTasksModal="openCreateTasksModal"
+        :proposalId="selectedProposalId"
+        @closeModalHandler="openCreateTasksModal = false"
+        @update:OnSuccess="getCompanyProposalList"
+      />
+      <LeadProposalModal
+        v-if="openLeadProposalModal"
+        :leadId="props.leadId"
+        :proposalId="selectedProposalId"
+        :leadProposalModal="openLeadProposalModal"
+        @update:modalHandler="openLeadProposalModal = false"
+        @update:OnSuccess="getCompanyProposalList"
+        @clearProposalId="selectedProposalId = ''"
+      />
+      <ProposalViewModal
+        v-if="previewModal"
+        :preview-modal="previewModal"
+        :proposalId="selectedProposal"
+        @update:modal-handler="previewModal = false"
+      />
+      <EstimateCostItemModal
+        v-if="addCostItemModal"
+        :costItemModal="addCostItemModal"
+        :proposalId="proposalId"
+        @update:modalHandler="addCostItemModal = false"
+        @update:OnSuccess="getCompanyProposalList"
       >
-        <template #image>
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/search-4.svg"
-            alt=""
-          />
-          <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-            alt=""
-          />
-        </template>
-      </VPlaceholderPage>
+      </EstimateCostItemModal>
+      <SweetAlert
+        v-if="SweetAlertProps.isSweetAlertOpen"
+        :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+        :title="SweetAlertProps.title"
+        :subtitle="SweetAlertProps.subtitle"
+        :btntext="SweetAlertProps.btntext"
+        :onConfirm="DeleteProposalHandler"
+        :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+      />
+      <SweetAlert
+        v-if="TasksSweetAlertProps.isSweetAlertOpen"
+        :isSweetAlertOpen="TasksSweetAlertProps.isSweetAlertOpen"
+        :title="TasksSweetAlertProps.title"
+        :subtitle="TasksSweetAlertProps.subtitle"
+        :btntext="TasksSweetAlertProps.btntext"
+        :onConfirm="DeleteProposalHandler"
+        :onCancel="() => (TasksSweetAlertProps.isSweetAlertOpen = false)"
+      />
 
-      <VFlexPagination
-        v-if="filteredData.length > 5"
-        :item-per-page="10"
-        :total-items="873"
-        :current-page="42"
-        :max-links-displayed="7"
+      <ProposalGroupModal
+        v-if="openProposalGroupModal"
+        :leadProposalListModal="openProposalGroupModal"
+        :leadID="props.leadId"
+        :group-proposal-modal="openProposalGroupModal"
+        @update:modal-handler="openProposalGroupModal = false"
       />
     </div>
-    <CreateProposalTasksModal
-      v-if="openCreateTasksModal"
-      :createProposalTasksModal="openCreateTasksModal"
-      :proposalId="selectedProposalId"
-      @closeModalHandler="openCreateTasksModal = false"
-      @update:OnSuccess="getCompanyProposalList"
-    />
-    <LeadProposalModal
-      v-if="openLeadProposalModal"
-      :leadId="props.leadId"
-      :proposalId="selectedProposalId"
-      :leadProposalModal="openLeadProposalModal"
-      @update:modalHandler="openLeadProposalModal = false"
-      @update:OnSuccess="getCompanyProposalList"
-      @clearProposalId="selectedProposalId = ''"
-    />
-    <ProposalViewModal
-      v-if="previewModal"
-      :preview-modal="previewModal"
-      :proposalId="selectedProposal"
-      @update:modal-handler="previewModal = false"
-    />
-    <EstimateCostItemModal
-      v-if="addCostItemModal"
-      :costItemModal="addCostItemModal"
-      :proposalId="proposalId"
-      @update:modalHandler="addCostItemModal = false"
-      @update:OnSuccess="getCompanyProposalList"
-    >
-    </EstimateCostItemModal>
-    <SweetAlert
-      v-if="SweetAlertProps.isSweetAlertOpen"
-      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
-      :title="SweetAlertProps.title"
-      :subtitle="SweetAlertProps.subtitle"
-      :btntext="SweetAlertProps.btntext"
-      :onConfirm="DeleteProposalHandler"
-      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
-    />
-    <SweetAlert
-      v-if="TasksSweetAlertProps.isSweetAlertOpen"
-      :isSweetAlertOpen="TasksSweetAlertProps.isSweetAlertOpen"
-      :title="TasksSweetAlertProps.title"
-      :subtitle="TasksSweetAlertProps.subtitle"
-      :btntext="TasksSweetAlertProps.btntext"
-      :onConfirm="DeleteProposalHandler"
-      :onCancel="() => (TasksSweetAlertProps.isSweetAlertOpen = false)"
-    />
-
-    <ProposalGroupModal
-      v-if="openProposalGroupModal"
-      :leadProposalListModal="openProposalGroupModal"
-      :leadID="props.leadId"
-      :group-proposal-modal="openProposalGroupModal"
-      @update:modal-handler="openProposalGroupModal = false"
-    />
   </div>
 </template>
 

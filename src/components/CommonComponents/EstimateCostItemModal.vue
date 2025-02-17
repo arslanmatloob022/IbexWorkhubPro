@@ -4,11 +4,15 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
+import { generalUnits } from "../IbexJobsEstimates/estimatesScripts";
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
 const isLoading = ref(false);
+const selectedCataLog = ref("");
+const assumeList = ref(<any>[]);
+const catalogList = ref(<any>[]);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -21,21 +25,6 @@ const props = defineProps<{
   costItemId?: string;
   previewCostItems?: boolean;
 }>();
-
-const tagsValue = ref([]);
-const tagsOptions = [
-  { value: "batman", label: "Batman" },
-  { value: "robin", label: "Robin" },
-  { value: "joker", label: "Joker" },
-];
-
-const sourcesValue = ref([]);
-const sourcesOptions = [
-  { value: "all", label: "All" },
-  { value: "contact", label: "Contact Form" },
-  { value: "google", label: "Google" },
-  { value: "referral", label: "Referral" },
-];
 
 interface item {
   previousItemIndex: number;
@@ -59,6 +48,7 @@ interface item {
   state: string;
   catalog: boolean;
   group: string;
+  worker_cost: number;
   proposal: string | undefined;
 }
 
@@ -82,6 +72,7 @@ const costItem = ref<item>({
   markup: 0,
   margin: 0,
   profit: 0,
+  worker_cost: 0.0,
   group: "",
   catalog: false,
   proposal: props.proposalId,
@@ -103,26 +94,9 @@ const costCodesList = ref([
   { value: "11015", label: "Others" },
 ]);
 
-const itemGroup = ref([
-  { value: "Tiling", label: "Tiling" },
-  { value: "Material", label: "Material" },
-  { value: "Paint", label: "Paint" },
-  { value: "Carpenter", label: "Carpenter" },
-]);
-
 const markAsOption = ref([
   { value: "bid", label: "Bid" },
   { value: "allowance", label: "Allowance" },
-]);
-
-const status = ref([
-  { value: "open", label: "Open" },
-  { value: "inProgress", label: "In Progress" },
-  { value: "onHold", label: "On Hold" },
-  { value: "pending", label: "Pending" },
-  { value: "lost", label: "Lost" },
-  { value: "sold", label: "sold" },
-  { value: "noOpportunity", label: "No Opportunity" },
 ]);
 
 const addUpdateLeadHandler = async () => {
@@ -165,10 +139,10 @@ const unitCost = ref(0); // Unit cost per item
 const quantity = ref(0); // Quantity of items
 const builderPrice = computed(
   () => costItem.value.unit_cost * costItem.value.quantity
-); // Builder price calculation
+);
 
-const markup = ref(0); // Markup percentage
-const margin = ref(0); // Margin percentage
+const markup = ref(0);
+const margin = ref(0);
 
 const totalPrice = computed(() => {
   if (costItem.value.markup > 0) {
@@ -212,16 +186,20 @@ const getCostItemDetail = async () => {
     loading.value = false;
   }
 };
-
+const costCodesWholeList = ref([]);
 const Loading = ref(false);
 const getCostCodesHandler = async () => {
   try {
     Loading.value = true;
     const response = await api.get(`/api/cost-code/`);
+    costCodesWholeList.value = response.data;
     costCodesList.value = response.data.map((item: any) => {
       return {
         value: item.id,
         label: item.name,
+        labour_cost: item.labour_cost,
+        unit_cost: item.unit_cost ?? 0.0,
+        worker_cost: item.worker_cost ?? 0.0,
       };
     });
   } catch (err) {
@@ -230,6 +208,23 @@ const getCostCodesHandler = async () => {
     Loading.value = false;
   }
 };
+
+watch(
+  () => costItem.value.cost_code,
+  (newVal, oldVal) => {
+    if (newVal) {
+      const selectedItem = costCodesWholeList.value.find(
+        (item) => item.id === newVal
+      );
+      if (selectedItem) {
+        costItem.value.unit_cost = selectedItem.unit_cost;
+        costItem.value.worker_cost = selectedItem.worker_cost;
+      } else {
+        console.warn("No matching item found for cost_code:", newVal);
+      }
+    }
+  }
+);
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -243,9 +238,7 @@ onMounted(async () => {
   getCostCodesHandler();
   getCataLogItemDetail();
 });
-const selectedCataLog = ref("");
-const assumeList = ref(<any>[]);
-const catalogList = ref(<any>[]);
+
 const getCataLogItemDetail = async () => {
   try {
     loading.value = true;
@@ -266,9 +259,7 @@ const getCataLogItemDetail = async () => {
 watch(selectedCataLog, (oldVal, newVal) => {
   let list = assumeList.value;
   const matchedItem = list.find((item) => item.id == selectedCataLog.value);
-
   const { id, ...newObj } = matchedItem;
-
   costItem.value = newObj;
 });
 </script>
@@ -468,13 +459,15 @@ watch(selectedCataLog, (oldVal, newVal) => {
               <label>Unit</label>
               <VField>
                 <VControl>
-                  <VInput
-                    v-model="costItem.unit"
+                  <VSelect
                     :disabled="props.previewCostItems"
-                    type="text"
-                    name="unit"
-                    placeholder="Unit"
-                  />
+                    v-model="costItem.unit"
+                  >
+                    <VOption value=""> Select Unit </VOption>
+                    <VOption v-for="item in generalUnits" :value="item.value">
+                      {{ item.label }}
+                    </VOption>
+                  </VSelect>
                 </VControl>
               </VField>
             </div>
@@ -509,7 +502,7 @@ watch(selectedCataLog, (oldVal, newVal) => {
               </VField>
             </div>
             <div class="field column is-6">
-              <label>Client Price</label>
+              <label>Total Price</label>
               <VField>
                 <VControl>
                   <VInput
@@ -534,6 +527,20 @@ watch(selectedCataLog, (oldVal, newVal) => {
                     name="markup"
                     step="any"
                     placeholder="Margin"
+                  />
+                </VControl>
+              </VField>
+            </div>
+            <div class="field column is-6">
+              <label>Worker Cost</label>
+              <VField>
+                <VControl>
+                  <VInput
+                    v-model="costItem.worker_cost"
+                    type="number"
+                    name="workerCost"
+                    step="any"
+                    placeholder="Worker Cost"
                   />
                 </VControl>
               </VField>
