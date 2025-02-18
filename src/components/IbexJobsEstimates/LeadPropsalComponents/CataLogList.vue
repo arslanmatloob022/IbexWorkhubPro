@@ -23,6 +23,16 @@ const filters = ref("");
 const catalogs = ref<any>([]);
 const proposalsList = ref<any[]>([]); // Fetch if needed
 
+const addCostItemModal = ref(false);
+const proposalId = ref("");
+const previousItemIndex = ref(0);
+const selectedCostItem = ref("");
+const openUpdateCostItem = (cost: any, preview: boolean = false) => {
+  selectedCostItem.value = cost.id;
+  proposalId.value = cost.proposal;
+  addCostItemModal.value = !addCostItemModal.value;
+};
+const costMode = ref("catalog");
 const columns = [
   { label: "Title", key: "title" },
   { label: "Unit", key: "unit" },
@@ -99,7 +109,21 @@ onMounted(fetchCatalogs);
             <span class="light-text">{{ item.cost_type }}</span>
           </VFlexTableCell>
           <VFlexTableCell>
-            <VButton color="danger" size="small" @click="deleteCatalog(item.id)"
+            <VButton
+              color="primary"
+              size="medium"
+              light
+              @click="openUpdateCostItem(item, false)"
+              icon="fas fa-pen"
+              >Edit</VButton
+            >
+            <VButton
+              class="ml-2"
+              color="danger"
+              size="medium"
+              light
+              @click="deleteCatalog(item.id)"
+              icon="fas fa-trash-alt"
               >Delete</VButton
             >
           </VFlexTableCell>
@@ -107,4 +131,19 @@ onMounted(fetchCatalogs);
       </TransitionGroup>
     </template>
   </VFlexTable>
+
+  <EstimateCostItemModal
+    v-if="addCostItemModal"
+    :costItemModal="addCostItemModal"
+    :proposalId="proposalId"
+    :costItemId="selectedCostItem"
+    :previousItemIndex="previousItemIndex"
+    :costMode="costMode"
+    @update:modalHandler="
+      addCostItemModal = false;
+      selectedCostItem = '';
+    "
+    @update:OnSuccess="fetchCatalogs"
+  >
+  </EstimateCostItemModal>
 </template>

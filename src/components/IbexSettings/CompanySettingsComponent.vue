@@ -160,6 +160,15 @@ const updateCompany = (updatedCompany: typeof company) => {
                   ><span>Manage Role</span></a
                 >
               </li>
+              <li :class="[tab === 'logs' ? 'is-active' : 'not-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'logs'"
+                  @click="tab = 'logs'"
+                  ><span>Action logs</span></a
+                >
+              </li>
             </ul>
           </div>
         </div>
@@ -177,6 +186,10 @@ const updateCompany = (updatedCompany: typeof company) => {
       </div>
       <div v-if="tab === 'manageRole'">
         <ManageRole />
+      </div>
+
+      <div v-if="tab === 'logs'">
+        <CompanyActivitylog />
       </div>
 
       <!-- <div class="" v-if="tab === 'proposalsTemplates'">
