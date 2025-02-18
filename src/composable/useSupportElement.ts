@@ -81,34 +81,36 @@ export function downloadCSV(
 }
 
 interface ActivityLogOptions {
-  performedById?: number;
-  performerType?: "worker" | "arezUser";
-  method?: "get" | "post" | "patch" | "delete";
+  actor?: number;
+  object_type?: "worker" | "ibexUser";
+  action?: "get" | "CREATE" | "RETRIEVE" | "DELETE";
   message?: string;
   performedOnName?: "supplier" | "worker";
-  objectId?: number;
+  object_id?: number;
 }
 
 export function CreateActivityLog(options: ActivityLogOptions = {}) {
   const {
-    performedById = userSession.user.id,
-    performerType = "arezUser",
-    method = "get",
+    actor = userSession.user.id,
+    object_type = "ibexUser",
+    action = "RETRIEVE",
     message = "",
     performedOnName = "worker",
-    objectId = 0,
+    object_id = 0,
   } = options;
 
+
+
   const payload = {
-    performedById,
-    performerType,
-    method,
+    actor,
+    object_type,
+    action,
     message,
     performedOnName,
-    objectId,
+    object_id,
   };
   try {
-    const response = api.post("/v3/api/account/actions/", payload);
+    const response = api.post("/api/activity-logs/", payload);
   } catch (err) {
     console.log(err);
   }

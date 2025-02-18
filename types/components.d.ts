@@ -135,6 +135,7 @@ declare module 'vue' {
     ColorsDocumentation: typeof import('./../documentation/elements/colors-documentation.md')['default']
     CompaniesDetails: typeof import('./../src/components/pages/networks/customCompanies/CompaniesDetails.vue')['default']
     CompaniesNetwork: typeof import('./../src/components/pages/networks/companies/CompaniesNetwork.vue')['default']
+    CompanyActivitylog: typeof import('./../src/components/CompanyActivitylog.vue')['default']
     CompanyContract: typeof import('./../src/components/pages/networks/customCompanies/CompanyContract.vue')['default']
     CompanyDashboard: typeof import('./../src/components/pages/dashboards/business/CompanyDashboard.vue')['default']
     CompanyDocuments: typeof import('./../src/components/pages/networks/companies/CompanyDocuments.vue')['default']

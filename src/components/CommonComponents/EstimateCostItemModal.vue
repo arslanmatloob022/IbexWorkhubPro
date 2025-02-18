@@ -5,6 +5,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import { generalUnits } from "../IbexJobsEstimates/estimatesScripts";
+import { CreateActivityLog } from "/@src/composable/useSupportElement";
 const editor = shallowRef<any>();
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -24,6 +25,7 @@ const props = defineProps<{
   previousItemIndex?: number;
   costItemId?: string;
   previewCostItems?: boolean;
+  costMode?: string;
 }>();
 
 interface item {
@@ -109,16 +111,35 @@ const addUpdateLeadHandler = async () => {
         `/api/cost/${props.costItemId}/`,
         formDataAPI
       );
+      CreateActivityLog({
+        message: `Cost item Update `,
+        action: "UPDATE",
+        performedOnName: "Cost",
+        object_id: props.costItemId,
+      });
     } else {
       const response = await api.post("/api/cost/", formDataAPI);
       if (costItem.value.catalog) {
         const result = await api.post(
           `/api/cost/${response.data.id}/create-catalog/`
         );
+        CreateActivityLog({
+          message: `CataLog Create`,
+          action: "CREATE",
+          performedOnName: "Cost",
+          object_id: response.data[0],
+        });
       }
+      CreateActivityLog({
+        message: `Cost Item Create`,
+        action: "CREATE",
+        performedOnName: "Cost",
+        object_id: response.data[0],
+      });
     }
     closeModalHandler();
     updateOnSuccess();
+
     notyf.success("Item added successfully.");
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);
@@ -268,7 +289,7 @@ watch(selectedCataLog, (oldVal, newVal) => {
   <VModal
     is="form"
     :open="props.costItemModal"
-    title="Cost Item "
+    :title="props.costMode == 'catalog' ? 'Update Catalog' : 'Cost Item '"
     size="xl"
     actions="right"
     @submit.prevent="addUpdateLeadHandler"
@@ -293,6 +314,7 @@ watch(selectedCataLog, (oldVal, newVal) => {
               </div>
             </div>
             <VField
+              v-if="props.costMode !== 'catalog'"
               v-slot="{ id }"
               class="is-image-select column is-6"
               label="Select Catalog"
@@ -321,7 +343,7 @@ watch(selectedCataLog, (oldVal, newVal) => {
               </VControl>
             </VField>
 
-            <div class="field column is-6">
+            <div class="field column is-6" v-if="props.costMode !== 'catalog'">
               <label for="">Cost Type</label>
               <VField>
                 <VControl>
