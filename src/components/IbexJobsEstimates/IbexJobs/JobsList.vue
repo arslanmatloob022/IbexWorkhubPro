@@ -279,7 +279,7 @@ onMounted(() => {
                       </span>
                     </div>
                     <div v-if="item.contractor_info" class="show-text-200">
-                      <span class="item-name">{{
+                      <span class="item-name dark-inverted">{{
                         item.contractor_info?.username
                           ? item.contractor_info?.username
                           : "N/A"
@@ -322,7 +322,7 @@ onMounted(() => {
                     :column="{ media: true }"
                   >
                     <div>
-                      <span class="item-name">{{
+                      <span class="item-name dark-inverted">{{
                         formatDate(item.created)
                       }}</span>
                       <span class="item-meta">

@@ -279,7 +279,7 @@ const classes = computed(() => {
       input + span {
         &::after {
           color: var(--warning);
-          content: "✔";
+          content: url("/icons/icons-check.png");
         }
       }
     }
@@ -292,7 +292,7 @@ const classes = computed(() => {
       input + span {
         &::after {
           color: var(--danger);
-          content: "✔";
+          content: url("/icons/icons-check.png");
         }
       }
     }

@@ -3,13 +3,10 @@ import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
-import { useUserSession } from "/@src/stores/userSession";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
-import { I } from "@fullcalendar/resource/internal-common";
 import { downloadProposalPdf } from "../proposalsComponents";
 import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
 import { useDropdown } from "/@src/composable/useDropdown";
-import { onceImageErrored } from "/@src/utils/via-placeholder";
 
 const dropdownElement = ref<HTMLElement>();
 const dropdown = useDropdown(dropdownElement);
@@ -32,6 +29,7 @@ const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
 }>();
+
 const props = defineProps<{
   proposalId?: string;
   leadId?: string;
@@ -43,12 +41,14 @@ const data = [
     content: "Add additional information about rota, rate or worker",
   },
 ];
+
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
 });
+
 interface item {
   title: string;
   description: string;
@@ -254,7 +254,7 @@ onMounted(async () => {
         <div>
           <VButton
             @click="openCreateTasksModalHandler(route.params.id)"
-            size="xsmall"
+            size="small"
             class="mr-2"
             light
             outlined
@@ -269,7 +269,7 @@ onMounted(async () => {
           </VButton>
           <VButton
             @click="updateProposalHandler"
-            size="xsmall"
+            size="small"
             class="mr-2"
             light
             outlined
@@ -279,7 +279,7 @@ onMounted(async () => {
             Update
           </VButton>
           <VButton
-            size="xsmall"
+            size="small"
             @click="openProposalDeleteAlert(leadProposalFormData.id)"
             light
             outlined
@@ -304,23 +304,22 @@ onMounted(async () => {
               @keydown.space.prevent="dropdown.toggle"
             >
               <VButton
-                size="xsmall"
-                class="mr-2"
+                size="small"
+                class="ml-2"
                 light
-                style="margin-top: -6px"
                 outlined
                 color="success"
                 raised
                 >More Action</VButton
               >
             </div>
-            <div class="dropdown-menu" role="menu" style="min-width: 260px">
+            <div class="dropdown-menu" role="menu" style="min-width: 320px">
               <div class="dropdown-content p-4">
                 <div class="columns is-multiline">
                   <div class="column is-6 pl-3 pr-3 pb-2 pt-2">
                     <VButton
                       @click="openCreateTemplate = !openCreateTemplate"
-                      size="xsmall"
+                      size="small"
                       class="mr-2"
                       light
                       outlined
@@ -333,8 +332,9 @@ onMounted(async () => {
                   </div>
                   <div class="column is-6 pl-3 pr-0 pb-2 pt-2">
                     <VButton
-                      size="xsmall"
+                      size="small"
                       light
+                      class="m-1"
                       outlined
                       raised
                       color="warning"
@@ -348,11 +348,11 @@ onMounted(async () => {
                   </div>
                   <div class="column is-6 p-0 pl-3 pb-2">
                     <VButton
-                      size="xsmall"
+                      size="small"
                       light
                       raised
                       @click="openSendProposalModalHandler"
-                      class="ml-1"
+                      class="m-1"
                       outlined
                       color="success"
                     >
@@ -363,9 +363,9 @@ onMounted(async () => {
                   <div class="column is-6 p-0 pl-3 pb-2 pr-0">
                     <VButton
                       @click="openProposalAlert('approved')"
-                      size="xsmall"
+                      size="small"
                       v-if="leadProposalFormData.status != 'approved'"
-                      class="mr-2 ml-1"
+                      class="m-2"
                       light
                       outlined
                       color="info"
@@ -377,20 +377,20 @@ onMounted(async () => {
                     <VButton
                       v-else
                       light
-                      size="xsmall"
+                      size="small"
                       color="primary"
-                      class="ml-1"
+                      class="m-1"
                       icon="fas fa-check-circle"
                     >
                       Approved
                     </VButton>
                   </div>
-                  <div class="column is-6 p-0">
+                  <div class="column is-12 p-0">
                     <VSnack
                       v-if="leadProposalFormData.is_task_created"
                       title="Calendar Tasks Created "
                       white
-                      class="ml-2"
+                      class="m-2"
                       color="info"
                       icon="fas fa-calendar-check"
                     >

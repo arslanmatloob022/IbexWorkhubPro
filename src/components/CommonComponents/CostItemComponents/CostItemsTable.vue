@@ -179,6 +179,7 @@ onMounted(() => {});
                   bottom: -7px;
                   left: 1px;
                   cursor: pointer;
+                  z-index: 99;
                   font-weight: 600;
                 "
                 @click="openProposalCostItems(cost)"
@@ -213,7 +214,7 @@ onMounted(() => {});
                 spaced
                 right
                 up
-                style="z-index: 99999"
+                style="z-index: 99"
               >
                 <template #content="{ close }">
                   <!-- <a

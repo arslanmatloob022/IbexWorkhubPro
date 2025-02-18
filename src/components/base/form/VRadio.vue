@@ -102,7 +102,7 @@ const internal = computed({
     backface-visibility: hidden;
 
     &::after {
-      content: "";
+      content: url("/icons/radio-icon.png");
       display: block;
       transform: scale(0);
       transition: transform 0.2s;
@@ -168,7 +168,7 @@ const internal = computed({
         background-color: var(--primary);
 
         &::after {
-          color: var(--white);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -179,7 +179,7 @@ const internal = computed({
         background: var(--success);
         background-color: var(--success);
         &::after {
-          color: var(--white);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -191,7 +191,7 @@ const internal = computed({
         background-color: var(--info);
 
         &::after {
-          color: var(--white);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -203,7 +203,7 @@ const internal = computed({
         background-color: var(--warning);
 
         &::after {
-          color: var(--white);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -215,7 +215,7 @@ const internal = computed({
         background-color: var(--danger);
 
         &::after {
-          color: var(--white);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -229,7 +229,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          color: var(--primary);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -241,7 +241,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          color: var(--success);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -253,7 +253,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          color: var(--info);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -265,7 +265,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          color: var(--warning);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -277,7 +277,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          color: var(--danger);
+          content: url("/icons/radio-icon.png");
         }
       }
     }
@@ -289,8 +289,8 @@ const internal = computed({
     &::after {
       background-size: contain;
       position: absolute;
-      top: 49%;
-      inset-inline-start: 50%;
+      top: 58%;
+      inset-inline-start: 52%;
       transform: translate(-50%, -50%) scale(0);
       content: "\f111";
       font-family: "Font Awesome\ 5 Free";
