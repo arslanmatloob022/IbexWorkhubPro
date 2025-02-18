@@ -278,8 +278,8 @@ onMounted(() => {
                     class="cu-pointer"
                     :column="{ media: true, grow: true }"
                   >
-                    <div v-if="item.clientInfo" class="show-text-200">
-                      <span class="item-name">{{
+                    <div v-if="item.clientInfo">
+                      <span class="item-name dark-inverted">{{
                         item.clientInfo?.username
                           ? item.clientInfo?.username
                           : "N/A"
@@ -292,8 +292,8 @@ onMounted(() => {
                         }}</span>
                       </span>
                     </div>
-                    <div v-else-if="item.contractor_info" class="show-text-200">
-                      <span class="item-name">{{
+                    <div v-else-if="item.contractor_info">
+                      <span class="item-name dark-inverted">{{
                         item.contractor_info?.username
                           ? item.contractor_info?.username
                           : "N/A"
