@@ -80,6 +80,7 @@ interface leadProposalData {
 }
 // <leadProposalData>
 const leadProposalFormData = ref({
+  id: "",
   title: "",
   approval_deadline: "",
   attachments: [],
@@ -247,160 +248,123 @@ onMounted(async () => {
 <template>
   <div class="modal-form columns is-multiline">
     <div
-      class="column is-12 is-flex align-items-center"
-      style="justify-content: end"
+      class="column is-12 is-flex space-between align-items-center card mx-3"
     >
-      <div class="is-flex" style="gap: 43px">
-        <div>
-          <VButton
-            @click="openCreateTasksModalHandler(route.params.id)"
-            size="small"
-            class="mr-2"
-            light
-            outlined
-            color="success"
-            raised
-            v-if="
-              !leadProposalFormData.is_task_created &&
-              leadProposalFormData.status == 'approved'
-            "
-          >
-            Generate Tasks
-          </VButton>
-          <VButton
-            @click="updateProposalHandler"
-            size="small"
-            class="mr-2"
-            light
-            outlined
-            color="primary"
-            raised
-          >
-            Update
-          </VButton>
-          <VButton
-            size="small"
-            @click="openProposalDeleteAlert(leadProposalFormData.id)"
-            light
-            outlined
-            icon="fas fa-trash"
-            color="danger"
-            raised
-          >
-            <i class="fas fa-"></i>
-          </VButton>
-        </div>
+      <div class="is-flex">
+        <VButton
+          @click="openProposalAlert('approved')"
+          size="small"
+          v-if="leadProposalFormData.status != 'approved'"
+          class="ml-2"
+          light
+          outlined
+          color="info"
+          raised
+        >
+          <i class="fas fa-check"></i>
+          Approved
+        </VButton>
+        <VButton
+          v-else
+          light
+          size="small"
+          color="primary"
+          class="ml-1"
+          icon="fas fa-check-circle"
+        >
+          Approved
+        </VButton>
+        <VSnack
+          v-if="leadProposalFormData.is_task_created"
+          title="Calendar Tasks Created "
+          white
+          class="ml-2"
+          color="info"
+          icon="fas fa-calendar-check"
+        >
+        </VSnack>
+      </div>
+      <div>
+        <VButton
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="success"
+          raised
+          @click="openCreateTasksModalHandler(route.params.id)"
+          v-if="
+            !leadProposalFormData.is_task_created &&
+            leadProposalFormData.status == 'approved'
+          "
+        >
+          Generate Tasks
+        </VButton>
+        <VButton
+          @click="updateProposalHandler"
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="primary"
+          raised
+        >
+          Update
+        </VButton>
 
-        <div class="toolbar-notifications is-hidden-mobile">
-          <div
-            ref="dropdownElement"
-            class="dropdown is-spaced is-dots is-right dropdown-trigger"
-          >
-            <div
-              tabindex="0"
-              class="is-trigger"
-              aria-haspopup="true"
-              @click="dropdown.toggle"
-              @keydown.space.prevent="dropdown.toggle"
+        <VDropdown spaced right icon="lucide:more-vertical">
+          <template #content>
+            <a
+              @click="openCreateTemplate = !openCreateTemplate"
+              class="dropdown-item is-media"
             >
-              <VButton
-                size="small"
-                class="ml-2"
-                light
-                outlined
-                color="success"
-                raised
-                >More Action</VButton
-              >
-            </div>
-            <div class="dropdown-menu" role="menu" style="min-width: 320px">
-              <div class="dropdown-content p-4">
-                <div class="columns is-multiline">
-                  <div class="column is-6 pl-3 pr-3 pb-2 pt-2">
-                    <VButton
-                      @click="openCreateTemplate = !openCreateTemplate"
-                      size="small"
-                      class="mr-2"
-                      light
-                      outlined
-                      color="success"
-                      raised
-                    >
-                      <i class="fas fa-plus"></i>
-                      Create Template
-                    </VButton>
-                  </div>
-                  <div class="column is-6 pl-3 pr-0 pb-2 pt-2">
-                    <VButton
-                      size="small"
-                      light
-                      class="m-1"
-                      outlined
-                      raised
-                      color="warning"
-                      icon="fa fa-cloud-download-alt"
-                      @click="
-                        downloadProposalPdf(useProposal.leadProposalFormData)
-                      "
-                    >
-                      Download
-                    </VButton>
-                  </div>
-                  <div class="column is-6 p-0 pl-3 pb-2">
-                    <VButton
-                      size="small"
-                      light
-                      raised
-                      @click="openSendProposalModalHandler"
-                      class="m-1"
-                      outlined
-                      color="success"
-                    >
-                      <i class="fas fa-envelope mr-1"></i>
-                      Send Mail &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </VButton>
-                  </div>
-                  <div class="column is-6 p-0 pl-3 pb-2 pr-0">
-                    <VButton
-                      @click="openProposalAlert('approved')"
-                      size="small"
-                      v-if="leadProposalFormData.status != 'approved'"
-                      class="m-2"
-                      light
-                      outlined
-                      color="info"
-                      raised
-                    >
-                      <i class="fas fa-check"></i>
-                      Approved
-                    </VButton>
-                    <VButton
-                      v-else
-                      light
-                      size="small"
-                      color="primary"
-                      class="m-1"
-                      icon="fas fa-check-circle"
-                    >
-                      Approved
-                    </VButton>
-                  </div>
-                  <div class="column is-12 p-0">
-                    <VSnack
-                      v-if="leadProposalFormData.is_task_created"
-                      title="Calendar Tasks Created "
-                      white
-                      class="m-2"
-                      color="info"
-                      icon="fas fa-calendar-check"
-                    >
-                    </VSnack>
-                  </div>
-                </div>
+              <div class="icon">
+                <i class="lnil lnil-copy" />
               </div>
-            </div>
-          </div>
-        </div>
+              <div class="meta">
+                <span>Create Template</span>
+                <span>Save as template for next use </span>
+              </div>
+            </a>
+            <a
+              @click="openSendProposalModalHandler"
+              class="dropdown-item is-media"
+            >
+              <div class="icon">
+                <i class="lnil lnil-envelope" />
+              </div>
+              <div class="meta">
+                <span>Send Email</span>
+                <span>Send proposal email to the client </span>
+              </div>
+            </a>
+            <a
+              @click="downloadProposalPdf(leadProposalFormData)"
+              class="dropdown-item is-media"
+            >
+              <div class="icon">
+                <i class="lnil lnil-cloud-download" />
+              </div>
+              <div class="meta">
+                <span>Download</span>
+                <span>Download proposal as pdf </span>
+              </div>
+            </a>
+            <hr class="dropdown-divider" />
+            <a
+              @click="openProposalDeleteAlert(leadProposalFormData.id)"
+              class="dropdown-item is-media"
+            >
+              <div class="icon">
+                <i class="lnil lnil-trash" />
+              </div>
+              <div class="meta">
+                <span>Delete </span>
+                <span>Delete proposal permanently </span>
+              </div>
+            </a>
+          </template>
+        </VDropdown>
       </div>
     </div>
     <div

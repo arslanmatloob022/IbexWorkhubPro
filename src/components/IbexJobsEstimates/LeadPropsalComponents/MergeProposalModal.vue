@@ -9,7 +9,7 @@ import { convertToFormData } from "/@src/composable/useSupportElement";
 const loading = ref(false);
 const api = useApi();
 const notyf = useNotyf();
-const proposalCreated = ref("");
+const customColumns = ref(false);
 const tardeList = ref([
   {
     value: "",
@@ -76,9 +76,13 @@ const mergeProposalsHandler = async () => {
   try {
     loading.value = true;
     let payload = groupProposalData.value;
-    payload.columns_to_show = JSON.stringify(
-      groupProposalData.value.columns_to_show
-    );
+    if ((customColumns.value = true)) {
+      payload.columns_to_show = JSON.stringify(
+        groupProposalData.value.columns_to_show
+      );
+    } else {
+      payload.columns_to_show = [];
+    }
     payload.proposals = JSON.stringify(groupProposalData.value.proposals);
     const resp = await api.post(
       `/api/lead-proposal/merge-proposals/`,
@@ -165,8 +169,14 @@ onMounted(() => {
             </VGridItem>
           </VGrid>
         </div>
+        <div class="column is-12 p-0 m-0">
+          <hr />
+        </div>
         <div class="column is-12">
-          <VField label="Select Group Type">
+          <VField>
+            <VLabel style="color: var(--info) !important"
+              >Select Group Type</VLabel
+            >
             <VControl>
               <VRadio
                 v-model="groupProposalData.type"
@@ -218,7 +228,19 @@ onMounted(() => {
             </VControl>
           </VField>
         </div>
-        <!-- <div class="column is-12">
+        <!-- <div class="column is-5">
+          <VField label="Select proposal columns">
+            <VControl>
+              <VSwitchSegment
+                v-model="customColumns"
+                label-true="Select Custom"
+                label-false="Proposal saved"
+                color="primary"
+              />
+            </VControl>
+          </VField>
+        </div> -->
+        <div v-if="customColumns" class="column is-12">
           <VField
             v-slot="{ id }"
             label="Choose what to merge in show in group proposal"
@@ -235,7 +257,7 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-        </div> -->
+        </div>
 
         <div class="column is-12">
           <VField

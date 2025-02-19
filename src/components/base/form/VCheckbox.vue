@@ -239,7 +239,7 @@ const classes = computed(() => {
       input + span {
         &::after {
           color: var(--primary);
-          content: "✔";
+          content: url("/icons/icons-check.png");
         }
       }
     }
@@ -305,7 +305,7 @@ const classes = computed(() => {
     &::after {
       background-size: contain;
       position: absolute;
-      top: 48%;
+      top: 56%;
       inset-inline-start: 50%;
       transform: translate(-50%, -50%) scale(0);
       content: url("/icons/icons-check.png");

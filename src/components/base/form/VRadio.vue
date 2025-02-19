@@ -229,7 +229,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          content: url("/icons/radio-icon.png");
+          content: url("/icons/radio-icon-sq-primary.png");
         }
       }
     }
@@ -241,7 +241,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          content: url("/icons/radio-icon.png");
+          content: url("/icons/radio-icon-sq-primary.png");
         }
       }
     }
@@ -253,7 +253,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          content: url("/icons/radio-icon.png");
+          content: url("/icons/radio-icon-sq-info.png");
         }
       }
     }
@@ -265,7 +265,7 @@ const internal = computed({
 
       input + span {
         &::after {
-          content: url("/icons/radio-icon.png");
+          content: url("/icons/radio-icon-sq-warning.png");
         }
       }
     }

@@ -9,6 +9,7 @@ import {
   formatTime,
 } from "/@src/composable/useSupportElement";
 import { getStatusColor } from "../estimatesScripts";
+import moment from "moment";
 
 const router = useRouter();
 const notyf = useNotyf();
@@ -164,12 +165,38 @@ const filteredData = computed(() => {
   }
 });
 
+const selectedSortOption = ref("");
+
+const sortJobs = (type: string = "") => {
+  selectedSortOption.value = type;
+};
+
 const secondFiltered = computed(() => {
-  if (!statusFilter.value) {
+  let data = filteredData.value || [];
+  if (!selectedSortOption.value) {
     return filteredData.value;
   } else {
-    return filteredData.value?.filter((item: any) => {
-      return item.status == statusFilter.value;
+    return [...data].sort((a: any, b: any) => {
+      if (selectedSortOption.value === "ascending") {
+        return (
+          a?.clientInfo?.username.localeCompare(b?.clientInfo?.username) ||
+          a?.contractor_info?.username.localeCompare(
+            b?.contractor_info?.username
+          )
+        );
+      } else if (selectedSortOption.value === "descending") {
+        return (
+          b?.clientInfo?.username.localeCompare(a?.clientInfo?.username) ||
+          b?.contractor_info?.username.localeCompare(
+            a?.contractor_info?.username
+          )
+        );
+      } else if (selectedSortOption.value === "new") {
+        return moment(b.created).valueOf() - moment(a.created).valueOf(); // Most recent on top
+      } else if (selectedSortOption.value === "old") {
+        return moment(a.created).valueOf() - moment(b.created).valueOf(); // Oldest on top
+      }
+      return 0;
     });
   }
 });
@@ -194,17 +221,49 @@ onMounted(() => {
           </VControl>
         </VField>
 
-        <VField>
-          <VControl class="has-icons-left" icon="fas fa-globe">
-            <VSelect v-model="statusFilter">
-              <VOption value=""> All </VOption>
-              <VOption v-for="link in leadsStatusFilters" :value="link.value">
-                {{ link.label }}
-              </VOption>
-            </VSelect>
-          </VControl>
-        </VField>
-
+        <VDropdown title="Apply sorting" spaced>
+          <template #content>
+            <a @click="sortJobs('ascending')" class="dropdown-item is-media">
+              <div class="icon">
+                <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
+              </div>
+              <div class="meta">
+                <span>Ascending</span>
+                <span>Alphabetical Ascending Sorting</span>
+              </div>
+            </a>
+            <a
+              @click="sortJobs('descending')"
+              class="dropdown-item is-media is-active"
+            >
+              <div class="icon">
+                <i class="fas fa-sort-alpha-down-alt" aria-hidden="true"></i>
+              </div>
+              <div class="meta">
+                <span>Descending</span>
+                <span>Alphabetical Descending Sorting</span>
+              </div>
+            </a>
+            <a @click="sortJobs('new')" class="dropdown-item is-media">
+              <div class="icon">
+                <i class="fas fa-sort-numeric-down" aria-hidden="true"></i>
+              </div>
+              <div class="meta">
+                <span>Most Recent</span>
+                <span>Sort most recently created</span>
+              </div>
+            </a>
+            <a @click="sortJobs('old')" class="dropdown-item is-media">
+              <div class="icon">
+                <i class="fas fa-sort-numeric-down-alt" aria-hidden="true"></i>
+              </div>
+              <div class="meta">
+                <span>Most Old</span>
+                <span>Sort the most oldest</span>
+              </div>
+            </a>
+          </template>
+        </VDropdown>
         <VButtons>
           <VButton
             @click="openLeadUpdateModal('')"

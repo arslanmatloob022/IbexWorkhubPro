@@ -170,7 +170,7 @@ onMounted(() => {
                 color="primary"
                 >Approve</VButton
               >
-              <VButton
+              <!-- <VButton
                 size="xsmall"
                 @click="openReviewModal = !openReviewModal"
                 class="ml-2"
@@ -185,7 +185,7 @@ onMounted(() => {
                 outlined
                 color="danger"
                 >Disapprove</VButton
-              >
+              > -->
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@ onMounted(() => {
         </div>
         <div v-else class="invoice-body">
           <div class="invoice-card">
-            <div class="invoice-section is-flex is-bordered">
+            <div class="invoice-section is-flex">
               <VAvatar size="xl" picture="/logos/IbexFavicon.png" />
 
               <div class="meta"></div>
@@ -209,7 +209,7 @@ onMounted(() => {
               </div>
             </div>
 
-            <div class="invoice-section is-flex is-bordered">
+            <div class="invoice-section is-flex">
               <div v-if="proposalDetail?.jobInfo?.clientInfo" class="meta">
                 <h3>
                   {{ proposalDetail?.jobInfo?.clientInfo?.username ?? "N/A" }}
@@ -242,7 +242,7 @@ onMounted(() => {
                     v-for="(column, index) in proposalDetail.columns_to_show"
                     :key="index"
                   >
-                    {{ column }}
+                    {{ getColumnName[column] }}
                   </th>
                 </thead>
                 <tbody>
@@ -252,13 +252,14 @@ onMounted(() => {
                       :key="key"
                     >
                       <div
-                        v-if="column === 'Description'"
-                        v-html="cost[getColumnData[key]]"
+                        style="color: #222"
+                        v-if="column === 'description'"
+                        v-html="cost[getColumnData[column]]"
                       ></div>
                       <span v-else>
-                        {{ cost[getColumnData[key]] }}
+                        {{ cost[getColumnData[column]] }}
                       </span>
-                      <span v-if="column === 'Cost Code'">
+                      <span v-if="column === 'cost_code'">
                         {{ cost?.cost_code_info?.name }}
                       </span>
                     </td>
@@ -271,6 +272,22 @@ onMounted(() => {
                 <h3 class="text-right">
                   Total Price: ${{ proposalDetail.proposalAmount ?? 0 }}
                 </h3>
+              </div>
+            </div>
+            <div class="invoice-section is-flex mt-0 pt-0">
+              <div class="footer">
+                <div class="footer-meta">
+                  <p>Signature:</p>
+                  <div></div>
+                </div>
+                <div class="footer-meta">
+                  <p>Date:</p>
+                  <div></div>
+                </div>
+                <div class="footer-meta">
+                  <p class="no-wrap">Print Name:</p>
+                  <div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -298,6 +315,24 @@ onMounted(() => {
 
 <style lang="scss">
 @import "/@src/scss/abstracts/all";
+.footer {
+  width: 100%;
+  background-color: #fff;
+}
+.footer-meta {
+  margin-bottom: 8px;
+  display: flex;
+}
+.footer-meta p {
+  width: 15%;
+  color: black;
+  padding-top: 6px;
+  transform: translateY(10px);
+}
+.footer-meta div {
+  width: 80%;
+  border-bottom: 1px solid #ddd;
+}
 
 .responsive-table {
   width: 100%;

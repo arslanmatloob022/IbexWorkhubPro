@@ -108,11 +108,11 @@ onUnmounted(() => {
             size="small"
             light
             outlined
-            icon="fas fa-cog"
+            icon="fas fa-cogs"
             class="mr-2"
-            :color="showDropdown ? 'danger' : 'success'"
+            :color="showDropdown ? 'danger' : 'warning'"
             @click="showDropdown = !showDropdown"
-            >Table</VButton
+            >Columns</VButton
           >
           <VButton
             size="small"
@@ -123,20 +123,20 @@ onUnmounted(() => {
             @click="centeredActionsOpen = !centeredActionsOpen"
             >Import</VButton
           >
-          <VButton
+          <!-- <VButton
             size="small"
             light
             outlined
             class="mr-2"
-            color="primary"
+            color="warning"
             @click="addCostItemModal = !addCostItemModal"
             >Add From</VButton
-          >
+          > -->
           <VButton
             size="small"
             light
             outlined
-            color="warning"
+            color="primary"
             @click="addCostItemModal = !addCostItemModal"
             >Add Item</VButton
           >
@@ -210,7 +210,7 @@ onUnmounted(() => {
 
       <TransitionGroup class="fade-slow" name="slide-x">
         <div v-if="tab === 'format'" class="column is-12">
-          <div class="columns is-multiline">
+          <!-- <div class="columns is-multiline">
             <VField
               v-slot="{ id }"
               label="Choose what to show to lead"
@@ -228,7 +228,7 @@ onUnmounted(() => {
                 />
               </VControl>
             </VField>
-          </div>
+          </div> -->
           <VCard class="columns is-multiline m-0">
             <div class="column is-12" style="text-align: center">
               <h1 class="title is-4">Connect your clients to their projects</h1>
