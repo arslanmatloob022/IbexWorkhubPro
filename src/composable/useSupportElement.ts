@@ -80,27 +80,40 @@ export function downloadCSV(
   link.click();
 }
 
-interface ActivityLogOptions {
+interface activityLogs {
   actor?: number;
-  object_type?: "worker" | "ibexUser";
-  action?: "get" | "CREATE" | "RETRIEVE" | "DELETE";
+  object_type?:
+    | "worker"
+    | "user"
+    | "lead"
+    | "job"
+    | "proposal"
+    | "task"
+    | "cost_code"
+    | "payment";
+  action?: "UPDATE" | "CREATE" | "RETRIEVE" | "DELETE";
   message?: string;
-  performedOnName?: "supplier" | "worker";
-  object_id?: number;
+  performedOnName?:
+    | "supplier"
+    | "user"
+    | "job"
+    | "task"
+    | "lead"
+    | "payment"
+    | "proposal"
+    | "costCode";
+  object_id?: string;
 }
 
-export function CreateActivityLog(options: ActivityLogOptions = {}) {
+export function CreateActivityLog(options: activityLogs = {}) {
   const {
     actor = userSession.user.id,
     object_type = "ibexUser",
-    action = "RETRIEVE",
+    action = "UPDATE",
     message = "",
-    performedOnName = "worker",
+    performedOnName = "user",
     object_id = 0,
   } = options;
-
-
-
   const payload = {
     actor,
     object_type,
@@ -151,7 +164,6 @@ export const getAddressComponents = async (zip_code: any) => {
 
     if (response.data.status === "OK" && response.data.results.length > 0) {
       const result = response.data.results[0];
-
       const lat = result.geometry?.location?.lat ?? null;
       const lng = result.geometry?.location?.lng ?? null;
       const city =
@@ -177,17 +189,12 @@ export const changeFavicon = (favIcon: string) => {
   const existingLink = document.querySelector('link[rel="icon"]');
   const head = document.head || document.getElementsByTagName("head")[0];
 
-  // If an existing link is found, remove it from the DOM
   if (existingLink) {
     head.removeChild(existingLink);
   }
-
-  // Create a new link element
   const link = document.createElement("link");
   link.rel = "shortcut icon";
   link.href = favIcon;
-
-  // Append the new link to the head
   head.appendChild(link);
 };
 
@@ -197,7 +204,6 @@ const getUrlExtension = (url: any) => {
 
 export const convertUrlToFile = async (imgUrl: any) => {
   var imgExt = getUrlExtension(imgUrl);
-
   const response = await fetch(imgUrl);
   const blob = await response.blob();
   const file = new File([blob], "profileImage." + imgExt, {
@@ -208,7 +214,6 @@ export const convertUrlToFile = async (imgUrl: any) => {
 
 export function convertToFormData(data: any, fileKeys: any) {
   const formData = new FormData();
-
   for (const key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
       const value = data[key];
@@ -261,12 +266,9 @@ export function formatDate(inputDate: any) {
 
 export function formatDateTime(inputDate: any) {
   const date = new Date(inputDate);
-
-  // Check if the date is valid
   if (isNaN(date.getTime())) {
     return "";
   }
-
   const options = {
     day: "numeric",
     month: "long",
@@ -275,7 +277,6 @@ export function formatDateTime(inputDate: any) {
     minute: "numeric",
     second: "numeric",
   };
-
   return date.toLocaleDateString("en-US", options);
 }
 

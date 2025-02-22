@@ -1,229 +1,84 @@
+<script lang="ts" setup>
+import { useApi } from "/@src/composable/useAPI";
+import moment from "moment";
+const api = useApi();
+const logsList = ref([
+  {
+    id: "06b62536-220c-4d54-b437-50f035677d17",
+    action: "UPDATE",
+    timestamp: "2025-02-21T18:09:11.830145Z",
+    actor_info: {
+      id: "0feda007-d8a0-4b96-acb7-d7763614854e",
+      username: "Test &",
+      last_name: "Dev",
+      email: "test@dev.com",
+      role: "admin",
+      avatar:
+        "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/Screenshot_from_2025-01-17_15-14-32.png",
+    },
+    message: "updated <b>HENNING</b> lead information.",
+    object_id: "1be101da-7a93-43af-b3e3-d1ca908aa2c9",
+    object_type: "lead",
+    actor: "0feda007-d8a0-4b96-acb7-d7763614854e",
+  },
+]);
+const props = defineProps<{
+  object_id: string;
+  object_type: string;
+}>();
+
+const getActionColor = {
+  UPDATE: "is-info",
+  RETRIEVE: "is-warning",
+  DELETE: "is-danger",
+  CREATE: "is-primary",
+};
+
+const getActivityLogs = async () => {
+  try {
+    const res = await api.get(
+      `/api/activity-logs/?object_id=${props.object_id}`
+    );
+    logsList.value = res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(() => {
+  getActivityLogs();
+});
+</script>
+
 <template>
   <div class="timeline-wrapper">
     <div class="timeline-header" />
     <div class="timeline-wrapper-inner">
       <div class="timeline-container">
         <!--Timeline item-->
-        <div class="timeline-item is-unread">
+        <div v-for="item in logsList" class="timeline-item is-unread">
           <div class="date">
-            <span>Sep 23, 2020</span>
+            <span>{{ moment(item.timestamp).format("ddd, mm yyyy") }}</span>
           </div>
-          <div class="dot is-info" />
+          <div class="dot" :class="getActionColor[item.action]" />
           <div class="content-wrap">
             <div class="content-box">
               <div class="status" />
-              <VAvatar picture="/demo/avatars/13.jpg" />
-
+              <VAvatar :picture="item.actor_info?.avatar" />
               <div class="box-text">
                 <div class="meta-text">
                   <p>
-                    <span>Krystal T.</span> added Juan to the
-                    <a>Barber Website Redesign Project</a>.
+                    <span
+                      >{{ item.actor_info?.username ?? "N/A" }}
+                      {{ item.actor_info?.last_name ?? "N/A" }}</span
+                    >
+                    <div v-html="item.message">
+
+                    </div>
+                    <!-- {{ item.message }}<a>Task</a>
+                    . -->
                   </p>
-                  <span>11:42 am</span>
-                </div>
-              </div>
-              <div class="box-end">
-                <VAvatar
-                  size="small"
-                  picture="/images/avatars/svg/vuero-1.svg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item is-unread">
-          <div class="date">
-            <span>Sep 23, 2020</span>
-          </div>
-          <div class="dot is-danger" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/23.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Juan i.</span> left a comment on a <a>Task</a>, in
-                    <a>Corporate Tools Rebranding</a>.
-                  </p>
-                  <span>9:18 am</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item">
-          <div class="date">
-            <span>Sep 22, 2020</span>
-          </div>
-          <div class="dot is-success" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/5.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Jesus L.</span> added 3 new members to the
-                    <a>Blake &amp; Mortimer Project</a>.
-                  </p>
-                  <span>9:18 am</span>
-                </div>
-              </div>
-              <div class="box-end">
-                <VAvatar size="small" color="warning" initials="BT" />
-                <VAvatar size="small" picture="/demo/avatars/18.jpg" />
-                <VAvatar size="small" color="info" initials="JD" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item">
-          <div class="date">
-            <span>Sep 23, 2020</span>
-          </div>
-          <div class="dot is-purple" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/12.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Mike S.</span> changed the status of a
-                    <a>Task</a> from
-                    <VTag label="Pending" color="purple" rounded />
-                    to
-                    <VTag label="Completed" color="green" rounded />
-                  </p>
-                  <span>9:18 am</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item">
-          <div class="date">
-            <span>Sep 22, 2020</span>
-          </div>
-          <div class="dot is-warning" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/26.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Courtney W.</span> uploaded 2 new files to the
-                    <a>Blake &amp; Mortimer Project</a>.
-                  </p>
-                  <span>9:18 am</span>
-                </div>
-              </div>
-              <div class="box-end">
-                <VAvatar
-                  size="small"
-                  squared
-                  picture="/demo/photos/apps/5.png"
-                />
-                <VAvatar
-                  size="small"
-                  squared
-                  picture="/demo/photos/apps/8.png"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item">
-          <div class="date">
-            <span>Sep 23, 2020</span>
-          </div>
-          <div class="dot is-info" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/31.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Yassine A.</span> mentionned you in a
-                    <a>comment</a> on <a>Delivery tracking Dashboard</a>.
-                  </p>
-                  <span>11:42 am</span>
-                </div>
-              </div>
-              <div class="box-end">
-                <VAvatar
-                  size="small"
-                  picture="/images/avatars/svg/vuero-1.svg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item">
-          <div class="date">
-            <span>Sep 23, 2020</span>
-          </div>
-          <div class="dot is-danger" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/13.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Tara S.</span> left a comment on a <a>Task</a>, in
-                    <a>Corporate Tools Rebranding</a>.
-                  </p>
-                  <span>9:18 am</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Timeline item-->
-        <div class="timeline-item">
-          <div class="date">
-            <span>Sep 23, 2020</span>
-          </div>
-          <div class="dot is-purple" />
-          <div class="content-wrap">
-            <div class="content-box">
-              <div class="status" />
-              <VAvatar picture="/demo/avatars/25.jpg" />
-
-              <div class="box-text">
-                <div class="meta-text">
-                  <p>
-                    <span>Melany W.</span> changed the status of a
-                    <a>Task</a> from
-                    <VTag label="Overdue" color="danger" rounded />
-                    to
-                    <VTag label="Completed" color="green" rounded />
-                  </p>
-                  <span>9:18 am</span>
+                  <span>{{ moment(item.timestamp).format("hh:mm:ss") }}</span>
                 </div>
               </div>
             </div>
@@ -231,9 +86,9 @@
         </div>
       </div>
 
-      <div class="load-more-wrap has-text-centered">
+      <!-- <div class="load-more-wrap has-text-centered">
         <VButton dark-outlined> Load More </VButton>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -371,6 +226,9 @@
 
                   a {
                     color: var(--primary);
+                  }
+                  b{
+                     color: var(--primary);
                   }
 
                   .tag {

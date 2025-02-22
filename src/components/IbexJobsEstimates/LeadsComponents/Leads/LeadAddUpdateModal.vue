@@ -6,7 +6,7 @@ import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import CKE from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-
+import { CreateActivityLog } from "/@src/composable/useSupportElement";
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
@@ -207,9 +207,23 @@ const addUpdateLeadHandler = async (loading: number = 0) => {
         formDataAPI
       );
       leadFormData.value = response.data;
+      CreateActivityLog({
+        object_type: "lead",
+        action: "UPDATE",
+        performedOnName: "lead",
+        object_id: props.leadId || leadFormData.value.id,
+        message: `updated <a>${leadFormData.value.title}</a> ${leadFormData.value.state} information.`,
+      });
     } else {
       const response = await api.post("/api/project/", formDataAPI);
       leadFormData.value = response.data;
+      CreateActivityLog({
+        object_type: "lead",
+        action: "CREATE",
+        performedOnName: "lead",
+        object_id: props.leadId || leadFormData.value.id,
+        message: `created new <a>${leadFormData.value.title}</a> ${leadFormData.value.state} information.`,
+      });
     }
     notyf.success(
       `Lead ${

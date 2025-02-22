@@ -2,7 +2,10 @@
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { convertToFormData } from "/@src/composable/useSupportElement";
+import {
+  convertToFormData,
+  CreateActivityLog,
+} from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
@@ -89,7 +92,6 @@ const leadProposalFormData = ref<leadProposalData>({
 const addUpdateProposalHandler = async (closeModal: boolean = false) => {
   try {
     isLoading.value = true;
-
     if (props.leadId) {
       leadProposalFormData.value.project = props.leadId;
     }
@@ -105,9 +107,23 @@ const addUpdateProposalHandler = async (closeModal: boolean = false) => {
         formDataAPI
       );
       leadProposalFormData.value = response.data;
+      CreateActivityLog({
+        object_type: "proposal",
+        action: "UPDATE",
+        performedOnName: "proposal",
+        object_id: props.leadId || leadProposalFormData.value.project,
+        message: `updated proposal titled <a>${leadProposalFormData.value.title}</a> information.`,
+      });
     } else {
       const response = await api.post("/api/lead-proposal/", formDataAPI);
       leadProposalFormData.value = response.data;
+      CreateActivityLog({
+        object_type: "proposal",
+        action: "CREATE",
+        performedOnName: "proposal",
+        object_id: props.leadId || leadProposalFormData.value.project,
+        message: `created new proposal titled <a>${leadProposalFormData.value.title}</a> information.`,
+      });
       scrollToItemsDiv(100);
     }
     updateOnSuccess();
@@ -167,7 +183,7 @@ const editorConfig = {
   minHeight: "400px",
 };
 
-const opentempalte = ref(false);
+const openTemplate = ref(false);
 const loadTemplateSelection = (selectedTemplate: any) => {
   leadProposalFormData.value = selectedTemplate;
   console.log("test12");
@@ -327,7 +343,7 @@ onUnmounted(() => {
               <VButton
                 color="primary"
                 class="mt-5"
-                @click="opentempalte = !opentempalte"
+                @click="openTemplate = !openTemplate"
                 style="width: 100%"
                 >Import Template</VButton
               >
@@ -393,12 +409,12 @@ onUnmounted(() => {
         <!-- </div> -->
       </div>
       <OpenTempalteModal
-        v-if="opentempalte"
+        v-if="openTemplate"
         :leadId="props.leadId"
         :proposalId="props.proposalId"
-        :opentempalte="opentempalte"
+        :openTemplate="openTemplate"
         @update:OnSuccess="loadTemplateSelection"
-        @update:modalHandler="opentempalte = false"
+        @update:modalHandler="openTemplate = false"
       ></OpenTempalteModal>
     </template>
     <template #action>

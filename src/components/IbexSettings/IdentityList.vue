@@ -115,16 +115,16 @@ const openCostCodeModalHandler = (id: any) => {
   openCostCodeModal.value = !openCostCodeModal.value;
 };
 
-const selectedCatCostCode = ref(<any>"");
+const parentCostCode = ref(<any>"");
 const CategoryMode = ref(false);
-const selectedCostCodeID = ref(<any>"");
-const openCostCodeModalFun = (item = null, code = null) => {
-  console.log(item);
-  console.log(code);
-  selectedCatCostCode.value = "";
-  selectedCostCodeID.value = "";
-  selectedCostCodeID.value = code?.id;
-  selectedCatCostCode.value = item?.id;
+const codeCategoryId = ref(<any>"");
+const openCostCodeModalFun = (category = null, parent = null) => {
+  console.log(category);
+  console.log(parent);
+  parentCostCode.value = "";
+  codeCategoryId.value = "";
+  codeCategoryId.value = category;
+  parentCostCode.value = parent;
 
   openCostCodeModal.value = true;
 };
@@ -159,15 +159,7 @@ onMounted(() => {
                 ><span>Identity List</span></a
               >
             </li>
-            <li :class="[tab === 'Category' ? 'is-active' : 'not-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="tab = 'Category'"
-                @click="tab = 'Category'"
-                ><span>Category</span></a
-              >
-            </li>
+
             <li :class="[tab === 'costCodes' ? 'is-active' : 'not-active']">
               <a
                 tabindex="0"
@@ -175,6 +167,15 @@ onMounted(() => {
                 @keydown.space.prevent="tab = 'costCodes'"
                 @click="tab = 'costCodes'"
                 ><span>Cost Codes</span></a
+              >
+            </li>
+            <li :class="[tab === 'Category' ? 'is-active' : 'not-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'Category'"
+                @click="tab = 'Category'"
+                ><span>Category</span></a
               >
             </li>
 
@@ -225,7 +226,7 @@ onMounted(() => {
           >
             Category
           </VButton>
-          <VButton
+          <!-- <VButton
             @click="openTradeModal = !openTradeModal"
             color="warning"
             icon="fas fa-plus"
@@ -234,7 +235,7 @@ onMounted(() => {
             raised
           >
             Trade
-          </VButton>
+          </VButton> -->
         </VButtons>
       </div>
       <div class="page-content-inner">
@@ -281,11 +282,11 @@ onMounted(() => {
                   <p class="info-text is-bold">
                     {{ item.name ?? "n/a" }}
                     <i
-                      class="fas fa-plus cursor-pointer ml-2"
+                      class="fas fa-plus cu-pointer ml-2"
                       style="font-size: 11px"
                       @click="
                         () => {
-                          openCostCodeModalFun(item),
+                          openCostCodeModalFun(item.id),
                             (CategoryMode = false),
                             (CategoryMode = true);
                         }
@@ -332,9 +333,9 @@ onMounted(() => {
                     <p class="dark-text text-primary">
                       {{ code.name }}
                       <i
-                        class="fas fa-plus cursor-pointer ml-2"
+                        class="fas fa-plus cu-pointer ml-2"
                         style="font-size: 11px"
-                        @click="openCostCodeModalFun(item, code)"
+                        @click="openCostCodeModalFun(code.category, code.id)"
                       ></i>
                     </p>
                   </td>
@@ -359,13 +360,20 @@ onMounted(() => {
                     </div>
                   </td>
                 </tr>
-                <template v-if="code?.child_codes?.length">
-                  <tr
-                    v-for="child in code.child_codes"
-                    :key="child.id"
-                    class="child-item"
-                  >
-                    <td class="pl-6">{{ child.name }}</td>
+                <template
+                  v-if="code?.child_codes?.length"
+                  v-for="child in code.child_codes"
+                  :key="child.id"
+                >
+                  <tr class="child-item">
+                    <td class="pl-6">
+                      {{ child.name
+                      }}<i
+                        class="fas fa-plus cu-pointer ml-2"
+                        style="font-size: 11px"
+                        @click="openCostCodeModalFun(child.category, child.id)"
+                      ></i>
+                    </td>
                     <td>{{ child.description || "No description" }}</td>
                     <td>-</td>
                     <td class="is-end">
@@ -387,6 +395,37 @@ onMounted(() => {
                       </div>
                     </td>
                   </tr>
+                  <template v-if="child?.child_codes?.length">
+                    <tr
+                      v-for="gChild in child.child_codes"
+                      :key="gChild.id"
+                      class="child-item"
+                    >
+                      <td class="p-l-60">
+                        {{ gChild.name }}
+                      </td>
+                      <td>{{ gChild.description || "No description" }}</td>
+                      <td>-</td>
+                      <td class="is-end">
+                        <div class="is-flex is-justify-content-flex-end">
+                          <VIconWrap
+                            @click="openCostCodeModalHandler(gChild.id)"
+                            icon="lucide:pen"
+                            color="warning"
+                            dark-card-bordered
+                          />
+
+                          <VIconWrap
+                            icon="lucide:trash"
+                            color="info"
+                            class="ml-1"
+                            dark-card-bordered
+                            @click="deleteCostCode(gChild.id)"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
                 </template>
               </template>
             </template>
@@ -395,13 +434,13 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="" v-if="tab == 'Category'">
+    <div v-if="tab == 'Category'">
       <CategoryComp></CategoryComp>
     </div>
-    <div class="" v-if="tab == 'costCodes'">
+    <div v-if="tab == 'costCodes'">
       <CostCodes></CostCodes>
     </div>
-    <div class="" v-if="tab == 'Trade'">
+    <div v-if="tab == 'Trade'">
       <TradeComp></TradeComp>
     </div>
 
@@ -409,8 +448,8 @@ onMounted(() => {
       v-if="openCostCodeModal"
       :addUpdateCostCodeModal="openCostCodeModal"
       :cost-code-id="currentSelectedId"
-      :selectedCatCostCode="selectedCatCostCode"
-      :selectedCostCodeID="selectedCostCodeID"
+      :parentCodeId="parentCostCode"
+      :codeCategoryId="codeCategoryId"
       :CategoryMode="CategoryMode"
       @update:modal-handler="
         openCostCodeModal = false;

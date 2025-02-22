@@ -375,7 +375,7 @@ onMounted(() => {
                         ><span>Report</span></a
                       >
                     </li>
-                    <li :class="[tab === 'activityLogs' && 'is-active']">
+                    <!-- <li :class="[tab === 'activityLogs' && 'is-active']">
                       <a
                         tabindex="0"
                         role="button"
@@ -383,7 +383,7 @@ onMounted(() => {
                         @click="tab = 'activityLogs'"
                         ><span>Activity Logs</span></a
                       >
-                    </li>
+                    </li> -->
                     <li :class="[tab === 'progress' && 'is-active']">
                       <a
                         tabindex="0"
@@ -680,7 +680,10 @@ onMounted(() => {
             <JobFinance />
           </div>
           <div v-if="tab === 'activityLogs'" class="column is-12">
-            <JobActivities />
+            <JobActivities
+              :object_id="route.params.id || leadDetail.id"
+              object_type="lead"
+            />
           </div>
           <div v-if="tab === 'report'" class="column is-12">
             <JobReport />

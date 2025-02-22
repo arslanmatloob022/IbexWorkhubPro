@@ -10,8 +10,8 @@ const mailLoading = ref(false);
 const props = defineProps<{
   addUpdateCostCodeModal?: boolean;
   costCodeId?: string;
-  selectedCatCostCode?: string;
-  selectedCostCodeID?: string;
+  codeCategoryId?: string;
+  parentCodeId?: string;
   CategoryMode?: boolean;
 }>();
 
@@ -43,8 +43,8 @@ interface costCode {
 const costCodeFormData = ref<costCode>({
   id: "",
   name: "",
-  category: props.selectedCatCostCode || "",
-  parent_code: props.selectedCostCodeID || "",
+  category: props.codeCategoryId || "",
+  parent_code: props.parentCodeId || "",
   is_labour_code: false,
   labour_cost: 0.0,
   description: "",
@@ -130,7 +130,7 @@ const getCostCodesHandler = async () => {
 };
 
 onMounted(() => {
-  console.log(props.selectedCatCostCode);
+  console.log(props.codeCategoryId);
   if (props.costCodeId) {
     getCostCodeInfoHandler();
   }
