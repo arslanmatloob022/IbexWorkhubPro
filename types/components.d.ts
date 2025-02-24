@@ -139,6 +139,7 @@ declare module 'vue' {
     CompanyContract: typeof import('./../src/components/pages/networks/customCompanies/CompanyContract.vue')['default']
     CompanyDashboard: typeof import('./../src/components/pages/dashboards/business/CompanyDashboard.vue')['default']
     CompanyDocuments: typeof import('./../src/components/pages/networks/companies/CompanyDocuments.vue')['default']
+    CompanyInformation: typeof import('./../src/components/IbexSettings/CompanyInformation.vue')['default']
     CompanyLargeModal: typeof import('./../src/components/supportComponents/CompanyLargeModal.vue')['default']
     CompanyProfile: typeof import('./../src/components/pages/networks/companies/CompanyProfile.vue')['default']
     CompanyRegisterWorkerChart: typeof import('./../src/components/pages/networks/companies/CompanyRegisterWorkerChart.vue')['default']
