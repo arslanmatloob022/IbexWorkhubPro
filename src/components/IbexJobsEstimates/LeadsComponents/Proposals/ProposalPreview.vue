@@ -10,7 +10,9 @@ import {
   printPDF,
   fileLoading,
 } from "../../proposalsComponents";
+import { useCompany } from "/@src/stores/company";
 
+const company = useCompany();
 const props = defineProps<{
   columnsToShow?: any;
   proposalData?: any;
@@ -194,7 +196,10 @@ onMounted(() => {});
           <div class="invoice-card">
             <!-- Company info -->
             <div class="invoice-section is-flex">
-              <VAvatar size="xl" picture="/logos/IbexFavicon.png" />
+              <VAvatar
+                size="xl"
+                :picture="company.currentCompany.invoice_header_logo"
+              />
 
               <div class="meta"></div>
               <div class="end is-right">
@@ -208,7 +213,9 @@ onMounted(() => {});
             <!-- Client Info -->
             <div class="invoice-section is-flex">
               <div class="meta">
-                <h3>
+                <h3
+                  v-if="useProposal.leadProposalFormData?.jobInfo?.clientInfo"
+                >
                   {{
                     useProposal.leadProposalFormData?.jobInfo?.clientInfo
                       ?.username ?? "N/A"
@@ -218,13 +225,32 @@ onMounted(() => {});
                       ?.last_name ?? ""
                   }}
                 </h3>
-                <span>{{
-                  useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
-                    ? useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                <h3 v-else>
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.contractor_info
+                      ?.username ?? "N/A"
+                  }}
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.contractor_info
+                      ?.last_name ?? ""
+                  }}
+                </h3>
+                <span
+                  v-if="useProposal.leadProposalFormData?.jobInfo?.clientInfo"
+                  >{{
+                    useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
+                      ? useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                          ?.email
+                      : "N/A"
+                  }}</span
+                >
+                <span v-else>{{
+                  useProposal.leadProposalFormData?.jobInfo?.contractor_info
+                    ?.email
+                    ? useProposal.leadProposalFormData?.jobInfo?.contractor_info
                         ?.email
                     : "N/A"
                 }}</span>
-                <!-- <span>25724 Independence Trail Evergreen, CO 80439</span> -->
               </div>
               <div class="end is-left">
                 <h3>

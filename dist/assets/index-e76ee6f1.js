@@ -1,1 +1,0 @@
-import{e as s,v as a,o as e,B as n,C as o}from"./index-29281dbb.js";const r=s({__name:"index",setup(s){const r=a();return e((()=>{r.push("/navbar/dashboards")})),(s,a)=>(n(),o("div"))}});export{r as default};

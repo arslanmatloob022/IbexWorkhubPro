@@ -73,14 +73,15 @@ const deleteCategory = async (id: any) => {
   try {
     loading.value = true;
     const response = await api.delete(`/api/cost-category/${id}/`);
-    getCostCodesItems();
     notyf.success("delete category");
+    getCostCodesItems();
   } catch (err) {
     console.log(err);
   } finally {
     loading.value = false;
   }
 };
+
 const deleteCostCode = async (id: any) => {
   try {
     loading.value = true;
@@ -93,6 +94,7 @@ const deleteCostCode = async (id: any) => {
     loading.value = false;
   }
 };
+
 const getCostCodesItems = async () => {
   try {
     loading.value = true;
@@ -286,9 +288,9 @@ onMounted(() => {
                       style="font-size: 11px"
                       @click="
                         () => {
-                          openCostCodeModalFun(item.id),
-                            (CategoryMode = false),
-                            (CategoryMode = true);
+                          openCostCodeModalFun(item.id);
+                          CategoryMode = false;
+                          CategoryMode = true;
                         }
                       "
                     ></i>

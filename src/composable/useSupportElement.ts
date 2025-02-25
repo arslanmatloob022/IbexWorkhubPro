@@ -185,7 +185,7 @@ export const getAddressComponents = async (zip_code: any) => {
   }
 };
 
-export const changeFavicon = (favIcon: string) => {
+export const changeFavicon = (favIcon: any) => {
   const existingLink = document.querySelector('link[rel="icon"]');
   const head = document.head || document.getElementsByTagName("head")[0];
 

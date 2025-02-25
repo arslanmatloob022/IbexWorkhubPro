@@ -39,6 +39,7 @@ export default definePlugin(async ({ router, pinia }) => {
       const user = response.data;
       layoutSwitcher.setDynamicLayoutId("sideblock-default");
       userSession.setUser(user);
+      company.loadCompany();
     } catch (err) {
       // delete stored token if it fails
       userSession.logoutUser();

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import {
+  changeFavicon,
   convertToFormData,
   formatDate,
 } from "/@src/composable/useSupportElement";
 // import notyf from "/@src/plugins/notyf";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { stat } from "node:fs";
 
 const notyf = useNotyf();
 const loading = ref(false);
@@ -28,7 +30,7 @@ const companyInformation = ref({
   created_at: "",
   updated_at: "",
   sidebar_logo: "",
-  favicon: null as File | null | string,
+  favicon: null as File | null | String,
   invoice_header_logo: null as File | null | string,
   login_page_logo: "",
   branding_line: "",
@@ -75,6 +77,7 @@ const updateCustomCompanyInfoHandler = async (payload: any) => {
       `/api/company-information/9cc43feb-b736-4d18-bd87-5d8511b28dea/`,
       payload
     );
+    getCompanyInfoHandler();
     companyInformation.value = response.data;
   } catch (err) {
     console.log(err);
@@ -88,11 +91,10 @@ const onAddLogo = (error: any, fileInfo: any) => {
     console.error(error);
     return;
   }
-
   const _file = fileInfo.file as File;
   if (_file) {
     companyInformation.value.logo = _file;
-    updateCompanyInfoHandler();
+    updateCustomCompanyInfoHandler({ logo: _file });
   }
 };
 
@@ -103,7 +105,6 @@ const onRemoveLogo = (error: any, fileInfo: any) => {
   }
   console.log(fileInfo);
   companyInformation.value.logo = null;
-  updateCompanyInfoHandler();
 };
 
 const onAddFavicon = (error: any, fileInfo: any) => {
@@ -114,7 +115,8 @@ const onAddFavicon = (error: any, fileInfo: any) => {
   const _file = fileInfo.file as File;
   if (_file) {
     companyInformation.value.favicon = _file;
-    updateCompanyInfoHandler();
+    updateCustomCompanyInfoHandler({ favicon: _file });
+    changeFavicon(companyInformation.value.favicon);
   }
 };
 
@@ -135,7 +137,7 @@ const onAddProposalLogo = (error: any, fileInfo: any) => {
   const _file = fileInfo.file as File;
   if (_file) {
     companyInformation.value.invoice_header_logo = _file;
-    updateCompanyInfoHandler();
+    updateCustomCompanyInfoHandler({ invoice_header_logo: _file });
   }
 };
 
@@ -156,7 +158,7 @@ onMounted(() => {
 <template>
   <div>
     <div class="list-flex-toolbar flex-list-v1">
-      <VField>
+      <!-- <VField>
         <VControl icon="feather:search">
           <input
             v-model="filters"
@@ -164,9 +166,8 @@ onMounted(() => {
             placeholder="Search..."
           />
         </VControl>
-      </VField>
-
-      <VButtons>
+      </VField> -->
+      <!-- <VButtons>
         <VButton
           color="primary"
           @click="openCostCodeModal = !openCostCodeModal"
@@ -178,7 +179,7 @@ onMounted(() => {
         >
           Edit
         </VButton>
-      </VButtons>
+      </VButtons> -->
     </div>
 
     <div class="page-content-inner">
@@ -203,6 +204,7 @@ onMounted(() => {
           />
         </template>
       </VPlaceholderPage>
+
       <div class="columns is-multiline">
         <div class="column is-6">
           <VField>
@@ -212,6 +214,11 @@ onMounted(() => {
                 v-model="companyInformation.name"
                 type="text"
                 placeholder="Company Name"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    name: companyInformation.name,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -224,6 +231,11 @@ onMounted(() => {
                 v-model="companyInformation.trade_name"
                 type="text"
                 placeholder="Trade Name"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    trade_name: companyInformation.trade_name,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -236,6 +248,11 @@ onMounted(() => {
                 v-model="companyInformation.email"
                 type="text"
                 placeholder="Company Email"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    email: companyInformation.email,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -248,6 +265,11 @@ onMounted(() => {
                 v-model="companyInformation.phone_number"
                 type="text"
                 placeholder="Phone Number"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    phone_number: companyInformation.phone_number,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -260,6 +282,11 @@ onMounted(() => {
                 v-model="companyInformation.website"
                 type="url"
                 placeholder="Website URL"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    website: companyInformation.website,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -272,6 +299,11 @@ onMounted(() => {
                 v-model="companyInformation.zipCode"
                 type="text"
                 placeholder="Zip Code"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    zipCode: companyInformation.zipCode,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -284,6 +316,11 @@ onMounted(() => {
                 v-model="companyInformation.city"
                 type="text"
                 placeholder="City"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    city: companyInformation.city,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -296,6 +333,11 @@ onMounted(() => {
                 v-model="companyInformation.state"
                 type="text"
                 placeholder="State"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    state: companyInformation.state,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -308,6 +350,11 @@ onMounted(() => {
                 v-model="companyInformation.country"
                 type="text"
                 placeholder="Country"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    country: companyInformation.country,
+                  })
+                "
               />
             </VControl>
           </VField>
@@ -320,18 +367,28 @@ onMounted(() => {
                 v-model="companyInformation.address"
                 type="text"
                 placeholder="Address"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    address: companyInformation.address,
+                  })
+                "
               />
             </VControl>
           </VField>
         </div>
         <div class="column is-6">
           <VField>
-            <VLabel>Brand Line</VLabel>
+            <VLabel>Company One Liner</VLabel>
             <VControl>
               <VInput
                 v-model="companyInformation.branding_line"
                 type="text"
                 placeholder="john.doe"
+                @blur="
+                  updateCustomCompanyInfoHandler({
+                    branding_line: companyInformation.branding_line,
+                  })
+                "
               />
             </VControl>
           </VField>

@@ -69,7 +69,7 @@ const costItem = ref<item>({
   title: "",
   description: "",
   quantity: 0,
-  unit: "",
+  unit: "--",
   unit_cost: 0,
   markup: 0,
   margin: 0,
