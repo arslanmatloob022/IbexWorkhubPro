@@ -89,6 +89,7 @@ interface activityLogs {
     | "job"
     | "proposal"
     | "task"
+    | "files"
     | "cost_code"
     | "payment";
   action?: "UPDATE" | "CREATE" | "RETRIEVE" | "DELETE";
@@ -112,7 +113,7 @@ export function CreateActivityLog(options: activityLogs = {}) {
     action = "UPDATE",
     message = "",
     performedOnName = "user",
-    object_id = 0,
+    object_id = "",
   } = options;
   const payload = {
     actor,

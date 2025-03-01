@@ -432,6 +432,7 @@ declare module 'vue' {
     NotyfPurpleDocumentation: typeof import('./../documentation/plugins/notyf/notyf-purple-documentation.md')['default']
     NotyfSuccessDocumentation: typeof import('./../documentation/plugins/notyf/notyf-success-documentation.md')['default']
     NotyfWarningDocumentation: typeof import('./../documentation/plugins/notyf/notyf-warning-documentation.md')['default']
+    ObjectDocumentsTiles: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobDocuments/ObjectDocumentsTiles.vue')['default']
     OnboardingStandard: typeof import('./../src/components/pages/layouts/onboarding/OnboardingStandard.vue')['default']
     OnboardingV1: typeof import('./../src/components/pages/layouts/onboarding/OnboardingV1.vue')['default']
     OnboardingV2: typeof import('./../src/components/pages/layouts/onboarding/OnboardingV2.vue')['default']

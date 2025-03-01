@@ -2,11 +2,13 @@
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { convertToFormData } from "/@src/composable/useSupportElement";
-
+import { useUserSession } from "/@src/stores/userSession";
+import { CreateActivityLog } from "/@src/composable/useSupportElement";
 const fileInput = ref<HTMLInputElement | null>(null);
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
+const userSession = useUserSession();
 
 const props = defineProps<{
   openFileModal?: boolean;
@@ -23,11 +25,15 @@ const closeModalHandler = () => {
   emit("close:ModalHandler", false);
 };
 
+const updateOnSuccess = () => {
+  emit("update:OnSuccess", null);
+};
+
 const fileData = ref({
   type: props.type,
   object: props.object,
   title: "",
-  uploaded_by: "",
+  uploaded_by: userSession.user.id,
   file: null as File | null,
 });
 
@@ -36,7 +42,15 @@ const uploadFileHandler = async () => {
     loading.value = true;
     const payload = convertToFormData(fileData.value, ["file"]);
     const response = await api.post(`/api/attachment/`, payload);
+    CreateActivityLog({
+      object_type: "files",
+      object_id: props.object,
+      action: "CREATE",
+      message: `Uploaded new file named <b>${fileData.value.title}</b>.`,
+      performedOnName: "job",
+    });
     notyf.success("File uploaded successfully!");
+    updateOnSuccess();
     closeModalHandler();
   } catch (err) {
     console.log(err);
@@ -119,7 +133,7 @@ onMounted(() => {});
     </template>
     <template #action>
       <VButton type="submit" color="primary" :loading="loading" raised>
-        Schedule Mail</VButton
+        Save</VButton
       >
     </template>
     <template #cancel>

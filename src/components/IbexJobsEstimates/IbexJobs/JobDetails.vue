@@ -347,6 +347,15 @@ onMounted(() => {
                         ><span>Proposals</span></a
                       >
                     </li>
+                    <li :class="[tab === 'tasks' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'tasks'"
+                        @click="tab = 'tasks'"
+                        ><span>Tasks</span></a
+                      >
+                    </li>
                     <li :class="[tab === 'activities' && 'is-active']">
                       <a
                         tabindex="0"
@@ -687,6 +696,9 @@ onMounted(() => {
           </div>
           <div v-if="tab === 'report'" class="column is-12">
             <JobReport />
+          </div>
+          <div v-if="tab === 'tasks'" class="column is-12">
+            <ProjectsTasks :projectID="route.params.id" />
           </div>
         </div>
       </div>

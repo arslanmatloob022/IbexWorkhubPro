@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
-
+import { generalUnits } from "../../IbexJobsEstimates/estimatesScripts";
 const api = useApi();
 const loading = ref(false);
 const notyf = useNotyf();
@@ -37,6 +37,7 @@ interface costCode {
   labour_cost: number;
   description: string;
   unit_cost: number;
+  unit: string;
   worker_cost: number;
   is_active: boolean;
 }
@@ -49,6 +50,7 @@ const costCodeFormData = ref<costCode>({
   labour_cost: 0.0,
   description: "",
   worker_cost: 0.0,
+  unit: "--",
   unit_cost: 0.0,
   is_active: true,
 });
@@ -229,7 +231,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="column is-6">
+        <div class="column is-4">
           <div class="field">
             <label class="label">Unit cost ($)</label>
             <div class="control">
@@ -243,7 +245,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="column is-6">
+        <div class="column is-4">
           <div class="field">
             <label class="label">Worker cost ($)</label>
             <div class="control">
@@ -255,6 +257,19 @@ onMounted(() => {
                 v-model="costCodeFormData.worker_cost"
               />
             </div>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="field">
+            <label class="label">Unit</label>
+            <VControl>
+              <VSelect v-model="costCodeFormData.unit">
+                <VOption value=""> Select Unit </VOption>
+                <VOption v-for="item in generalUnits" :value="item.value">
+                  {{ item.label }}
+                </VOption>
+              </VSelect>
+            </VControl>
           </div>
         </div>
         <hr />

@@ -111,31 +111,31 @@ const addUpdateLeadHandler = async () => {
         `/api/cost/${props.costItemId}/`,
         formDataAPI
       );
-      CreateActivityLog({
-        message: `Cost item Update `,
-        action: "UPDATE",
-        performedOnName: "Cost",
-        object_id: props.costItemId,
-      });
+      // CreateActivityLog({
+      //   message: `Cost item Update `,
+      //   action: "UPDATE",
+      //   performedOnName: "Cost",
+      //   object_id: props.costItemId,
+      // });
     } else {
       const response = await api.post("/api/cost/", formDataAPI);
       if (costItem.value.catalog) {
         const result = await api.post(
           `/api/cost/${response.data.id}/create-catalog/`
         );
-        CreateActivityLog({
-          message: `CataLog Create`,
-          action: "CREATE",
-          performedOnName: "Cost",
-          object_id: response.data[0],
-        });
+        // CreateActivityLog({
+        //   message: `CataLog Create`,
+        //   action: "CREATE",
+        //   performedOnName: "Cost",
+        //   object_id: response.data[0],
+        // });
       }
-      CreateActivityLog({
-        message: `Cost Item Create`,
-        action: "CREATE",
-        performedOnName: "Cost",
-        object_id: response.data[0],
-      });
+      // CreateActivityLog({
+      //   message: `Cost Item Create`,
+      //   action: "CREATE",
+      //   performedOnName: "Cost",
+      //   object_id: response.data[0],
+      // });
     }
     closeModalHandler();
     updateOnSuccess();
@@ -156,8 +156,8 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
-const unitCost = ref(0); // Unit cost per item
-const quantity = ref(0); // Quantity of items
+const unitCost = ref(0);
+const quantity = ref(0);
 const builderPrice = computed(
   () => costItem.value.unit_cost * costItem.value.quantity
 );
@@ -221,6 +221,7 @@ const getCostCodesHandler = async () => {
         labour_cost: item.labour_cost,
         unit_cost: item.unit_cost ?? 0.0,
         worker_cost: item.worker_cost ?? 0.0,
+        unit: item.unit ?? "--",
       };
     });
   } catch (err) {
@@ -240,6 +241,7 @@ watch(
       if (selectedItem) {
         costItem.value.unit_cost = selectedItem.unit_cost;
         costItem.value.worker_cost = selectedItem.worker_cost;
+        costItem.value.unit = selectedItem.unit;
       } else {
         console.warn("No matching item found for cost_code:", newVal);
       }

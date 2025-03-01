@@ -227,8 +227,17 @@ onMounted(() => {
                   a {
                     color: var(--primary);
                   }
-                  b{
-                     color: var(--primary);
+
+                  div {
+                    // color: var(--primary);
+                    b {
+                      color: var(--primary) !important;
+                      
+                    }
+
+                  }
+                  b {
+                      color: var(--primary);
                   }
 
                   .tag {
@@ -239,6 +248,10 @@ onMounted(() => {
                     height: 1.8em;
                     margin: 0 2px;
                   }
+                }
+
+                > b {
+                   color: var(--primary);
                 }
 
                 > span {
@@ -309,6 +322,14 @@ onMounted(() => {
 
                     a {
                       color: var(--primary);
+                    }
+                    div {
+                      b {
+                        color: var(--primary);
+                      }
+                    }
+                    b {
+                       color: var(--primary);
                     }
                   }
                 }

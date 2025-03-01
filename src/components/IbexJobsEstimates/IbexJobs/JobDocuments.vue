@@ -81,7 +81,7 @@ onMounted(() => {
               role="button"
               @keydown.space.prevent="getGroupedProposals('proposal_formats')"
               @click="getGroupedProposals('proposal_formats')"
-              ><span>Merge Proposals</span></a
+              ><span>Grouped Proposals</span></a
             >
           </li>
           <li :class="[tab === 'contracts' && 'is-active']">
@@ -103,12 +103,12 @@ onMounted(() => {
             >
           </li>
 
-          <li :class="[tab === 'jobScope' && 'is-active']">
+          <li :class="[tab === 'job_scope' && 'is-active']">
             <a
               tabindex="0"
               role="button"
-              @keydown.space.prevent="tab = 'jobScope'"
-              @click="tab = 'jobScope'"
+              @keydown.space.prevent="tab = 'job_scope'"
+              @click="tab = 'job_scope'"
               ><span>Job Scope</span></a
             >
           </li>
@@ -153,34 +153,6 @@ onMounted(() => {
         </ul>
       </div>
     </div>
-    <div class="tile-grid-toolbar">
-      <VControl icon="feather:search">
-        <input
-          v-model="filters"
-          class="input custom-text-filter"
-          placeholder="Search..."
-        />
-      </VControl>
-
-      <div class="buttons">
-        <VField class="h-hidden-mobile">
-          <VControl>
-            <Multiselect
-              v-model="valueSingle"
-              :options="optionsSingle"
-              :max-height="145"
-              placeholder="Select an option"
-            />
-          </VControl>
-        </VField>
-        <VButton @click="openFileUploaderModal(tab)" color="primary" raised>
-          <span class="icon">
-            <i aria-hidden="true" class="fas fa-plus" />
-          </span>
-          <span>Add File</span>
-        </VButton>
-      </div>
-    </div>
 
     <div class="tile-grid tile-grid-v2">
       <!--List Empty Search Placeholder -->
@@ -206,201 +178,34 @@ onMounted(() => {
         </template>
       </VPlaceholderPage>
       <div v-if="tab == 'contracts'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div
-            v-for="item in mergedProposalsList"
-            :key="item.id"
-            class="column is-4"
-          >
-            <DocumentTile
-              :document="item"
-              @deleteSelectedFile="deleteSelectedDocumentHandler"
-            />
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles doc-type="contracts" :object-id="props.leadId" />
       </div>
       <div v-if="tab == 'estimates'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles doc-type="estimates" :object-id="props.leadId" />
       </div>
       <div v-if="tab == 'proposal_formats'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <div
-            v-for="item in mergedProposalsList"
-            :key="item.id"
-            class="column is-4"
-          >
-            <DocumentTile
-              :document="item"
-              @deleteSelectedFile="deleteSelectedDocumentHandler"
-            />
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles
+          doc-type="proposal_formats"
+          :object-id="props.leadId"
+        />
       </div>
-      <div v-if="tab == 'jobScope'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
-          </div>
-        </TransitionGroup>
+      <div v-if="tab == 'job_scope'">
+        <ObjectDocumentsTiles doc-type="job_scope" :object-id="props.leadId" />
       </div>
       <div v-if="tab == 'asbestos'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles doc-type="asbestos" :object-id="props.leadId" />
       </div>
       <div v-if="tab == 'permits'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles doc-type="permits" :object-id="props.leadId" />
       </div>
       <div v-if="tab == 'material'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles doc-type="material" :object-id="props.leadId" />
       </div>
       <div v-if="tab == 'miscellaneous'">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <!--Grid item-->
-          <div v-for="item in filteredData" :key="item.id" class="column is-4">
-            <div class="tile-grid-item">
-              <div class="tile-grid-item-inner">
-                <img
-                  :src="item.icon"
-                  alt=""
-                  @error.once="onceImageErrored(150)"
-                />
-                <div class="meta">
-                  <span class="dark-inverted">{{ item.name }}</span>
-                  <span>
-                    <span>{{ item.size }}</span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span>Updated {{ item.updated }}</span>
-                  </span>
-                </div>
-                <FileTileDropdown />
-              </div>
-            </div>
-          </div>
-        </TransitionGroup>
+        <ObjectDocumentsTiles
+          doc-type="miscellaneous"
+          :object-id="props.leadId"
+        />
       </div>
     </div>
     <UploadDocumentModal

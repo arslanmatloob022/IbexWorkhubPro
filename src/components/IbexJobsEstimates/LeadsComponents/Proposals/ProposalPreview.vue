@@ -206,7 +206,7 @@ onMounted(() => {});
                 <span>PO Box 242</span>
                 <span>Evergreen, CO 80437-0242</span>
                 <span>Phone: 720 272-9061</span>
-                <span>Premium Trades for Premier Builders</span>
+                <span>{{ company.currentCompany.branding_line }}</span>
               </div>
             </div>
 

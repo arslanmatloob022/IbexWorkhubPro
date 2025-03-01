@@ -27,6 +27,8 @@ const getFilesIcons = {
   xlx: "/images/icons/files/sheet.svg",
   ods: "/images/icons/files/sheet.svg",
   png: "/icons/png-icon.png",
+  jpg: "/icons/jpg-50.png",
+  jpeg: "/icons/jpg-50.png",
 };
 
 const deleteFileHandler = (id: any) => {

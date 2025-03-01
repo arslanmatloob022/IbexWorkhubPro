@@ -112,7 +112,7 @@ onUnmounted(() => {
             class="mr-2"
             :color="showDropdown ? 'danger' : 'warning'"
             @click="showDropdown = !showDropdown"
-            >Columns</VButton
+            >Customize Columns</VButton
           >
           <VButton
             size="small"
