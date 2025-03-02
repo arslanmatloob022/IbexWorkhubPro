@@ -241,93 +241,6 @@ onMounted(() => {
       </template>
     </MobileSidebar>
 
-    <!-- My editing -->
-    <!-- <MobileSidebar
-      :is-open="isMobileSideblockOpen"
-      @toggle="isMobileSideblockOpen = !isMobileSideblockOpen"
-    >
-      <template #links>
-        <li>
-          <a
-            @click="router.push('/sidebar/dashboard')"
-            :class="[activeMobileSubsidebar === 'dashboard' && 'is-active']"
-            aria-label="Display dashboard content"
-            tabindex="0"
-            role="button"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:grid" />
-          </a>
-        </li>
-        <li>
-          <a
-            @click="router.push('/sidebar/dashboard/manage-projects')"
-            aria-label="Display layout content"
-            :class="[activeMobileSubsidebar === 'layout' && 'is-active']"
-            tabindex="0"
-            role="button"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:grid" />
-          </a>
-        </li>
-        <li>
-          <a
-            @click="router.push('/sidebar/dashboard/projects')"
-            aria-label="Display element content"
-            :class="[activeMobileSubsidebar === 'elements' && 'is-active']"
-            tabindex="0"
-            role="button"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:box" />
-          </a>
-        </li>
-        <li>
-          <a
-            @click="router.push('/sidebar/dashboard/projects')"
-            aria-label="Display components content"
-            :class="[activeMobileSubsidebar === 'components' && 'is-active']"
-            tabindex="0"
-            role="button"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:cpu" />
-          </a>
-        </li>
-        <li>
-          <a
-            @click="router.push('/sidebar/dashboard/projects')"
-            aria-label="Display components content"
-            :class="[activeMobileSubsidebar === 'components' && 'is-active']"
-            tabindex="0"
-            role="button"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:cpu" />
-          </a>
-        </li>
-      </template>
-
-      <template #bottom-links>
-        <li>
-          <a
-            aria-label="Display search panel"
-            tabindex="0"
-            role="button"
-            @keydown.space.prevent="panels.setActive('search')"
-            @click="panels.setActive('search')"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:search" />
-          </a>
-        </li>
-        <li>
-          <a aria-label="View settings" href="#">
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:settings"
-            />
-          </a>
-        </li>
-      </template>
-    </MobileSidebar> -->
-
     <!-- Mobile subsidebar links -->
     <Transition name="slide-x">
       <CustomAdminMobileSidebar
@@ -336,18 +249,8 @@ onMounted(() => {
       <LayoutsMobileSubsidebar
         v-else-if="isMobileSideblockOpen && activeMobileSubsidebar === 'layout'"
       />
-      <!--
-      <ComponentsMobileSubsidebar
-        v-else-if="
-          isMobileSideblockOpen && activeMobileSubsidebar === 'components'
-        "
-      />
-      <ElementsMobileSubsidebar
-        v-if="isMobileSideblockOpen && activeMobileSubsidebar === 'elements'"
-      /> -->
     </Transition>
 
-    <!-- Desktop navigation -->
     <CircularMenu />
 
     <Transition name="slide-x">
@@ -454,287 +357,6 @@ onMounted(() => {
               <!-- </template> -->
             </VCollapseLinks>
           </template>
-
-          <!-- Dashboard -->
-          <!-- <li>
-            <RouterLink to="/sidebar/dashboard" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-bar-chart" aria-hidden="true"></i>
-              </span>
-              <span> Dashboard </span>
-              <span class="badge">5</span>
-            </RouterLink>
-          </li> -->
-
-          <!-- <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="Projects"
-            class="collapse-wrap"
-          >
-            <template #header>
-              <div class="icon">
-                <i class="lnir lnir-list-alt-1" aria-hidden="true"></i>
-              </div>
-              <span>Projects</span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/projects"
-              :class="{ active: 'projects' === route.query.tab }"
-            >
-              <i class="lnir lnir-list-alt" aria-hidden="true"></i>
-              <span>All Projects</span>
-            </RouterLink>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/manage-projects"
-              :class="{ active: 'manage-projects' === route.query.tab }"
-            >
-              <i class="lnir lnir-appointment" aria-hidden="true"></i>
-              <span>Manage Projects</span>
-            </RouterLink>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/workers-tasks"
-              :class="{ active: 'workers-tasks' === route.query.tab }"
-            >
-              <i class="lnir lnir-calendar" aria-hidden="true"></i>
-              <span>Workers chart</span>
-            </RouterLink>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/completed-projects"
-              :class="{
-                active: 'pre-construction' === route.query.tab,
-              }"
-            >
-              <i class="lnir lnir-list" aria-hidden="true"></i>
-              <span>Completed Projects</span>
-            </RouterLink>
-          </VCollapseLinks>
-
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="users"
-            class="collapse-wrap"
-          >
-            <template #header>
-              <div class="icon">
-                <i class="lnir lnir-users" aria-hidden="true"></i>
-              </div>
-              <span>System Users</span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink to="/sidebar/dashboard/clients" class="is-submenu">
-              <span class="icon">
-                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
-              ></span>
-              Clients
-            </RouterLink>
-
-            <RouterLink to="/sidebar/dashboard/managers" class="is-submenu">
-              <span class="icon">
-                <i class="lnir lnir-user-alt-1" aria-hidden="true"></i
-              ></span>
-              Managers
-            </RouterLink>
-
-            <RouterLink to="/sidebar/dashboard/contractors" class="is-submenu">
-              <span class="icon">
-                <i class="lnir lnir-user-alt" aria-hidden="true"></i
-              ></span>
-              Contractors
-            </RouterLink>
-
-            <RouterLink
-              to="/sidebar/dashboard/subcontractors"
-              class="is-submenu"
-            >
-              <span class="icon">
-                <i class="lnir lnir-user" aria-hidden="true"></i
-              ></span>
-              Sub Contractors
-            </RouterLink>
-
-            <RouterLink to="/sidebar/dashboard/workers" class="is-submenu">
-              <span class="icon">
-                <i class="lnir lnir-users" aria-hidden="true"></i
-              ></span>
-              Workers
-            </RouterLink>
-          </VCollapseLinks>
-
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="payments"
-            class="collapse-wrap"
-            v-if="
-              userSession.user.id == 'f6c283ec-9499-4983-997c-0456362e6650' ||
-              userSession.user.id == '73462666-c7f0-41eb-b978-24f5ffe7a539'
-            "
-          >
-            <template #header>
-              <div class="icon">
-                <i class="lnir lnir-bank" aria-hidden="true"></i>
-              </div>
-              <span>Finance</span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/create-payment"
-              :class="{ active: 'projects' === route.query.tab }"
-            >
-              <i class="lnir lnir-paypal" aria-hidden="true"></i>
-              <span>Create Payment</span>
-            </RouterLink>
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/received-payments"
-              :class="{ active: 'received-payments' === route.query.tab }"
-            >
-              <i class="lnir lnir-invest-monitor" aria-hidden="true"></i>
-              <span>All Payments</span>
-            </RouterLink>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/approved-payments"
-              :class="{ active: 'approved-payments' === route.query.tab }"
-            >
-              <i class="lnir lnir-diagnosis-alt" aria-hidden="true"></i>
-              <span>Approved Payments </span>
-            </RouterLink>
-          </VCollapseLinks>
-
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="estimates"
-            class="collapse-wrap"
-          >
-            <template #header>
-              <div class="icon">
-                <i class="lnir lnir-library" aria-hidden="true"></i>
-              </div>
-              <span>Leads & Jobs</span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/leads"
-              :class="{ active: 'leads' === route.query.tab }"
-            >
-              <i class="lnir lnir-cloud-search" aria-hidden="true"></i>
-              <span>Lead Opportunity</span>
-            </RouterLink>
-            <RouterLink class="is-submenu" to="/sidebar/dashboard/proposals">
-              <i class="lnir lnir-add-files" aria-hidden="true"></i>
-              <span>Lead Proposals</span>
-            </RouterLink>
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/proposal-templates"
-            >
-              <i class="lnir lnir-files" aria-hidden="true"></i>
-              <span>Proposals Templates</span>
-            </RouterLink>
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/jobs"
-              :class="{ active: 'projects' === route.query.tab }"
-            >
-              <i class="lnir lnir-suitcase" aria-hidden="true"></i>
-              <span>Jobs</span>
-            </RouterLink>
-          </VCollapseLinks> -->
-
-          <!-- <li>
-            <RouterLink to="/sidebar/dashboard/profile" class="single-link">
-              <span class="icon">
-                <i class="lnir lnir-user-alt-2" aria-hidden="true"></i
-              ></span>
-              Profile
-            </RouterLink>
-          </li>
-
-          <VCollapseLinks
-            v-model:open="openSideblockLinks"
-            collapse-id="setting"
-            class="collapse-wrap"
-          >
-            <template #header>
-              <div class="icon">
-                <i class="lnir lnir-cogs" aria-hidden="true"></i>
-              </div>
-              <span>Settings</span>
-              <i
-                aria-hidden="true"
-                class="iconify rtl-hidden"
-                data-icon="feather:chevron-right"
-              />
-              <i
-                aria-hidden="true"
-                class="iconify ltr-hidden"
-                data-icon="feather:chevron-left"
-              />
-            </template>
-
-            <RouterLink
-              class="is-submenu"
-              to="/sidebar/dashboard/company-settings"
-            >
-              <i class="lnir lnir-cogs" aria-hidden="true"></i>
-              <span>Company Setting</span>
-            </RouterLink>
-            <RouterLink class="is-submenu" to="/sidebar/files-permission">
-              <i class="lnir lnir-add-files" aria-hidden="true"></i>
-              <span>Files</span>
-            </RouterLink>
-          </VCollapseLinks> -->
         </template>
 
         <template #bottom-links>
@@ -806,53 +428,42 @@ onMounted(() => {
 
         <template #links>
           <!-- dashboard -->
-          <li>
-            <RouterLink
-              id="cus-routerLinks"
-              to="/sidebar/dashboard"
-              class="single-link"
-            >
-              <span class="icon" id="cus-spanLink">
-                <i class="lnir lnir-bar-chart" aria-hidden="true"></i>
-              </span>
-            </RouterLink>
-          </li>
-
-          <!-- workers -->
-          <li>
-            <VCollapseLinks
-              v-model:open="openSideblockLinks"
-              collapse-id="jobsprojects"
-            >
-              <template #header>
-                <span class="icon" id="cus-spanLink">
-                  <i class="lnir lnir-list-alt-1" aria-hidden="true"></i>
-                </span>
-              </template>
-
-              <RouterLink class="is-submenu" to="/sidebar/dashboard/projects">
-                <span class="icon" id="cus-spanLink">
-                  <i class="lnir lnir-list-alt" aria-hidden="true"></i>
-                </span>
-              </RouterLink>
+          <template v-for="(link, index) in routerLinks" :key="index">
+            <li v-if="link.linkType == 'single'">
               <RouterLink
-                class="is-submenu"
-                to="/sidebar/dashboard/manage-projects"
+                id="cus-routerLinks"
+                :to="link.route"
+                class="single-link"
               >
                 <span class="icon" id="cus-spanLink">
-                  <i class="lnir lnir-appointment" aria-hidden="true"></i>
+                  <i :class="link.icon" aria-hidden="true"></i>
                 </span>
               </RouterLink>
-              <RouterLink
-                class="is-submenu"
-                to="/sidebar/dashboard/workers-tasks"
+            </li>
+            <!-- workers -->
+            <li v-else-if="link.linkType == 'collapse'">
+              <VCollapseLinks
+                v-model:open="openSideblockLinks"
+                :collapse-id="link.collapseId"
               >
-                <span class="icon" id="cus-spanLink">
-                  <i class="lnir lnir-calendar" aria-hidden="true"></i>
-                </span>
-              </RouterLink>
-            </VCollapseLinks>
-          </li>
+                <template #header>
+                  <span class="icon">
+                    <i :class="link.headerIcon" aria-hidden="true"></i>
+                  </span>
+                </template>
+
+                <RouterLink
+                  v-for="child in link.children"
+                  class="is-submenu"
+                  :to="child.route"
+                >
+                  <span class="icon">
+                    <i :class="child.icon" aria-hidden="true"></i>
+                  </span>
+                </RouterLink>
+              </VCollapseLinks>
+            </li>
+          </template>
 
           <!-- Internal users -->
           <li>

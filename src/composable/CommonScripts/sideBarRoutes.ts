@@ -7,16 +7,16 @@ export const routerLinks = ref([
     linkType: "single",
   },
   {
-    title: "Projects",
+    title: "Leads & Jobs",
     icon: "lnir lnir-list-alt-1",
     collapseId: "Projects",
     class: "collapse-wrap",
     headerIcon: "lnir lnir-list-alt-1",
-    headerTitle: "Jobs Management",
+    headerTitle: "Leads & Jobs",
     linkType: "collapse",
     children: [
       {
-        title: "All Projects",
+        title: "All Jobs",
         icon: "lnir lnir-list-alt",
         class: "is-submenu",
         route: "/sidebar/dashboard/projects",
@@ -123,13 +123,12 @@ export const routerLinks = ref([
     ],
   },
   {
-    title: "Leads & Jobs",
+    title: "Jobs & Leads",
     icon: "lnir lnir-library",
     collapseId: "estimates",
     class: "collapse-wrap",
     headerIcon: "lnir lnir-library",
-    headerTitle: "Leads & Proposals",
-
+    headerTitle: "Jobs & Leads",
     linkType: "collapse",
     children: [
       {
@@ -140,18 +139,38 @@ export const routerLinks = ref([
         activeClass: "leads",
       },
       {
+        title: "All Jobs",
+        icon: "lnir lnir-suitcase",
+        class: "is-submenu",
+        route: "/sidebar/dashboard/jobs",
+        activeClass: "projects",
+      },
+      {
+        title: "Manage Jobs",
+        icon: "lnir lnir-appointment",
+        class: "is-submenu",
+        route: "/sidebar/dashboard/manage-projects",
+        activeClass: "manage-projects",
+      },
+      {
+        title: "Workers Chart",
+        icon: "lnir lnir-calendar",
+        class: "is-submenu",
+        route: "/sidebar/dashboard/workers-tasks",
+        activeClass: "workers-tasks",
+      },
+      {
         title: "Lead Proposals",
         icon: "lnir lnir-add-files",
         class: "is-submenu",
         route: "/sidebar/dashboard/proposals",
       },
-
       {
-        title: "Jobs",
-        icon: "lnir lnir-suitcase",
+        title: "Completed Jobs",
+        icon: "lnir lnir-list",
         class: "is-submenu",
-        route: "/sidebar/dashboard/jobs",
-        activeClass: "projects",
+        route: "/sidebar/dashboard/completed-projects",
+        activeClass: "pre-construction",
       },
     ],
   },

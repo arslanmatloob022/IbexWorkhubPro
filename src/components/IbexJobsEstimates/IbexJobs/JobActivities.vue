@@ -72,11 +72,7 @@ onMounted(() => {
                       >{{ item.actor_info?.username ?? "N/A" }}
                       {{ item.actor_info?.last_name ?? "N/A" }}</span
                     >
-                    <div v-html="item.message">
-
-                    </div>
-                    <!-- {{ item.message }}<a>Task</a>
-                    . -->
+                    <span class="log-message" v-html="item.message"> </span>
                   </p>
                   <span>{{ moment(item.timestamp).format("hh:mm:ss") }}</span>
                 </div>
@@ -92,7 +88,16 @@ onMounted(() => {
     </div>
   </div>
 </template>
+<style lang="scss">
+.log-message {
+  font-weight: 400 !important;
+  color: var(--light-text-light-42) !important;
 
+  b {
+    color: #2aac8e !important;
+  }
+}
+</style>
 <style lang="scss" scoped>
 @import "/@src/scss/abstracts/all";
 
@@ -220,7 +225,7 @@ onMounted(() => {
 
                   span {
                     font-family: var(--font-alt);
-                    color: var(--dark-text);
+                    color: var(--info) !important;
                     font-weight: 600;
                   }
 
@@ -232,12 +237,10 @@ onMounted(() => {
                     // color: var(--primary);
                     b {
                       color: var(--primary) !important;
-                      
                     }
-
                   }
                   b {
-                      color: var(--primary);
+                    color: var(--primary);
                   }
 
                   .tag {
@@ -251,7 +254,7 @@ onMounted(() => {
                 }
 
                 > b {
-                   color: var(--primary);
+                  color: var(--primary);
                 }
 
                 > span {
@@ -317,7 +320,7 @@ onMounted(() => {
                 .meta-text {
                   p {
                     span {
-                      color: var(--dark-dark-text);
+                      color: var(--info);
                     }
 
                     a {
@@ -329,7 +332,7 @@ onMounted(() => {
                       }
                     }
                     b {
-                       color: var(--primary);
+                      color: var(--primary);
                     }
                   }
                 }

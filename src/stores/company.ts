@@ -48,8 +48,8 @@ export const useCompany = defineStore("company", () => {
     try {
       const response = await api.get(`/api/company-information/${id}/`);
       currentCompany.value = response.data;
-      if (response.data.favIcon) {
-        changeFavicon(response.data.favIcon);
+      if (response.data.favicon) {
+        changeFavicon(response.data.favicon);
       }
     } finally {
       loading.value = false;
