@@ -251,6 +251,15 @@ onMounted(async () => {
       class="column is-12 is-flex space-between align-items-center card mx-3"
     >
       <div class="is-flex">
+        <VSnack
+          v-if="leadProposalFormData.is_task_created"
+          title="Calendar Tasks Created "
+          white
+          class="ml-2"
+          color="info"
+          icon="fas fa-calendar-check"
+        >
+        </VSnack>
         <VButton
           @click="openProposalAlert('approved')"
           size="small"
@@ -262,27 +271,18 @@ onMounted(async () => {
           raised
         >
           <i class="fas fa-check"></i>
-          Approved
+          Mark Approved
         </VButton>
         <VButton
           v-else
           light
           size="small"
           color="primary"
-          class="ml-1"
+          class="ml-1 mt-1"
           icon="fas fa-check-circle"
         >
           Approved
         </VButton>
-        <VSnack
-          v-if="leadProposalFormData.is_task_created"
-          title="Calendar Tasks Created "
-          white
-          class="ml-2"
-          color="info"
-          icon="fas fa-calendar-check"
-        >
-        </VSnack>
       </div>
       <div>
         <VButton

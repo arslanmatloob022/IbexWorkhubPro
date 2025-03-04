@@ -318,14 +318,14 @@ watch(selectedCataLog, (oldVal, newVal) => {
             <VField
               v-if="props.costMode !== 'catalog'"
               v-slot="{ id }"
-              class="is-image-select column is-6"
-              label="Select Catalog"
+              class="column is-6 m-0"
+              label="Import cost code from catalogue"
             >
               <VControl>
                 <Multiselect
                   v-model="selectedCataLog"
                   :attrs="{ id }"
-                  placeholder="Select a catalog"
+                  placeholder="Import from cost code"
                   label="name"
                   :options="catalogList"
                 >
@@ -364,12 +364,12 @@ watch(selectedCataLog, (oldVal, newVal) => {
               </VField>
             </div>
             <div class="field column is-3" v-if="!props.costItemId">
-              <label for="">Catalog</label>
+              <label for="">Add to catalogue</label>
               <div>
                 <VControl raw subcontrol>
                   <VCheckbox
                     v-model="costItem.catalog"
-                    label="Create Template"
+                    label="Create template"
                     color="info"
                   />
                 </VControl>

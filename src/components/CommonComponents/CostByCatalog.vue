@@ -72,17 +72,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!-- <VButton bold @click="centeredActionsOpen = true">
-    Open Modal
-  </VButton> -->
-
   <VModal
     :open="props.centeredActionsOpen"
     actions="right"
     is="form"
     title="Create Cost item"
     @submit.prevent="createCostOnCatalog()"
-    @close="centeredActionsOpen = false"
+    @close="closeModalHandler"
   >
     <template #content>
       <VField
@@ -117,8 +113,8 @@ onMounted(async () => {
     <template #action>
       <VButton color="primary" raised type="submit"> Confirm </VButton>
     </template>
-    <template #cancel>
+    <!-- <template #cancel>
       <VButton color="primary" raised style="display: none"> Confirm </VButton>
-    </template>
+    </template> -->
   </VModal>
 </template>

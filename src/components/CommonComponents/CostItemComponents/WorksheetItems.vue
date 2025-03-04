@@ -114,7 +114,7 @@ onUnmounted(() => {
             @click="showDropdown = !showDropdown"
             >Customize Columns</VButton
           >
-          <VButton
+          <!-- <VButton
             size="small"
             light
             outlined
@@ -122,7 +122,7 @@ onUnmounted(() => {
             color="info"
             @click="centeredActionsOpen = !centeredActionsOpen"
             >Import</VButton
-          >
+          > -->
           <!-- <VButton
             size="small"
             light

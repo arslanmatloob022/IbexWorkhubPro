@@ -326,7 +326,7 @@ onMounted(() => {
                         role="button"
                         @keydown.space.prevent="tab = 'management'"
                         @click="tab = 'management'"
-                        ><span>Project Management</span></a
+                        ><span>Job Management</span></a
                       >
                     </li>
                     <li :class="[tab === 'documents' && 'is-active']">
@@ -511,9 +511,7 @@ onMounted(() => {
                         <a class="action-link" tabindex="0">View All</a>
                       </div>
 
-                      <div
-                        class="columns user-grid user-grid-v4 is-flex-tablet-p"
-                      >
+                      <div class="columns is-multiline user-grid user-grid-v4">
                         <!--Rookie-->
                         <div
                           v-for="user in leadDetail.sales_people_info"

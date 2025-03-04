@@ -344,21 +344,23 @@ onMounted(() => {});
 
 <style lang="scss" scoped>
 @import "/@src/scss/abstracts/all";
-
 .footer {
   width: 100%;
-  background-color: #fff;
+  background-color: transparent;
 }
+
 .footer-meta {
   margin-bottom: 8px;
   display: flex;
 }
+
 .footer-meta p {
   width: 15%;
-  color: black;
+  color: var(--dark-inverted);
   padding-top: 6px;
   transform: translateY(10px);
 }
+
 .footer-meta div {
   width: 80%;
   border-bottom: 1px solid #ddd;
@@ -368,14 +370,17 @@ onMounted(() => {});
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
+  background-color: transparent;
 }
 .responsive-table tr {
   border: 1px solid #ddd;
+  background-color: transparent;
 }
 
 .responsive-table thead {
   border: 1px solid #ddd;
   padding: 10px;
+  background-color: transparent;
 }
 .responsive-table th {
   font-size: 12px;
@@ -386,9 +391,11 @@ onMounted(() => {});
   padding: 10px;
   font-size: 11px;
   text-align: left;
+  background-color: transparent;
 }
 
 .responsive-table th {
+  background-color: transparent;
   background-color: #fff;
 }
 

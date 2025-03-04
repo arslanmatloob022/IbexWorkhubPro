@@ -9,6 +9,9 @@ import {
 import { useUserSession } from "/@src/stores/userSession";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
+import ckeditor from "/@src/pages/elements/addons/ckeditor.vue";
+import CKE from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const useProposal = useProposalStore();
 const editor = shallowRef<any>();
@@ -171,30 +174,40 @@ const updateOnSuccess = () => {
   emit("update:OnSuccess", null);
 };
 
-const CKEditor = defineAsyncComponent(() =>
-  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
-);
+// const CKEditor = defineAsyncComponent(() =>
+//   import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
+// );
 
-const editorConfig = {
-  fontFamily: {
-    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
-  },
-  height: "400px",
-  minHeight: "400px",
-};
+// const editorConfig = {
+//   fontFamily: {
+//     options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
+//   },
+//   height: "400px",
+//   minHeight: "400px",
+// };
 
 const openTemplate = ref(false);
 const loadTemplateSelection = (selectedTemplate: any) => {
   leadProposalFormData.value = selectedTemplate;
   console.log("test12");
 };
+
+const CKEditor = CKE.component;
+const config = {
+  fontFamily: {
+    options: [
+      '"Montserrat Variable", sans-serif',
+      '"Roboto Flex Variable", sans-serif',
+    ],
+  },
+};
+
 onMounted(async () => {
-  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
-    (m) => m.default
-  );
+  // editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
+  //   (m) => m.default
+  // );
   if (props.proposalId) {
     getProposalDetail();
-    // useProposal.getProposalCostItems(props.proposalId);
   }
 });
 onUnmounted(() => {
@@ -345,7 +358,7 @@ onUnmounted(() => {
                 class="mt-5"
                 @click="openTemplate = !openTemplate"
                 style="width: 100%"
-                >Import Template</VButton
+                >Import Proposal From Templates</VButton
               >
             </div>
             <div class="column is-12">
@@ -367,22 +380,34 @@ onUnmounted(() => {
                 <div class="field column is-12 mb-0">
                   <label for="" class="label">Introductory Text</label>
 
-                  <CKEditor
+                  <div class="content">
+                    <CKEditor
+                      v-model="leadProposalFormData.introductory_text"
+                      :editor="ClassicEditor"
+                      :config="config"
+                    />
+                  </div>
+                  <!-- <CKEditor
                     v-if="editor"
                     v-model="leadProposalFormData.introductory_text"
                     :editor="editor"
                     :config="editorConfig"
-                  />
+                  /> -->
                 </div>
                 <div class="field column is-12 mb-0">
                   <label for="" class="label">Closing Text</label>
 
                   <CKEditor
+                    v-model="leadProposalFormData.closing_text"
+                    :editor="ClassicEditor"
+                    :config="config"
+                  />
+                  <!-- <CKEditor
                     v-if="editor"
                     v-model="leadProposalFormData.closing_text"
                     :editor="editor"
                     :config="editorConfig"
-                  />
+                  /> -->
                 </div>
               </div>
               <!-- </template>

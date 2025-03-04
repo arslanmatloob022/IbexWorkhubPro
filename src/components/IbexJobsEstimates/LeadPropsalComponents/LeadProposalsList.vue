@@ -29,7 +29,6 @@ export interface ProjectData {
   team: VAvatarProps[];
 }
 const loading = ref(false);
-const projects = listData.projects as ProjectData[];
 interface Proposal {
   id: string;
   title: string;
@@ -45,21 +44,18 @@ interface Proposal {
 }
 
 const proposalsList = ref<Proposal[]>([]);
-
 const openLeadProposalModal = ref(false);
 const selectedProposalId = ref("");
-
+const openCreateTasksModal = ref(false);
+const openProposalGroupModal = ref(false);
 const openLeadProposalModalHandler = (id: any) => {
   selectedProposalId.value = id;
   openLeadProposalModal.value = true;
 };
-const openCreateTasksModal = ref(false);
-
 const openCreateTasksModalHandler = (id: any) => {
   selectedProposalId.value = id;
   openCreateTasksModal.value = true;
 };
-const openProposalGroupModal = ref(false);
 const openProposalGroupModalHandler = () => {
   openProposalGroupModal.value = true;
 };

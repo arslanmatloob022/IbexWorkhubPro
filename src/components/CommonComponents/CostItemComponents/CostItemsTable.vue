@@ -396,6 +396,7 @@ onMounted(() => {});
     .table,
     table {
       width: 100%;
+      background-color: transparent;
     }
 
     &::-webkit-scrollbar {
@@ -431,7 +432,7 @@ onMounted(() => {});
   td {
     font-family: var(--font);
     vertical-align: middle;
-    background-color: #fff;
+    background-color: transparent;
     padding: 12px 20px;
     border-bottom: 1px solid var(--fade-grey);
 
@@ -595,6 +596,7 @@ onMounted(() => {});
     td {
       border-color: var(--dark-sidebar-light-12);
       color: var(--dark-dark-text);
+      background-color: transparent;
     }
 
     .drinks-icon {
