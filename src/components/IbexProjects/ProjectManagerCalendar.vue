@@ -68,6 +68,30 @@ const calendarOptions = ref({
     resourceTimelineYear: "Year",
   },
   editable: true,
+
+  // Move resourceClick here
+  resourceClick: (info) => {
+    const resource = info.resource;
+
+    // If the clicked resource is a project (main resource)
+    if (!resource.extendedProps.isSubResource) {
+      notyf.success(`Project clicked: ${resource.title}`);
+      // You can scroll to this project or open a project detail, etc.
+      const calendar = this.$refs.calendarRef.getApi(); // Access calendar API
+      calendar.scrollTo({
+        left: resource.el.offsetLeft,
+        behavior: 'smooth', // Optional smooth scrolling
+      });
+    } 
+    // If the clicked resource is a task (sub-resource)
+    else {
+      notyf.success(`Task clicked: ${resource.title}`);
+      // Handle task (sub-resource) click event, such as opening task details
+      const task = resource.extendedProps;
+      console.log(`Task details:`, task);
+    }
+  },
+
   views: {
     resourceTimelineWeek: {
       slotDuration: { days: 1, hours: 1 },
@@ -94,6 +118,7 @@ const calendarOptions = ref({
       dayMinHeight: 26,
     },
   },
+
   dayCellDidMount: function (info) {
     const day = info.date.getDay();
 
@@ -105,26 +130,7 @@ const calendarOptions = ref({
   resourceAreaHeaderContent: "Projects",
   resources: [],
   events: [],
-  // resourceClick: (info: any) => {
-  //   const resource = info.resource;
-  //   notyf.success(`Resource clicked:`);
-
-  //   // Check for sub-resource
-  //   if (resource.extendedProps.event) {
-  //     notyf.success(`Sub-resource clicked: ${resource.title}`);
-  //   }
-  // },
-  // resourceLaneDidMount: (info: any) => {
-  //   notyf.success(`Clicked on resource: ${info.resource.extendedProps.start}`);
-  //   console.log(`data : ${info.resource.extendedProps.start}`);
-  //   info.el.addEventListener("click", () => {
-  //     const resourceTitle = info.resource.title;
-  //     if (info.resource.extendedProps.isSubResource) {
-  //       notyf.success(`Clicked sub-resource:`);
-  //     }
-  //   });
-  // },
-
+  
   eventDrop: (info: any) => {
     eventChangeHandler(info);
     info.revert();
@@ -151,6 +157,9 @@ const calendarOptions = ref({
     isTaskFormOpen.value = true;
   },
 });
+
+
+
 
 const scrollToTaskEvent = (event: any) => {
   const calendarEl = document.querySelector(".fc-scrollgrid-sync-inner");
@@ -312,26 +321,40 @@ const renderCalender = () => {
 
   const allEvents = allNew;
   const projectResources = projects.value.map((project) => {
-    const taskResources = tasks.value
-      .filter((task) => task.project === project.id)
-      .map((task) => ({
-        id: task.id,
-        title: task.title,
-        project: task.project,
-        initiallyExpanded: true,
-      }));
-
-    return {
-      id: project.id,
-      title: project.title,
-      eventBackgroundColor: project.color,
-      project: project.id,
+  const taskResources = tasks.value
+    .filter((task) => task.project === project.id)
+    .map((task) => ({
+      id: task.id,
+      title: task.title,
+      project: task.project,
       initiallyExpanded: true,
-      children: taskResources,
-    };
-  });
+      isSubResource: true, // Mark it as a sub-resource
+      extendedProps: {
+        parentProjectId: project.id,
+        ...task, // Add other task-specific properties
+      },
+    }));
 
-  calendarOptions.value.resources = projectResources;
+  return {
+    id: project.id,
+    title: project.title,
+    eventBackgroundColor: project.color,
+    project: project.id,
+    initiallyExpanded: true,
+    children: taskResources,  // Nest tasks under the project
+    extendedProps: {
+      isSubResource: false,  // Mark this as a main resource (project)
+    },
+  };
+});
+
+// Set resources in FullCalendar
+calendarOptions.value.resources = projectResources;
+
+
+// Now, assign the resources to FullCalendar
+calendarOptions.value.resources = projectResources;
+
   calendarOptions.value.events = allEvents;
 };
 

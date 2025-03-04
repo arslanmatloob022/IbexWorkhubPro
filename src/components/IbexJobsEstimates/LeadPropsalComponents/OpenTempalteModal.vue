@@ -15,7 +15,7 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-  opentempalte?: boolean;
+  openTemplate?: boolean;
   proposalId?: string;
   leadId?: string;
 }>();
@@ -74,7 +74,7 @@ onMounted(() => {
 
 <template>
   <VModal
-    :open="props.opentempalte"
+    :open="props.openTemplate"
     size="big"
     title="Template List"
     actions="right"
