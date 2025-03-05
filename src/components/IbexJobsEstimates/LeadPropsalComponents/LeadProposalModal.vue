@@ -33,6 +33,29 @@ const props = defineProps<{
   leadId?: string;
 }>();
 
+const selectSlotValue=ref('')
+const selectSlotOptions =ref(<any>[])
+
+  const getLeadsList = async () => {
+  try {
+    const response = await api.get(
+      `/api/job/short-list/`
+    );
+
+    selectSlotOptions.value = response.data.map((item) => {
+      return {
+        value: item.id.toString(),
+        name: item.title,
+      };
+    });
+    selectSlotValue.value = props.leadId ||"";
+  } catch {
+    notyf.error("Invalid data");
+  } finally {
+    Loading.value = false;
+  }
+};
+
 const data = [
   {
     title: "More Details",
@@ -209,6 +232,7 @@ onMounted(async () => {
   if (props.proposalId) {
     getProposalDetail();
   }
+  getLeadsList()
 });
 onUnmounted(() => {
   emit("clearProposalId", null);
@@ -267,7 +291,7 @@ onUnmounted(() => {
         <!-- <div v-if="tab == 'general'" class="column is-12"> -->
         <div class="column is-12">
           <div class="columns is-multiline">
-            <div class="field column is-6 mb-0">
+            <div class="field  mb-0" :class="props.leadId?'column is-6':'column is-4'">
               <label>Title: *</label>
               <div class="control">
                 <input
@@ -280,7 +304,7 @@ onUnmounted(() => {
                 />
               </div>
             </div>
-            <div class="field column is-6">
+            <div class="field " :class="props.leadId?'column is-6':'column is-4'">
               <label>Approval Deadline *</label>
               <div class="control">
                 <input
@@ -293,6 +317,36 @@ onUnmounted(() => {
                 />
               </div>
             </div>
+
+
+            <VField class="is-image-select has-curved-images  column is-4" v-if="!props.leadId">
+              <label>Select Lead *</label>
+                  <VControl>
+                    <Multiselect
+                      v-model="selectSlotValue"
+                      placeholder="Select a language"
+                      label="name"
+                      :max-height="145"
+                      :options="selectSlotOptions"
+                    >
+                      <template #singlelabel="{ value }">
+                        <div class="multiselect-single-label">
+                         
+                          <span class="select-label-text">
+                            {{ value.name }}
+                          </span>
+                        </div>
+                      </template>
+                      <template #option="{ option }">
+                        
+                        <span class="select-label-text">
+                          {{ option.name }}
+                        </span>
+                      </template>
+                    </Multiselect>
+                  </VControl>
+                </VField>
+
             <div class="column is-6">
               <VField class="m-0 p-0" label="Type">
                 <VControl>
@@ -435,7 +489,7 @@ onUnmounted(() => {
       </div>
       <OpenTempalteModal
         v-if="openTemplate"
-        :leadId="props.leadId"
+        :leadId="props.leadId||selectSlotValue"
         :proposalId="props.proposalId"
         :openTemplate="openTemplate"
         @update:OnSuccess="loadTemplateSelection"
