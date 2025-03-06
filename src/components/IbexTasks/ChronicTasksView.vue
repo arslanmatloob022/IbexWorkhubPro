@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
+import { useUserSession } from "/@src/stores/userSession";
+
+const userSession = useUserSession();
 type TabId = "active" | "inactive";
 const activeTab = ref<TabId>("active");
 const filters = ref("");
@@ -31,7 +34,11 @@ const emits = defineEmits<{
 const getChronicTasks = async () => {
   try {
     loading.value = true;
-    const resp = await api.get(`/api/task/project-wise-tasks/${props.userId}/`);
+    const resp = await api.get(
+      `/api/task/project-wise-tasks/${
+        props.userId ? props.userId : userSession.user.id
+      }/`
+    );
     chronicTasks.value = resp.data;
     console.log("chronic tasks", resp.data);
     loading.value = false;

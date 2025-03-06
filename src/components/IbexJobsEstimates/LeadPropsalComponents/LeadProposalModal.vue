@@ -33,14 +33,12 @@ const props = defineProps<{
   leadId?: string;
 }>();
 
-const selectSlotValue=ref('')
-const selectSlotOptions =ref(<any>[])
+const selectSlotValue = ref("");
+const selectSlotOptions = ref(<any>[]);
 
-  const getLeadsList = async () => {
+const getLeadsList = async () => {
   try {
-    const response = await api.get(
-      `/api/job/short-list/`
-    );
+    const response = await api.get(`/api/project/projects-short-info/`);
 
     selectSlotOptions.value = response.data.map((item) => {
       return {
@@ -48,7 +46,7 @@ const selectSlotOptions =ref(<any>[])
         name: item.title,
       };
     });
-    selectSlotValue.value = props.leadId ||"";
+    selectSlotValue.value = props.leadId || "";
   } catch {
     notyf.error("Invalid data");
   } finally {
@@ -232,7 +230,7 @@ onMounted(async () => {
   if (props.proposalId) {
     getProposalDetail();
   }
-  getLeadsList()
+  getLeadsList();
 });
 onUnmounted(() => {
   emit("clearProposalId", null);
@@ -291,7 +289,10 @@ onUnmounted(() => {
         <!-- <div v-if="tab == 'general'" class="column is-12"> -->
         <div class="column is-12">
           <div class="columns is-multiline">
-            <div class="field  mb-0" :class="props.leadId?'column is-6':'column is-4'">
+            <div
+              class="field mb-0"
+              :class="props.leadId ? 'column is-12' : 'column is-6'"
+            >
               <label>Title: *</label>
               <div class="control">
                 <input
@@ -304,52 +305,40 @@ onUnmounted(() => {
                 />
               </div>
             </div>
-            <div class="field " :class="props.leadId?'column is-6':'column is-4'">
-              <label>Approval Deadline *</label>
-              <div class="control">
-                <input
-                  type="date"
-                  name="firstName"
-                  v-model="leadProposalFormData.approval_deadline"
-                  required
-                  class="input is-primary-focus is-primary-focus"
-                  placeholder="Proposal Approval deadline"
-                />
-              </div>
-            </div>
 
-
-            <VField class="is-image-select has-curved-images  column is-4" v-if="!props.leadId">
+            <VField
+              class="is-image-select has-curved-images column is-6"
+              v-if="!props.leadId"
+            >
               <label>Select Lead *</label>
-                  <VControl>
-                    <Multiselect
-                      v-model="selectSlotValue"
-                      placeholder="Select a language"
-                      label="name"
-                      :max-height="145"
-                      :options="selectSlotOptions"
-                    >
-                      <template #singlelabel="{ value }">
-                        <div class="multiselect-single-label">
-                         
-                          <span class="select-label-text">
-                            {{ value.name }}
-                          </span>
-                        </div>
-                      </template>
-                      <template #option="{ option }">
-                        
-                        <span class="select-label-text">
-                          {{ option.name }}
-                        </span>
-                      </template>
-                    </Multiselect>
-                  </VControl>
-                </VField>
+              <VControl>
+                <Multiselect
+                  v-model="leadProposalFormData.project"
+                  placeholder="Select a lead"
+                  label="name"
+                  :searchable="true"
+                  :max-height="145"
+                  :options="selectSlotOptions"
+                >
+                  <template #singlelabel="{ value }">
+                    <div class="multiselect-single-label">
+                      <span class="select-label-text">
+                        {{ value.name }}
+                      </span>
+                    </div>
+                  </template>
+                  <template #option="{ option }">
+                    <span class="select-label-text">
+                      {{ option.name }}
+                    </span>
+                  </template>
+                </Multiselect>
+              </VControl>
+            </VField>
 
-            <div class="column is-6">
+            <div class="column is-4">
               <VField class="m-0 p-0" label="Type">
-                <VControl>
+                <VControl class="m-0 p-0">
                   <VRadio
                     v-model="leadProposalFormData.type"
                     value="proposal"
@@ -383,9 +372,26 @@ onUnmounted(() => {
               </VField>
             </div>
 
-            <div class="field column is-3">
-              <label class="mb-3">Attachments</label>
-              <VField grouped class="mt-3">
+            <div
+              class="field"
+              :class="props.leadId ? 'column is-4' : 'column is-2'"
+            >
+              <label>Approval Deadline *</label>
+              <div class="control">
+                <input
+                  type="date"
+                  name="firstName"
+                  v-model="leadProposalFormData.approval_deadline"
+                  required
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Proposal Approval deadline"
+                />
+              </div>
+            </div>
+
+            <div class="field column is-2">
+              <label>Attachments</label>
+              <VField grouped class="">
                 <VControl>
                   <div class="file">
                     <label class="file-label">
@@ -406,10 +412,11 @@ onUnmounted(() => {
                 </VControl>
               </VField>
             </div>
-            <div class="column is-3 pt-5">
+            <div class="column is-4">
               <VButton
                 color="primary"
                 class="mt-5"
+                icon="fas fa-file-import"
                 @click="openTemplate = !openTemplate"
                 style="width: 100%"
                 >Import Proposal From Templates</VButton
@@ -489,7 +496,7 @@ onUnmounted(() => {
       </div>
       <OpenTempalteModal
         v-if="openTemplate"
-        :leadId="props.leadId||selectSlotValue"
+        :leadId="props.leadId || leadProposalFormData.project"
         :proposalId="props.proposalId"
         :openTemplate="openTemplate"
         @update:OnSuccess="loadTemplateSelection"

@@ -38,9 +38,11 @@ const props = withDefaults(
 const workerTasksStats = ref({});
 const loading = ref(false);
 const taskData = ref({});
-const openTaskDetail = (task: any) => {
+const taskId = ref("");
+const openTaskDetail = (task: any, id: any) => {
   console.log("detail", task);
   taskData.value = task;
+  taskId.value = id;
   taskDetailModal.value = true;
 };
 
@@ -241,7 +243,7 @@ onMounted(async () => {
         <FullCalendar :options="calendarOptions">
           <template v-slot:eventContent="arg">
             <div
-              @click="openTaskDetail(arg.event.extendedProps)"
+              @click="openTaskDetail(arg.event.extendedProps, arg.event.id)"
               style="
                 display: flex;
                 flex-wrap: wrap;
@@ -275,6 +277,7 @@ onMounted(async () => {
     v-if="taskDetailModal"
     :taskDetailModal="taskDetailModal"
     :taskData="taskData"
+    :taskId="taskId"
     @update:modalHandler="taskDetailModal = false"
   >
   </TaskInfoModal>
