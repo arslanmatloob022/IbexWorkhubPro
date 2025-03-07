@@ -63,6 +63,7 @@ const calendarOptions = ref({
     right: "resourceTimelineWeek,resourceTimelineMonth,resourceTimelineYear",
   },
   buttonText: {
+    today: "Today",
     resourceTimelineWeek: "Week",
     resourceTimelineMonth: "Month",
     resourceTimelineYear: "Year",
@@ -80,9 +81,9 @@ const calendarOptions = ref({
       const calendar = this.$refs.calendarRef.getApi(); // Access calendar API
       calendar.scrollTo({
         left: resource.el.offsetLeft,
-        behavior: 'smooth', // Optional smooth scrolling
+        behavior: "smooth", // Optional smooth scrolling
       });
-    } 
+    }
     // If the clicked resource is a task (sub-resource)
     else {
       notyf.success(`Task clicked: ${resource.title}`);
@@ -130,7 +131,7 @@ const calendarOptions = ref({
   resourceAreaHeaderContent: "Projects",
   resources: [],
   events: [],
-  
+
   eventDrop: (info: any) => {
     eventChangeHandler(info);
     info.revert();
@@ -157,9 +158,6 @@ const calendarOptions = ref({
     isTaskFormOpen.value = true;
   },
 });
-
-
-
 
 const scrollToTaskEvent = (event: any) => {
   const calendarEl = document.querySelector(".fc-scrollgrid-sync-inner");
@@ -321,39 +319,30 @@ const renderCalender = () => {
 
   const allEvents = allNew;
   const projectResources = projects.value.map((project) => {
-  const taskResources = tasks.value
-    .filter((task) => task.project === project.id)
-    .map((task) => ({
-      id: task.id,
-      title: task.title,
-      project: task.project,
+    const taskResources = tasks.value
+      .filter((task) => task.project === project.id)
+      .map((task) => ({
+        id: task.id,
+        title: task.title,
+        project: task.project,
+        initiallyExpanded: true,
+      }));
+
+    return {
+      id: project.id,
+      title: project.title,
+      eventBackgroundColor: project.color,
+      project: project.id,
       initiallyExpanded: true,
-      isSubResource: true, // Mark it as a sub-resource
+      children: taskResources, // Nest tasks under the project
       extendedProps: {
-        parentProjectId: project.id,
-        ...task, // Add other task-specific properties
+        isSubResource: false, // Mark this as a main resource (project)
       },
-    }));
+    };
+  });
 
-  return {
-    id: project.id,
-    title: project.title,
-    eventBackgroundColor: project.color,
-    project: project.id,
-    initiallyExpanded: true,
-    children: taskResources,  // Nest tasks under the project
-    extendedProps: {
-      isSubResource: false,  // Mark this as a main resource (project)
-    },
-  };
-});
-
-// Set resources in FullCalendar
-calendarOptions.value.resources = projectResources;
-
-
-// Now, assign the resources to FullCalendar
-calendarOptions.value.resources = projectResources;
+  // Now, assign the resources to FullCalendar
+  calendarOptions.value.resources = projectResources;
 
   calendarOptions.value.events = allEvents;
 };
