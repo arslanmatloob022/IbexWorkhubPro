@@ -56,48 +56,46 @@ const closeModalHandler = () => {
 
         <div v-if="tab == 'info'" class="column is-12 py-0">
           <div class="columns is-multiline px-2 py-0">
-            <div class="column is-12 p-0 mb-2">
-              <VCard elevated class="">
+            <div class="column is-12 mb-2">
+              <VCard elevated class="columns is-multiline">
                 <h1 class="subtitle is-5 mb-1">Task info</h1>
-                <p>
-                  Description:
-                  <span v-html="props.taskData?.description" class="is-bold">
-                  </span>
-                </p>
-                <p>
-                  Duration:
-                  <span class="is-bold">
+                <div class="column is-12">
+                  <h1 class="subtitle is-6 m-0">Description</h1>
+                  <p>
+                    <span v-html="props.taskData?.description" class="is-bold">
+                    </span>
+                  </p>
+                </div>
+                <div class="column is-12">
+                  <h1 class="subtitle is-6 m-0">Note</h1>
+                  <p>
+                    {{ props.taskData?.note ? props.taskData?.note : "N/A" }}
+                  </p>
+                </div>
+                <div class="column is-6">
+                  Duration
+                  <p class="">
                     {{
                       props.taskData?.startDate
                         ? props.taskData?.startDate
                         : "N/A"
                     }}
-                  </span>
-                  to
-
-                  <span class="is-bold">
+                    to
                     {{
                       props.taskData?.endDate ? props.taskData?.endDate : "N/A"
                     }}
-                  </span>
-                </p>
-
-                <p>
-                  Unit:
-                  <span class="is-bold">
+                  </p>
+                </div>
+                <div class="column is-6">
+                  Unit
+                  <p class="">
                     {{ props.taskData?.unit ? props.taskData?.unit : "N/A" }}
-                  </span>
-                </p>
-                <p>
-                  Note:
-                  <span class="is-bold">
-                    {{ props.taskData?.note ? props.taskData?.note : "N/A" }}
-                  </span>
-                </p>
+                  </p>
+                </div>
               </VCard>
             </div>
 
-            <div class="column is-12 p-0 mb-2">
+            <div class="column is-12 p-0 mb-2" v-if="props.taskData.project.id">
               <VCard elevated>
                 <h1 class="subtitle is-5 mb-1">Project Info</h1>
                 <p>
@@ -130,10 +128,9 @@ const closeModalHandler = () => {
               </VCard>
             </div>
 
-            <div class="column is-12 p-0">
+            <div v-if="props.taskData?.workers?.length" class="column is-12">
               <h1 class="subtitle is-5 mb-1">Workers</h1>
               <VCardAction
-                v-if="props.taskData?.workers?.length"
                 v-for="worker in props.taskData?.workers"
                 :avatar="
                   worker.avatar
@@ -151,7 +148,11 @@ const closeModalHandler = () => {
           <!-- {{ props.taskData }}
           <br />
           {{ props.taskId }} -->
-          <ProgressMedia :object="props.taskId" :taskData="props.taskData" />
+          <ProgressMedia
+            :object="props.taskId"
+            :taskData="props.taskData"
+            type="task"
+          />
         </div>
       </div>
     </template>

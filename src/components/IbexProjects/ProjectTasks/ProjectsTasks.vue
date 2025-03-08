@@ -47,7 +47,8 @@ const isTaskFormOpen = ref(false);
 const deleteTaskId = ref(0);
 const taskData = ref({});
 const taskToBeEdit = ref("");
-
+const taskDetailModal = ref(false);
+const taskId = ref("");
 const workersData = ref([{ id: 0, username: "", email: "", phoneNumber: "" }]);
 const projectTasks = ref([
   {
@@ -88,6 +89,12 @@ const closeTheModals = () => {
     workers: [],
     status: "",
   };
+};
+const openTaskDetail = (task: any, id: any) => {
+  console.log("detail", task);
+  taskData.value = task;
+  taskId.value = id;
+  taskDetailModal.value = true;
 };
 
 const openAlert = (id: any) => {
@@ -354,7 +361,8 @@ onMounted(() => {
             <!--Project-->
             <div v-for="item in filteredData" class="column is-6">
               <div
-                class="grid-item"
+                class="grid-item cu-pointer"
+                @click="openTaskDetail(item, item.id)"
                 :style="{
                   backgroundImage: `linear-gradient(350deg, white 65%, ${
                     statusColors[item.status]
@@ -456,8 +464,8 @@ onMounted(() => {
                     </VDropdown>
                   </div>
                   <div class="body">
-                    <p>
-                      {{ item.description }}
+                    <p v-html="item.description">
+                      <!-- {{ item.description }} -->
                     </p>
                   </div>
                 </div>
@@ -490,8 +498,10 @@ onMounted(() => {
                     <VTag
                       outlined
                       rounded
+                      style="text-transform: capitalize"
                       :color="statusColorsName[item.status]"
-                      >{{ item.status }}</VTag
+                    >
+                      {{ item.status }}</VTag
                     >
                     <!-- <p
                       style="text-transform: capitalize"
@@ -537,7 +547,11 @@ onMounted(() => {
             class="columns is-multiline projects-card-grid"
           >
             <!--Project-->
-            <div v-for="item in filteredCompletedData" class="column is-6">
+            <div
+              v-for="item in filteredCompletedData"
+              @click="openTaskDetail(item, item.id)"
+              class="column is-6"
+            >
               <div class="grid-item">
                 <div class="top-section">
                   <div class="head">
@@ -680,7 +694,13 @@ onMounted(() => {
       </div>
     </div>
   </div>
-
+  <TaskInfoModal
+    v-if="taskDetailModal"
+    :taskDetailModal="taskDetailModal"
+    :taskData="taskData"
+    :taskId="taskId"
+    @update:modalHandler="taskDetailModal = false"
+  ></TaskInfoModal>
   <SweetAlert
     v-if="SweetAlertProps.isSweetAlertOpen"
     :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"

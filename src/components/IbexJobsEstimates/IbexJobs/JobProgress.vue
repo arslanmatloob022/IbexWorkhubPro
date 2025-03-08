@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import { posts } from "/@src/data/layouts/card-grid-v4";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
-
+import { useApi } from "/@src/composable/useAPI";
+import { formatDateTime, formatDate } from "/@src/composable/useSupportElement";
+const props = defineProps<{
+  object?: string;
+  type?: string;
+  taskData?: {};
+}>();
+const api = useApi();
 const filters = ref("");
-
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return posts;
-  } else {
-    return posts.filter((item) => {
-      return (
-        item.title.match(new RegExp(filters.value, "i")) ||
-        item.author.name.match(new RegExp(filters.value, "i"))
-      );
-    });
-  }
-});
-
+const loading = ref(false);
+const openFileModal = ref(false);
 const valueSingle = ref(0);
 const optionsSingle = [
   "All Posts",
@@ -24,10 +19,86 @@ const optionsSingle = [
   "Older Posts",
   "Popular Posts",
 ];
+
+const progressList = ref([
+  {
+    id: "",
+    uploaded_by_info: {
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+    file_info: {
+      url: "",
+      name: "",
+      type: "",
+      size: 0.0,
+    },
+    progress: 0,
+    title: "",
+    description: "",
+    created_at: "",
+    file: "",
+    job: "",
+    task: "",
+    uploaded_by: "",
+  },
+]);
+
+const getJobProgress = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.get(`/api/job-progress/by-job/${props.object}/`);
+    progressList.value = resp.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const progressListCustom = computed(() => {
+  return progressList.value.map((item) => {
+    return {
+      src: item.file_info.url,
+      thumbnail: item.file_info.url,
+      w: 1200,
+      h: 900,
+      alt: item.file_info.name,
+    };
+  });
+});
+const filteredData = computed(() => {
+  if (!filters.value) {
+    return progressList.value;
+  } else {
+    const filterRe = new RegExp(filters.value, "i");
+    console.log(filterRe);
+    return progressList.value.filter((item) => {
+      return (
+        item.title?.match(filterRe) ||
+        item.created_at?.match(filterRe) ||
+        item.uploaded_by_info?.username?.match(filterRe) ||
+        item.uploaded_by_info?.email?.match(filterRe) ||
+        item.uploaded_by_info?.last_name?.match(filterRe)
+      );
+    });
+  }
+});
+
+onMounted(() => {
+  if (props.type === "job") {
+    getJobProgress();
+  }
+});
 </script>
 
 <template>
-  <div>
+  <JobProgressLoader v-if="loading" />
+  <div v-else>
     <div class="card-grid-toolbar">
       <VControl icon="feather:search">
         <input
@@ -48,11 +119,11 @@ const optionsSingle = [
             />
           </VControl>
         </VField>
-        <VButton color="primary" raised>
+        <VButton @click="openFileModal = !openFileModal" color="primary" raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
-          <span>New Image</span>
+          <span>Progress</span>
         </VButton>
       </div>
     </div>
@@ -84,28 +155,51 @@ const optionsSingle = [
       <TransitionGroup name="list" tag="div" class="columns is-multiline">
         <!--Grid item-->
         <div v-for="item in filteredData" :key="item.id" class="column is-3">
-          <a href="#" class="card-grid-item">
+          <a
+            :href="item.file"
+            :title="item.title"
+            itemprop="contentUrl"
+            data-pswp-width="1200"
+            data-pswp-height="900"
+            target="_blank"
+            data-cropped="true"
+            ref="noreferrer"
+            class="card-grid-item"
+          >
             <img
-              :src="item.image"
-              alt=""
+              :src="item.file"
+              :alt="item.title"
               @error.once="onceImageErrored(400, 300)"
             />
             <div class="card-grid-item-content">
               <h3 class="dark-inverted">
-                Uploaded this image for the task "Tiling in the Kitchen"
+                {{ item.title ? item.title : "No Title" }}
               </h3>
+              <p>
+                {{ item.description ? item.description : "No Description" }}
+              </p>
             </div>
-            <div class="card-grid-item-footer">
-              <VAvatar :picture="item.author.avatar" size="small" />
+            <div v-if="item.uploaded_by_info" class="card-grid-item-footer">
+              <VAvatar :picture="item.uploaded_by_info.avatar" size="small" />
               <div class="meta">
-                <span class="dark-inverted">{{ item.author.name }}</span>
-                <span>{{ item.published }}</span>
+                <span class="dark-inverted"
+                  >{{ item.uploaded_by_info.username ?? "N/A" }}
+                  {{ item.uploaded_by_info.last_name ?? "" }}</span
+                >
+                <span>{{ formatDateTime(item.created_at) }}</span>
               </div>
             </div>
           </a>
         </div>
       </TransitionGroup>
     </div>
+    <AddProgressModal
+      v-if="openFileModal"
+      :job="props.object"
+      :openProgressModal="openFileModal"
+      @update:OnSuccess="getJobProgress"
+      @close:ModalHandler="openFileModal = false"
+    />
   </div>
 </template>
 

@@ -33,7 +33,7 @@ const fileData = ref({
   title: "",
   description: "",
   job: props.job,
-  task: props.task,
+  task: props.task ? props.task : "",
   uploaded_by: userSession.user.id,
   file: null as File | null,
 });
@@ -82,7 +82,7 @@ onMounted(() => {});
   <VModal
     is="form"
     :open="props.openProgressModal"
-    title="Attach File"
+    title="Add Progress"
     size="medium"
     actions="right"
     @submit.prevent="uploadFileHandler"

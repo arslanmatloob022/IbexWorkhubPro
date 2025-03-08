@@ -5,24 +5,13 @@ import { useApi } from "/@src/composable/useAPI";
 import { formatDate } from "/@src/composable/useSupportElement";
 const api = useApi();
 const filters = ref("");
+const loading = ref(false);
 const openFileModal = ref(false);
 const props = defineProps<{
   object?: string;
   type?: string;
   taskData?: {};
 }>();
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return posts;
-  } else {
-    return posts.filter((item) => {
-      return (
-        item.title.match(new RegExp(filters.value, "i")) ||
-        item.author.name.match(new RegExp(filters.value, "i"))
-      );
-    });
-  }
-});
 
 const valueSingle = ref(0);
 const optionsSingle = [
@@ -59,25 +48,49 @@ const progressList = ref([
     uploaded_by: "937a8b15-62b4-4576-98af-2e53ecb90e46",
   },
 ]);
+
 const getTaskProgress = async () => {
   try {
+    loading.value = true;
     const resp = await api.get(`/api/job-progress/by-task/${props.object}/`);
     progressList.value = resp.data;
   } catch (err) {
     console.log(err);
+  } finally {
+    loading.value = false;
   }
 };
+const filteredData = computed(() => {
+  if (!filters.value) {
+    return progressList.value;
+  } else {
+    const FilterRex = new RegExp(filters.value, "i");
+    return progressList.value.filter((item) => {
+      return (
+        item.title.match(FilterRex) ||
+        item.uploaded_by_info?.username?.match(FilterRex)
+      );
+    });
+  }
+});
 
 onMounted(() => {
-  getTaskProgress();
+  if (props.type === "task") {
+    getTaskProgress();
+  }
 });
 </script>
 
 <template>
-  <div>
+  <ProgressMediaLoader v-if="loading" />
+  <div v-else>
     <div class="tile-grid-toolbar">
       <VControl icon="feather:search">
-        <input class="input custom-text-filter" placeholder="Search..." />
+        <input
+          v-model="filters"
+          class="input custom-text-filter"
+          placeholder="Search..."
+        />
       </VControl>
 
       <div class="buttons">
@@ -126,7 +139,7 @@ onMounted(() => {
 
       <!--Tile Grid v3-->
       <div class="tile is-ancestor columns is-multiline">
-        <div v-for="item in progressList" class="tile is-parent column is-12">
+        <div v-for="item in filteredData" class="tile is-parent column is-12">
           <a class="tile is-child tile-grid-item is-medium">
             <div class="tile-grid-item-inner">
               <img
@@ -151,7 +164,7 @@ onMounted(() => {
                   <div class="meta-inner">
                     <span class="dark-inverted">
                       {{ item.uploaded_by_info.username ?? "N/A" }}
-                      {{ item.uploaded_by_info.last_name ?? "N/A" }}</span
+                      {{ item.uploaded_by_info.last_name ?? "" }}</span
                     >
                     <span>{{ formatDate(item.created_at) }}</span>
                   </div>
@@ -165,9 +178,13 @@ onMounted(() => {
     <AddProgressModal
       v-if="openFileModal"
       :task="props.object"
-      :job="props.taskData.project.id"
+      :job="
+        props.taskData.project.id
+          ? props.taskData.project.id
+          : props.taskData?.project
+      "
       :openProgressModal="openFileModal"
-      @update:OnSuccess="openFileModal = false"
+      @update:OnSuccess="getTaskProgress"
       @close:ModalHandler="openFileModal = false"
     />
   </div>

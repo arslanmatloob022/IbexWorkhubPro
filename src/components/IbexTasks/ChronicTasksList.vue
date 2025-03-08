@@ -13,8 +13,12 @@ export interface ProjectData {
   team: VAvatarProps[];
 }
 
-const projects = listData.projects as ProjectData[];
+const taskDetailModal = ref(false);
+const loading = ref(false);
+const taskData = ref({});
+const taskId = ref("");
 
+const projects = listData.projects as ProjectData[];
 const props = withDefaults(
   defineProps<{
     tasks?: object;
@@ -51,6 +55,12 @@ const statusColor = {
   pending: "warning",
   active: "info",
   canceled: "danger",
+};
+const openTaskDetail = (task: any, id: any) => {
+  console.log("detail", task);
+  taskData.value = task;
+  taskId.value = id;
+  taskDetailModal.value = true;
 };
 
 const filteredData = computed(() => {
@@ -112,7 +122,8 @@ const filteredData = computed(() => {
               <div
                 v-for="item in props.tasks"
                 :key="item.id"
-                class="flex-table-item"
+                class="flex-table-item cu-pointer"
+                @click="openTaskDetail(item, item.id)"
               >
                 <VFlexTableCell :column="{ media: true, grow: true }">
                   <!-- <VAvatar :picture="item.picture" /> -->
@@ -192,6 +203,13 @@ const filteredData = computed(() => {
         </VPlaceholderPage>
       </div>
     </div>
+    <TaskInfoModal
+      v-if="taskDetailModal"
+      :taskDetailModal="taskDetailModal"
+      :taskData="taskData"
+      :taskId="taskId"
+      @update:modalHandler="taskDetailModal = false"
+    ></TaskInfoModal>
   </div>
 </template>
 

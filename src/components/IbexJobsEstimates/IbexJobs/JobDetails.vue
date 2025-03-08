@@ -681,7 +681,7 @@ onMounted(() => {
             <JobLeadActivities :jobId="route.params.id" />
           </div>
           <div v-if="tab === 'progress'" class="column is-12">
-            <JobProgress />
+            <JobProgress :object="route.params.id" type="job" />
           </div>
           <div v-if="tab === 'finance'" class="column is-12">
             <JobFinance />
