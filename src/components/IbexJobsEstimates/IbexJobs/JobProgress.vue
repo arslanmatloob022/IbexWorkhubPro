@@ -176,7 +176,15 @@ onMounted(() => {
                 {{ item.title ? item.title : "No Title" }}
               </h3>
               <p>
-                {{ item.description ? item.description : "No Description" }}
+                {{
+                  item.description
+                    ? item.description.slice(0, 34)
+                    : "No Description"
+                }}
+                <details v-if="item.description.length > 44">
+                  <summary>Read More</summary>
+                  {{ item.description ? item.description : "" }}
+                </details>
               </p>
             </div>
             <div v-if="item.uploaded_by_info" class="card-grid-item-footer">

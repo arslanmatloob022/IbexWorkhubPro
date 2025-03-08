@@ -86,14 +86,33 @@ const activityFormData = ref<ActivityDataModel>({
 const addUpdateActivityHandler = async () => {
   try {
     isLoading.value = true;
-    const formDataAPI = convertToFormData(activityFormData.value, []);
-    const response = await api.post("/api/activity/", formDataAPI);
+    const formDataAPI = convertToFormData(activityFormData.value, ["file"]);
+    if (props.activityId) {
+      const response = await api.patch(
+        `/api/activity/${props.activityId}/`,
+        formDataAPI
+      );
+      notyf.success("Activity updated successfully");
+    } else {
+      const response = await api.post("/api/activity/", formDataAPI);
+      notyf.success("Activity added successfully");
+    }
     updateOnSuccessHandler();
     closeModalHandler();
-    notyf.dismissAll();
-    notyf.success("Activity added successfully");
   } catch (error: any) {
-    notyf.error(` ${error}, New Worker`);
+    notyf.error(` ${error}, Activity`);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const getActivityHandler = async () => {
+  try {
+    isLoading.value = true;
+    const response = await api.get(`/api/activity/${props.activityId}/`);
+    activityFormData.value = response.data;
+  } catch (error: any) {
+    notyf.error(` ${error}, Get Activity`);
   } finally {
     isLoading.value = false;
   }
@@ -150,6 +169,7 @@ const handleFileChange = (event: Event) => {
 onMounted(() => {
   getAllUsersHandler();
   if (props.activityId) {
+    getActivityHandler();
   }
 });
 </script>
@@ -267,28 +287,31 @@ onMounted(() => {
               />
             </div>
             <div class="field column is-3 mb-0">
-              <input
+              <!-- <input
                 ref="fileInput"
                 type="file"
                 style="display: none"
                 @change="handleFileChange"
                 accept="image/*,application/pdf"
-              />
+              /> -->
               <label>Attachment </label>
               <VField grouped>
                 <VControl>
-                  <div class="file has-name">
+                  <div class="file">
                     <label class="file-label">
-                      <input class="file-input" type="file" name="resume" />
+                      <input
+                        @change="handleFileChange"
+                        class="file-input"
+                        type="file"
+                        name="resume"
+                      />
                       <span class="file-cta">
                         <span class="file-icon">
                           <i class="fas fa-cloud-upload-alt" />
                         </span>
-                        <span class="file-label"> Choose file </span>
-                      </span>
-                      <span class="file-name light-text">
-                        {{ fileName ? fileName : "No file" }}
-                        {{ fileSize }} Kbs
+                        <span class="file-label">
+                          {{ fileName ? fileName : "Choose a file…" }}
+                        </span>
                       </span>
                     </label>
                   </div>
@@ -404,7 +427,7 @@ onMounted(() => {
     </template>
     <template #action>
       <VButton :loading="isLoading" type="submit" color="primary" raised
-        >Create Activity</VButton
+        >{{ props.activityId ? "Update" : "Create" }} Activity</VButton
       >
     </template>
   </VModal>

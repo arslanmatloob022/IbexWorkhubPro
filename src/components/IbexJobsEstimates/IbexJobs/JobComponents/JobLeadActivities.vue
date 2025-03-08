@@ -10,6 +10,7 @@ import { useUserSession } from "/@src/stores/userSession";
 import { formatDate } from "/@src/composable/useSupportElement";
 
 const filters = ref("");
+const selectedActivity = ref("");
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
 const activitiesList = ref([
@@ -61,11 +62,11 @@ const userSession = useUserSession();
 const loading = ref(false);
 const valueSingle = ref(0);
 const optionsSingle = [
-  "All Projects",
-  "Web Apps",
-  "Mobile Apps",
-  "Dashboards",
-  "Landing Pages",
+  "All Activities",
+  "Site Visit",
+  "Web Forms",
+  "Email",
+  "Call ",
 ];
 
 const props = defineProps<{
@@ -79,6 +80,11 @@ function getAvatarData(user: any): VAvatarProps {
     color: user?.color as VAvatarColor,
   };
 }
+
+const openActivityModal = (activity: any) => {
+  selectedActivity.value = activity;
+  showAddUpdateContactModal.value = true;
+};
 
 const getLeadActivitiesHandler = async () => {
   try {
@@ -194,7 +200,7 @@ onMounted(() => {
         </template>
       </VPlaceholderPage>
 
-      <!-- <TransitionGroup
+      <TransitionGroup
         name="list"
         tag="div"
         class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
@@ -252,7 +258,10 @@ onMounted(() => {
                 </span>
                 <span>View</span>
               </button>
-              <button class="button v-button is-dark-outlined">
+              <button
+                @click="openActivityModal(item.id)"
+                class="button v-button is-dark-outlined"
+              >
                 <span class="icon">
                   <i
                     aria-hidden="true"
@@ -265,15 +274,14 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </TransitionGroup> -->
+      </TransitionGroup>
 
       <!--Card Grid v3-->
-      <TransitionGroup
+      <!-- <TransitionGroup
         name="list"
         tag="div"
         class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
       >
-        <!--Grid Item-->
         <div v-for="item in filteredData" :key="item.id" class="column is-4">
           <div class="card-grid-item">
             <label v-if="item.lockable" class="h-toggle">
@@ -340,12 +348,13 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </TransitionGroup>
+      </TransitionGroup> -->
     </div>
     <LeadActivityModal
       v-if="showAddUpdateContactModal"
       :addUpdateContactModal="showAddUpdateContactModal"
       :objectId="props.jobId"
+      :activityId="selectedActivity"
       @update:modalHandler="showAddUpdateContactModal = false"
       @update:OnSuccess="getActivitiesHandler"
     />
