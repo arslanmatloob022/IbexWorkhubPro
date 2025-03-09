@@ -559,7 +559,7 @@ onMounted(() => {
                 ></div>
 
                 <!--Widget-->
-                <JobTodos />
+                <JobTodos :project="route.params.id" />
 
                 <!--Widget-->
                 <UIWidget class="picker-widget">

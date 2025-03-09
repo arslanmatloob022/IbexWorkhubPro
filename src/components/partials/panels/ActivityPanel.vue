@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { usePanels } from '/@src/stores/panels'
-import { onceImageErrored } from '/@src/utils/via-placeholder'
+import JobTodos from "../../IbexJobsEstimates/IbexJobs/JobComponents/JobTodos.vue";
+import { usePanels } from "/@src/stores/panels";
+import { onceImageErrored } from "/@src/utils/via-placeholder";
 
-type TabId = 'team' | 'projects' | 'schedule'
+type TabId = "todo" | "activity";
 
-const panels = usePanels()
-const activeTab = ref<TabId>('team')
+const panels = usePanels();
+const activeTab = ref<TabId>("todo");
 </script>
 
 <template>
@@ -44,34 +45,38 @@ const activeTab = ref<TabId>('team')
           />
         </a>
       </div>
-      <div class="tabs-wrapper is-triple-slider is-squared">
+      <!-- is-triple-slider -->
+      <div class="tabs-wrapper is-slider is-squared">
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
-              <li :class="[activeTab === 'team' && 'is-active']">
+              <li :class="[activeTab === 'todo' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
-                  @keydown.space.prevent="activeTab = 'team'"
-                  @click="activeTab = 'team'"
-                ><span>Team</span></a>
+                  @keydown.space.prevent="activeTab = 'todo'"
+                  @click="activeTab = 'todo'"
+                  ><span>Todo</span></a
+                >
               </li>
-              <li :class="[activeTab === 'projects' && 'is-active']">
+              <li :class="[activeTab === 'activity' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
-                  @keydown.space.prevent="activeTab = 'projects'"
-                  @click="activeTab = 'projects'"
-                ><span>Projects</span></a>
+                  @keydown.space.prevent="activeTab = 'activity'"
+                  @click="activeTab = 'activity'"
+                  ><span>Activities</span></a
+                >
               </li>
-              <li :class="[activeTab === 'schedule' && 'is-active']">
+              <!-- <li :class="[activeTab === 'schedule' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
                   @keydown.space.prevent="activeTab = 'schedule'"
                   @click="activeTab = 'schedule'"
-                ><span>Schedule</span></a>
-              </li>
+                  ><span>Schedule</span></a
+                >
+              </li> -->
               <li class="tab-naver" />
             </ul>
           </div>
@@ -81,10 +86,11 @@ const activeTab = ref<TabId>('team')
           <div
             id="team-side-tab"
             class="tab-content"
-            :class="[activeTab === 'team' && 'is-active']"
+            :class="[activeTab === 'todo' && 'is-active']"
           >
+            <JobTodos :get-user-todo="true" />
             <!--Team Member-->
-            <div class="team-card">
+            <!-- <div class="team-card">
               <VAvatar
                 picture="/demo/avatars/12.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
@@ -113,10 +119,10 @@ const activeTab = ref<TabId>('team')
                   data-icon="feather:arrow-left"
                 />
               </a>
-            </div>
+            </div> -->
 
             <!--Team Member-->
-            <div class="team-card">
+            <!-- <div class="team-card">
               <VAvatar
                 picture="/demo/avatars/25.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
@@ -145,10 +151,10 @@ const activeTab = ref<TabId>('team')
                   data-icon="feather:arrow-left"
                 />
               </a>
-            </div>
+            </div> -->
 
             <!--Team Member-->
-            <div class="team-card">
+            <!-- <div class="team-card">
               <VAvatar
                 picture="/demo/avatars/18.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
@@ -177,10 +183,10 @@ const activeTab = ref<TabId>('team')
                   data-icon="feather:arrow-left"
                 />
               </a>
-            </div>
+            </div> -->
 
             <!--Team Member-->
-            <div class="team-card">
+            <!-- <div class="team-card">
               <VAvatar
                 picture="/demo/avatars/13.jpg"
                 badge="/images/icons/flags/united-states-of-america.svg"
@@ -209,23 +215,22 @@ const activeTab = ref<TabId>('team')
                   data-icon="feather:arrow-left"
                 />
               </a>
-            </div>
+            </div> -->
           </div>
 
-          <div
-            id="projects-side-tab"
+          <!-- <div
+            id="activity-side-tab"
             class="tab-content"
-            :class="[activeTab === 'projects' && 'is-active']"
-          >
-            <!--Project-->
-            <div class="project-card">
+            :class="[activeTab === 'activity' && 'is-active']"
+          > -->
+          <!-- <div class="project-card">
               <div class="project-inner">
                 <img
                   class="project-avatar"
                   src="/images/icons/logos/slicer.svg"
                   alt=""
                   @error.once="onceImageErrored(150)"
-                >
+                />
                 <div class="meta">
                   <span>The slicer project</span>
                   <span>getslicer.io</span>
@@ -244,22 +249,13 @@ const activeTab = ref<TabId>('team')
                 </a>
               </div>
               <div class="project-foot">
-                <VProgress
-                  size="tiny"
-                  :value="31"
-                />
+                <VProgress size="tiny" :value="31" />
                 <div class="foot-stats">
                   <span>5 / 24</span>
 
                   <div class="avatar-stack">
-                    <VAvatar
-                      size="small"
-                      picture="/demo/avatars/5.jpg"
-                    />
-                    <VAvatar
-                      size="small"
-                      picture="/demo/avatars/7.jpg"
-                    />
+                    <VAvatar size="small" picture="/demo/avatars/5.jpg" />
+                    <VAvatar size="small" picture="/demo/avatars/7.jpg" />
                     <VAvatar
                       size="small"
                       picture="/images/avatars/svg/vuero-1.svg"
@@ -269,7 +265,6 @@ const activeTab = ref<TabId>('team')
               </div>
             </div>
 
-            <!--Project-->
             <div class="project-card">
               <div class="project-inner">
                 <img
@@ -277,7 +272,7 @@ const activeTab = ref<TabId>('team')
                   src="/images/icons/logos/metamovies.svg"
                   alt=""
                   @error.once="onceImageErrored(150)"
-                >
+                />
                 <div class="meta">
                   <span>Metamovies reworked</span>
                   <span>metamovies.co</span>
@@ -296,28 +291,18 @@ const activeTab = ref<TabId>('team')
                 </a>
               </div>
               <div class="project-foot">
-                <VProgress
-                  size="tiny"
-                  :value="84"
-                />
+                <VProgress size="tiny" :value="84" />
                 <div class="foot-stats">
                   <span>28 / 31</span>
 
                   <div class="avatar-stack">
-                    <VAvatar
-                      size="small"
-                      picture="/demo/avatars/13.jpg"
-                    />
-                    <VAvatar
-                      size="small"
-                      picture="/demo/avatars/18.jpg"
-                    />
+                    <VAvatar size="small" picture="/demo/avatars/13.jpg" />
+                    <VAvatar size="small" picture="/demo/avatars/18.jpg" />
                   </div>
                 </div>
               </div>
             </div>
 
-            <!--Project-->
             <div class="project-card">
               <div class="project-inner">
                 <img
@@ -325,7 +310,7 @@ const activeTab = ref<TabId>('team')
                   src="/images/icons/logos/fastpizza.svg"
                   alt=""
                   @error.once="onceImageErrored(150)"
-                >
+                />
                 <div class="meta">
                   <span>Fast Pizza redesign</span>
                   <span>fastpizza.com</span>
@@ -344,36 +329,25 @@ const activeTab = ref<TabId>('team')
                 </a>
               </div>
               <div class="project-foot">
-                <VProgress
-                  size="tiny"
-                  :value="60"
-                />
+                <VProgress size="tiny" :value="60" />
                 <div class="foot-stats">
                   <span>25 / 39</span>
 
                   <div class="avatar-stack">
-                    <VAvatar
-                      size="small"
-                      picture="/demo/avatars/7.jpg"
-                    />
-                    <VAvatar
-                      size="small"
-                      picture="/demo/avatars/25.jpg"
-                    />
+                    <VAvatar size="small" picture="/demo/avatars/7.jpg" />
+                    <VAvatar size="small" picture="/demo/avatars/25.jpg" />
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> -->
+          <!-- </div> -->
 
           <div
-            id="schedule-side-tab"
+            id="activity-side-tab"
             class="tab-content"
-            :class="[activeTab === 'schedule' && 'is-active']"
+            :class="[activeTab === 'activity' && 'is-active']"
           >
-            <!--Timeline-->
             <div class="icon-timeline">
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -387,7 +361,6 @@ const activeTab = ref<TabId>('team')
                   <span>Today - 11:30am</span>
                 </div>
               </div>
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <img
@@ -395,14 +368,13 @@ const activeTab = ref<TabId>('team')
                     src="/demo/avatars/7.jpg"
                     alt=""
                     @error.once="onceImageErrored(150)"
-                  >
+                  />
                 </div>
                 <div class="timeline-content">
                   <p>Meeting with Alice</p>
                   <span>Today - 01:00pm</span>
                 </div>
               </div>
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -416,7 +388,6 @@ const activeTab = ref<TabId>('team')
                   <span>Today - 01:45pm</span>
                 </div>
               </div>
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -430,7 +401,6 @@ const activeTab = ref<TabId>('team')
                   <span>Today - 02:30pm</span>
                 </div>
               </div>
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -444,7 +414,6 @@ const activeTab = ref<TabId>('team')
                   <span>Today - 03:30pm</span>
                 </div>
               </div>
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -458,7 +427,6 @@ const activeTab = ref<TabId>('team')
                   <span>Today - 05:00pm</span>
                 </div>
               </div>
-              <!--Timeline item-->
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -481,7 +449,7 @@ const activeTab = ref<TabId>('team')
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
+@import "/@src/scss/abstracts/all";
 
 .right-panel-wrapper {
   &.is-activity {
@@ -658,7 +626,7 @@ const activeTab = ref<TabId>('team')
             padding-bottom: 30px;
 
             &::after {
-              content: '';
+              content: "";
               position: absolute;
               top: 36px;
               inset-inline-start: 18px;
@@ -681,7 +649,7 @@ const activeTab = ref<TabId>('team')
               box-shadow: var(--light-box-shadow);
 
               &::after {
-                content: '';
+                content: "";
                 position: absolute;
                 top: 17px;
                 inset-inline-start: 40px;

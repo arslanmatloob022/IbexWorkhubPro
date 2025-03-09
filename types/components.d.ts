@@ -32,6 +32,7 @@ declare module 'vue' {
     AddRotaModal: typeof import('./../src/components/pages/networks/rota/AddRotaModal.vue')['default']
     AddTeamMember: typeof import('./../src/components/pages/networks/team-members/AddTeamMember.vue')['default']
     AddUpdateContactModal: typeof import('./../src/components/CommonComponents/AddUpdateContactModal.vue')['default']
+    AddUpdateTodoModal: typeof import('./../src/components/IbexTodos/AddUpdateTodoModal.vue')['default']
     AddUpdateUser: typeof import('./../src/components/IbexUsers/AddUpdateUser.vue')['default']
     AddWorker: typeof import('./../src/components/pages/networks/workers/AddWorker.vue')['default']
     AdminDashboard: typeof import('./../src/components/pages/networks/dashboard/AdminDashboard.vue')['default']
