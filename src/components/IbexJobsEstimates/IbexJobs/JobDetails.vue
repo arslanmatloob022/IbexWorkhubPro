@@ -365,6 +365,24 @@ onMounted(() => {
                         ><span>Activities</span></a
                       >
                     </li>
+                    <!-- <li :class="[tab === 'activityLogs' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'activityLogs'"
+                        @click="tab = 'activityLogs'"
+                        ><span>Activity Logs</span></a
+                      >
+                    </li> -->
+                    <li :class="[tab === 'progress' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'progress'"
+                        @click="tab = 'progress'"
+                        ><span>Job progress</span></a
+                      >
+                    </li>
                     <li :class="[tab === 'finance' && 'is-active']">
                       <a
                         tabindex="0"
@@ -384,24 +402,7 @@ onMounted(() => {
                         ><span>Report</span></a
                       >
                     </li>
-                    <!-- <li :class="[tab === 'activityLogs' && 'is-active']">
-                      <a
-                        tabindex="0"
-                        role="button"
-                        @keydown.space.prevent="tab = 'activityLogs'"
-                        @click="tab = 'activityLogs'"
-                        ><span>Activity Logs</span></a
-                      >
-                    </li> -->
-                    <li :class="[tab === 'progress' && 'is-active']">
-                      <a
-                        tabindex="0"
-                        role="button"
-                        @keydown.space.prevent="tab = 'progress'"
-                        @click="tab = 'progress'"
-                        ><span>Job progress</span></a
-                      >
-                    </li>
+
                     <li class="tab-naver" />
                   </ul>
                 </div>

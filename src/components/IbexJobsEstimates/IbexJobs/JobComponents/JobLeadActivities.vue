@@ -8,8 +8,9 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
 import { formatDate } from "/@src/composable/useSupportElement";
+import { activityTypes } from "../../estimatesScripts";
 
-const filters = ref("");
+const searchQuery = ref("");
 const selectedActivity = ref("");
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
@@ -60,14 +61,7 @@ const api = useApi();
 const notyf = useNotyf();
 const userSession = useUserSession();
 const loading = ref(false);
-const valueSingle = ref(0);
-const optionsSingle = [
-  "All Activities",
-  "Site Visit",
-  "Web Forms",
-  "Email",
-  "Call ",
-];
+const valueSingle = ref("");
 
 const props = defineProps<{
   jobId?: "";
@@ -110,17 +104,46 @@ const getAllActivitiesHandler = async () => {
   }
 };
 
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return projects;
-  } else {
-    return projects.filter((item) => {
-      return (
-        item.name.match(new RegExp(filters.value, "i")) ||
-        item.remaining.match(new RegExp(filters.value, "i"))
-      );
-    });
+const deleteLoading = ref(false);
+const deleteActivity = async (id: any = "") => {
+  try {
+    deleteLoading.value = true;
+    const response = await api.delete(`/api/activity/${id}/`);
+    if (response.status === 204) {
+      notyf.success("Activity deleted successfully");
+      getActivitiesHandler();
+    } else {
+      notyf.error("Something went wrong");
+    }
+  } catch (err) {
+    console.log("Err in deleting activity", err);
+  } finally {
+    deleteLoading.value = false;
   }
+};
+
+const filteredData = computed(() => {
+  if (!activitiesList.value) return [];
+
+  const searchRegEx = new RegExp(searchQuery.value, "i");
+  const selectedType = valueSingle.value?.trim(); // Handle empty or null values properly
+
+  return activitiesList.value.filter((item) => {
+    // Match search query (if provided)
+    const matchesSearch =
+      !searchQuery.value ||
+      searchRegEx.test(item.title) ||
+      searchRegEx.test(item.start_time) ||
+      searchRegEx.test(item.end_time) ||
+      searchRegEx.test(item.date) ||
+      searchRegEx.test(item.status) ||
+      searchRegEx.test(item.type);
+
+    // Match selected type (if provided)
+    const matchesType = !selectedType || item.type === selectedType;
+
+    return matchesSearch && matchesType; // Both conditions must be true
+  });
 });
 
 const getActivitiesHandler = () => {
@@ -137,18 +160,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <PlaceloadV3 v-if="loading" />
+  <div v-else>
     <div class="card-grid-toolbar">
       <VControl icon="feather:search">
         <input
-          v-model="filters"
+          v-model="searchQuery"
           class="input custom-text-filter"
           placeholder="Search..."
         />
       </VControl>
 
       <div class="buttons">
-        <VField class="h-hidden-mobile">
+        {{ valueSingle }}
+        <VField>
+          <VControl>
+            <VSelect v-model="valueSingle" required>
+              <VOption value="">All</VOption>
+              <VOption v-for="item in activityTypes" :value="item.value">
+                {{ item.label }}
+              </VOption>
+            </VSelect>
+          </VControl>
+        </VField>
+
+        <!-- <VField class="h-hidden-mobile">
           <VControl>
             <Multiselect
               v-model="valueSingle"
@@ -157,7 +193,7 @@ onMounted(() => {
               placeholder="Select an option"
             />
           </VControl>
-        </VField>
+        </VField> -->
         <VButton
           @click="showAddUpdateContactModal = !showAddUpdateContactModal"
           color="warning"
@@ -205,31 +241,33 @@ onMounted(() => {
         tag="div"
         class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
       >
-        <div v-for="item in activitiesList" :key="item.id" class="column is-4">
-          <div class="card-grid-item">
-            <label v-if="item.lockable" class="h-toggle">
-              <input type="checkbox" :checked="item.status === 'pending'" />
+        <div v-for="item in filteredData" :key="item.id" class="column is-4">
+          <div
+            class="card-grid-item"
+            :style="{
+              backgroundImage: `linear-gradient(
+                    -175deg,
+                    white 70%,
+                  ${item.color}30
+                  `,
+            }"
+          >
+            <label class="h-toggle">
+              <input type="checkbox" :checked="item.status == 'completed'" />
               <span class="toggler">
                 <span class="active">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:lock"
-                  />
-                </span>
-                <span class="inactive">
                   <i
                     aria-hidden="true"
                     class="iconify"
                     data-icon="feather:check"
                   />
                 </span>
+                <span class="inactive"> <VIcon icon="lucide:activity" /> </span>
               </span>
             </label>
             <VAvatar
               size="large"
               :picture="`/IbexIcons/ActivitiesIcons/${item.type}.png`"
-              :badge="item.badge"
               squared
             />
             <h3 class="dark-inverted">
@@ -244,20 +282,22 @@ onMounted(() => {
                 v-for="user in item.attendees_info"
                 :key="user.id"
                 size="small"
+                :initials="user.username.slice(0, 2)"
                 :picture="user.avatar"
+                v-tooltip.rounded="
+                  `${user.username} ${user.last_name ? user.last_name : ''}`
+                "
               />
             </div>
             <div class="buttons">
-              <button class="button v-button is-dark-outlined">
-                <span class="icon">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:eye"
-                  />
-                </span>
-                <span>View</span>
-              </button>
+              <VButton
+                @click="deleteActivity(item.id)"
+                :loading="deleteLoading"
+                icon="feather:trash"
+                outlined
+              >
+                Delete
+              </VButton>
               <button
                 @click="openActivityModal(item.id)"
                 class="button v-button is-dark-outlined"
