@@ -541,6 +541,7 @@ declare module 'vue' {
     SendProposalEmailModal: typeof import('./../src/components/CommonComponents/SendProposalEmailModal.vue')['default']
     SettingsProfile: typeof import('./../src/components/pages/layouts/profile/SettingsProfile.vue')['default']
     ShareWorkerProfile: typeof import('./../src/components/pages/networks/workers/ShareWorkerProfile.vue')['default']
+    ShortActivities: typeof import('./../src/components/CommonComponents/ShortActivities.vue')['default']
     Sidebar: typeof import('./../src/components/navigation/desktop/Sidebar.vue')['default']
     SidebarLayout: typeof import('./../src/layouts/SidebarLayout.vue')['default']
     Sideblock: typeof import('./../src/components/navigation/desktop/Sideblock.vue')['default']

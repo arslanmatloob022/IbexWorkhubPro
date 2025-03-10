@@ -25,7 +25,7 @@ const activeTab = ref<TabId>("todo");
 
     <div class="right-panel">
       <div class="right-panel-head">
-        <h3>Activity</h3>
+        <h3>Daily Activities</h3>
         <a
           class="close-panel"
           tabindex="0"
@@ -85,8 +85,8 @@ const activeTab = ref<TabId>("todo");
         <div class="right-panel-body">
           <div
             id="team-side-tab"
-            class="tab-content"
-            :class="[activeTab === 'todo' && 'is-active']"
+            class="tab-content is-active"
+            v-if="activeTab === 'todo'"
           >
             <JobTodos :get-user-todo="true" />
             <!--Team Member-->
@@ -344,10 +344,13 @@ const activeTab = ref<TabId>("todo");
 
           <div
             id="activity-side-tab"
-            class="tab-content"
-            :class="[activeTab === 'activity' && 'is-active']"
+            class="tab-content is-active"
+            v-if="activeTab === 'activity'"
           >
-            <div class="icon-timeline">
+            <!-- :class="[activeTab === 'activity' && 'is-active']" -->
+            <ShortActivities :getUserActivities="true" />
+            <!-- <ShortActivities :getUserTodo="true" /> -->
+            <!-- <div class="icon-timeline">
               <div class="timeline-item">
                 <div class="timeline-icon">
                   <i
@@ -440,7 +443,7 @@ const activeTab = ref<TabId>("todo");
                   <span>Today - 06:00pm</span>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

@@ -65,15 +65,8 @@ const valueSingle = ref("");
 
 const props = defineProps<{
   jobId?: "";
+  getUserActivities?: boolean;
 }>();
-
-function getAvatarData(user: any): VAvatarProps {
-  return {
-    picture: user?.picture,
-    initials: user?.initials,
-    color: user?.color as VAvatarColor,
-  };
-}
 
 const openActivityModal = (activity: any) => {
   selectedActivity.value = activity;
@@ -84,6 +77,20 @@ const getLeadActivitiesHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get(`/api/activity/by-object/${props.jobId}/`);
+    activitiesList.value = response.data;
+  } catch (error: any) {
+    notyf.error(`something get wrong`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getUserActivitiesHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(
+      `/api/activity/by-user/${userSession.user.id}/`
+    );
     activitiesList.value = response.data;
   } catch (error: any) {
     notyf.error(`something get wrong`);
@@ -147,7 +154,9 @@ const filteredData = computed(() => {
 });
 
 const getActivitiesHandler = () => {
-  if (props.jobId) {
+  if (props.getUserActivities) {
+    getUserActivitiesHandler();
+  } else if (props.jobId) {
     getLeadActivitiesHandler();
   } else {
     getAllActivitiesHandler();
@@ -172,7 +181,7 @@ onMounted(() => {
       </VControl>
 
       <div class="buttons">
-        {{ valueSingle }}
+        <!-- {{ valueSingle }} -->
         <VField>
           <VControl>
             <VSelect v-model="valueSingle" required>
@@ -247,7 +256,7 @@ onMounted(() => {
             :style="{
               backgroundImage: `linear-gradient(
                     -175deg,
-                    white 70%,
+                    transparent 70%,
                   ${item.color}30
                   `,
             }"

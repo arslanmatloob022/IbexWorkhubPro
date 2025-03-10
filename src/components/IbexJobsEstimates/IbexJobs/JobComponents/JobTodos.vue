@@ -140,6 +140,7 @@ const updateStatus = async (todo: any) => {
     const response = await api.patch(`/api/todo/${todo.id}/`, {
       is_completed: !todo.is_completed,
     });
+    getTodoHandler();
     notyf.success("Todo Updated");
   } catch (error) {
     console.log("getting todos", error);
@@ -273,7 +274,7 @@ onMounted(() => {
             </template>
             <template #action>
               <VTag :color="todo.is_completed ? 'primary' : 'warning'" rounded>
-                {{ todo.is_completed ? "Completed" : "Pending" }}
+                {{ todo.is_completed ? "Done" : "Pending" }}
               </VTag>
             </template>
 
@@ -332,7 +333,7 @@ onMounted(() => {
             </template>
             <template #action>
               <VTag :color="todo.is_completed ? 'primary' : 'warning'" rounded>
-                {{ todo.is_completed ? "Completed" : "Pending" }}
+                {{ todo.is_completed ? "Done" : "Pending" }}
               </VTag>
             </template>
 
