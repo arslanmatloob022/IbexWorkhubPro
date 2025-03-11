@@ -196,6 +196,7 @@ onMounted(() => {});
             </td>
             <td v-for="(column, index) in props.columnsToShow" :key="index">
               <div
+                class="custom-description"
                 v-if="column === 'description'"
                 v-html="cost[getColumnData[column]]"
               ></div>
@@ -312,6 +313,10 @@ onMounted(() => {});
 </template>
 
 <style lang="scss" scoped>
+.custom-description {
+  color: #333 !important;
+}
+
 .draggable-item {
   padding: 10px;
   border: 1px solid #ccc;
@@ -396,7 +401,7 @@ onMounted(() => {});
     .table,
     table {
       width: 100%;
-      background-color: transparent;
+      background-color: #ffff;
     }
 
     &::-webkit-scrollbar {
@@ -432,12 +437,16 @@ onMounted(() => {});
   td {
     font-family: var(--font);
     vertical-align: middle;
-    background-color: transparent;
+    background-color: #fff;
     padding: 12px 20px;
+    color: #333333;
     border-bottom: 1px solid var(--fade-grey);
 
     &:last-child {
       text-align: right;
+    }
+    &:nth-child(2) {
+      color: #333333;
     }
 
     &.datatables-empty {
@@ -596,7 +605,7 @@ onMounted(() => {});
     td {
       border-color: var(--dark-sidebar-light-12);
       color: var(--dark-dark-text);
-      background-color: transparent;
+      background-color: #fff;
     }
 
     .drinks-icon {

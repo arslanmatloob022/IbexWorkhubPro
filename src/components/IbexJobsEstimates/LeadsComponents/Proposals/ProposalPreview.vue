@@ -30,6 +30,22 @@ const openSendProposalModalHandler = () => {
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
+// const priceElement = document.querySelector(".price");
+// priceElement.textContent = formatCurrency(parseFloat(priceElement.textContent));
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
+
+const getProposalType = ref({
+  proposal: "Proposal",
+  change_order: "Change Order",
+  draft: "Draft",
+});
+
 onMounted(() => {});
 </script>
 
@@ -195,10 +211,10 @@ onMounted(() => {});
         <div class="invoice-body">
           <div class="invoice-card">
             <!-- Company info -->
-            <div class="invoice-section is-flex">
-              <VAvatar
-                size="xl"
-                :picture="company.currentCompany.invoice_header_logo"
+            <div class="invoice-section is-flex pt-0">
+              <img
+                style="height: 160px; padding: 0; margin: 0"
+                :src="company.currentCompany.invoice_header_logo"
               />
 
               <div class="meta"></div>
@@ -213,37 +229,36 @@ onMounted(() => {});
             <!-- Client Info -->
             <div class="invoice-section is-flex">
               <div class="meta">
-                <h3
-                  v-if="useProposal.leadProposalFormData?.jobInfo?.clientInfo"
-                >
+                <h3 v-if="useProposal.leadProposalFormData?.jobInfo?.title">
                   {{
-                    useProposal.leadProposalFormData?.jobInfo?.clientInfo
-                      ?.username ?? "N/A"
-                  }}
-                  {{
-                    useProposal.leadProposalFormData?.jobInfo?.clientInfo
-                      ?.last_name ?? ""
-                  }}
-                </h3>
-                <h3 v-else>
-                  {{
-                    useProposal.leadProposalFormData?.jobInfo?.contractor_info
-                      ?.username ?? "N/A"
-                  }}
-                  {{
-                    useProposal.leadProposalFormData?.jobInfo?.contractor_info
-                      ?.last_name ?? ""
+                    useProposal.leadProposalFormData?.jobInfo?.title
+                      ? useProposal.leadProposalFormData?.jobInfo?.title
+                      : "N/A"
                   }}
                 </h3>
                 <span
                   v-if="useProposal.leadProposalFormData?.jobInfo?.clientInfo"
-                  >{{
-                    useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
-                      ? useProposal.leadProposalFormData?.jobInfo?.clientInfo
-                          ?.email
-                      : "N/A"
-                  }}</span
                 >
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                      ?.username ?? "N/A"
+                  }}
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.clientInfo
+                      ?.last_name ?? ""
+                  }}
+                </span>
+                <span v-else>
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.contractor_info
+                      ?.username ?? "N/A"
+                  }}
+                  {{
+                    useProposal.leadProposalFormData?.jobInfo?.contractor_info
+                      ?.last_name ?? ""
+                  }}
+                </span>
+
                 <span v-else>{{
                   useProposal.leadProposalFormData?.jobInfo?.contractor_info
                     ?.email
@@ -251,6 +266,9 @@ onMounted(() => {});
                         ?.email
                     : "N/A"
                 }}</span>
+                <span>
+                  {{ getProposalType[useProposal.leadProposalFormData?.type] }}
+                </span>
               </div>
               <div class="end is-left">
                 <h3>
@@ -286,12 +304,36 @@ onMounted(() => {});
                         v-if="column === 'description'"
                         v-html="cost[getColumnData[column]]"
                       ></div>
+                      <span v-else-if="column === 'cost_code'">
+                        {{ cost?.cost_code_info?.name }}
+                      </span>
+                      <span v-else-if="column === 'unit_cost'">
+                        {{ formatCurrency(cost?.unit_cost) }}
+                      </span>
+                      <span v-else-if="column === 'margin'">
+                        {{ formatCurrency(cost?.margin) }}
+                      </span>
+                      <span v-else-if="column === 'markup'">
+                        {{ formatCurrency(cost?.markup) }}
+                      </span>
+                      <span v-else-if="column === 'builder_cost'">
+                        {{ formatCurrency(cost?.builder_cost) }}
+                      </span>
+                      <span v-else-if="column === 'total_price'">
+                        {{ formatCurrency(cost?.total_price) }}
+                      </span>
+                      <span v-else-if="column === 'profit'">
+                        {{ formatCurrency(cost?.profit) }}
+                      </span>
+                      <span v-else-if="column === 'group_amount'">
+                        {{ formatCurrency(cost?.group_amount) }}
+                      </span>
+                      <!-- <span v-else-if="column === 'unit'">
+                        {{ getUnitsLabel(cost?.unit) }}
+                      </span> -->
 
                       <span v-else>
                         {{ cost[getColumnData[column]] }}
-                      </span>
-                      <span v-if="column === 'cost_code'">
-                        {{ cost?.cost_code_info?.name }}
                       </span>
                       <!-- {{ cost[getColumnData[column]] }} -->
                     </td>

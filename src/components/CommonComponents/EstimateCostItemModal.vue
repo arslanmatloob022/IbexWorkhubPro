@@ -6,7 +6,9 @@ import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import { generalUnits } from "../IbexJobsEstimates/estimatesScripts";
 import { CreateActivityLog } from "/@src/composable/useSupportElement";
+import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 const editor = shallowRef<any>();
+const useProposal = useProposalStore();
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
@@ -69,7 +71,7 @@ const costItem = ref<item>({
   title: "",
   description: "",
   quantity: 0,
-  unit: "--",
+  unit: "",
   unit_cost: 0,
   markup: 0,
   margin: 0,
@@ -136,6 +138,7 @@ const addUpdateLeadHandler = async () => {
       //   performedOnName: "Cost",
       //   object_id: response.data[0],
       // });
+      useProposal.getProposalDetail(props.proposalId);
     }
     closeModalHandler();
     updateOnSuccess();
