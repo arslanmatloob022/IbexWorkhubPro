@@ -234,6 +234,34 @@ const openSendProposalModalHandler = () => {
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
+const selectedFileTitle = ref("");
+
+const file = ref<File | null>(null);
+const handleFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const selectedFile = input.files?.[0];
+  input.value = "";
+  if (selectedFile) {
+    file.value = selectedFile;
+    selectedFileTitle.value = selectedFile.name;
+  }
+};
+
+const createEstimates = async () => {
+  try {
+    const resp = await api.post(
+      `/api/lead-proposal/upload-estimates/${route.params.id}/`,
+      {
+        file: file.value,
+      }
+    );
+    notyf.success(`${resp.data}`);
+    getProposalDetail();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -284,7 +312,43 @@ onMounted(async () => {
           Approved
         </VButton>
       </div>
-      <div>
+      <div class="is-flex">
+        <VButton
+          size="small"
+          class="mr-2"
+          light
+          outlined
+          color="warning"
+          raised
+          @click="createEstimates"
+          v-if="selectedFileTitle"
+        >
+          Create Estimates
+        </VButton>
+        <VField grouped class="mr-2">
+          <VControl>
+            <div class="file">
+              <label class="file-label">
+                <input
+                  @change="handleFileChange"
+                  class="file-input"
+                  type="file"
+                  name="resume"
+                />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-cloud-upload-alt" />
+                  </span>
+                  <span class="file-label">
+                    {{
+                      selectedFileTitle ? selectedFileTitle : "Choose a file…"
+                    }}
+                  </span>
+                </span>
+              </label>
+            </div>
+          </VControl>
+        </VField>
         <VButton
           size="small"
           class="mr-2"

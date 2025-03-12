@@ -31,6 +31,7 @@ const props = defineProps<{
   leadProposalModal?: boolean;
   proposalId?: string;
   leadId?: string;
+  getLeadsList?: boolean;
 }>();
 
 const selectSlotValue = ref("");
@@ -112,10 +113,14 @@ const leadProposalFormData = ref<leadProposalData>({
   created_at: "",
   updated_at: "",
 });
-
+const closeLoading = ref(false);
 const addUpdateProposalHandler = async (closeModal: boolean = false) => {
   try {
-    isLoading.value = true;
+    if (closeModal == true) {
+      closeLoading.value = true;
+    } else {
+      isLoading.value = true;
+    }
     if (props.leadId) {
       leadProposalFormData.value.project = props.leadId;
     }
@@ -150,8 +155,8 @@ const addUpdateProposalHandler = async (closeModal: boolean = false) => {
       });
       scrollToItemsDiv(100);
     }
-    updateOnSuccess();
-    if (closeModal) {
+    // updateOnSuccess();
+    if (closeModal == true) {
       closeModalHandler();
     }
     notyf.success(
@@ -165,6 +170,7 @@ const addUpdateProposalHandler = async (closeModal: boolean = false) => {
     notyf.error(`Something went wrong, try again`);
   } finally {
     isLoading.value = false;
+    closeLoading.value = false;
   }
 };
 
@@ -213,15 +219,15 @@ const loadTemplateSelection = (selectedTemplate: any) => {
   console.log("test12");
 };
 
-const CKEditor = CKE.component;
-const config = {
-  fontFamily: {
-    options: [
-      '"Montserrat Variable", sans-serif',
-      '"Roboto Flex Variable", sans-serif',
-    ],
-  },
-};
+// const CKEditor = CKE.component;
+// const config = {
+//   fontFamily: {
+//     options: [
+//       '"Montserrat Variable", sans-serif',
+//       '"Roboto Flex Variable", sans-serif',
+//     ],
+//   },
+// };
 
 onMounted(async () => {
   // editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
@@ -230,7 +236,9 @@ onMounted(async () => {
   if (props.proposalId) {
     getProposalDetail();
   }
-  getLeadsList();
+  if (props.getLeadsList) {
+    getLeadsList();
+  }
 });
 onUnmounted(() => {
   emit("clearProposalId", null);
@@ -245,7 +253,7 @@ onUnmounted(() => {
     title="Lead Proposal"
     size="xl"
     actions="right"
-    @submit.prevent="addUpdateProposalHandler(false)"
+    @submit.prevent="addUpdateProposalHandler"
     @close="closeModalHandler"
   >
     <template #content>
@@ -441,13 +449,22 @@ onUnmounted(() => {
                 <div class="field column is-12 mb-0">
                   <label for="" class="label">Introductory Text</label>
 
-                  <div class="content">
+                  <VField>
+                    <VControl>
+                      <VTextarea
+                        v-model="leadProposalFormData.introductory_text"
+                        rows="3"
+                        placeholder="Introductory Notes..."
+                      />
+                    </VControl>
+                  </VField>
+                  <!-- <div class="content">
                     <CKEditor
                       v-model="leadProposalFormData.introductory_text"
                       :editor="ClassicEditor"
                       :config="config"
                     />
-                  </div>
+                  </div> -->
                   <!-- <CKEditor
                     v-if="editor"
                     v-model="leadProposalFormData.introductory_text"
@@ -457,12 +474,21 @@ onUnmounted(() => {
                 </div>
                 <div class="field column is-12 mb-0">
                   <label for="" class="label">Closing Text</label>
+                  <VField>
+                    <VControl>
+                      <VTextarea
+                        v-model="leadProposalFormData.closing_text"
+                        rows="2"
+                        placeholder="Closing Text..."
+                      />
+                    </VControl>
+                  </VField>
 
-                  <CKEditor
+                  <!-- <CKEditor
                     v-model="leadProposalFormData.closing_text"
                     :editor="ClassicEditor"
                     :config="config"
-                  />
+                  /> -->
                   <!-- <CKEditor
                     v-if="editor"
                     v-model="leadProposalFormData.closing_text"
@@ -511,7 +537,7 @@ onUnmounted(() => {
       }}</VButton>
 
       <VButton
-        :loading="Loading"
+        :loading="closeLoading"
         @click="addUpdateProposalHandler(true)"
         color="info"
         raised

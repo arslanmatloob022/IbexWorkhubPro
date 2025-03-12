@@ -60,6 +60,7 @@ interface ProjectDetails {
   contractor: string | null;
   sales_people: string[];
   managers: string[];
+  uploaded_files: [];
 }
 const leadDetail = ref<ProjectDetails>({
   id: "",
@@ -123,6 +124,7 @@ const leadDetail = ref<ProjectDetails>({
       avatar: "",
     },
   ],
+  uploaded_files: [],
   title: "",
   address: "",
   current_state: "",
@@ -670,7 +672,11 @@ onMounted(() => {
             </div>
           </div>
           <div v-if="tab === 'documents'" class="column is-12">
-            <JobDocuments :leadId="route.params.id" />
+            <JobDocuments
+              :leadId="route.params.id"
+              :uploaded_files="leadDetail.uploaded_files"
+              :getProjectInfo="getLeadDetailHandler"
+            />
           </div>
           <div v-if="tab === 'proposals'" class="column is-12">
             <LeadProposalsList

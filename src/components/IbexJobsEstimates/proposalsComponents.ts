@@ -48,6 +48,8 @@ export const downloadProposalPdf = async (proposal: any) => {
 export const printPDF = async (proposalId: any) => {
   try {
     fileLoading.value = 1;
+
+    // Fetch the PDF as a blob
     const response = await api.get(
       `/api/lead-proposal/${proposalId}/download/`,
       {
@@ -55,22 +57,34 @@ export const printPDF = async (proposalId: any) => {
       }
     );
 
+    // Create a Blob from the response data
     const blob = new Blob([response.data], { type: "application/pdf" });
+
+    // Create a URL for the Blob
     const fileURL = URL.createObjectURL(blob);
 
-    // Create an invisible iframe
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = fileURL;
-    document.body.appendChild(iframe);
+    // Open the PDF in a new tab
+    const newWindow = window.open(fileURL, "_blank");
 
-    iframe.onload = () => {
-      iframe.contentWindow?.print();
-      document.body.removeChild(iframe); // Cleanup
-    };
+    if (newWindow) {
+      // Wait for the new window to load
+      newWindow.onload = () => {
+        try {
+          // Trigger the print dialog
+          newWindow.print();
+        } catch (error) {
+          console.error("Error triggering print:", error);
+        } finally {
+          // Clean up the URL object
+          URL.revokeObjectURL(fileURL);
+        }
+      };
+    } else {
+      console.error("Failed to open PDF in a new window.");
+    }
   } catch (error) {
     console.error("Error printing PDF:", error);
   } finally {
-    fileLoading.value = 0;
+    fileLoading.value = 0; // Hide loading state
   }
 };

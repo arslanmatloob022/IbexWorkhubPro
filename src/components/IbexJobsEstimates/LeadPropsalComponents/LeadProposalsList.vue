@@ -503,17 +503,23 @@ onMounted(() => {
         :createProposalTasksModal="openCreateTasksModal"
         :proposalId="selectedProposalId"
         @closeModalHandler="openCreateTasksModal = false"
-        @update:OnSuccess="getCompanyProposalList"
+        @update:OnSuccess="getCompanyProposalList()"
       />
       <LeadProposalModal
         v-if="openLeadProposalModal"
         :leadId="props.leadId"
         :proposalId="selectedProposalId"
         :leadProposalModal="openLeadProposalModal"
-        @update:modalHandler="openLeadProposalModal = false"
-        @update:OnSuccess="getCompanyProposalList"
+        :getLeadsList="props.allProposal"
+        @update:modalHandler="
+          () => {
+            getCompanyProposalList();
+            openLeadProposalModal = false;
+          }
+        "
         @clearProposalId="selectedProposalId = ''"
       />
+      <!-- @update:OnSuccess="getCompanyProposalList()" -->
       <ProposalViewModal
         v-if="previewModal"
         :preview-modal="previewModal"

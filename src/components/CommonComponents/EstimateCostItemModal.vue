@@ -427,13 +427,23 @@ watch(selectedCataLog, (oldVal, newVal) => {
             <div class="field column is-12 mb-0">
               <label for="" class="label">Description</label>
 
-              <CKEditor
+              <VField>
+                <VControl>
+                  <VTextarea
+                    v-model="costItem.description"
+                    :disabled="props.previewCostItems"
+                    rows="4"
+                    placeholder="Description..."
+                  />
+                </VControl>
+              </VField>
+              <!-- <CKEditor
                 v-if="editor"
                 :disabled="props.previewCostItems"
                 v-model="costItem.description"
                 :editor="editor"
                 :config="editorConfig"
-              />
+              /> -->
             </div>
             <div class="field column is-12 mb-0">
               <label for="" class="label">Internal Notes</label>
@@ -442,7 +452,7 @@ watch(selectedCataLog, (oldVal, newVal) => {
                   <VTextarea
                     v-model="costItem.internal_notes"
                     :disabled="props.previewCostItems"
-                    rows="4"
+                    rows="3"
                     placeholder="Internal notes..."
                   />
                 </VControl>

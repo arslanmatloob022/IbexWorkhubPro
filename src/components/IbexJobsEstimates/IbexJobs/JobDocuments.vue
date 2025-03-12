@@ -8,6 +8,7 @@ const notyf = useNotyf();
 const api = useApi();
 const props = defineProps<{
   leadId?: string;
+  uploaded_files?: any;
 }>();
 
 const filters = ref("");
@@ -37,6 +38,14 @@ const optionsSingle = [
   "Team Files",
   "Deprecated",
 ];
+
+const emits = defineEmits<{
+  (emit: "getProjectInfo", value: any): void;
+}>();
+
+const getProject = () => {
+  emits("getProjectInfo", null);
+};
 
 const openFileUploaderModal = (type: "") => {
   selectedType.value = type;
@@ -75,6 +84,15 @@ onMounted(() => {
     <div class="tabs-inner">
       <div class="tabs">
         <ul>
+          <li :class="[tab === 'files' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="getGroupedProposals('files')"
+              @click="getGroupedProposals('files')"
+              ><span>Estimate Files</span></a
+            >
+          </li>
           <li :class="[tab === 'proposal_formats' && 'is-active']">
             <a
               tabindex="0"
@@ -206,6 +224,15 @@ onMounted(() => {
           doc-type="miscellaneous"
           :object-id="props.leadId"
         />
+      </div>
+      <div v-if="tab == 'files'">
+        <ProjectFiles
+          :projectId="props.leadId"
+          :files="props.uploaded_files"
+          @update:on-upload-file="getProject"
+        />
+        <!-- 
+          @update:on-upload-file="getProject" -->
       </div>
     </div>
     <UploadDocumentModal
