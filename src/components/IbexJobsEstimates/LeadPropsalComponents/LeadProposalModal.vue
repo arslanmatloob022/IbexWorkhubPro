@@ -31,6 +31,7 @@ const props = defineProps<{
   leadProposalModal?: boolean;
   proposalId?: string;
   leadId?: string;
+  createTemplate?: boolean;
   getLeadsList?: boolean;
 }>();
 
@@ -86,6 +87,7 @@ interface leadProposalData {
   introductory_text: any;
   closing_text: any;
   attachments: [];
+  is_template: boolean;
   columns_to_show: [];
   payment_status: string;
   worksheetItems: item[];
@@ -107,6 +109,7 @@ const leadProposalFormData = ref<leadProposalData>({
   worksheetItems: [],
   type: "proposal",
   project: "",
+  is_template: true,
   attachments: [],
   columns_to_show: <any>[],
   status: "",
@@ -250,7 +253,7 @@ onUnmounted(() => {
   <VModal
     is="form"
     :open="props.leadProposalModal"
-    title="Lead Proposal"
+    :title="props.createTemplate ? 'Proposal Template' : 'Lead Proposal'"
     size="xl"
     actions="right"
     @submit.prevent="addUpdateProposalHandler"
@@ -316,7 +319,7 @@ onUnmounted(() => {
 
             <VField
               class="is-image-select has-curved-images column is-6"
-              v-if="!props.leadId"
+              v-if="!props.leadId && !props.createTemplate"
             >
               <label>Select Lead *</label>
               <VControl>
@@ -382,7 +385,11 @@ onUnmounted(() => {
 
             <div
               class="field"
-              :class="props.leadId ? 'column is-4' : 'column is-2'"
+              :class="
+                props.leadId || props.createTemplate
+                  ? 'column is-4'
+                  : 'column is-2'
+              "
             >
               <label>Approval Deadline *</label>
               <div class="control">
@@ -420,14 +427,14 @@ onUnmounted(() => {
                 </VControl>
               </VField>
             </div>
-            <div class="column is-4">
+            <div v-if="!props.createTemplate" class="column is-2">
               <VButton
                 color="primary"
                 class="mt-5"
                 icon="fas fa-file-import"
                 @click="openTemplate = !openTemplate"
                 style="width: 100%"
-                >Import Proposal From Templates</VButton
+                >Templates</VButton
               >
             </div>
             <div class="column is-12">
@@ -530,11 +537,31 @@ onUnmounted(() => {
       ></OpenTempalteModal>
     </template>
     <template #action>
-      <VButton :loading="isLoading" type="submit" color="primary" raised>{{
-        props.proposalId || leadProposalFormData.id
-          ? "Update Proposal"
-          : "Create Proposal"
-      }}</VButton>
+      <VButton
+        v-if="props.createTemplate"
+        :loading="isLoading"
+        type="submit"
+        color="primary"
+        raised
+        >{{
+          props.proposalId || leadProposalFormData.id
+            ? "Update Template"
+            : "Create Template"
+        }}</VButton
+      >
+
+      <VButton
+        v-else
+        :loading="isLoading"
+        type="submit"
+        color="primary"
+        raised
+        >{{
+          props.proposalId || leadProposalFormData.id
+            ? "Update Proposal"
+            : "Create Proposal"
+        }}</VButton
+      >
 
       <VButton
         :loading="closeLoading"

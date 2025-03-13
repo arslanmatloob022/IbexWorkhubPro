@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import type { VAvatarProps } from '/@src/components/base/avatar/VAvatar.vue'
-import * as gridData from '/@src/data/layouts/tile-grid-v1'
+import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
+import * as gridData from "/@src/data/layouts/tile-grid-v1";
 
 export interface UserData extends VAvatarProps {
-  username: string
-  location: string
-  position: string
+  username: string;
+  location: string;
+  position: string;
 }
 
-const users = gridData.users as UserData[]
-const filters = ref('')
+const users = gridData.users as UserData[];
+const filters = ref("");
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return users
+    return users;
   } else {
     return users.filter((item) => {
       return (
-        item.username.match(new RegExp(filters.value, 'i')) ||
-        item.location.match(new RegExp(filters.value, 'i')) ||
-        item.position.match(new RegExp(filters.value, 'i')) ||
-        item.badge?.match(new RegExp(filters.value, 'i'))
-      )
-    })
+        item.username.match(new RegExp(filters.value, "i")) ||
+        item.location.match(new RegExp(filters.value, "i")) ||
+        item.position.match(new RegExp(filters.value, "i")) ||
+        item.badge?.match(new RegExp(filters.value, "i"))
+      );
+    });
   }
-})
+});
 
-const valueSingle = ref(0)
+const valueSingle = ref(0);
 const optionsSingle = [
-  'All',
-  'UI/UX Design',
-  'Web Development',
-  'Software Eng.',
-  'Business',
-]
+  "All",
+  "UI/UX Design",
+  "Web Development",
+  "Software Eng.",
+  "Business",
+];
 </script>
 
 <template>
@@ -44,7 +44,7 @@ const optionsSingle = [
           v-model="filters"
           class="input custom-text-filter"
           placeholder="Search..."
-        >
+        />
       </VControl>
 
       <div class="buttons">
@@ -58,15 +58,9 @@ const optionsSingle = [
             />
           </VControl>
         </VField>
-        <VButton
-          color="primary"
-          raised
-        >
+        <VButton color="primary" raised>
           <span class="icon">
-            <i
-              aria-hidden="true"
-              class="fas fa-plus"
-            />
+            <i aria-hidden="true" class="fas fa-plus" />
           </span>
           <span>Add User</span>
         </VButton>
@@ -88,27 +82,19 @@ const optionsSingle = [
             class="light-image"
             src="/@src/assets/illustrations/placeholders/search-6.svg"
             alt=""
-          >
+          />
           <img
             class="dark-image"
             src="/@src/assets/illustrations/placeholders/search-6-dark.svg"
             alt=""
-          >
+          />
         </template>
       </VPlaceholderPage>
 
       <!--Tile Grid v1-->
-      <TransitionGroup
-        name="list"
-        tag="div"
-        class="columns is-multiline"
-      >
+      <TransitionGroup name="list" tag="div" class="columns is-multiline">
         <!--Grid item-->
-        <div
-          v-for="(item, key) in filteredData"
-          :key="key"
-          class="column is-4"
-        >
+        <div v-for="(item, key) in filteredData" :key="key" class="column is-4">
           <div class="tile-grid-item">
             <div class="tile-grid-item-inner">
               <VAvatar
@@ -132,7 +118,7 @@ const optionsSingle = [
 </template>
 
 <style lang="scss">
-@import '/@src/scss/abstracts/all';
+@import "/@src/scss/abstracts/all";
 
 .tile-grid {
   .columns {

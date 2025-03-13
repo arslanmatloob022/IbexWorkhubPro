@@ -244,13 +244,13 @@ onMounted(() => {
       </VControl>
 
       <div>
-        <!-- <VButton
+        <VButton
           color="primary"
           @click="openLeadProposalModal = !openLeadProposalModal"
           icon="fas fa-plus"
-          >Lead Proposal
+          >Template
         </VButton>
-        <VButton
+        <!-- <VButton
           color="warning"
           class="ml-2"
           v-if="props.leadId"
@@ -498,11 +498,16 @@ onMounted(() => {
       v-if="openLeadProposalModal"
       :leadId="props.leadId"
       :proposalId="selectedProposalId"
+      :createTemplate="true"
       :leadProposalModal="openLeadProposalModal"
-      @update:modalHandler="openLeadProposalModal = false"
+      @update:modalHandler="
+        openLeadProposalModal = false;
+        getCompanyProposalList();
+      "
       @update:OnSuccess="getCompanyProposalList"
       @clearProposalId="selectedProposalId = ''"
     />
+
     <ProposalViewModal
       v-if="previewModal"
       :preview-modal="previewModal"

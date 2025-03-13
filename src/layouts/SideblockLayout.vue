@@ -466,7 +466,7 @@ onMounted(() => {
           </template>
 
           <!-- Internal users -->
-          <li>
+          <!-- <li>
             <VCollapseLinks
               v-model:open="openSideblockLinks"
               collapse-id="jobsProjects"
@@ -510,10 +510,10 @@ onMounted(() => {
                 </span>
               </RouterLink>
             </VCollapseLinks>
-          </li>
+          </li> -->
 
           <!-- service Partners -->
-          <li>
+          <!-- <li>
             <VCollapseLinks
               v-model:open="openSideblockLinks"
               collapse-id="finance"
@@ -552,7 +552,7 @@ onMounted(() => {
                 </span>
               </RouterLink>
             </VCollapseLinks>
-          </li>
+          </li> -->
         </template>
 
         <!-- user profile -->
@@ -668,35 +668,11 @@ onMounted(() => {
     </VViewWrapper>
   </div>
 
-  <InvitationLink
+  <!-- <InvitationLink
     v-if="invitationModal"
     :invitationModal="invitationModal"
     @update:modalHandler="(value: boolean) => (invitationModal = value)"
-  />
+  /> -->
 </template>
 
-<style lang="scss" scoped>
-.arez-version {
-  p {
-    color: var(--white);
-  }
-}
-
-.is-dark {
-  .arez-version {
-    p {
-      color: black;
-    }
-  }
-}
-
-.icon-iconify {
-  &:hover {
-    color: var(--white);
-  }
-}
-
-.icon-iconify:hover {
-  color: var(--white);
-}
-</style>
+<style lang="scss" scoped></style>

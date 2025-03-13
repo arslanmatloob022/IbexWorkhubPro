@@ -107,7 +107,9 @@ const addUpdateLeadHandler = async () => {
   try {
     isLoading.value = true;
     const formDataAPI = convertToFormData(costItem.value, []);
-
+    if (props.proposalId !== null && props.proposalId !== undefined) {
+      formDataAPI.append("proposal", props.proposalId.toString());
+    }
     if (props.costItemId) {
       const response = await api.patch(
         `/api/cost/${props.costItemId}/`,
@@ -251,6 +253,29 @@ watch(
     }
   }
 );
+
+const costUnitsList = ref([
+  {
+    id: "",
+    title: "",
+    value: "",
+    description: "",
+    is_active: true,
+    created_at: "",
+    updated_at: "",
+  },
+]);
+const getUnits = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/units/`);
+    costUnitsList.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
@@ -261,6 +286,7 @@ onMounted(async () => {
   if (props.costItemId) {
     getCostItemDetail();
   }
+  getUnits();
   getCostCodesHandler();
   getCataLogItemDetail();
 });
@@ -285,8 +311,11 @@ const getCataLogItemDetail = async () => {
 watch(selectedCataLog, (oldVal, newVal) => {
   let list = assumeList.value;
   const matchedItem = list.find((item) => item.id == selectedCataLog.value);
-  const { id, ...newObj } = matchedItem;
-  costItem.value = newObj;
+
+  if (matchedItem) {
+    const { id, proposal_id, ...newObj } = matchedItem; // Remove id and proposal_id
+    costItem.value = newObj; // Assign remaining values
+  }
 });
 </script>
 
@@ -501,8 +530,8 @@ watch(selectedCataLog, (oldVal, newVal) => {
                     v-model="costItem.unit"
                   >
                     <VOption value=""> Select Unit </VOption>
-                    <VOption v-for="item in generalUnits" :value="item.value">
-                      {{ item.label }}
+                    <VOption v-for="item in costUnitsList" :value="item.value">
+                      {{ item.title }} ({{ item.value }})
                     </VOption>
                   </VSelect>
                 </VControl>

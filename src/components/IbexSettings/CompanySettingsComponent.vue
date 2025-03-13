@@ -118,6 +118,15 @@ const updateCompany = (updatedCompany: typeof company) => {
                   ><span>Cost Codes</span></a
                 >
               </li>
+              <li :class="[tab === 'units' ? 'is-active' : 'not-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'units'"
+                  @click="tab = 'units'"
+                  ><span>Units</span></a
+                >
+              </li>
               <!-- <li
                 :class="[
                   tab === 'proposalsTemplates' ? 'is-active' : 'not-active',
@@ -172,6 +181,9 @@ const updateCompany = (updatedCompany: typeof company) => {
             </ul>
           </div>
         </div>
+      </div>
+      <div v-if="tab === 'units'">
+        <CompanyUnits />
       </div>
       <div v-if="tab === 'general'">
         <CompanyInformation />
