@@ -84,15 +84,6 @@ onMounted(() => {
     <div class="tabs-inner">
       <div class="tabs">
         <ul>
-          <li :class="[tab === 'files' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="getGroupedProposals('files')"
-              @click="getGroupedProposals('files')"
-              ><span>Estimate Files</span></a
-            >
-          </li>
           <li :class="[tab === 'proposal_formats' && 'is-active']">
             <a
               tabindex="0"
@@ -165,6 +156,15 @@ onMounted(() => {
               @keydown.space.prevent="tab = 'miscellaneous'"
               @click="tab = 'miscellaneous'"
               ><span>Miscellaneous</span></a
+            >
+          </li>
+          <li :class="[tab === 'files' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="getGroupedProposals('files')"
+              @click="getGroupedProposals('files')"
+              ><span>Uploaded Files</span></a
             >
           </li>
           <li class="tab-naver" />
