@@ -131,11 +131,35 @@ const getCostCodesHandler = async () => {
   }
 };
 
+const costUnitsList = ref([
+  {
+    id: "",
+    title: "",
+    value: "",
+    description: "",
+    is_active: true,
+    created_at: "",
+    updated_at: "",
+  },
+]);
+const getUnits = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/units/`);
+    costUnitsList.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 onMounted(() => {
   console.log(props.codeCategoryId);
   if (props.costCodeId) {
     getCostCodeInfoHandler();
   }
+  getUnits();
   getCostCategoriesHandler();
   getCostCodesHandler();
 });
@@ -265,8 +289,8 @@ onMounted(() => {
             <VControl>
               <VSelect v-model="costCodeFormData.unit">
                 <VOption value=""> Select Unit </VOption>
-                <VOption v-for="item in generalUnits" :value="item.value">
-                  {{ item.label }}
+                <VOption v-for="item in costUnitsList" :value="item.value">
+                  {{ item.title }} ({{ item.value ?? "" }})
                 </VOption>
               </VSelect>
             </VControl>
