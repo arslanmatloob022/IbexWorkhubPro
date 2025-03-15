@@ -33,7 +33,7 @@ const openSendProposalModalHandler = () => {
 // const priceElement = document.querySelector(".price");
 // priceElement.textContent = formatCurrency(parseFloat(priceElement.textContent));
 
-function formatCurrency(amount) {
+function formatCurrency(amount: any) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",

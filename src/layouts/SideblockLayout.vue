@@ -110,6 +110,28 @@ const shouldShowButton = computed(() => {
   return route.path !== "/sidebar/company";
 });
 
+const currentTime = ref<string>("");
+
+const updateTime = () => {
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+};
+
+let intervalId = ref(0);
+
+onMounted(() => {
+  updateTime(); // Set initial time
+  intervalId.value = setInterval(updateTime, 1000); // Update every second
+});
+
+onUnmounted(() => {
+  clearInterval(intervalId.value); // Cleanup interval on component unmount
+});
+
 watch(
   () => route.fullPath,
   (newFullPath, oldFullPath) => {
@@ -360,8 +382,11 @@ onMounted(() => {
         </template>
 
         <template #bottom-links>
-          <!-- <UserProfileDropdown left /> -->
-          <div class="pb-3 arez-version">
+          <UserProfileDropdown left />
+          <p>{{ currentTime }}</p>
+          <div class="pb-3">
+            <!-- <div> -->
+            <!-- </div> -->
             <!-- <p style="font-weight: 500">Powered by CodeSphere Studios</p>
             <p style="font-weight: 500; font-size: 10px">Version 3.04</p> -->
           </div>
@@ -414,7 +439,12 @@ onMounted(() => {
                 isDesktopSideblockOpen = !isDesktopSideblockOpen
               "
               @click="isDesktopSideblockOpen = !isDesktopSideblockOpen"
-              style="margin-top:16px; display:flex, justify-content:center; align-items:center; "
+              style="
+                margin-top: 16px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
             >
               <span class="menu-toggle has-chevron">
                 <img
@@ -602,9 +632,10 @@ onMounted(() => {
             <div class="title-wrap is-flex cu-align-center">
               <h1 class="title is-4 mr-2">
                 {{ viewWrapper.pageTitle }}
+                <!-- <p>Current Time: {{  }}</p> -->
               </h1>
 
-              <VField class="m-0">
+              <!-- <VField class="m-0">
                 <VControl>
                   <VSwitchBlock
                     color="info"
@@ -614,14 +645,15 @@ onMounted(() => {
                     thin
                   />
                 </VControl>
-              </VField>
+              </VField> -->
             </div>
 
             <!-- toolbar -->
             <div class="toolbar">
               <SearchWorkerInput />
+              <!-- <VTag color="success" :label="currentTime" curved outlined /> -->
 
-              <ToolbarNotification />
+              <!-- <ToolbarNotification /> -->
 
               <a
                 class="toolbar-link right-panel-trigger"

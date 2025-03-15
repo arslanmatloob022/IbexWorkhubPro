@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import type {
-  VAvatarProps,
-  VAvatarColor,
-} from "/@src/components/base/avatar/VAvatar.vue";
-import { projects } from "/@src/data/layouts/card-grid-v3";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
@@ -62,7 +57,6 @@ const notyf = useNotyf();
 const userSession = useUserSession();
 const loading = ref(false);
 const valueSingle = ref("");
-
 const props = defineProps<{
   jobId?: "";
   getUserActivities?: boolean;

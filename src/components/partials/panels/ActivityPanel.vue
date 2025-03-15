@@ -2,9 +2,23 @@
 import JobTodos from "../../IbexJobsEstimates/IbexJobs/JobComponents/JobTodos.vue";
 import { usePanels } from "/@src/stores/panels";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
+import { useCompany } from "/@src/stores/company";
+import { useNotyf } from "/@src/composable/useNotyf";
 
-type TabId = "todo" | "activity";
+const notyf = useNotyf();
+const company = useCompany();
+type TabId = "todo" | "activity" | "schedule";
+const isSwitchOn = ref(false);
 
+const toggleSwitch = () => {
+  company.toggleScheduleMode();
+  isSwitchOn.value = company.isScheduleMode;
+  notyf.green(
+    `The schedule mode is turned ${
+      localStorage.getItem("isScheduleMode") == "true" ? "On" : "Off"
+    }`
+  );
+};
 const panels = usePanels();
 const activeTab = ref<TabId>("todo");
 </script>
@@ -46,7 +60,7 @@ const activeTab = ref<TabId>("todo");
         </a>
       </div>
       <!-- is-triple-slider -->
-      <div class="tabs-wrapper is-slider is-squared">
+      <div class="tabs-wrapper is-triple-slider is-squared">
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
@@ -68,15 +82,15 @@ const activeTab = ref<TabId>("todo");
                   ><span>Activities</span></a
                 >
               </li>
-              <!-- <li :class="[activeTab === 'schedule' && 'is-active']">
+              <li :class="[activeTab === 'schedule' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
                   @keydown.space.prevent="activeTab = 'schedule'"
                   @click="activeTab = 'schedule'"
-                  ><span>Schedule</span></a
+                  ><span>Scheduling</span></a
                 >
-              </li> -->
+              </li>
               <li class="tab-naver" />
             </ul>
           </div>
@@ -342,6 +356,47 @@ const activeTab = ref<TabId>("todo");
             </div> -->
           <!-- </div> -->
 
+          <div
+            id="schedule-side-tab"
+            class="tab-content"
+            :class="[activeTab === 'schedule' && 'is-active']"
+          >
+            <div class="project-card">
+              <div class="project-inner">
+                <!-- <img
+                  class="project-avatar"
+                  src="/images/icons/logos/slicer.svg"
+                  alt=""
+                  @error.once="onceImageErrored(150)"
+                /> -->
+                <div class="meta">
+                  <VField class="m-0">
+                    <VControl>
+                      <VSwitchBlock
+                        color="info"
+                        v-model="isSwitchOn"
+                        @click="toggleSwitch"
+                        label="Schedule mode"
+                        thin
+                      />
+                    </VControl>
+                  </VField>
+                </div>
+                <!-- <a class="link">
+                  <i
+                    aria-hidden="true"
+                    class="iconify rtl-hidden"
+                    data-icon="feather:arrow-right"
+                  />
+                  <i
+                    aria-hidden="true"
+                    class="iconify ltr-hidden"
+                    data-icon="feather:arrow-left"
+                  />
+                </a> -->
+              </div>
+            </div>
+          </div>
           <div
             id="activity-side-tab"
             class="tab-content is-active"

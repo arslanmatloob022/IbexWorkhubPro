@@ -98,7 +98,7 @@ onMounted(() => {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="templateList.length">
             <tr v-for="template in templateList" :key="template.id">
               <td>{{ template.title }}</td>
               <td>{{ template.proposalAmount }}</td>

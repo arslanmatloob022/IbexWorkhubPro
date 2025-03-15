@@ -136,9 +136,7 @@ onMounted(() => {
       :key="activity.id"
       class="timeline-item"
     >
-      <div class="timeline-icon" :style="{ backgroundColor: activity.color }">
-        <!-- <VIcon :icon="getActivityIcon[activity.type]" /> -->
-
+      <div class="timeline-icon">
         <i
           aria-hidden="true"
           class="iconify"

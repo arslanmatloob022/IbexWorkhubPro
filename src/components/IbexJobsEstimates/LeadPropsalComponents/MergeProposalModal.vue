@@ -76,7 +76,7 @@ const mergeProposalsHandler = async () => {
   try {
     loading.value = true;
     let payload = groupProposalData.value;
-    if ((customColumns.value = true)) {
+    if (customColumns.value == true) {
       payload.columns_to_show = JSON.stringify(
         groupProposalData.value.columns_to_show
       );
@@ -96,15 +96,15 @@ const mergeProposalsHandler = async () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Merged_Proposal.pdf"; // Set file name
+    a.download = "Merged_Proposal.pdf";
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a); // Cleanup
-    window.URL.revokeObjectURL(url); // Free up memory
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
     closeModalHandler();
     notyf.success("Proposal grouped successfully and saved in documents list");
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    console.log("error found");
   } finally {
     loading.value = false;
   }
@@ -124,7 +124,7 @@ const getLeadProposals = async () => {
 
 const getCostTradesHandler = async () => {
   try {
-    const response = await api.get(`/api/cost-trade/`);
+    const response = await api.get(`/api/cost-category/`);
     tardeList.value = response.data.map((item: any) => {
       return {
         value: item.id,
@@ -150,7 +150,7 @@ onMounted(() => {
     size="large"
     actions="right"
     @submit.prevent="mergeProposalsHandler"
-    @close="closeModalHandler()"
+    @close="closeModalHandler"
   >
     <template #content>
       <div class="columns is-multiline">

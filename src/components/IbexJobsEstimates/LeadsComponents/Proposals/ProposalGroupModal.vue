@@ -307,7 +307,7 @@ onMounted(() => {
         </div>
         <MergeProposalModal
           v-if="openMergeProposalsModal"
-          :group-proposal-modal="openMergeProposalsModal"
+          :groupProposalModal="openMergeProposalsModal"
           :selectedProposals="selectedProposals"
           @removeProposal="selectProposal"
           @update:modalHandler="
@@ -325,7 +325,7 @@ onMounted(() => {
     <template #action>
       <VButton
         :loading="loading"
-        type="submit"
+        style="display: none"
         color="warning"
         raised
         @click="closeModalHandler"
