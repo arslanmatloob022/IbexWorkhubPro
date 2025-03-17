@@ -14,7 +14,7 @@ const events = ref<any>([]);
 const router = useRouter();
 const currentSelectedId = ref("");
 const openUserUpdateModal = ref(false);
-const tab = ref("chronic");
+const tab = ref("calendar");
 const userId = ref("");
 const isPasswordModalOpen = ref(false);
 const workerData = ref({
@@ -395,15 +395,6 @@ onMounted(async () => {
         <div class="tabs-inner">
           <div class="tabs is-boxed">
             <ul>
-              <li :class="[tab === 'chronic' && 'is-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'chronic'"
-                  @click="tab = 'chronic'"
-                  ><span>Chronic View</span></a
-                >
-              </li>
               <li :class="[tab === 'calendar' && 'is-active']">
                 <a
                   tabindex="0"
@@ -430,6 +421,15 @@ onMounted(async () => {
                   @keydown.space.prevent="tab = 'today'"
                   @click="tab = 'today'"
                   ><span>Today Tasks</span></a
+                >
+              </li>
+              <li :class="[tab === 'chronic' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'chronic'"
+                  @click="tab = 'chronic'"
+                  ><span>Chronic View</span></a
                 >
               </li>
               <li class="tab-naver" />

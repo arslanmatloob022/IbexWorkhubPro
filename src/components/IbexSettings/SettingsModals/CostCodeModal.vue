@@ -114,12 +114,13 @@ const getCostCategoriesHandler = async () => {
 };
 
 const costCodesList = ref([]);
-const getCostCodesHandler = async () => {
+const getCostCodesHandler = async (category: any = "") => {
   try {
     mailLoading.value = true;
-    const response = await api.get(`/api/cost-code/`);
+    const response = await api.get(`/api/cost-code/?category=${category}`);
     costCodesList.value = response.data.map((item: any) => {
       return {
+        ...item,
         value: item.id,
         label: item.name,
       };
@@ -130,6 +131,13 @@ const getCostCodesHandler = async () => {
     mailLoading.value = false;
   }
 };
+
+watch(
+  () => costCodeFormData.value.category,
+  (newCategory) => {
+    getCostCodesHandler(newCategory);
+  }
+);
 
 const costUnitsList = ref([
   {

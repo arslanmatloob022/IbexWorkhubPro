@@ -6,7 +6,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 
 const notyf = useNotyf();
 const loading = ref(false);
-const tab = ref("Items list");
+const tab = ref("itemsList");
 const costCodeItemsList = ref([
   {
     id: "",
@@ -152,12 +152,12 @@ onMounted(() => {
       <div class="tabs-inner">
         <div class="tabs">
           <ul>
-            <li :class="[tab === 'Items list' ? 'is-active' : 'not-active']">
+            <li :class="[tab === 'itemsList' ? 'is-active' : 'not-active']">
               <a
                 tabindex="0"
                 role="button"
-                @keydown.space.prevent="tab = 'Items list'"
-                @click="tab = 'Items list'"
+                @keydown.space.prevent="tab = 'itemsList'"
+                @click="tab = 'itemsList'"
                 ><span>Identity List</span></a
               >
             </li>
@@ -195,7 +195,18 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="" v-if="tab == 'Items list'">
+    <div v-if="tab == 'itemsList'">
+      <div class="columns is-multiline">
+        <div class="column is-12">
+          <VPlaceload
+            v-if="loading"
+            v-for="item in 20"
+            height="40px"
+            width="100%"
+            class="my-2"
+          />
+        </div>
+      </div>
       <div class="list-flex-toolbar flex-list-v1">
         <VField>
           <VControl icon="feather:search">

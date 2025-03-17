@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import { useRouter, useRoute } from "vue-router";
@@ -34,12 +33,11 @@ const radioOptions = [
 ];
 
 // Fetch worker activities
-const getAllWorkerProfileActivities = async () => {
+const getCompanyLogs = async () => {
   Loading.value = true;
   try {
     const response = await api.get(`/api/activity-logs/`);
     actions.value = response.data;
-    Logs_exist.value = actions.value.length > 0; // Update Logs_exist based on fetched data
   } catch (error) {
     console.error("Error fetching worker activities:", error);
   } finally {
@@ -109,9 +107,9 @@ const filteredActions = computed(() => {
   const results = actions.value.filter((item) => {
     // Filter by search term
     const matchesSearch =
-      item.actor_info.username.toLowerCase().includes(searchTerm) ||
-      (item.actor_info.last_name &&
-        item.actor_info.last_name.toLowerCase().includes(searchTerm)) ||
+      item.actor_info?.username.toLowerCase().includes(searchTerm) ||
+      (item.actor_info?.last_name &&
+        item.actor_info?.last_name?.toLowerCase().includes(searchTerm)) ||
       item.message.toLowerCase().includes(searchTerm);
 
     // Filter by date range
@@ -155,14 +153,11 @@ const handlePageChange = (page: number) => {
 // Lifecycle hooks
 onMounted(() => {
   currentPage.value = parseInt(route.query.page as string) || 1;
-  getAllWorkerProfileActivities();
+  getCompanyLogs();
 });
 
-onUnmounted(() => {
-  props.id = 0; // Reset ID on unmount
-});
+onUnmounted(() => {});
 </script>
-
 
 <template>
   <div class="columns is-multiline">
@@ -174,7 +169,7 @@ onUnmounted(() => {
         <VField addons style="width: 21rem">
           <VControl expanded>
             <VInput
-              @keypress.enter="getAllWorkerProfileActivities"
+              @keypress.enter="getCompanyLogs"
               type="text"
               class="input"
               v-model="filter"
@@ -182,7 +177,7 @@ onUnmounted(() => {
             />
           </VControl>
           <VControl>
-            <VButton color="primary" @click="getAllWorkerProfileActivities">
+            <VButton color="primary" @click="getCompanyLogs">
               <i class="fa fa-search"></i>
             </VButton>
           </VControl>
@@ -191,13 +186,11 @@ onUnmounted(() => {
           <div class="timeline-header" />
           <div class="timeline-wrapper-inner no-padding-all">
             <div class="timeline-container">
-              <!-- Loading State -->
               <PlaceloadV1 v-if="Loading" />
 
-              <!-- Timeline Items -->
               <div
                 class="timeline-item is-unread"
-                v-for="item in paginatedActions"
+                v-for="item in actions"
                 :key="item?.id"
               >
                 <div class="date">

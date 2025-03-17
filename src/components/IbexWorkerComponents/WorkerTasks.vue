@@ -230,6 +230,16 @@ const filteredActiveData = computed(() => {
     });
   }
 });
+
+const workerTasksStats = ref({});
+const taskDetailModal = ref(false);
+const taskId = ref("");
+const openTaskDetail = (task: any, id: any) => {
+  console.log("detail", task);
+  taskData.value = task;
+  taskId.value = id;
+  taskDetailModal.value = true;
+};
 const filteredPendingData = computed(() => {
   if (!filters.value) {
     return workerTasks.value.filter((tasks) => tasks.status == "pending");
@@ -367,7 +377,12 @@ onMounted(() => {
               <div class="grid-item">
                 <div class="top-section">
                   <div class="head">
-                    <h3>{{ item.title }}</h3>
+                    <h3
+                      class="cu-pointer"
+                      @click="openTaskDetail(item, item.id)"
+                    >
+                      {{ item.title }}
+                    </h3>
                     <!--Dropdown-->
                     <VDropdown icon="feather:more-vertical" spaced right>
                       <template #content>
@@ -444,13 +459,26 @@ onMounted(() => {
                       </template>
                     </VDropdown>
                   </div>
-                  <div class="body">
-                    <p>
+                  <div
+                    class="body cu-pointer"
+                    @click="
+                      openTaskDetail(arg.event.extendedProps, arg.event.id)
+                    "
+                  >
+                    <p
+                      class="cu-pointer"
+                      @click="
+                        openTaskDetail(arg.event.extendedProps, arg.event.id)
+                      "
+                    >
                       {{ item.description }}
                     </p>
                   </div>
                 </div>
-                <div class="bottom-section">
+                <div
+                  class="bottom-section cu-pointer"
+                  @click="openTaskDetail(arg.event.extendedProps, arg.event.id)"
+                >
                   <div v-if="item.supplier" class="foot-block">
                     <h4 class="heading">Sub Contractor</h4>
                     <div class="developers">
@@ -498,7 +526,6 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <!--Empty placeholder-->
           <VPlaceholderPage
             v-else
             title="There is no task added on this projects."
@@ -997,6 +1024,14 @@ onMounted(() => {
     @update:modalHandler="closeTaskForm"
     @update:OnSuccess="getWorkerTasks"
   />
+  <TaskInfoModal
+    v-if="taskDetailModal"
+    :taskDetailModal="taskDetailModal"
+    :taskData="taskData"
+    :taskId="taskId"
+    @update:modalHandler="taskDetailModal = false"
+  >
+  </TaskInfoModal>
 </template>
 
 <style lang="scss">

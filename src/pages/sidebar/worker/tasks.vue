@@ -14,10 +14,10 @@ useHead({
 <template>
   <div class="">
     <VTabs
-      selected="chronic"
+      selected="tasks"
       :tabs="[
-        { label: 'Chronic view', value: 'chronic' },
         { label: 'Tasks View', value: 'tasks' },
+        { label: 'Chronic view', value: 'chronic' },
       ]"
     >
       <template #tab="{ activeValue }">

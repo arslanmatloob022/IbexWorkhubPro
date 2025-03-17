@@ -79,7 +79,17 @@ onMounted(() => {
         </VButton>
       </VButtons>
     </div>
-    <div class="page-content-inner">
+    <div v-if="loading" class="columns is-multiline">
+      <div class="column is-12">
+        <VPlaceload
+          v-for="item in 20"
+          height="40px"
+          width="100%"
+          class="my-2"
+        />
+      </div>
+    </div>
+    <div v-else class="page-content-inner">
       <VPlaceholderPage
         v-if="!filteredData.length"
         title="No matching results found."
