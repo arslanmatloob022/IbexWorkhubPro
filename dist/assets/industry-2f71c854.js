@@ -1,1 +1,0 @@
-import{u as s}from"./viewWrapper-f74d4cf3.js";import{f as e,A as t,B as r,C as a,D as n,F as i}from"./index-15033c8f.js";const o={class:"page-content-inner"},u=e({__name:"industry",setup:e=>(s().setPageTitle("Industries"),t({title:"Industry - Arez"}),(s,e)=>{const t=r("Industries");return a(),n("div",o,[i(t)])})});export{u as default};
