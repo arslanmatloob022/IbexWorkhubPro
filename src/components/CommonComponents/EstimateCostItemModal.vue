@@ -258,11 +258,16 @@ const getCostCodesHandler = async () => {
 const getMatchingCostCode = () => {
   if (costItem.value.internal_notes) {
     const matchedCostCode = costCodesList.value.find((item) => {
-      return item.label.includes(costItem.value.internal_notes);
+      return item.label.match(costItem.value.internal_notes);
     });
     if (matchedCostCode) {
       costItem.value.cost_code = matchedCostCode.value;
-      costItem.value.internal_notes = "";
+      if (costItem.value.internal_notes.includes("...")) {
+        costItem.value.internal_notes = "";
+        costItem.value.internal_notes = "...";
+      } else {
+        costItem.value.internal_notes = "";
+      }
     }
     if (!costItem.value.title) {
       costItem.value.title = "...";
@@ -329,8 +334,8 @@ watch(selectedCataLog, (oldVal, newVal) => {
   const matchedItem = list.find((item) => item.id == selectedCataLog.value);
 
   if (matchedItem) {
-    const { id, proposal_id, ...newObj } = matchedItem; // Remove id and proposal_id
-    costItem.value = newObj; // Assign remaining values
+    const { id, proposal_id, ...newObj } = matchedItem;
+    costItem.value = newObj;
   }
 });
 </script>

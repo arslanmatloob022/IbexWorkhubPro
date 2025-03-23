@@ -167,6 +167,16 @@ onMounted(() => {
               ><span>Uploaded Files</span></a
             >
           </li>
+          <li :class="[tab === 'calculations' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="getGroupedProposals('calculations')"
+              @click="getGroupedProposals('calculations')"
+              ><span>Calculations</span></a
+            >
+          </li>
+
           <li class="tab-naver" />
         </ul>
       </div>
@@ -233,6 +243,9 @@ onMounted(() => {
         />
         <!-- 
           @update:on-upload-file="getProject" -->
+      </div>
+      <div v-if="tab == 'calculations'">
+        <ExcelSheetComponent />
       </div>
     </div>
     <UploadDocumentModal

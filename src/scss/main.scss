@@ -82,6 +82,11 @@ SCSS Imports
 .capitalized {
   text-transform: capitalize;
 }
+
+.bottom-border {
+  border-bottom: 1px solid #e2e2e2;
+  padding-bottom: 16px;
+}
 .show-text-50 {
   white-space: nowrap;
   overflow: hidden;

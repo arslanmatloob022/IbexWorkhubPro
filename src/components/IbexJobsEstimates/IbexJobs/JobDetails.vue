@@ -4,6 +4,11 @@ import { useTodoList } from "/@src/data/widgets/list/todoList";
 import { useApi } from "/@src/composable/useAPI";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { HotTable } from "@handsontable/vue3";
+// import saveAs from "file-saver";
+import * as XLSX from "xlsx";
+import { settings } from "nprogress";
+import "handsontable/dist/handsontable.full.min.css";
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
@@ -11,6 +16,17 @@ const notyf = useNotyf();
 const loading = ref(false);
 const selectedLeadId = ref("");
 const openLeadModal = ref(false);
+const hotTable = ref(null);
+const title = ref("Untitled");
+const hotSettings = ref({
+  data: Array.from({ length: 80 }, () => Array(50).fill("")),
+  rowHeaders: true,
+  colHeaders: true,
+  contextMenu: true,
+  width: "100%",
+  height: "500px",
+});
+
 interface User {
   id: string;
   username: string;
@@ -385,6 +401,15 @@ onMounted(() => {
                         ><span>Job progress</span></a
                       >
                     </li>
+                    <li :class="[tab === 'calculations' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'calculations'"
+                        @click="tab = 'calculations'"
+                        ><span>Calculations</span></a
+                      >
+                    </li>
                     <li :class="[tab === 'finance' && 'is-active']">
                       <a
                         tabindex="0"
@@ -704,6 +729,9 @@ onMounted(() => {
           </div>
           <div v-if="tab === 'tasks'" class="column is-12">
             <ProjectsTasks :projectID="route.params.id" />
+          </div>
+          <div v-if="tab === 'calculations'" class="column is-12">
+            <CalculationsList :objectId="route.params.id" />
           </div>
         </div>
       </div>
