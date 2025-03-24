@@ -35,6 +35,7 @@ const columns = {
 
 const addItem = ref(false);
 const addSection = ref(false);
+const addSubsection = ref(false);
 const sectionsList = ref([
   {
     id: "",
@@ -101,6 +102,12 @@ const sectionData = ref({
   title: "",
   is_template: false,
   object: props.objectId ?? "",
+  description: "",
+});
+
+const subsectionData = ref({
+  title: "",
+  is_template: false,
   description: "",
 });
 
@@ -237,7 +244,7 @@ onMounted(async () => {
           raised
           @click="addSection = !addSection"
         >
-          {{ addSection ? "Close" : "Section" }}</VButton
+          {{ addSection ? "Close" : "Calculation" }}</VButton
         >
         <VButton
           icon="fas fa-file-import"
@@ -268,7 +275,7 @@ onMounted(async () => {
                   <VInput
                     v-model="sectionData.title"
                     type="text"
-                    placeholder="Section Title"
+                    placeholder="Calculation Title"
                   />
                 </VControl>
               </VField>
@@ -278,7 +285,7 @@ onMounted(async () => {
                     v-model="sectionData.description"
                     type="text"
                     rows="2"
-                    placeholder="Section Description"
+                    placeholder="Calculation Description"
                   />
                 </VControl>
               </VField>
@@ -328,6 +335,55 @@ onMounted(async () => {
           />
         </template>
       </VPlaceholderPage>
+      <TransitionGroup name="translate-page-y">
+        <div v-if="addSubsection" class="column is-12 card p-4 curved mb-2">
+          <div class="columns is-multiline">
+            <div class="column is-10">
+              <VField>
+                <VControl>
+                  <VInput
+                    v-model="subsectionData.title"
+                    type="text"
+                    placeholder="Calculation Title"
+                  />
+                </VControl>
+              </VField>
+              <VField>
+                <VControl>
+                  <VTextarea
+                    v-model="subsectionData.description"
+                    type="text"
+                    rows="2"
+                    placeholder="Calculation Description"
+                  />
+                </VControl>
+              </VField>
+            </div>
+
+            <div class="column is-2">
+              <VButton
+                color="primary"
+                outlined
+                light
+                bold
+                fullwidth
+                class="ml-2"
+                raised
+                @click="createSection"
+              >
+                Add Section</VButton
+              >
+              <VControl raw subcontrol>
+                <VCheckbox
+                  v-model="subsectionData.is_template"
+                  label="Create Template"
+                  color="info"
+                />
+              </VControl>
+            </div>
+          </div>
+        </div>
+      </TransitionGroup>
       <TransitionGroup name="from-bottom">
         <div
           v-if="filteredSections.length"
@@ -359,6 +415,7 @@ onMounted(async () => {
                 @click="showItemEditor(item.id)"
                 has-background
               />
+              <!-- @click="addSubsection = !addSubsection" -->
               <VIconWrap
                 @click="deleteSectionHandler(item.id)"
                 icon="fas fa-copy"

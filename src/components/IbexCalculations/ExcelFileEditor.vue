@@ -4,11 +4,15 @@ import { useUserSession } from "/@src/stores/userSession";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { HotTable } from "@handsontable/vue3";
-import "handsontable/dist/handsontable.full.min.css";
 import { ref, onMounted, nextTick } from "vue";
-import type { HotTable as HotTableComponent } from "@handsontable/vue3";
+
+import Handsontable from "handsontable";
 import { HyperFormula } from "hyperformula";
+import "handsontable/dist/handsontable.full.min.css";
+const hotTable = ref<HTMLElement | null>(null);
+let hotInstance: Handsontable | null = null;
 const hyperformulaInstance = HyperFormula.buildEmpty();
+
 const userSession = useUserSession();
 const notyf = useNotyf();
 const api = useApi();
@@ -17,7 +21,6 @@ const Loading = ref(false);
 const selectSlotValue = ref("");
 const selectSlotOptions = ref(<any>[]);
 
-const hotTable = ref<InstanceType<typeof HotTable> | null>(null);
 const loading = ref(false);
 const sheetDataNew = ref<string[][]>([[""]]);
 const sheetData = ref({
@@ -167,6 +170,38 @@ const getSheet = async () => {
     console.log("Error fetching sheet:", error);
   }
 };
+onMounted(() => {
+  nextTick(() => {
+    if (!hotTable.value) {
+      console.error("hotTable is undefined");
+      return;
+    }
+
+    const hyperformulaInstance = HyperFormula.buildEmpty({
+      licenseKey: "internal-use-in-handsontable",
+    });
+
+    hotInstance = new Handsontable(hotTable.value, {
+      data: [
+        ["A1", "B1", "C1", "=A1+B1"],
+        ["A2", "B2", "C2", "=A2*B2"],
+      ],
+      colHeaders: true,
+      copyPaste: true,
+      rowHeaders: true,
+      formulas: {
+        engine: hyperformulaInstance,
+      },
+      columns: [
+        {
+          type: "dropdown",
+          source: ["Option 1", "Option 2", "Option 3"],
+        },
+      ],
+      licenseKey: "non-commercial-and-evaluation",
+    });
+  });
+});
 
 onMounted(async () => {
   if (props.fileId) {
@@ -174,10 +209,10 @@ onMounted(async () => {
   }
   await nextTick();
 
-  if (hotTable.value?.hotInstance && sheetDataNew.value.length > 0) {
-    hotTable.value.hotInstance.loadData(sheetDataNew.value);
-    hotTable.value.hotInstance.render();
-  }
+  // if (hotTable.value?.hotInstance && sheetDataNew.value.length > 0) {
+  //   hotTable.value.hotInstance.loadData(sheetDataNew.value);
+  //   hotTable.value.hotInstance.render();
+  // }
 });
 </script>
 
