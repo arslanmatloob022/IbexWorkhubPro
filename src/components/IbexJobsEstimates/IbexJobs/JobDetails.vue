@@ -167,7 +167,7 @@ const leadDetail = ref<ProjectDetails>({
   sales_people: [],
   managers: [],
 });
-
+const calTab = ref("excel");
 const tab = ref("management");
 const data = [
   {
@@ -731,7 +731,36 @@ onMounted(() => {
             <ProjectsTasks :projectID="route.params.id" />
           </div>
           <div v-if="tab === 'calculations'" class="column is-12">
-            <CalculationsList :objectId="route.params.id" />
+            <div class="tabs-inner">
+              <div class="tabs is-boxed">
+                <ul>
+                  <li :class="[calTab === 'excel' && 'is-active']">
+                    <a
+                      tabindex="0"
+                      role="button"
+                      @keydown.space.prevent="calTab = 'excel'"
+                      @click="calTab = 'excel'"
+                      ><span>Excel Sheets</span></a
+                    >
+                  </li>
+                  <li :class="[calTab === 'custom' && 'is-active']">
+                    <a
+                      tabindex="0"
+                      role="button"
+                      @keydown.space.prevent="calTab = 'custom'"
+                      @click="calTab = 'custom'"
+                      ><span>Custom Calculations</span></a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div v-if="calTab == 'excel'">
+              <ExcelSheetComponent />
+            </div>
+            <div v-if="calTab == 'custom'">
+              <CalculationsList :objectId="route.params.id" />
+            </div>
           </div>
         </div>
       </div>
