@@ -35,7 +35,7 @@
   },
   "scripts": {
     "prepare": "jiti ./scripts/prepare-shiki.ts",
-    "dev": "run-p dev:vite dev:json-server",
+    "dev": "run-p dev:vite",
     "dev:ssr": "run-p ssr:dev dev:json-server",
     "dev:vite": "vite --open",
     "dev:json-server": "json-server --read-only --routes ./json-server/routes.json --port 8081 --watch ./json-server/db.json",
