@@ -17,60 +17,29 @@ const notyf = useNotyf();
 const loading = ref(false);
 const sheetDataNew = ref<string[][]>([[""]]);
 const filesList = ref([]);
+const templatesList = ref([]);
 const filters = ref("");
-const props = defineProps<{
-  fetchAll?: {
-    type: Boolean;
-    default: true;
-  };
-  userId?: string;
-  objectId?: string;
-}>();
-
-const getAllSheets = async () => {
-  try {
-    const response = await api.get(`/api/excel-files/`);
-    filesList.value = response.data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const getUserSheets = async () => {
-  try {
-    const response = await api.get(`/api/excel-files/by-user/${props.userId}/`);
-    filesList.value = response.data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
-};
-const openEditorModal = ref(false);
-const selectedFileId = ref(0);
-const openExcelEditor = (id: any = "") => {
-  selectedFileId.value = id;
-  openEditorModal.value = true;
-};
-
-const filteredPendingData = computed(() => {
-  if (!filters.value) {
-    return filesList.value;
-  } else {
-    const filterRe = new RegExp(filters.value, "i");
-
-    return filesList.value.filter((item) => {
-      return item.title?.match(filterRe);
-    });
-  }
-});
 const addFileModal = ref(false);
 const sheetNameDeleteTobe = ref("");
 const selectedFileName = ref("");
 const start = ref("");
 let myFile: File | null = null;
+
+const props = defineProps<{
+  fetchAll?: {
+    type: Boolean;
+    default: true;
+  };
+  fetchTemplates?: {
+    type: Boolean;
+    default: false;
+  };
+  userId?: string;
+  objectId?: string;
+}>();
+
+const openEditorModal = ref(false);
+const selectedFileId = ref(0);
 const uploadExcelData = ref({
   file: "",
   title: "",
@@ -84,9 +53,64 @@ const handleFileSelect = (event) => {
   selectedFileName.value = csvFile.name;
   uploadExcelData.value.title = csvFile.name;
 };
+const selectedTemplateValue = ref("");
+const selectTemplateOptions = ref([
+  {
+    value: "javascript",
+    name: "Javascript",
+    icon: "/images/icons/stacks/js.svg",
+  },
+]);
 
+const getAllSheets = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/excel-files/`);
+    filesList.value = response.data;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getAllTemplates = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/excel-files/templates/`);
+    templatesList.value = response.data;
+    selectTemplateOptions.value = templatesList.value.map((item) => ({
+      value: item.id,
+      name: item.title,
+    }));
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getUserSheets = async () => {
+  try {
+    loading.value = true;
+
+    const response = await api.get(`/api/excel-files/by-user/${props.userId}/`);
+    filesList.value = response.data;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+};
+const openExcelEditor = (id: any = "") => {
+  selectedFileId.value = id;
+  openEditorModal.value = true;
+};
+
+const loadingTask = ref(false);
 const uploadTasksSheet = async () => {
   try {
+    loadingTask.value = true;
     const payload = convertToFormData(uploadExcelData.value, [""]);
     const response = await api.post(`/api/excel-files/upload-excel/`, payload);
     getAllSheets();
@@ -94,10 +118,37 @@ const uploadTasksSheet = async () => {
   } catch (error) {
     console.error(error);
   } finally {
-    loading.value = false;
+    loadingTask.value = false;
     addFileModal.value = false;
   }
 };
+
+const uploadSheetFromTemplate = async (id: any) => {
+  try {
+    loadingTask.value = true;
+
+    const response = await api.post(
+      `/api/excel-files/create-from-template/${id}/`
+    );
+    notyf.success("Sheet create successfully");
+    getAllSheets();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loadingTask.value = false;
+    addFileModal.value = false;
+  }
+};
+
+watch(
+  () => selectedTemplateValue.value,
+  (newValue) => {
+    if (newValue) {
+      uploadSheetFromTemplate(newValue);
+    }
+  }
+);
+
 const deleteSheetHandler = async (id: any) => {
   try {
     await api.delete(`/api/excel-files/${id}/`);
@@ -108,6 +159,30 @@ const deleteSheetHandler = async (id: any) => {
     notyf.error("Failed to delete sheet.");
   }
 };
+const calTab = ref("excel");
+const filteredPendingData = computed(() => {
+  if (!filters.value) {
+    return filesList.value.filter((item) => item.is_template == false);
+  } else {
+    const filterRe = new RegExp(filters.value, "i");
+
+    return filesList.value.filter((item) => {
+      return item.title?.match(filterRe) && item.is_template == false;
+    });
+  }
+});
+
+const filteredTemplatesData = computed(() => {
+  if (!filters.value) {
+    return templatesList.value;
+  } else {
+    const filterRe = new RegExp(filters.value, "i");
+
+    return templatesList.value.filter((item) => {
+      return item.title?.match(filterRe);
+    });
+  }
+});
 
 onMounted(async () => {
   if (props.fetchAll) {
@@ -116,79 +191,207 @@ onMounted(async () => {
   if (props.userId) {
     getUserSheets();
   }
+  getAllTemplates();
+
   await getAllSheets();
 });
 </script>
 
 <template>
-  <div class="column is-12">
-    <div class="list-flex-toolbar is-reversed">
-      <VButtons>
-        <VButton
-          icon="fas fa-plus"
-          color="info"
-          outlined
-          light
-          class="ml-2"
-          raised
-          @click="openExcelEditor()"
-          >New Sheet</VButton
-        >
-        <VButton
-          icon="fas fa-upload"
-          raised
-          light
-          @click="addFileModal = !addFileModal"
-          outlined
-          color="primary"
-        >
-          File
-        </VButton>
-      </VButtons>
-      <div>
-        <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
-          <input
-            v-model="filters"
-            class="input custom-text-filter"
-            placeholder="Search..."
-          />
-        </VControl>
+  <PlaceloadV4 v-if="loading" />
+  <div v-else class="columns is-multiline">
+    <div class="tabs-inner column is-12">
+      <div class="tabs">
+        <ul>
+          <li :class="[calTab === 'excel' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="calTab = 'excel'"
+              @click="calTab = 'excel'"
+              ><span>Excel Sheets</span></a
+            >
+          </li>
+          <li :class="[calTab === 'Templates' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="calTab = 'Templates'"
+              @click="calTab = 'Templates'"
+              ><span>Templates </span></a
+            >
+          </li>
+        </ul>
       </div>
     </div>
-    <div class="columns is-multiline">
-      <div
-        class="column is-6"
-        v-for="(item, index) in filteredPendingData"
-        :key="item.id"
-      >
-        <div class="card p-4 curved is-flex space-between">
-          <div>
-            <h4 class="subtitle is-5 m-0">{{ item.title }}</h4>
-            <div class="content">
-              <p>
-                {{ formatDateTime(item.created_at) }}
-              </p>
-            </div>
-          </div>
-          <div class="is-flex">
-            <VIconWrap
-              icon="lucide:pen"
+    <div v-if="calTab === 'excel'" class="column is-12">
+      <div class="columns is-multiline">
+        <div class="list-flex-toolbar is-reversed column is-12">
+          <VButtons>
+            <VField style="width: 260px" v-slot="{ id }">
+              <VControl>
+                <Multiselect
+                  v-model="selectedTemplateValue"
+                  :attrs="{ id }"
+                  placeholder="Create with template"
+                  label="name"
+                  :options="selectTemplateOptions"
+                  :searchable="true"
+                  track-by="name"
+                  :max-height="145"
+                >
+                  <template #singlelabel="{ value }">
+                    <div class="multiselect-single-label">
+                      <img class="select-label-icon" :src="value.icon" alt="" />
+                      {{ value.name }}
+                    </div>
+                  </template>
+                  <template #option="{ option }">
+                    <img class="select-option-icon" :src="option.icon" alt="" />
+                    {{ option.name }}
+                  </template>
+                </Multiselect>
+              </VControl>
+            </VField>
+            <VButton
+              icon="fas fa-plus"
               color="info"
-              class="cu-pointer"
-              @click="openExcelEditor(item.id)"
-              has-background
-            />
-            <VIconWrap
-              @click="deleteSheetHandler(item.id)"
-              icon="lucide:trash"
-              color="danger"
-              has-background
-              class="cu-pointer ml-1"
-            />
+              outlined
+              light
+              class="ml-2"
+              raised
+              @click="openExcelEditor()"
+              >New Sheet</VButton
+            >
+            <VButton
+              icon="fas fa-upload"
+              raised
+              light
+              @click="addFileModal = !addFileModal"
+              outlined
+              color="primary"
+            >
+              File
+            </VButton>
+          </VButtons>
+          <div class="is-flex">
+            <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
+              <input
+                v-model="filters"
+                class="input custom-text-filter"
+                placeholder="Search..."
+              />
+            </VControl>
           </div>
         </div>
+        <!-- <div class="columns is-multiline"> -->
+        <div
+          class="column is-6"
+          v-for="(item, index) in filteredPendingData"
+          :key="item.id"
+        >
+          <div class="card p-4 curved is-flex space-between">
+            <div>
+              <h4 class="subtitle is-5 m-0">{{ item.title }}</h4>
+              <div class="content">
+                <p>
+                  {{ formatDateTime(item.created_at) }}
+                </p>
+              </div>
+            </div>
+            <div class="is-flex">
+              <VIconWrap
+                icon="lucide:pen"
+                color="info"
+                class="cu-pointer"
+                @click="openExcelEditor(item.id)"
+                has-background
+              />
+              <VIconWrap
+                @click="deleteSheetHandler(item.id)"
+                icon="lucide:trash"
+                color="danger"
+                has-background
+                class="cu-pointer ml-1"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
       </div>
     </div>
+    <div v-if="calTab === 'Templates'" class="column is-12">
+      <div class="columns is-multiline">
+        <div class="list-flex-toolbar is-reversed column is-12">
+          <VButtons>
+            <VButton
+              icon="fas fa-plus"
+              color="info"
+              outlined
+              light
+              class="ml-2"
+              raised
+              @click="openExcelEditor()"
+              >Template</VButton
+            >
+            <VButton
+              icon="fas fa-upload"
+              raised
+              light
+              @click="addFileModal = !addFileModal"
+              outlined
+              color="primary"
+            >
+              File
+            </VButton>
+          </VButtons>
+          <div>
+            <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
+              <input
+                v-model="filters"
+                class="input custom-text-filter"
+                placeholder="Search..."
+              />
+            </VControl>
+          </div>
+        </div>
+        <!-- <div class="columns is-multiline"> -->
+        <div
+          class="column is-6"
+          v-for="(item, index) in filteredTemplatesData"
+          :key="item.id"
+        >
+          <div class="card p-4 curved is-flex space-between">
+            <div>
+              <h4 class="subtitle is-5 m-0">{{ item.title }}</h4>
+              <div class="content">
+                <p>
+                  {{ formatDateTime(item.created_at) }}
+                </p>
+              </div>
+            </div>
+            <div class="is-flex">
+              <VIconWrap
+                icon="lucide:pen"
+                color="info"
+                class="cu-pointer"
+                @click="openExcelEditor(item.id)"
+                has-background
+              />
+              <VIconWrap
+                @click="deleteSheetHandler(item.id)"
+                icon="lucide:trash"
+                color="danger"
+                has-background
+                class="cu-pointer ml-1"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+      </div>
+    </div>
+
     <ExcelFileEditor
       v-if="openEditorModal"
       class="fullscreen"

@@ -76,7 +76,7 @@ SCSS Imports
   position: absolute;
 }
 
-.align-items-ceneter {
+.align-items-center {
   align-items: center;
 }
 .capitalized {
@@ -87,6 +87,7 @@ SCSS Imports
   border-bottom: 1px solid #e2e2e2;
   padding-bottom: 16px;
 }
+
 .show-text-50 {
   white-space: nowrap;
   overflow: hidden;
@@ -166,6 +167,10 @@ SCSS Imports
   align-items: center;
 }
 
+.justify-right {
+  display: flex;
+  justify-content: right;
+}
 .font-700 {
   font-weight: 700;
 }
