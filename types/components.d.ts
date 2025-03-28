@@ -86,6 +86,7 @@ declare module 'vue' {
     BScertificate: typeof import('./../src/components/supportComponents/BScertificate.vue')['default']
     BulletPill: typeof import('./../src/components/BulletPill.vue')['default']
     CalculationsList: typeof import('./../src/components/IbexCalculations/CalculationsList.vue')['default']
+    CalculationsTemplates: typeof import('./../src/components/IbexCalculations/CalculationsTemplates.vue')['default']
     CallWidget: typeof import('./../src/components/partials/widgets/ui-creative/CallWidget.vue')['default']
     CardBaseDocumentation: typeof import('./../documentation/card/card-base-documentation.md')['default']
     CardColorsDocumentation: typeof import('./../documentation/card/card-colors-documentation.md')['default']

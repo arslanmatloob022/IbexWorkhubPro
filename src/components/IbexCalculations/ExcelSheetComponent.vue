@@ -199,197 +199,100 @@ onMounted(async () => {
 
 <template>
   <PlaceloadV4 v-if="loading" />
-  <div v-else class="columns is-multiline">
-    <div class="tabs-inner column is-12">
-      <div class="tabs">
-        <ul>
-          <li :class="[calTab === 'excel' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="calTab = 'excel'"
-              @click="calTab = 'excel'"
-              ><span>Excel Sheets</span></a
-            >
-          </li>
-          <li :class="[calTab === 'Templates' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="calTab = 'Templates'"
-              @click="calTab = 'Templates'"
-              ><span>Templates </span></a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div v-if="calTab === 'excel'" class="column is-12">
-      <div class="columns is-multiline">
-        <div class="list-flex-toolbar is-reversed column is-12">
-          <VButtons>
-            <VField style="width: 260px" v-slot="{ id }">
-              <VControl>
-                <Multiselect
-                  v-model="selectedTemplateValue"
-                  :attrs="{ id }"
-                  placeholder="Create with template"
-                  label="name"
-                  :options="selectTemplateOptions"
-                  :searchable="true"
-                  track-by="name"
-                  :max-height="145"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      <img class="select-label-icon" :src="value.icon" alt="" />
-                      {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <img class="select-option-icon" :src="option.icon" alt="" />
-                    {{ option.name }}
-                  </template>
-                </Multiselect>
-              </VControl>
-            </VField>
-            <VButton
-              icon="fas fa-plus"
-              color="info"
-              outlined
-              light
-              class="ml-2"
-              raised
-              @click="openExcelEditor()"
-              >New Sheet</VButton
-            >
-            <VButton
-              icon="fas fa-upload"
-              raised
-              light
-              @click="addFileModal = !addFileModal"
-              outlined
-              color="primary"
-            >
-              File
-            </VButton>
-          </VButtons>
-          <div class="is-flex">
-            <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
-              <input
-                v-model="filters"
-                class="input custom-text-filter"
-                placeholder="Search..."
-              />
+  <div v-else>
+    <div class="columns is-multiline">
+      <div class="list-flex-toolbar is-reversed column is-12">
+        <VButtons>
+          <VField style="width: 260px" v-slot="{ id }">
+            <VControl>
+              <Multiselect
+                v-model="selectedTemplateValue"
+                :attrs="{ id }"
+                placeholder="Create with template"
+                label="name"
+                :options="selectTemplateOptions"
+                :searchable="true"
+                track-by="name"
+                :max-height="145"
+              >
+                <template #singlelabel="{ value }">
+                  <div class="multiselect-single-label">
+                    <img class="select-label-icon" :src="value.icon" alt="" />
+                    {{ value.name }}
+                  </div>
+                </template>
+                <template #option="{ option }">
+                  <img class="select-option-icon" :src="option.icon" alt="" />
+                  {{ option.name }}
+                </template>
+              </Multiselect>
             </VControl>
-          </div>
+          </VField>
+          <VButton
+            icon="fas fa-plus"
+            color="info"
+            outlined
+            light
+            class="ml-2"
+            raised
+            @click="openExcelEditor()"
+            >New Sheet</VButton
+          >
+          <VButton
+            icon="fas fa-upload"
+            raised
+            light
+            @click="addFileModal = !addFileModal"
+            outlined
+            color="primary"
+          >
+            File
+          </VButton>
+        </VButtons>
+        <div class="is-flex">
+          <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </VControl>
         </div>
-        <!-- <div class="columns is-multiline"> -->
-        <div
-          class="column is-6"
-          v-for="(item, index) in filteredPendingData"
-          :key="item.id"
-        >
-          <div class="card p-4 curved is-flex space-between">
-            <div>
-              <h4 class="subtitle is-5 m-0">{{ item.title }}</h4>
-              <div class="content">
-                <p>
-                  {{ formatDateTime(item.created_at) }}
-                </p>
-              </div>
-            </div>
-            <div class="is-flex">
-              <VIconWrap
-                icon="lucide:pen"
-                color="info"
-                class="cu-pointer"
-                @click="openExcelEditor(item.id)"
-                has-background
-              />
-              <VIconWrap
-                @click="deleteSheetHandler(item.id)"
-                icon="lucide:trash"
-                color="danger"
-                has-background
-                class="cu-pointer ml-1"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- </div> -->
       </div>
-    </div>
-    <div v-if="calTab === 'Templates'" class="column is-12">
-      <div class="columns is-multiline">
-        <div class="list-flex-toolbar is-reversed column is-12">
-          <VButtons>
-            <VButton
-              icon="fas fa-plus"
-              color="info"
-              outlined
-              light
-              class="ml-2"
-              raised
-              @click="openExcelEditor()"
-              >Template</VButton
-            >
-            <VButton
-              icon="fas fa-upload"
-              raised
-              light
-              @click="addFileModal = !addFileModal"
-              outlined
-              color="primary"
-            >
-              File
-            </VButton>
-          </VButtons>
+      <!-- <div class="columns is-multiline"> -->
+      <div
+        class="column is-6"
+        v-for="(item, index) in filteredPendingData"
+        :key="item.id"
+      >
+        <div class="card p-4 curved is-flex space-between">
           <div>
-            <VControl class="mr-2 h-hidden-mobile" icon="feather:search">
-              <input
-                v-model="filters"
-                class="input custom-text-filter"
-                placeholder="Search..."
-              />
-            </VControl>
-          </div>
-        </div>
-        <!-- <div class="columns is-multiline"> -->
-        <div
-          class="column is-6"
-          v-for="(item, index) in filteredTemplatesData"
-          :key="item.id"
-        >
-          <div class="card p-4 curved is-flex space-between">
-            <div>
-              <h4 class="subtitle is-5 m-0">{{ item.title }}</h4>
-              <div class="content">
-                <p>
-                  {{ formatDateTime(item.created_at) }}
-                </p>
-              </div>
-            </div>
-            <div class="is-flex">
-              <VIconWrap
-                icon="lucide:pen"
-                color="info"
-                class="cu-pointer"
-                @click="openExcelEditor(item.id)"
-                has-background
-              />
-              <VIconWrap
-                @click="deleteSheetHandler(item.id)"
-                icon="lucide:trash"
-                color="danger"
-                has-background
-                class="cu-pointer ml-1"
-              />
+            <h4 class="subtitle is-5 m-0">{{ item.title }}</h4>
+            <div class="content">
+              <p>
+                {{ formatDateTime(item.created_at) }}
+              </p>
             </div>
           </div>
+          <div class="is-flex">
+            <VIconWrap
+              icon="lucide:pen"
+              color="info"
+              class="cu-pointer"
+              @click="openExcelEditor(item.id)"
+              has-background
+            />
+            <VIconWrap
+              @click="deleteSheetHandler(item.id)"
+              icon="lucide:trash"
+              color="danger"
+              has-background
+              class="cu-pointer ml-1"
+            />
+          </div>
         </div>
-        <!-- </div> -->
       </div>
+      <!-- </div> -->
     </div>
 
     <ExcelFileEditor
@@ -397,8 +300,11 @@ onMounted(async () => {
       class="fullscreen"
       :excel-file-modal="openEditorModal"
       :fileId="selectedFileId"
-      @update:modal-handler="openEditorModal = false"
-      @update:on-success="getAllSheets"
+      :isTemplate="false"
+      @update:modalHandler="
+        openEditorModal = false;
+        getAllSheets();
+      "
     />
     <VModal
       is="form"

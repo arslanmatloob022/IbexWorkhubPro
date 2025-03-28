@@ -13,7 +13,6 @@ import { HyperFormula } from "hyperformula";
 import "handsontable/dist/handsontable.full.min.css";
 const hotTable = ref<HTMLElement | null>(null);
 let hotInstance: Handsontable | null = null;
-// const hyperformulaInstance = HyperFormula.buildEmpty();
 const hyperformulaInstance = HyperFormula.buildEmpty({
   licenseKey: "internal-use-in-handsontable",
 });
@@ -39,6 +38,7 @@ const props = defineProps<{
   fileId?: any;
   objectId?: string;
   getLeadsList?: boolean;
+  isTemplate?: boolean;
 }>();
 
 const closeModalHandler = () => {
@@ -83,17 +83,22 @@ const filesList = ref([]);
 
 const saveSheetHandler = async () => {
   try {
-    if (props.fileId) {
-      await api.patch(`/api/excel-files/${props.fileId}/`, {
-        title: sheetData.value.title,
-        sheet_data: JSON.stringify(sheetDataNew.value),
-      });
+    if (props.fileId || sheetData.value.id) {
+      const resp = await api.patch(
+        `/api/excel-files/${props.fileId ? props.fileId : sheetData.value.id}/`,
+        {
+          title: sheetData.value.title,
+          sheet_data: JSON.stringify(sheetDataNew.value),
+        }
+      );
+      sheetData.value.id = resp.data.id;
       notyf.success("Sheet updated successfully!");
     } else {
-      await api.post(`/api/excel-files/`, {
+      const resp = await api.post(`/api/excel-files/`, {
         title: sheetData.value.title,
         sheet_data: JSON.stringify(sheetDataNew.value),
       });
+      sheetData.value.id = resp.data.id;
       notyf.success("Sheet created successfully!");
     }
     updateOnSuccessHandler();
@@ -149,7 +154,7 @@ const downloadSheetHandler = async () => {
   try {
     const resp = await api.get(
       `/api/excel-files/${
-        props.fileId ? props.fileId : sheetDataNew.value.id
+        props.fileId ? props.fileId : sheetData.value.id
       }/download/`,
 
       {
@@ -312,9 +317,10 @@ onMounted(async () => {
           color="primary"
           raised
           class="mr-2"
-          >Save</VButton
+          >{{ props.fileId || sheetData.id ? "Update" : "Save" }}</VButton
         >
         <VButton
+          v-if="props.isTemplate"
           :loading="isLoading"
           @click="saveSheetAsTemplate"
           color="success"
