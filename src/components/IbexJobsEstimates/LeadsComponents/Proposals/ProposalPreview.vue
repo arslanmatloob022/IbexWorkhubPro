@@ -233,7 +233,7 @@ onMounted(() => {});
                   {{
                     useProposal.leadProposalFormData?.jobInfo?.title
                       ? useProposal.leadProposalFormData?.jobInfo?.title
-                      : "N/A"
+                      : ""
                   }}
                 </h3>
                 <span
@@ -241,7 +241,7 @@ onMounted(() => {});
                 >
                   {{
                     useProposal.leadProposalFormData?.jobInfo?.clientInfo
-                      ?.username ?? "N/A"
+                      ?.username ?? ""
                   }}
                   {{
                     useProposal.leadProposalFormData?.jobInfo?.clientInfo
@@ -251,7 +251,7 @@ onMounted(() => {});
                 <span v-else>
                   {{
                     useProposal.leadProposalFormData?.jobInfo?.contractor_info
-                      ?.username ?? "N/A"
+                      ?.username ?? ""
                   }}
                   {{
                     useProposal.leadProposalFormData?.jobInfo?.contractor_info
@@ -264,7 +264,7 @@ onMounted(() => {});
                     ?.email
                     ? useProposal.leadProposalFormData?.jobInfo?.contractor_info
                         ?.email
-                    : "N/A"
+                    : ""
                 }}</span>
                 <span>
                   {{ getProposalType[useProposal.leadProposalFormData?.type] }}
@@ -275,10 +275,7 @@ onMounted(() => {});
                   {{ useProposal.leadProposalFormData?.title }}
                 </h3>
                 <p>
-                  Job Address:
-                  {{
-                    useProposal.leadProposalFormData?.jobInfo?.address ?? "N/A"
-                  }}
+                  {{ useProposal.leadProposalFormData?.jobInfo?.address ?? "" }}
                 </p>
               </div>
             </div>
@@ -344,14 +341,22 @@ onMounted(() => {});
             <div class="invoice-section is-flex mt-0 pt-0">
               <div class="end is-left">
                 <h3 class="text-right">
-                  Total Price: ${{
-                    useProposal.leadProposalFormData?.proposalAmount
+                  Total Price:
+                  {{
+                    formatCurrency(
+                      useProposal.leadProposalFormData?.proposalAmount
+                    )
                   }}
                 </h3>
               </div>
             </div>
+
             <div class="invoice-section is-flex mt-0 pt-0">
               <div class="footer">
+                <h1 class="subtitle is-6 py-0 mb-0">
+                  I confirm that my action here represents my electronic
+                  signature and is binding.
+                </h1>
                 <div class="footer-meta">
                   <p>Signature:</p>
                   <div></div>
