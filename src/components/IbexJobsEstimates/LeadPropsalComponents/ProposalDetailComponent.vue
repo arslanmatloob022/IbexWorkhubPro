@@ -7,10 +7,12 @@ import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore"
 import { downloadProposalPdf } from "../proposalsComponents";
 import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
 import { useDropdown } from "/@src/composable/useDropdown";
+import { useCostCodeStore } from "/@src/stores/LeadEstimatesStore/costCodeStore";
 
 const dropdownElement = ref<HTMLElement>();
 const dropdown = useDropdown(dropdownElement);
 const editor = shallowRef<any>();
+const useCostCodes = useCostCodeStore();
 const useProposal = useProposalStore();
 const notyf = useNotyf();
 const api = useApi();
@@ -270,6 +272,7 @@ onMounted(async () => {
     getProposalDetail();
     useProposal.getProposalDetail(props.proposalId || route.params.id);
   }
+  useCostCodes.getCostCodesHandler();
 });
 </script>
 

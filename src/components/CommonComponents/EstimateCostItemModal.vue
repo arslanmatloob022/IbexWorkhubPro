@@ -7,7 +7,9 @@ import { useUserSession } from "/@src/stores/userSession";
 import { generalUnits } from "../IbexJobsEstimates/estimatesScripts";
 import { CreateActivityLog } from "/@src/composable/useSupportElement";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
+import { useCostCodeStore } from "/@src/stores/LeadEstimatesStore/costCodeStore";
 const editor = shallowRef<any>();
+const useCostCodes = useCostCodeStore();
 const useProposal = useProposalStore();
 const userSession = useUserSession();
 const notyf = useNotyf();
@@ -206,6 +208,7 @@ const getCostItemDetail = async () => {
     loading.value = true;
     const response = await api.get(`/api/cost/${props.costItemId}/`);
     costItem.value = response.data;
+    getMatchingCostCode();
   } catch (err) {
     console.log(err);
   } finally {
@@ -229,7 +232,7 @@ const getCostCodesHandler = async () => {
         unit: item.unit ?? "--",
       };
     });
-    getMatchingCostCode();
+    // getMatchingCostCode();
   } catch (err) {
     console.log(err);
   } finally {
@@ -257,10 +260,12 @@ const getCostCodesHandler = async () => {
 
 const getMatchingCostCode = () => {
   if (costItem.value.internal_notes) {
-    const matchedCostCode = costCodesList.value.find((item) => {
-      return item.label.match(costItem.value.internal_notes);
+    // console.log("iteer", useCostCodes.costCodesList[0]);
+    const matchedCostCode = useCostCodes.costCodesList.find((item) => {
+      return item.label?.match(costItem.value.internal_notes);
     });
     if (matchedCostCode) {
+      console.log("matched", matchedCostCode.value);
       costItem.value.cost_code = matchedCostCode.value;
       if (costItem.value.internal_notes.includes("...")) {
         costItem.value.internal_notes = "";
@@ -297,20 +302,6 @@ const getUnits = async () => {
     loading.value = false;
   }
 };
-onMounted(async () => {
-  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
-    (m) => m.default
-  );
-  if (props.previousItemIndex) {
-    costItem.value.previousItemIndex = props.previousItemIndex;
-  }
-  if (props.costItemId) {
-    getCostItemDetail();
-  }
-  getUnits();
-  getCostCodesHandler();
-  getCataLogItemDetail();
-});
 
 const getCataLogItemDetail = async () => {
   try {
@@ -337,6 +328,24 @@ watch(selectedCataLog, (oldVal, newVal) => {
     const { id, proposal_id, ...newObj } = matchedItem;
     costItem.value = newObj;
   }
+});
+onMounted(async () => {
+  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
+    (m) => m.default
+  );
+  if (props.previousItemIndex) {
+    costItem.value.previousItemIndex = props.previousItemIndex;
+  }
+  if (props.costItemId) {
+    getCostItemDetail();
+  }
+  getUnits();
+  getCostCodesHandler();
+  // useCostCodes.getCostCodesHandler();
+  getCataLogItemDetail();
+  // if () {
+  getMatchingCostCode();
+  // }
 });
 </script>
 
@@ -456,7 +465,7 @@ watch(selectedCataLog, (oldVal, newVal) => {
                     :disabled="props.previewCostItems"
                     :attrs="{ id }"
                     :searchable="true"
-                    :options="costCodesList"
+                    :options="useCostCodes.costCodesList"
                     placeholder="Select a cost code"
                   />
                 </VControl>
