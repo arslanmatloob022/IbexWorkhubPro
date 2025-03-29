@@ -87,6 +87,7 @@ const saveSheetHandler = async () => {
       const resp = await api.patch(
         `/api/excel-files/${props.fileId ? props.fileId : sheetData.value.id}/`,
         {
+          is_template: true,
           title: sheetData.value.title,
           sheet_data: JSON.stringify(sheetDataNew.value),
         }
@@ -108,13 +109,22 @@ const saveSheetHandler = async () => {
   }
 };
 
+const createUpdateTemplatehandler = () => {
+  if (props.fileId || sheetData.value.id) {
+    saveSheetHandler();
+  } else {
+    saveSheetAsTemplate();
+  }
+};
+
 const saveSheetAsTemplate = async () => {
   try {
-    await api.post(`/api/excel-files/create-template/`, {
+    const resp = await api.post(`/api/excel-files/create-template/`, {
       is_template: true,
       title: sheetData.value.title,
       sheet_data: JSON.stringify(sheetDataNew.value),
     });
+    sheetData.value.id = resp.data.id;
     updateOnSuccessHandler();
     notyf.success("Template saved successfully!");
   } catch (error) {
@@ -312,6 +322,7 @@ onMounted(async () => {
 
       <div class="is-flex">
         <VButton
+          v-if="!props.isTemplate"
           :loading="isLoading"
           @click="saveSheetHandler"
           color="primary"
@@ -322,13 +333,13 @@ onMounted(async () => {
         <VButton
           v-if="props.isTemplate"
           :loading="isLoading"
-          @click="saveSheetAsTemplate"
+          @click="createUpdateTemplatehandler"
           color="success"
           raised
           outlined
           class="mr-2"
           light
-          >Create Template</VButton
+          >{{ sheetData.id ? "Update" : "Create" }} Template</VButton
         >
         <VIconBox
           bordered

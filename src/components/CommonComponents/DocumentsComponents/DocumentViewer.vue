@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const props = defineProps<{
   openDocViewModal?: boolean;
-  document?: String;
-  title?: String;
+  document?: string;
+  title?: string;
 }>();
 
 const emit = defineEmits<{
@@ -63,6 +63,13 @@ onMounted(async () => {
         >
           Oops! an error has occurred.
         </iframe>
+        <VPlyr
+          v-if="props.document?.includes('.mp4')"
+          ratio="4by3"
+          :source="props.document"
+          poster="/video/poster-3.jpg"
+          embed
+        />
         <img v-else :src="props.document" alt="" />
       </div>
       <div v-else class="modal-form">

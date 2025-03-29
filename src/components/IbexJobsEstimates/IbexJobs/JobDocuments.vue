@@ -14,9 +14,12 @@ const props = defineProps<{
 const filters = ref("");
 const valueSingle = ref(0);
 const selectedType = ref("");
-const tab = ref("proposal_formats");
+const tab = ref("contracts");
 const openFileModal = ref(false);
 const mergedProposalsList = ref([]);
+const mainTab = ref("documents");
+const photoTab = ref("site_visits");
+const videoTab = ref("job_videos");
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -52,7 +55,7 @@ const openFileUploaderModal = (type: "") => {
   openFileModal.value = !openFileModal.value;
 };
 
-const getGroupedProposals = async (type: any = "proposal_formats") => {
+const getGroupedProposals = async (type: any = "contracts") => {
   try {
     tab.value = type;
     const resp = await api.get(
@@ -82,98 +85,33 @@ onMounted(() => {
 <template>
   <div>
     <div class="tabs-inner">
-      <div class="tabs">
+      <div class="tabs is-boxed">
         <ul>
-          <li :class="[tab === 'proposal_formats' && 'is-active']">
+          <li :class="[mainTab === 'documents' && 'is-active']">
             <a
               tabindex="0"
               role="button"
-              @keydown.space.prevent="getGroupedProposals('proposal_formats')"
-              @click="getGroupedProposals('proposal_formats')"
-              ><span>Grouped Proposals</span></a
+              @keydown.space.prevent="mainTab = 'documents'"
+              @click="mainTab = 'documents'"
+              ><span>Documents</span></a
             >
           </li>
-          <li :class="[tab === 'contracts' && 'is-active']">
+          <li :class="[mainTab === 'photos' && 'is-active']">
             <a
               tabindex="0"
               role="button"
-              @keydown.space.prevent="getGroupedProposals('contracts')"
-              @click="getGroupedProposals('contracts')"
-              ><span>Contracts</span></a
+              @keydown.space.prevent="mainTab = 'photos'"
+              @click="mainTab = 'photos'"
+              ><span>Photos</span></a
             >
           </li>
-          <li :class="[tab === 'estimates' && 'is-active']">
+          <li :class="[mainTab === 'videos' && 'is-active']">
             <a
               tabindex="0"
               role="button"
-              @keydown.space.prevent="getGroupedProposals('estimates')"
-              @click="getGroupedProposals('estimates')"
-              ><span>Customer Estimates</span></a
-            >
-          </li>
-
-          <li :class="[tab === 'job_scope' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'job_scope'"
-              @click="tab = 'job_scope'"
-              ><span>Job Scope</span></a
-            >
-          </li>
-
-          <li :class="[tab === 'asbestos' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'asbestos'"
-              @click="tab = 'asbestos'"
-              ><span>Asbestos & Lead Report</span></a
-            >
-          </li>
-          <li :class="[tab === 'permits' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'permits'"
-              @click="tab = 'permits'"
-              ><span>Permits</span></a
-            >
-          </li>
-          <li :class="[tab === 'material' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'material'"
-              @click="tab = 'material'"
-              ><span>Bids & Material</span></a
-            >
-          </li>
-          <li :class="[tab === 'miscellaneous' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'miscellaneous'"
-              @click="tab = 'miscellaneous'"
-              ><span>Miscellaneous</span></a
-            >
-          </li>
-          <li :class="[tab === 'files' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="getGroupedProposals('files')"
-              @click="getGroupedProposals('files')"
-              ><span>Uploaded Files</span></a
-            >
-          </li>
-          <li :class="[tab === 'calculations' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="getGroupedProposals('calculations')"
-              @click="getGroupedProposals('calculations')"
-              ><span>Calculations</span></a
+              @keydown.space.prevent="mainTab = 'videos'"
+              @click="mainTab = 'videos'"
+              ><span>Videos</span></a
             >
           </li>
 
@@ -182,70 +120,361 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="tile-grid tile-grid-v2">
-      <!--List Empty Search Placeholder -->
-      <VPlaceholderPage
-        :class="[filteredData.length !== 0 && 'is-hidden']"
-        title="We couldn't find any matching results."
-        subtitle="Too bad. Looks like we couldn't find any matching results for the
+    <div v-if="mainTab == 'documents'">
+      <div class="tabs-inner">
+        <div class="tabs">
+          <ul>
+            <!-- <li :class="[tab === 'proposal_formats' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('proposal_formats')"
+                @click="getGroupedProposals('proposal_formats')"
+                ><span>Grouped Proposals</span></a
+              >
+            </li> -->
+            <li :class="[tab === 'contracts' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('contracts')"
+                @click="getGroupedProposals('contracts')"
+                ><span>Contracts</span></a
+              >
+            </li>
+            <li :class="[tab === 'estimates' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('estimates')"
+                @click="getGroupedProposals('estimates')"
+                ><span>Customer Estimates</span></a
+              >
+            </li>
+
+            <li :class="[tab === 'job_scope' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'job_scope'"
+                @click="tab = 'job_scope'"
+                ><span>Job Scope</span></a
+              >
+            </li>
+
+            <li :class="[tab === 'asbestos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'asbestos'"
+                @click="tab = 'asbestos'"
+                ><span>Asbestos & Lead Report</span></a
+              >
+            </li>
+            <li :class="[tab === 'permits' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'permits'"
+                @click="tab = 'permits'"
+                ><span>Permits</span></a
+              >
+            </li>
+            <li :class="[tab === 'material' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'material'"
+                @click="tab = 'material'"
+                ><span>Bids & Material</span></a
+              >
+            </li>
+            <li :class="[tab === 'miscellaneous' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'miscellaneous'"
+                @click="tab = 'miscellaneous'"
+                ><span>Miscellaneous</span></a
+              >
+            </li>
+            <li :class="[tab === 'files' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('files')"
+                @click="getGroupedProposals('files')"
+                ><span>Uploaded Files</span></a
+              >
+            </li>
+            <li :class="[tab === 'calculations' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('calculations')"
+                @click="getGroupedProposals('calculations')"
+                ><span>Calculations</span></a
+              >
+            </li>
+
+            <li class="tab-naver" />
+          </ul>
+        </div>
+      </div>
+
+      <div class="tile-grid tile-grid-v2">
+        <!--List Empty Search Placeholder -->
+        <VPlaceholderPage
+          :class="[filteredData.length !== 0 && 'is-hidden']"
+          title="We couldn't find any matching results."
+          subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
           criteria."
-        larger
-      >
-        <template #image>
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/search-4.svg"
-            alt=""
+          larger
+        >
+          <template #image>
+            <img
+              class="light-image"
+              src="/@src/assets/illustrations/placeholders/search-4.svg"
+              alt=""
+            />
+            <img
+              class="dark-image"
+              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+              alt=""
+            />
+          </template>
+        </VPlaceholderPage>
+        <div v-if="tab == 'contracts'">
+          <ObjectDocumentsTiles
+            doc-type="contracts"
+            :object-id="props.leadId"
           />
-          <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-            alt=""
+        </div>
+        <div v-if="tab == 'estimates'">
+          <ObjectDocumentsTiles
+            doc-type="estimates"
+            :object-id="props.leadId"
           />
-        </template>
-      </VPlaceholderPage>
-      <div v-if="tab == 'contracts'">
-        <ObjectDocumentsTiles doc-type="contracts" :object-id="props.leadId" />
-      </div>
-      <div v-if="tab == 'estimates'">
-        <ObjectDocumentsTiles doc-type="estimates" :object-id="props.leadId" />
-      </div>
-      <div v-if="tab == 'proposal_formats'">
-        <ObjectDocumentsTiles
-          doc-type="proposal_formats"
-          :object-id="props.leadId"
-        />
-      </div>
-      <div v-if="tab == 'job_scope'">
-        <ObjectDocumentsTiles doc-type="job_scope" :object-id="props.leadId" />
-      </div>
-      <div v-if="tab == 'asbestos'">
-        <ObjectDocumentsTiles doc-type="asbestos" :object-id="props.leadId" />
-      </div>
-      <div v-if="tab == 'permits'">
-        <ObjectDocumentsTiles doc-type="permits" :object-id="props.leadId" />
-      </div>
-      <div v-if="tab == 'material'">
-        <ObjectDocumentsTiles doc-type="material" :object-id="props.leadId" />
-      </div>
-      <div v-if="tab == 'miscellaneous'">
-        <ObjectDocumentsTiles
-          doc-type="miscellaneous"
-          :object-id="props.leadId"
-        />
-      </div>
-      <div v-if="tab == 'files'">
-        <ProjectFiles
-          :projectId="props.leadId"
-          :files="props.uploaded_files"
-          @update:on-upload-file="getProject"
-        />
-        <!-- 
+        </div>
+        <!-- <div v-if="tab == 'proposal_formats'">
+          <ObjectDocumentsTiles
+            doc-type="proposal_formats"
+            :object-id="props.leadId"
+          />
+        </div> -->
+        <div v-if="tab == 'job_scope'">
+          <ObjectDocumentsTiles
+            doc-type="job_scope"
+            :object-id="props.leadId"
+          />
+        </div>
+        <div v-if="tab == 'asbestos'">
+          <ObjectDocumentsTiles doc-type="asbestos" :object-id="props.leadId" />
+        </div>
+        <div v-if="tab == 'permits'">
+          <ObjectDocumentsTiles doc-type="permits" :object-id="props.leadId" />
+        </div>
+        <div v-if="tab == 'material'">
+          <ObjectDocumentsTiles doc-type="material" :object-id="props.leadId" />
+        </div>
+        <div v-if="tab == 'miscellaneous'">
+          <ObjectDocumentsTiles
+            doc-type="miscellaneous"
+            :object-id="props.leadId"
+          />
+        </div>
+        <div v-if="tab == 'files'">
+          <ProjectFiles
+            :projectId="props.leadId"
+            :files="props.uploaded_files"
+            @update:on-upload-file="getProject"
+          />
+          <!-- 
           @update:on-upload-file="getProject" -->
+        </div>
+        <div v-if="tab == 'calculations'">
+          <ExcelSheetComponent />
+        </div>
       </div>
-      <div v-if="tab == 'calculations'">
-        <ExcelSheetComponent />
+    </div>
+    <div v-if="mainTab == 'photos'">
+      <div class="tabs-inner">
+        <div class="tabs">
+          <ul>
+            <li :class="[photoTab === 'site_visits' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('site_visits')"
+                @click="
+                  getGroupedProposals('site_visits');
+                  photoTab = 'site_visits';
+                "
+                ><span>Site Visit Photos</span></a
+              >
+            </li>
+            <li :class="[photoTab === 'inspiration_photos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="
+                  getGroupedProposals('inspiration_photos')
+                "
+                @click="
+                  getGroupedProposals('inspiration_photos');
+                  photoTab = 'inspiration_photos';
+                "
+                ><span>Inspiration Photos</span></a
+              >
+            </li>
+
+            <li :class="[photoTab === 'trade_photos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('trade_photos')"
+                @click="
+                  getGroupedProposals('trade_photos');
+                  photoTab = 'trade_photos';
+                "
+                ><span>Trade Photos</span></a
+              >
+            </li>
+            <li :class="[photoTab === 'design_approval' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('design_approval')"
+                @click="
+                  getGroupedProposals('design_approval');
+                  photoTab = 'design_approval';
+                "
+                ><span>Design Approval Photos</span></a
+              >
+            </li>
+
+            <li class="tab-naver" />
+          </ul>
+        </div>
+      </div>
+
+      <div class="tile-grid tile-grid-v2">
+        <!--List Empty Search Placeholder -->
+        <VPlaceholderPage
+          :class="[filteredData.length !== 0 && 'is-hidden']"
+          title="We couldn't find any matching results."
+          subtitle="Too bad. Looks like we couldn't find any matching results for the
+          search terms you've entered. Please try different search terms or
+          criteria."
+          larger
+        >
+          <template #image>
+            <img
+              class="light-image"
+              src="/@src/assets/illustrations/placeholders/search-4.svg"
+              alt=""
+            />
+            <img
+              class="dark-image"
+              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+              alt=""
+            />
+          </template>
+        </VPlaceholderPage>
+        <div v-if="photoTab == 'site_visits'">
+          <ObjectDocumentsTiles
+            doc-type="site_visits"
+            :object-id="props.leadId"
+          />
+        </div>
+        <div v-if="photoTab == 'inspiration_photos'">
+          <ObjectDocumentsTiles
+            doc-type="inspiration_photos"
+            :object-id="props.leadId"
+          />
+        </div>
+        <div v-if="photoTab == 'trade_photos'">
+          <ObjectDocumentsTiles
+            doc-type="trade_photos"
+            :object-id="props.leadId"
+          />
+        </div>
+        <div v-if="photoTab == 'design_approval'">
+          <ObjectDocumentsTiles
+            doc-type="design_approval"
+            :object-id="props.leadId"
+          />
+        </div>
+      </div>
+    </div>
+    <div v-if="mainTab == 'videos'">
+      <div class="tabs-inner">
+        <div class="tabs">
+          <ul>
+            <li :class="[videoTab === 'job_videos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('job_videos')"
+                @click="
+                  videoTab = 'job_videos';
+                  getGroupedProposals('job_videos');
+                "
+                ><span>Job videos</span></a
+              >
+            </li>
+            <li :class="[videoTab === 'other_videos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals('other_videos')"
+                @click="
+                  videoTab = 'other_videos';
+                  getGroupedProposals('other_videos');
+                "
+                ><span>Other videos</span></a
+              >
+            </li>
+            <li class="tab-naver" />
+          </ul>
+        </div>
+      </div>
+      <div class="tile-grid tile-grid-v2">
+        <!--List Empty Search Placeholder -->
+        <VPlaceholderPage
+          :class="[filteredData.length !== 0 && 'is-hidden']"
+          title="We couldn't find any matching results."
+          subtitle="Too bad. Looks like we couldn't find any matching results for the
+          search terms you've entered. Please try different search terms or
+          criteria."
+          larger
+        >
+          <template #image>
+            <img
+              class="light-image"
+              src="/@src/assets/illustrations/placeholders/search-4.svg"
+              alt=""
+            />
+            <img
+              class="dark-image"
+              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+              alt=""
+            />
+          </template>
+        </VPlaceholderPage>
+        <div v-if="videoTab == 'job_videos'">
+          <ObjectDocumentsTiles
+            doc-type="job_videos"
+            :object-id="props.leadId"
+          />
+        </div>
+        <div v-if="videoTab == 'other_videos'">
+          <ObjectDocumentsTiles
+            doc-type="other_videos"
+            :object-id="props.leadId"
+          />
+        </div>
       </div>
     </div>
     <UploadDocumentModal

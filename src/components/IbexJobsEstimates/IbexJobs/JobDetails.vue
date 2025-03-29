@@ -169,6 +169,7 @@ const leadDetail = ref<ProjectDetails>({
 });
 const calTab = ref("excel");
 const tab = ref("management");
+const proposalTabs = ref("childProposals");
 const data = [
   {
     type: "messages",
@@ -238,6 +239,19 @@ const getLeadDetailHandler = async () => {
     console.error(error);
   } finally {
     loading.value = false;
+  }
+};
+
+const mergedProposalsList = ref([]);
+
+const getGroupedProposals = async (type: any = "proposal_formats") => {
+  try {
+    const resp = await api.get(
+      `/api/attachment/by-object/${route.params.id}/?type=${type}`
+    );
+    mergedProposalsList.value = resp.data;
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -704,10 +718,51 @@ onMounted(() => {
             />
           </div>
           <div v-if="tab === 'proposals'" class="column is-12">
-            <LeadProposalsList
-              :lead-id="route.params.id"
-              @updateCompany="getLeadDetailHandler"
-            />
+            <div class="tabs-inner">
+              <div class="tabs is-boxed">
+                <ul>
+                  <li
+                    :class="[proposalTabs === 'childProposals' && 'is-active']"
+                  >
+                    <a
+                      tabindex="0"
+                      role="button"
+                      @keydown.space.prevent="proposalTabs = 'childProposals'"
+                      @click="proposalTabs = 'childProposals'"
+                      ><span>Proposals</span></a
+                    >
+                  </li>
+                  <li
+                    :class="[
+                      proposalTabs === 'groupedProposals' && 'is-active',
+                    ]"
+                  >
+                    <a
+                      tabindex="0"
+                      role="button"
+                      @keydown.space.prevent="proposalTabs = 'groupedProposals'"
+                      @click="
+                        proposalTabs = 'groupedProposals';
+                        getGroupedProposals('proposal_formats');
+                      "
+                      ><span>Grouped Proposals</span></a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div v-if="proposalTabs == 'childProposals'">
+              <LeadProposalsList
+                :lead-id="route.params.id"
+                @updateCompany="getLeadDetailHandler"
+              />
+            </div>
+            <div v-if="proposalTabs == 'groupedProposals'">
+              <ObjectDocumentsTiles
+                doc-type="proposal_formats"
+                :object-id="route.params.id"
+              />
+            </div>
           </div>
           <div v-if="tab === 'activities'" class="column is-12">
             <JobLeadActivities :jobId="route.params.id" />

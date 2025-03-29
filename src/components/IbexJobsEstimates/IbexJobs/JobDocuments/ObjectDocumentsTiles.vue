@@ -134,7 +134,7 @@ onMounted(() => {
             <span class="icon">
               <i aria-hidden="true" class="fas fa-plus" />
             </span>
-            <span>Add File</span>
+            <span>File</span>
           </VButton>
         </div>
       </div>

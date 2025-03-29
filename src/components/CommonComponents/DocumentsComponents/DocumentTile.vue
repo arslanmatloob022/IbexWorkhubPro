@@ -29,14 +29,17 @@ const getFilesIcons = {
   png: "/icons/png-icon.png",
   jpg: "/icons/jpg-50.png",
   jpeg: "/icons/jpg-50.png",
+  mp4: "/images/icons/files/video.svg",
 };
 
 const deleteFileHandler = (id: any) => {
   emits("deleteSelectedFile", id);
 };
 
+const DocumentType = ref("");
 const openDocViewModalHandler = (doc: any) => {
-  documentToView.value = doc;
+  documentToView.value = doc.file_info?.url;
+  DocumentType.value = doc.file_info?.type;
   documentTitle.value = doc.title;
   openDocViewModal.value = !openDocViewModal.value;
 };
@@ -84,7 +87,7 @@ const downloadFile = async (url: any, fileName: any) => {
     <div class="tile-grid-item">
       <div class="tile-grid-item-inner">
         <img
-          @click="openDocViewModalHandler(props.document?.file)"
+          @click="openDocViewModalHandler(props.document)"
           :src="getFilesIcons[props.document?.file_info?.type]"
         />
         <div class="meta">
@@ -133,6 +136,7 @@ const downloadFile = async (url: any, fileName: any) => {
       v-if="openDocViewModal"
       :openDocViewModal="openDocViewModal"
       :document="documentToView"
+      :DocumentType="DocumentType"
       :title="documentTitle"
       @update:closeModalHandler="openDocViewModal = false"
     />
