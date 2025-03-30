@@ -177,6 +177,7 @@ declare module 'vue' {
     CostCodes: typeof import('./../src/components/IbexSettings/CostCodes.vue')['default']
     CostItemsTable: typeof import('./../src/components/CommonComponents/CostItemComponents/CostItemsTable.vue')['default']
     CourseDashboard: typeof import('./../src/components/pages/dashboards/business/CourseDashboard.vue')['default']
+    CreateFolderModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/LeadJobModals/CreateFolderModal.vue')['default']
     CreateProposalTasksModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/Proposals/CreateProposalTasksModal.vue')['default']
     CreateTemplateModal: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/CreateTemplateModal.vue')['default']
     CusLargModal: typeof import('./../src/components/supportComponents/CusLargModal.vue')['default']

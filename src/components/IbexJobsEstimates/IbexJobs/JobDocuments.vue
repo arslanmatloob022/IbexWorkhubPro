@@ -77,54 +77,104 @@ const deleteSelectedDocumentHandler = async (id: any) => {
   }
 };
 
+const folderType = ref("");
+const openCreateFolderModal = ref(false);
+const documentsFoldersList = ref([]);
+const photosFoldersList = ref([]);
+const videosFoldersList = ref([]);
+const addFolderHandler = (type: string = "") => {
+  folderType.value = type;
+  openCreateFolderModal.value = !openCreateFolderModal.value;
+};
+
+const getMediaFolders = async (type: any = "") => {
+  try {
+    const resp = await api.get(
+      `/api/media-folder/?object=${props.leadId}&type=${type}`
+    );
+    if (type === "documents") {
+      documentsFoldersList.value = resp.data;
+    } else if (type === "photos") {
+      photosFoldersList.value = resp.data;
+    } else if (type === "videos") {
+      videosFoldersList.value = resp.data;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getAllFolders = (type: any = "documents") => {
+  if (type === "documents") {
+    getMediaFolders("documents");
+  } else if (type === "photos") {
+    getMediaFolders("photos");
+  } else if (type === "videos") {
+    getMediaFolders("videos");
+  }
+};
+
 onMounted(() => {
   getGroupedProposals();
+  getAllFolders("documents");
 });
 </script>
 
 <template>
   <div>
-    <div class="tabs-inner">
-      <div class="tabs is-boxed">
-        <ul>
-          <li :class="[mainTab === 'documents' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="mainTab = 'documents'"
-              @click="mainTab = 'documents'"
-              ><span>Documents</span></a
-            >
-          </li>
-          <li :class="[mainTab === 'photos' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="mainTab = 'photos'"
-              @click="mainTab = 'photos'"
-              ><span>Photos</span></a
-            >
-          </li>
-          <li :class="[mainTab === 'videos' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="mainTab = 'videos'"
-              @click="mainTab = 'videos'"
-              ><span>Videos</span></a
-            >
-          </li>
+    <div class="toolbar-header toolbar is-flex space-between">
+      <div class="tabs-inner">
+        <div class="tabs is-boxed">
+          <ul>
+            <li :class="[mainTab === 'documents' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="mainTab = 'documents'"
+                @click="
+                  mainTab = 'documents';
+                  getAllFolders('documents');
+                "
+                ><span>Documents</span></a
+              >
+            </li>
+            <li :class="[mainTab === 'photos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="mainTab = 'photos'"
+                @click="
+                  mainTab = 'photos';
+                  getAllFolders('photos');
+                "
+                ><span>Photos</span></a
+              >
+            </li>
+            <li :class="[mainTab === 'videos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="mainTab = 'videos'"
+                @click="
+                  mainTab = 'videos';
+                  getAllFolders('videos');
+                "
+                ><span>Videos</span></a
+              >
+            </li>
 
-          <li class="tab-naver" />
-        </ul>
+            <li class="tab-naver" />
+          </ul>
+        </div>
       </div>
     </div>
 
     <div v-if="mainTab == 'documents'">
-      <div class="tabs-inner">
-        <div class="tabs">
-          <ul>
-            <!-- <li :class="[tab === 'proposal_formats' && 'is-active']">
+      <div class="toolbar-header toolbar is-flex space-between">
+        <div class="tabs-inner">
+          <div class="tabs">
+            <ul>
+              <!-- <li :class="[tab === 'proposal_formats' && 'is-active']">
               <a
                 tabindex="0"
                 role="button"
@@ -133,92 +183,119 @@ onMounted(() => {
                 ><span>Grouped Proposals</span></a
               >
             </li> -->
-            <li :class="[tab === 'contracts' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('contracts')"
-                @click="getGroupedProposals('contracts')"
-                ><span>Contracts</span></a
-              >
-            </li>
-            <li :class="[tab === 'estimates' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('estimates')"
-                @click="getGroupedProposals('estimates')"
-                ><span>Customer Estimates</span></a
-              >
-            </li>
+              <li :class="[tab === 'contracts' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('contracts')"
+                  @click="getGroupedProposals('contracts')"
+                  ><span>Contracts</span></a
+                >
+              </li>
+              <li :class="[tab === 'estimates' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('estimates')"
+                  @click="getGroupedProposals('estimates')"
+                  ><span>Customer Estimates</span></a
+                >
+              </li>
 
-            <li :class="[tab === 'job_scope' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="tab = 'job_scope'"
-                @click="tab = 'job_scope'"
-                ><span>Job Scope</span></a
-              >
-            </li>
+              <li :class="[tab === 'job_scope' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'job_scope'"
+                  @click="tab = 'job_scope'"
+                  ><span>Job Scope</span></a
+                >
+              </li>
 
-            <li :class="[tab === 'asbestos' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="tab = 'asbestos'"
-                @click="tab = 'asbestos'"
-                ><span>Asbestos & Lead Report</span></a
+              <li :class="[tab === 'asbestos' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'asbestos'"
+                  @click="tab = 'asbestos'"
+                  ><span>Asbestos & Lead Report</span></a
+                >
+              </li>
+              <li :class="[tab === 'permits' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'permits'"
+                  @click="tab = 'permits'"
+                  ><span>Permits</span></a
+                >
+              </li>
+              <li :class="[tab === 'material' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'material'"
+                  @click="tab = 'material'"
+                  ><span>Bids & Material</span></a
+                >
+              </li>
+              <li :class="[tab === 'miscellaneous' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'miscellaneous'"
+                  @click="tab = 'miscellaneous'"
+                  ><span>Miscellaneous</span></a
+                >
+              </li>
+              <li :class="[tab === 'files' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('files')"
+                  @click="getGroupedProposals('files')"
+                  ><span>Uploaded Files</span></a
+                >
+              </li>
+              <li :class="[tab === 'calculations' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('calculations')"
+                  @click="getGroupedProposals('calculations')"
+                  ><span>Calculations</span></a
+                >
+              </li>
+              <li
+                v-for="item in documentsFoldersList"
+                :key="item.id"
+                :class="[tab === item.title && 'is-active']"
               >
-            </li>
-            <li :class="[tab === 'permits' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="tab = 'permits'"
-                @click="tab = 'permits'"
-                ><span>Permits</span></a
-              >
-            </li>
-            <li :class="[tab === 'material' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="tab = 'material'"
-                @click="tab = 'material'"
-                ><span>Bids & Material</span></a
-              >
-            </li>
-            <li :class="[tab === 'miscellaneous' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="tab = 'miscellaneous'"
-                @click="tab = 'miscellaneous'"
-                ><span>Miscellaneous</span></a
-              >
-            </li>
-            <li :class="[tab === 'files' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('files')"
-                @click="getGroupedProposals('files')"
-                ><span>Uploaded Files</span></a
-              >
-            </li>
-            <li :class="[tab === 'calculations' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('calculations')"
-                @click="getGroupedProposals('calculations')"
-                ><span>Calculations</span></a
-              >
-            </li>
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals(item.title)"
+                  @click="getGroupedProposals(item.title)"
+                  ><span>{{ item.title }}</span></a
+                >
+              </li>
+              <li class="is-cus-active">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="addFolderHandler('documents')"
+                  @click="addFolderHandler('documents')"
+                  ><span>
+                    <i class="fas fa-plus"></i>
 
-            <li class="tab-naver" />
-          </ul>
+                    Folder</span
+                  ></a
+                >
+              </li>
+
+              <li class="tab-naver" />
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -247,39 +324,56 @@ onMounted(() => {
         </VPlaceholderPage>
         <div v-if="tab == 'contracts'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="contracts"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="tab == 'estimates'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="estimates"
             :object-id="props.leadId"
           />
         </div>
         <!-- <div v-if="tab == 'proposal_formats'">
           <ObjectDocumentsTiles
+          @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="proposal_formats"
             :object-id="props.leadId"
           />
         </div> -->
         <div v-if="tab == 'job_scope'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="job_scope"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="tab == 'asbestos'">
-          <ObjectDocumentsTiles doc-type="asbestos" :object-id="props.leadId" />
+          <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
+            doc-type="asbestos"
+            :object-id="props.leadId"
+          />
         </div>
         <div v-if="tab == 'permits'">
-          <ObjectDocumentsTiles doc-type="permits" :object-id="props.leadId" />
+          <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
+            doc-type="permits"
+            :object-id="props.leadId"
+          />
         </div>
         <div v-if="tab == 'material'">
-          <ObjectDocumentsTiles doc-type="material" :object-id="props.leadId" />
+          <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
+            doc-type="material"
+            :object-id="props.leadId"
+          />
         </div>
         <div v-if="tab == 'miscellaneous'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="miscellaneous"
             :object-id="props.leadId"
           />
@@ -290,11 +384,19 @@ onMounted(() => {
             :files="props.uploaded_files"
             @update:on-upload-file="getProject"
           />
-          <!-- 
-          @update:on-upload-file="getProject" -->
         </div>
         <div v-if="tab == 'calculations'">
           <ExcelSheetComponent />
+        </div>
+        <div v-for="item in documentsFoldersList" :key="item.id">
+          <div v-if="tab == item.title">
+            <ObjectDocumentsTiles
+              @deleteFolderUpdate="getAllFolders('documents')"
+              :doc-type="item.title"
+              :object-id="props.leadId"
+              :folderId="item.id"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -353,6 +455,35 @@ onMounted(() => {
                 ><span>Design Approval Photos</span></a
               >
             </li>
+            <li
+              v-for="item in photosFoldersList"
+              :key="item.id"
+              :class="[photoTab === item.title && 'is-active']"
+            >
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals(item.title)"
+                @click="
+                  getGroupedProposals(item.title);
+                  photoTab = item.title;
+                "
+                ><span>{{ item.title }}</span></a
+              >
+            </li>
+            <li class="is-cus-active">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="addFolderHandler('photos')"
+                @click="addFolderHandler('photos')"
+                ><span>
+                  <i class="fas fa-plus"></i>
+
+                  Folder</span
+                ></a
+              >
+            </li>
 
             <li class="tab-naver" />
           </ul>
@@ -384,27 +515,41 @@ onMounted(() => {
         </VPlaceholderPage>
         <div v-if="photoTab == 'site_visits'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="site_visits"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="photoTab == 'inspiration_photos'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="inspiration_photos"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="photoTab == 'trade_photos'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="trade_photos"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="photoTab == 'design_approval'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="design_approval"
             :object-id="props.leadId"
           />
+        </div>
+        <div v-for="item in photosFoldersList" :key="item.id">
+          <div v-if="photoTab == item.title">
+            <ObjectDocumentsTiles
+              @deleteFolderUpdate="getAllFolders('photos')"
+              :doc-type="item.title"
+              :object-id="props.leadId"
+              :folderId="item.id"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -436,6 +581,36 @@ onMounted(() => {
                 ><span>Other videos</span></a
               >
             </li>
+
+            <li
+              v-for="item in videosFoldersList"
+              :key="item.id"
+              :class="[videoTab === item.title && 'is-active']"
+            >
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="getGroupedProposals(item.title)"
+                @click="
+                  getGroupedProposals(item.title);
+                  videoTab = item.title;
+                "
+                ><span>{{ item.title }}</span></a
+              >
+            </li>
+            <li class="is-cus-active">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="addFolderHandler('videos')"
+                @click="addFolderHandler('videos')"
+                ><span>
+                  <i class="fas fa-plus"></i>
+
+                  Folder</span
+                ></a
+              >
+            </li>
             <li class="tab-naver" />
           </ul>
         </div>
@@ -465,6 +640,7 @@ onMounted(() => {
         </VPlaceholderPage>
         <div v-if="videoTab == 'job_videos'">
           <ObjectDocumentsTiles
+            @deleteFolderUpdate="getAllFolders('videos')"
             doc-type="job_videos"
             :object-id="props.leadId"
           />
@@ -473,7 +649,18 @@ onMounted(() => {
           <ObjectDocumentsTiles
             doc-type="other_videos"
             :object-id="props.leadId"
+            @deleteFolderUpdate="getAllFolders('videos')"
           />
+        </div>
+        <div v-for="item in videosFoldersList" :key="item.id">
+          <div v-if="videoTab == item.title">
+            <ObjectDocumentsTiles
+              :doc-type="item.title"
+              :object-id="props.leadId"
+              :folderId="item.id"
+              @deleteFolderUpdate="getAllFolders('videos')"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -485,11 +672,28 @@ onMounted(() => {
       @close:ModalHandler="openFileModal = false"
       @update:OnSuccess="getGroupedProposals"
     />
+    <CreateFolderModal
+      v-if="openCreateFolderModal"
+      :open-create-folder-modal="openCreateFolderModal"
+      :type="folderType"
+      :object="props.leadId"
+      @update:modal-handler="openCreateFolderModal = false"
+      @update:on-success="getAllFolders(folderType)"
+    />
   </div>
 </template>
 
 <style lang="scss">
 @import "/@src/scss/abstracts/all";
+
+.is-cus-active {
+  a {
+    border-bottom: 3px solid !important;
+    background-color: rgb(230, 247, 255);
+    border-bottom-color: var(--info) !important;
+    color: var(--info) !important;
+  }
+}
 
 .tile-grid {
   .columns {

@@ -817,6 +817,13 @@ onMounted(() => {
               <CalculationsList :objectId="route.params.id" />
             </div>
           </div>
+          <div v-if="tab == 'files'">
+            <ProjectFiles
+              :projectId="route.params.id"
+              :files="leadDetail.uploaded_files"
+              @update:on-upload-file="getLeadDetailHandler"
+            />
+          </div>
         </div>
       </div>
     </div>

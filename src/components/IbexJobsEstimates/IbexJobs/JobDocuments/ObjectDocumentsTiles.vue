@@ -10,6 +10,12 @@ const api = useApi();
 const props = defineProps<{
   objectId?: string;
   docType?: string;
+  folderId?: string;
+}>();
+
+const emits = defineEmits<{
+  (e: "update:objectId", id: string): void;
+  (e: "deleteFolderUpdate", value: any): void;
 }>();
 
 const filters = ref("");
@@ -52,6 +58,49 @@ const optionsSingle = [
 ];
 
 const openFileUploaderModal = () => {
+  selectedType.value = props.docType;
+  openFileModal.value = !openFileModal.value;
+};
+
+const deleteFolderUpdateHandler = () => {
+  emits("deleteFolderUpdate", null);
+};
+
+const selectedFolder = ref("");
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+const openDeleteFolderAlert = () => {
+  SweetAlertProps.value = {
+    title: " Delete this folder?",
+    subtitle: "This action cannot be undone.",
+    isSweetAlertOpen: true,
+    btntext: "Delete",
+  };
+};
+
+const deleteFolderHandler = async () => {
+  try {
+    const resp = await api.delete(`/api/media-folder/${props.folderId}/`);
+    CreateActivityLog({
+      object_type: "files",
+      object_id: props.objectId,
+      action: "DELETE",
+      message: `Deleted a folder named <b>${resp.data.name}</b>.`,
+      performedOnName: "job",
+    });
+    notyf.purple("Folder Deleted Successfully");
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    deleteFolderUpdateHandler();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const openFolderDeleteModal = () => {
   selectedType.value = props.docType;
   openFileModal.value = !openFileModal.value;
 };
@@ -136,6 +185,12 @@ onMounted(() => {
             </span>
             <span>File</span>
           </VButton>
+          <VButton @click="openDeleteFolderAlert" color="danger" raised>
+            <span class="icon">
+              <i aria-hidden="true" class="fas fa-trash" />
+            </span>
+            <span>Delete Folder</span>
+          </VButton>
         </div>
       </div>
 
@@ -179,6 +234,15 @@ onMounted(() => {
           </TransitionGroup>
         </div>
       </div>
+      <SweetAlert
+        v-if="SweetAlertProps.isSweetAlertOpen"
+        :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+        :title="SweetAlertProps.title"
+        :subtitle="SweetAlertProps.subtitle"
+        :btntext="SweetAlertProps.btntext"
+        :onConfirm="deleteFolderHandler"
+        :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+      />
       <UploadDocumentModal
         v-if="openFileModal"
         :openFileModal="openFileModal"
