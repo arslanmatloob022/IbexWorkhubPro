@@ -69,26 +69,24 @@ const hotSettings = ref({
   colWidths: 120,
   manualColumnResize: true,
   manualRowResize: true,
-  columnSorting: true, // Enable sorting
-  filters: true, // Enable filters
-  dropdownMenu: true, // Show dropdown options
-  contextMenu: true, // Enable right-click options
-  // formulas: {
-  //   engine: hyperformulaInstance, // Use the HyperFormula instance
-  // },
-  // licenseKey: "non-commercial-and-evaluation",
+  columnSorting: true,
+  filters: true,
+  dropdownMenu: true,
+  contextMenu: true,
 });
 
 const filesList = ref([]);
 
 const saveSheetHandler = async () => {
   try {
+    isLoading.value = true;
     if (props.fileId || sheetData.value.id) {
       const resp = await api.patch(
         `/api/excel-files/${props.fileId ? props.fileId : sheetData.value.id}/`,
         {
-          is_template: true,
+          is_template: false,
           title: sheetData.value.title,
+          object: props.objectId ?? "",
           sheet_data: JSON.stringify(sheetDataNew.value),
         }
       );
@@ -97,6 +95,7 @@ const saveSheetHandler = async () => {
     } else {
       const resp = await api.post(`/api/excel-files/`, {
         title: sheetData.value.title,
+        object: props.objectId ?? "",
         sheet_data: JSON.stringify(sheetDataNew.value),
       });
       sheetData.value.id = resp.data.id;
@@ -106,6 +105,8 @@ const saveSheetHandler = async () => {
   } catch (error) {
     console.error(error);
     notyf.error("Failed to save sheet.");
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -282,6 +283,17 @@ onMounted(() => {
   });
 });
 
+const deleteSheetHandler = async (id: any) => {
+  try {
+    await api.delete(`/api/excel-files/${id}/`);
+    notyf.success("Sheet deleted successfully!");
+    closeModalHandler();
+  } catch (error) {
+    console.error(error);
+    notyf.error("Failed to delete sheet.");
+  }
+};
+
 onMounted(async () => {
   if (props.fileId) {
     await getSheet();
@@ -350,7 +362,12 @@ onMounted(async () => {
         >
           <i class="lnir lnir-cloud-download" aria-hidden="true"></i>
         </VIconBox>
-        <VIconBox bordered class="cu-pointer ml-2" color="danger">
+        <VIconBox
+          bordered
+          @click="deleteSheetHandler(sheetData.id)"
+          class="cu-pointer ml-2"
+          color="danger"
+        >
           <i class="lnir lnir-trash" aria-hidden="true"></i>
         </VIconBox>
         <VIconBox

@@ -43,8 +43,7 @@ const selectedFileId = ref(0);
 const uploadExcelData = ref({
   file: "",
   title: "",
-  user_id: userSession.user.id,
-  object_id: props.objectId,
+  object: props.objectId,
 });
 
 const handleFileSelect = (event) => {
@@ -65,7 +64,9 @@ const selectTemplateOptions = ref([
 const getAllSheets = async () => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/excel-files/`);
+    const response = await api.get(
+      `/api/excel-files/?object=${props.objectId}`
+    );
     filesList.value = response.data;
   } catch (error) {
     console.error(error);
@@ -261,6 +262,7 @@ onMounted(async () => {
       </div>
       <!-- <div class="columns is-multiline"> -->
       <div
+        v-if="filteredPendingData.length"
         class="column is-6"
         v-for="(item, index) in filteredPendingData"
         :key="item.id"
@@ -292,6 +294,9 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+      <div v-else>
+        <h1 class="title is-4">No File Uploaded</h1>
+      </div>
       <!-- </div> -->
     </div>
 
@@ -300,6 +305,7 @@ onMounted(async () => {
       class="fullscreen"
       :excel-file-modal="openEditorModal"
       :fileId="selectedFileId"
+      :object-id="props.objectId"
       :isTemplate="false"
       @update:modalHandler="
         openEditorModal = false;

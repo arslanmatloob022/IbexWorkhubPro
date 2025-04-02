@@ -811,7 +811,7 @@ onMounted(() => {
               </div>
             </div>
             <div v-if="calTab == 'excel'">
-              <ExcelSheetComponent />
+              <ExcelSheetComponent :objectId="route.params.id" />
             </div>
             <div v-if="calTab == 'custom'">
               <CalculationsList :objectId="route.params.id" />
