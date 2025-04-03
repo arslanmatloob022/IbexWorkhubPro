@@ -174,15 +174,17 @@ onMounted(() => {
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
-              <!-- <li :class="[tab === 'proposal_formats' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('proposal_formats')"
-                @click="getGroupedProposals('proposal_formats')"
-                ><span>Grouped Proposals</span></a
-              >
-            </li> -->
+              <li :class="[tab === 'proposal_formats' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="
+                    getGroupedProposals('proposal_formats')
+                  "
+                  @click="getGroupedProposals('proposal_formats')"
+                  ><span>Grouped Proposals</span></a
+                >
+              </li>
               <li :class="[tab === 'contracts' && 'is-active']">
                 <a
                   tabindex="0"
@@ -336,13 +338,13 @@ onMounted(() => {
             :object-id="props.leadId"
           />
         </div>
-        <!-- <div v-if="tab == 'proposal_formats'">
+        <div v-if="tab == 'proposal_formats'">
           <ObjectDocumentsTiles
-          @deleteFolderUpdate="getAllFolders('documents')"
+            @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="proposal_formats"
             :object-id="props.leadId"
           />
-        </div> -->
+        </div>
         <div v-if="tab == 'job_scope'">
           <ObjectDocumentsTiles
             @deleteFolderUpdate="getAllFolders('documents')"

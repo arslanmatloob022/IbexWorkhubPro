@@ -240,23 +240,23 @@ const getCostCodesHandler = async () => {
   }
 };
 
-// watch(
-//   () => costItem.value.cost_code,
-//   (newVal, oldVal) => {
-//     if (newVal) {
-//       const selectedItem = costCodesWholeList.value.find(
-//         (item) => item.id === newVal
-//       );
-//       if (selectedItem) {
-//         costItem.value.unit_cost = selectedItem.unit_cost;
-//         costItem.value.worker_cost = selectedItem.worker_cost;
-//         costItem.value.unit = selectedItem.unit;
-//       } else {
-//         console.warn("No matching item found for cost_code:", newVal);
-//       }
-//     }
-//   }
-// );
+watch(
+  () => costItem.value.cost_code,
+  (newVal, oldVal) => {
+    if (newVal) {
+      const selectedItem = costCodesWholeList.value.find(
+        (item) => item.id === newVal
+      );
+      if (selectedItem) {
+        costItem.value.unit_cost = selectedItem.unit_cost;
+        costItem.value.worker_cost = selectedItem.worker_cost;
+        costItem.value.unit = selectedItem.unit;
+      } else {
+        console.warn("No matching item found for cost_code:", newVal);
+      }
+    }
+  }
+);
 
 const getMatchingCostCode = () => {
   if (costItem.value.internal_notes) {
@@ -344,7 +344,7 @@ onMounted(async () => {
   // useCostCodes.getCostCodesHandler();
   getCataLogItemDetail();
   // if () {
-  getMatchingCostCode();
+  // getMatchingCostCode();
   // }
 });
 </script>

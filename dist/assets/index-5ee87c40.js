@@ -1,0 +1,1 @@
+import{u as e}from"./viewWrapper-b8dea7f7.js";import{f as s,A as a,B as t,C as n,D as o,F as r}from"./index-32e71fbc.js";const i={class:"page-content-inner"},m=s({__name:"index",setup:s=>(e().setPageTitle("Job Placements"),a({title:"Job Placements - Arez"}),(e,s)=>{const a=t("jobPlacement");return n(),o("div",i,[r(a)])})});export{m as default};
