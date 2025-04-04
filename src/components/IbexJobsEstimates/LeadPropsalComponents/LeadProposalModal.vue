@@ -427,7 +427,14 @@ onUnmounted(() => {
                 </VControl>
               </VField>
             </div>
-            <div v-if="!props.createTemplate" class="column is-2">
+            <div
+              v-if="
+                !props.createTemplate &&
+                !leadProposalFormData.id &&
+                !props.proposalId
+              "
+              class="column is-2"
+            >
               <VButton
                 color="primary"
                 class="mt-5"
