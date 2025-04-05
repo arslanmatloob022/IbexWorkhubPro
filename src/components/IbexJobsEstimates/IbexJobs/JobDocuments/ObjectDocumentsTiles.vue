@@ -189,7 +189,7 @@ onMounted(() => {
             <span class="icon">
               <i aria-hidden="true" class="fas fa-trash" />
             </span>
-            <span>Delete Folder</span>
+            <span>Folder</span>
           </VButton>
         </div>
       </div>

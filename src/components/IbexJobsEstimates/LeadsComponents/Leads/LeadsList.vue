@@ -120,6 +120,21 @@ const openLeadDeleteAlert = (id: any) => {
     isSweetAlertOpen: true,
   };
 };
+const statusLoading = ref(false);
+const updateLeadStatus = async (id: any = "") => {
+  try {
+    statusLoading.value = true;
+    const response = await api.patch(`/api/project/${id}/`, {
+      status: "completed",
+    });
+    notyf.success("Jobs Completed Successfully.");
+    getCompanyLeads();
+  } catch (Error) {
+    console.log(Error);
+  } finally {
+    statusLoading.value = false;
+  }
+};
 
 const deleteLeadHandler = async () => {
   try {
@@ -418,6 +433,22 @@ onMounted(() => {
                         </a>
 
                         <hr class="dropdown-divider" />
+                        <a
+                          role="menuitem"
+                          @click="updateLeadStatus(item.id)"
+                          class="dropdown-item is-media"
+                        >
+                          <div class="icon">
+                            <i
+                              class="lnil lnil-checkmark"
+                              aria-hidden="true"
+                            ></i>
+                          </div>
+                          <div class="meta">
+                            <span>Mark As Done</span>
+                            <span>Mark Job As Completed</span>
+                          </div>
+                        </a>
 
                         <a
                           role="menuitem"

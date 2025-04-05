@@ -255,6 +255,22 @@ const getGroupedProposals = async (type: any = "proposal_formats") => {
   }
 };
 
+const statusLoading = ref(false);
+const updateLeadStatus = async () => {
+  try {
+    statusLoading.value = true;
+
+    const response = await api.patch(`/api/project/${route.params.id}/`, {
+      status: "completed",
+    });
+    notyf.success("Jobs Completed Successfully.");
+    getLeadDetailHandler();
+  } catch (Error) {
+    console.log(Error);
+  } finally {
+    statusLoading.value = false;
+  }
+};
 const openLeadUpdateModal = (id: any) => {
   selectedLeadId.value = id;
   openLeadModal.value = true;
@@ -287,6 +303,11 @@ onMounted(() => {
                   />
                   <h3>
                     {{ leadDetail.title ? leadDetail.title : "No Title" }}
+                    <sup
+                      ><VTag rounded size="tiny" color="info">{{
+                        leadDetail.status
+                      }}</VTag></sup
+                    >
                   </h3>
                 </div>
               </div>
@@ -333,16 +354,34 @@ onMounted(() => {
                     />
                   </button>
                 </div>
-                <VButton
-                  class="mt-1"
-                  @click="openLeadUpdateModal(route.params.id)"
-                  bold
-                  fullwidth
-                  dark-outlined
-                >
-                  Update
-                  {{ leadDetail.current_state == "lead" ? "lead" : "job" }}
-                </VButton>
+                <VButtons>
+                  <VButton
+                    class="mt-1"
+                    @click="openLeadUpdateModal(route.params.id)"
+                    bold
+                    color="warning"
+                    light
+                    outlined
+                    dark-outlined
+                    icon="fas fa-pen"
+                  >
+                    Update
+                    {{ leadDetail.current_state == "lead" ? "lead" : "job" }}
+                  </VButton>
+                  <VButton
+                    v-if="leadDetail.current_state != 'lead'"
+                    class="mt-1"
+                    @click="updateLeadStatus"
+                    bold
+                    color="info"
+                    outlined
+                    light
+                    dark-outlined
+                    icon="fas fa-check"
+                  >
+                    Mark As Done
+                  </VButton>
+                </VButtons>
               </div>
             </div>
           </div>
@@ -448,7 +487,6 @@ onMounted(() => {
                   </ul>
                 </div>
               </div>
-              <!-- <div>data</div> -->
             </div>
           </div>
 

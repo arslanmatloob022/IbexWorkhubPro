@@ -174,7 +174,7 @@ onMounted(() => {
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
-              <li :class="[tab === 'proposal_formats' && 'is-active']">
+              <!-- <li :class="[tab === 'proposal_formats' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
@@ -184,7 +184,7 @@ onMounted(() => {
                   @click="getGroupedProposals('proposal_formats')"
                   ><span>Grouped Proposals</span></a
                 >
-              </li>
+              </li> -->
               <li :class="[tab === 'contracts' && 'is-active']">
                 <a
                   tabindex="0"
@@ -516,28 +516,28 @@ onMounted(() => {
           </template>
         </VPlaceholderPage>
         <div v-if="photoTab == 'site_visits'">
-          <ObjectDocumentsTiles
+          <ObjectPhotosCard
             @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="site_visits"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="photoTab == 'inspiration_photos'">
-          <ObjectDocumentsTiles
+          <ObjectPhotosCard
             @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="inspiration_photos"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="photoTab == 'trade_photos'">
-          <ObjectDocumentsTiles
+          <ObjectPhotosCard
             @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="trade_photos"
             :object-id="props.leadId"
           />
         </div>
         <div v-if="photoTab == 'design_approval'">
-          <ObjectDocumentsTiles
+          <ObjectPhotosCard
             @deleteFolderUpdate="getAllFolders('photos')"
             doc-type="design_approval"
             :object-id="props.leadId"
@@ -545,11 +545,12 @@ onMounted(() => {
         </div>
         <div v-for="item in photosFoldersList" :key="item.id">
           <div v-if="photoTab == item.title">
-            <ObjectDocumentsTiles
+            <ObjectPhotosCard
               @deleteFolderUpdate="getAllFolders('photos')"
               :doc-type="item.title"
               :object-id="props.leadId"
               :folderId="item.id"
+              :showFolderDeleteBtn="true"
             />
           </div>
         </div>
