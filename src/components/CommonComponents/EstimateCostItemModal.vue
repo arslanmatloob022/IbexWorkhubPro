@@ -18,6 +18,8 @@ const isLoading = ref(false);
 const selectedCataLog = ref("");
 const assumeList = ref(<any>[]);
 const catalogList = ref(<any>[]);
+const openCostUnitModal = ref(false);
+const openCostTypeModal = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -291,11 +293,36 @@ const costUnitsList = ref([
     updated_at: "",
   },
 ]);
+
+const costTypeList = ref([
+  {
+    id: "",
+    title: "",
+    value: "",
+    description: "",
+    is_active: true,
+    created_at: "",
+    updated_at: "",
+  },
+]);
+
 const getUnits = async () => {
   try {
     loading.value = true;
     const response = await api.get(`/api/units/`);
     costUnitsList.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getCostTypes = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/cost-types/`);
+    costTypeList.value = response.data;
   } catch (err) {
     console.log(err);
   } finally {
@@ -346,6 +373,7 @@ onMounted(async () => {
   // if () {
   // getMatchingCostCode();
   // }
+  getCostTypes();
 });
 </script>
 
@@ -409,19 +437,26 @@ onMounted(async () => {
 
             <div class="field column is-6" v-if="props.costMode !== 'catalog'">
               <label for="">Cost Type</label>
-              <VField>
-                <VControl>
+              <VField addons>
+                <VControl expanded>
                   <VSelect
                     v-model="costItem.cost_type"
                     :disabled="props.previewCostItems"
                   >
                     <VOption
-                      v-for="(item, index) in costType"
+                      v-for="(item, index) in costTypeList"
                       :value="item.value"
                     >
-                      {{ item.label }}
+                      {{ item.title }}
                     </VOption>
                   </VSelect>
+                </VControl>
+                <VControl>
+                  <VButton
+                    @click="openCostTypeModal = !openCostTypeModal"
+                    color="primary"
+                    icon="fas fa-plus"
+                  ></VButton>
                 </VControl>
               </VField>
             </div>
@@ -523,8 +558,8 @@ onMounted(async () => {
           <div class="columns is-multiline">
             <div class="field column is-6">
               <label>Unit Cost</label>
-              <VField>
-                <VControl>
+              <VField addons>
+                <VControl expanded>
                   <VInput
                     v-model="costItem.unit_cost"
                     :disabled="props.previewCostItems"
@@ -553,8 +588,8 @@ onMounted(async () => {
             </div>
             <div class="field column is-6">
               <label>Unit</label>
-              <VField>
-                <VControl>
+              <VField addons>
+                <VControl expanded>
                   <VSelect
                     :disabled="props.previewCostItems"
                     v-model="costItem.unit"
@@ -564,6 +599,13 @@ onMounted(async () => {
                       {{ item.title }} ({{ item.value }})
                     </VOption>
                   </VSelect>
+                </VControl>
+                <VControl>
+                  <VButton
+                    color="primary"
+                    @click="openCostUnitModal = !openCostUnitModal"
+                    icon="fas fa-plus"
+                  ></VButton>
                 </VControl>
               </VField>
             </div>
@@ -643,6 +685,18 @@ onMounted(async () => {
             </div>
           </div>
         </VCard>
+        <UnitAddUpdateModal
+          v-if="openCostUnitModal"
+          :addUpdateCostUnitModal="openCostUnitModal"
+          @update:modalHandler="openCostUnitModal = false"
+          @update:OnSuccess="getUnits()"
+        />
+        <AddCostTypeModal
+          v-if="openCostTypeModal"
+          :addUpdateCostType="openCostTypeModal"
+          @update:modalHandler="openCostTypeModal = false"
+          @update:OnSuccess="getCostTypes()"
+        />
       </div>
     </template>
     <template #action>

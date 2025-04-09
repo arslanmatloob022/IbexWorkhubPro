@@ -1,1 +1,0 @@
-import{r as e,a0 as a,ah as s,h as l}from"./index-49634c7f.js";function i(i,u={clickOutside:!0}){const t=e(!1);u.clickOutside&&a(i,(()=>{t.value=!1}));return s((()=>{i.value&&(t.value?i.value.classList.add("is-active"):i.value.classList.remove("is-active"))})),l({isOpen:t,open:()=>{t.value=!0},close:()=>{t.value=!1},toggle:()=>{t.value=!t.value}})}export{i as u};

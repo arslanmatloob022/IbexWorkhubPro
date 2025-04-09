@@ -24,6 +24,7 @@ function createApi(): CustomAxiosInstance {
 
   axiosInstance.interceptors.request.use((config) => {
     config.headers.Authorization = `Token ${userSession.token}`;
+    // config.headers.Authorization = `Token e47772f827463cd45fabc0dfd8ecf2c99bd90ab5`;
     return config;
   });
 

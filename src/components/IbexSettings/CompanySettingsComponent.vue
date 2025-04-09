@@ -133,6 +133,15 @@ const closeEditModal = () => {
                   ><span>Units</span></a
                 >
               </li>
+              <li :class="[tab === 'types' ? 'is-active' : 'not-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'types'"
+                  @click="tab = 'types'"
+                  ><span>Cost Types</span></a
+                >
+              </li>
               <!-- <li
                 :class="[
                   tab === 'proposalsTemplates' ? 'is-active' : 'not-active',
@@ -190,6 +199,9 @@ const closeEditModal = () => {
       </div>
       <div v-if="tab === 'units'">
         <CompanyUnits />
+      </div>
+      <div v-if="tab === 'types'">
+        <CompanyCostTypes />
       </div>
       <div v-if="tab === 'general'">
         <CompanyInformation />

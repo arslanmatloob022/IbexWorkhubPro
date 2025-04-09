@@ -133,14 +133,24 @@ const openCostCodeModalFun = (category = null, parent = null) => {
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return users;
-  } else {
-    const filterRe = new RegExp(filters.value, "i");
-    return users.filter((item) => {
-      return item.username?.match(filterRe) || item.location?.match(filterRe);
-    });
+    return costCodeItemsList.value;
   }
+
+  const filterRe = new RegExp(filters.value, "i");
+
+  return costCodeItemsList.value.filter((item) => {
+    // Check parent name
+    if (filterRe.test(item.name)) return true;
+
+    // Check all codes and child codes
+    return item.codes.some((code) => {
+      if (filterRe.test(code.name)) return true;
+
+      return code.child_codes?.some((child) => filterRe.test(child.name));
+    });
+  });
 });
+
 onMounted(() => {
   getCostCodesItems();
 });
@@ -289,7 +299,7 @@ onMounted(() => {
           </thead>
           <tbody>
             <!-- Main List -->
-            <template v-for="item in costCodeItemsList" :key="item.id">
+            <template v-for="item in filteredData" :key="item.id">
               <tr>
                 <td>
                   <p class="info-text is-bold">

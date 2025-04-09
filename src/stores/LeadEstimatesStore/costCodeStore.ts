@@ -2,15 +2,14 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { selectedColumnsToShow } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 
 export const useCostCodeStore = defineStore("useCostCode", () => {
   const loading = ref(true);
   const notyf = useNotyf();
   const api = useApi();
-  const proposalId = ref("");
-  const leadId = ref("");
   const companyProposalsList = ref([]);
+  const costCodesWholeList = ref([]);
+
   const costCodesList = ref([
     {
       value: "",
@@ -21,7 +20,6 @@ export const useCostCodeStore = defineStore("useCostCode", () => {
       unit: "--",
     },
   ]);
-  const costCodesWholeList = ref([]);
 
   const getCostCodesHandler = async () => {
     try {
@@ -60,49 +58,16 @@ export const useCostCodeStore = defineStore("useCostCode", () => {
     }
   };
 
-  const getProposalDetail = async (id: any) => {
-    try {
-      const response = await api.get(`/api/lead-proposal/${id}/detail/`);
-      //   leadProposalFormData.value = response.data;
-      selectedColumnsToShow.value = response.data.columns_to_show;
-    } catch (err) {
-      console.log(err);
-    } finally {
-    }
-  };
-
-  async function getProposalCostItems(proposal: any) {
-    try {
-      proposalId.value = proposal;
-      const resp = await api.get(`/api/cost/by-proposal/${proposal}/`);
-      //   proposalCostItems.value = resp.data;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  function clearProposalId() {
-    proposalId.value = "";
-    // proposalCostItems.value = [];
-  }
-
   return {
     loading,
-    // proposalCostItems,
-    // leadProposalFormData,
     companyProposalsList,
     costCodesList,
     costCodesWholeList,
     getLeadProposals,
-    getProposalDetail,
     getCostCodesHandler,
-    // getCompanyProposals,
-    getProposalCostItems,
-    clearProposalId,
   } as const;
 });
 
-// Enable hot module replacement
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useCostCodeStore, import.meta.hot));
 }
