@@ -317,6 +317,7 @@ declare module 'vue' {
     JobDocuments: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobDocuments.vue')['default']
     JobEstimates: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobFinance/JobEstimates.vue')['default']
     JobFinance: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobFinance/JobFinance.vue')['default']
+    JobFolders: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobDocuments/JobFolders.vue')['default']
     JobInvoice: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobFinance/JobInvoice.vue')['default']
     JobLeadActivities: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobComponents/JobLeadActivities.vue')['default']
     JobProgress: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobProgress.vue')['default']

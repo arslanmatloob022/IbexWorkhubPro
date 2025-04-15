@@ -11,13 +11,13 @@ const props = withDefaults(
     openCreateFolderModal?: boolean;
     type: string;
     object?: string;
-    folderId?: string;
+    parent?: string;
   }>(),
   {
     openCreateFolderModal: false,
     type: "",
     object: "",
-    folderId: "",
+    parent: "",
   }
 );
 const emit = defineEmits<{
@@ -37,6 +37,7 @@ const folderData = ref({
   id: "",
   type: props.type,
   object: props.object,
+  parent: props.parent,
   title: "",
   description: "",
   viewPermissions: [],
@@ -47,6 +48,11 @@ const createFolderHandler = async () => {
   try {
     loading.value = true;
     const payload = convertToFormData(folderData.value, [""]);
+    payload.append(
+      "value",
+      folderData.value.title.replaceAll(" ", "").toLocaleLowerCase()
+    );
+
     const resp = await api.post(`/api/media-folder/`, payload);
     notyf.success("Folder created successfully");
     updateOnSuccessHandler();
@@ -62,7 +68,7 @@ const getFolderHandler = async () => {
   try {
     loading.value = true;
     const payload = convertToFormData(folderData.value, [""]);
-    const resp = await api.post(`/api/attachment/${props.folderId}/`, payload);
+    const resp = await api.post(`/api/attachment/${props.parent}/`, payload);
     notyf.success("File Uploaded successfully");
   } catch (err) {
     console.log(err);
@@ -72,7 +78,7 @@ const getFolderHandler = async () => {
 };
 
 onMounted(() => {
-  getFolderHandler();
+  // getFolderHandler();
 });
 </script>
 
@@ -89,6 +95,7 @@ onMounted(() => {
     <template #content>
       <div class="columns is-multiline">
         <div class="column is-12">
+          {{ props.parent }}
           <VField label="Title *">
             <VControl>
               <VInput

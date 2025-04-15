@@ -387,9 +387,9 @@ onMounted(() => {
           </div>
 
           <div class="column is-12">
-            <div class="toolbar">
+            <div class="tabs-wrapper">
               <div class="tabs-inner">
-                <div class="tabs is-boxed">
+                <div class="tabs is-toggle">
                   <ul>
                     <li :class="[tab === 'management' && 'is-active']">
                       <a

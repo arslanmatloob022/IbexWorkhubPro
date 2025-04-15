@@ -18,6 +18,7 @@ const emits = defineEmits<{
   (e: "deleteFolderUpdate", value: any): void;
 }>();
 
+const tab = ref("");
 const filters = ref("");
 const valueSingle = ref(0);
 const selectedType = ref("");
@@ -105,7 +106,7 @@ const openFolderDeleteModal = () => {
   openFileModal.value = !openFileModal.value;
 };
 
-const getObjectFiles = async (type: any = "proposal_formats") => {
+const getObjectFiles = async () => {
   try {
     Loading.value = true;
     const resp = await api.get(
@@ -116,6 +117,20 @@ const getObjectFiles = async (type: any = "proposal_formats") => {
     console.log(err);
   } finally {
     Loading.value = false;
+  }
+};
+const photosSubFolders = ref([]);
+
+const getPhotosSubFolders = async () => {
+  try {
+    const resp = await api.get(
+      `/api/media-folder/?parent=${props.folderId}&object=${props.objectId}`
+    );
+    photosSubFolders.value = resp.data;
+
+    tab.value = "recent";
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -136,6 +151,13 @@ const deleteSelectedDocumentHandler = async (id: any) => {
   }
 };
 
+const folderType = ref("");
+const openCreateFolderModal = ref(false);
+const addFolderHandler = (type: string = "") => {
+  folderType.value = type;
+  openCreateFolderModal.value = !openCreateFolderModal.value;
+};
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return objectsFiles.value;
@@ -152,6 +174,7 @@ const filteredData = computed(() => {
 
 onMounted(() => {
   getObjectFiles();
+  getPhotosSubFolders();
 });
 </script>
 
@@ -159,66 +182,87 @@ onMounted(() => {
   <div>
     <PlaceloadV4 v-if="Loading" :rows="4" />
     <div v-else>
-      <div class="tile-grid-toolbar">
-        <VControl icon="feather:search">
-          <input
-            v-model="filters"
-            class="input custom-text-filter"
-            placeholder="Search..."
-          />
-        </VControl>
-
-        <div class="buttons">
-          <VField class="h-hidden-mobile">
-            <VControl>
-              <Multiselect
-                v-model="valueSingle"
-                :options="optionsSingle"
-                :max-height="145"
-                placeholder="Select an option"
+      <div v-if="photosSubFolders.length">
+        <div class="tabs-wrapper">
+          <div class="tabs-inner">
+            <div class="tabs">
+              <ul>
+                <li :class="[tab === 'recent' && 'is-active']">
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="tab = 'recent'"
+                    @click="tab = 'recent'"
+                    ><span>Recent</span></a
+                  >
+                </li>
+                <li
+                  v-for="item in photosSubFolders"
+                  :class="[tab === item.value && 'is-active']"
+                >
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="tab = item.value"
+                    @click="tab = item.value"
+                    ><span>{{ item.title }}</span></a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div v-for="item in photosSubFolders" :key="item.id">
+          <div v-if="tab == item.value">
+            <ObjectDocumentsTiles
+              @deleteFolderUpdate="getPhotosSubFolders()"
+              :doc-type="item.value"
+              :object-id="props.objectId"
+              :folderId="item.id"
+            />
+          </div>
+        </div>
+        <div v-if="tab === 'recent'">
+          <div class="tile-grid-toolbar">
+            <VControl icon="feather:search">
+              <input
+                v-model="filters"
+                class="input custom-text-filter"
+                placeholder="Search..."
               />
             </VControl>
-          </VField>
-          <VButton @click="openFileUploaderModal()" color="primary" raised>
-            <span class="icon">
-              <i aria-hidden="true" class="fas fa-plus" />
-            </span>
-            <span>File</span>
-          </VButton>
-          <VButton @click="openDeleteFolderAlert" color="danger" raised>
-            <span class="icon">
-              <i aria-hidden="true" class="fas fa-trash" />
-            </span>
-            <span>Folder</span>
-          </VButton>
-        </div>
-      </div>
 
-      <div class="tile-grid tile-grid-v2">
-        <!--List Empty Search Placeholder -->
-        <VPlaceholderPage
-          v-if="filteredData.length == 0 && !Loading"
-          title="We couldn't find any matching file of this directory."
-          subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
-          larger
-        >
-          <template #image>
-            <img
-              class="light-image"
-              src="/@src/assets/illustrations/placeholders/search-4.svg"
-              alt=""
-            />
-            <img
-              class="dark-image"
-              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-              alt=""
-            />
-          </template>
-        </VPlaceholderPage>
-
-        <div>
+            <div class="buttons">
+              <VField class="h-hidden-mobile">
+                <VControl>
+                  <Multiselect
+                    v-model="valueSingle"
+                    :options="optionsSingle"
+                    :max-height="145"
+                    placeholder="Select an option"
+                  />
+                </VControl>
+              </VField>
+              <VButton @click="openFileUploaderModal()" color="primary" raised>
+                <span class="icon">
+                  <i aria-hidden="true" class="fas fa-plus" />
+                </span>
+                <span>File</span>
+              </VButton>
+              <VButton @click="addFolderHandler" color="info" raised>
+                <span class="icon">
+                  <i aria-hidden="true" class="fas fa-folder-plus" />
+                </span>
+                <span>Folder</span>
+              </VButton>
+              <VButton @click="openDeleteFolderAlert" color="danger" raised>
+                <span class="icon">
+                  <i aria-hidden="true" class="fas fa-trash" />
+                </span>
+                <span>Folder</span>
+              </VButton>
+            </div>
+          </div>
           <TransitionGroup name="list" tag="div" class="columns is-multiline">
             <!--Grid item-->
             <div
@@ -234,6 +278,90 @@ onMounted(() => {
           </TransitionGroup>
         </div>
       </div>
+      <div v-else>
+        <div class="tile-grid-toolbar">
+          <VControl icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </VControl>
+
+          <div class="buttons">
+            <VField class="h-hidden-mobile">
+              <VControl>
+                <Multiselect
+                  v-model="valueSingle"
+                  :options="optionsSingle"
+                  :max-height="145"
+                  placeholder="Select an option"
+                />
+              </VControl>
+            </VField>
+            <VButton @click="openFileUploaderModal()" color="primary" raised>
+              <span class="icon">
+                <i aria-hidden="true" class="fas fa-plus" />
+              </span>
+              <span>File</span>
+            </VButton>
+            <VButton @click="addFolderHandler" color="info" raised>
+              <span class="icon">
+                <i aria-hidden="true" class="fas fa-folder-plus" />
+              </span>
+              <span>Folder</span>
+            </VButton>
+            <VButton @click="openDeleteFolderAlert" color="danger" raised>
+              <span class="icon">
+                <i aria-hidden="true" class="fas fa-trash" />
+              </span>
+              <span>Folder</span>
+            </VButton>
+          </div>
+        </div>
+
+        <div class="tile-grid tile-grid-v2">
+          <!--List Empty Search Placeholder -->
+          <VPlaceholderPage
+            v-if="filteredData.length == 0 && !Loading"
+            title="We couldn't find any matching file of this directory."
+            subtitle="Too bad. Looks like we couldn't find any matching results for the
+          search terms you've entered. Please try different search terms or
+          criteria."
+            larger
+          >
+            <template #image>
+              <img
+                class="light-image"
+                src="/@src/assets/illustrations/placeholders/search-4.svg"
+                alt=""
+              />
+              <img
+                class="dark-image"
+                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                alt=""
+              />
+            </template>
+          </VPlaceholderPage>
+
+          <div>
+            <TransitionGroup name="list" tag="div" class="columns is-multiline">
+              <!--Grid item-->
+              <div
+                v-for="item in filteredData"
+                :key="item.id"
+                class="column is-4"
+              >
+                <DocumentTile
+                  :document="item"
+                  @deleteSelectedFile="deleteSelectedDocumentHandler"
+                />
+              </div>
+            </TransitionGroup>
+          </div>
+        </div>
+      </div>
+
       <SweetAlert
         v-if="SweetAlertProps.isSweetAlertOpen"
         :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
@@ -250,6 +378,15 @@ onMounted(() => {
         :type="selectedType"
         @close:ModalHandler="openFileModal = false"
         @update:OnSuccess="getObjectFiles"
+      />
+      <CreateFolderModal
+        v-if="openCreateFolderModal"
+        :open-create-folder-modal="openCreateFolderModal"
+        :type="props.docType"
+        :object="props.objectId"
+        :parent="props.folderId"
+        @update:modal-handler="openCreateFolderModal = false"
+        @update:on-success=""
       />
     </div>
   </div>

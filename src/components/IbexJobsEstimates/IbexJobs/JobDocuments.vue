@@ -3,6 +3,7 @@ import { files } from "/@src/data/layouts/tile-grid-v2";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import JobFolders from "./JobDocuments/JobFolders.vue";
 
 const notyf = useNotyf();
 const api = useApi();
@@ -44,6 +45,7 @@ const optionsSingle = [
 
 const emits = defineEmits<{
   (emit: "getProjectInfo", value: any): void;
+  (emit: "updateOnSuccess", value: any): void;
 }>();
 
 const getProject = () => {
@@ -102,6 +104,11 @@ const getMediaFolders = async (type: any = "") => {
   } catch (err) {
     console.log(err);
   }
+};
+
+const updateOnSuccessHandler = () => {
+  getAllFolders();
+  emits("updateOnSuccess", null);
 };
 
 const getAllFolders = (type: any = "documents") => {
@@ -170,21 +177,11 @@ onMounted(() => {
     </div>
 
     <div v-if="mainTab == 'documents'">
-      <div class="toolbar-header toolbar is-flex space-between">
+      <!-- <JobFolders type="documents" :object="props.leadId"></JobFolders> -->
+      <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
-              <!-- <li :class="[tab === 'proposal_formats' && 'is-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="
-                    getGroupedProposals('proposal_formats')
-                  "
-                  @click="getGroupedProposals('proposal_formats')"
-                  ><span>Grouped Proposals</span></a
-                >
-              </li> -->
               <li :class="[tab === 'contracts' && 'is-active']">
                 <a
                   tabindex="0"
@@ -403,6 +400,8 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="mainTab == 'photos'">
+      <!-- <JobFolders type="photos" :object="props.leadId"></JobFolders> -->
+
       <div class="tabs-inner">
         <div class="tabs">
           <ul>
@@ -557,6 +556,8 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="mainTab == 'videos'">
+      <!-- <JobFolders type="videos" :object="props.leadId"></JobFolders> -->
+
       <div class="tabs-inner">
         <div class="tabs">
           <ul>
@@ -658,7 +659,7 @@ onMounted(() => {
         <div v-for="item in videosFoldersList" :key="item.id">
           <div v-if="videoTab == item.title">
             <ObjectDocumentsTiles
-              :doc-type="item.title"
+              :doc-type="item.value"
               :object-id="props.leadId"
               :folderId="item.id"
               @deleteFolderUpdate="getAllFolders('videos')"

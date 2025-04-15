@@ -441,6 +441,7 @@ onMounted(async () => {
                 <VControl expanded>
                   <VSelect
                     v-model="costItem.cost_type"
+                    required
                     :disabled="props.previewCostItems"
                   >
                     <VOption
@@ -521,7 +522,7 @@ onMounted(async () => {
             <div class="field column is-12 mb-0">
               <label for="" class="label">Description</label>
 
-              <VField>
+              <!-- <VField>
                 <VControl>
                   <VTextarea
                     v-model="costItem.description"
@@ -530,14 +531,14 @@ onMounted(async () => {
                     placeholder="Description..."
                   />
                 </VControl>
-              </VField>
-              <!-- <CKEditor
+              </VField> -->
+              <CKEditor
                 v-if="editor"
                 :disabled="props.previewCostItems"
                 v-model="costItem.description"
                 :editor="editor"
                 :config="editorConfig"
-              /> -->
+              />
             </div>
             <div class="field column is-12 mb-0">
               <label for="" class="label">Internal Notes</label>

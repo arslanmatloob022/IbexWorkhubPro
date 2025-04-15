@@ -27,6 +27,12 @@ const valueSingle = ref(0);
 const selectedType = ref("");
 const Loading = ref(false);
 const openFileModal = ref(false);
+const DocumentType = ref("");
+const documentToView = ref(false);
+const documentTitle = ref(false);
+const openDocViewModal = ref(false);
+const photosSubFolders = ref([]);
+const tab = ref("recent");
 const objectsFiles = ref([
   {
     id: "27223081-e97a-4420-91f2-6a08da82d846",
@@ -69,7 +75,12 @@ const openFileUploaderModal = () => {
 const deleteFolderUpdateHandler = () => {
   emits("deleteFolderUpdate", null);
 };
-
+const folderType = ref("");
+const openCreateFolderModal = ref(false);
+const addFolderHandler = (type: string = "") => {
+  folderType.value = type;
+  openCreateFolderModal.value = !openCreateFolderModal.value;
+};
 const selectedFolder = ref("");
 const SweetAlertProps = ref({
   title: "",
@@ -140,11 +151,18 @@ const deleteSelectedDocumentHandler = async (id: any) => {
   }
 };
 
-const DocumentType = ref("");
-const documentToView = ref(false);
-const documentTitle = ref(false);
-const openDocViewModal = ref(false);
+const getPhotosSubFolders = async () => {
+  try {
+    const resp = await api.get(
+      `/api/media-folder/?parent=${props.folderId}&object=${props.objectId}`
+    );
+    photosSubFolders.value = resp.data;
 
+    tab.value = "recent";
+  } catch (err) {
+    console.log(err);
+  }
+};
 const openDocViewModalHandler = (doc: any) => {
   documentToView.value = doc.file_info?.url;
   DocumentType.value = doc.file_info?.type;
@@ -168,6 +186,7 @@ const filteredData = computed(() => {
 
 onMounted(() => {
   getObjectFiles();
+  getPhotosSubFolders();
 });
 </script>
 
@@ -175,6 +194,117 @@ onMounted(() => {
   <div>
     <PlaceloadV4 v-if="Loading" :rows="4" />
     <div v-else>
+      <div v-if="photosSubFolders.length">
+        <div class="tabs-wrapper">
+          <div class="tabs-inner">
+            <div class="tabs">
+              <ul>
+                <li :class="[tab === 'recent' && 'is-active']">
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="tab = 'recent'"
+                    @click="tab = 'recent'"
+                    ><span>Recent</span></a
+                  >
+                </li>
+                <li
+                  v-for="item in photosSubFolders"
+                  :class="[tab === item.value && 'is-active']"
+                >
+                  <a
+                    tabindex="0"
+                    role="button"
+                    @keydown.space.prevent="tab = item.value"
+                    @click="tab = item.value"
+                    ><span>{{ item.title }}</span></a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div v-for="item in photosSubFolders" :key="item.id">
+          <div v-if="tab == item.value">
+            <ObjectPhotosCard
+              @deleteFolderUpdate="getPhotosSubFolders()"
+              :doc-type="item.value"
+              :object-id="props.objectId"
+              :folderId="item.id"
+            />
+          </div>
+        </div>
+        <div v-if="tab === 'recent'">
+          <div class="tile-grid-toolbar">
+            <VControl icon="feather:search">
+              <input
+                v-model="filters"
+                class="input custom-text-filter"
+                placeholder="Search..."
+              />
+            </VControl>
+
+            <div class="buttons">
+              <VField class="h-hidden-mobile">
+                <VControl>
+                  <Multiselect
+                    v-model="valueSingle"
+                    :options="optionsSingle"
+                    :max-height="145"
+                    placeholder="Select an option"
+                  />
+                </VControl>
+              </VField>
+              <VButton @click="openFileUploaderModal()" color="primary" raised>
+                <span class="icon">
+                  <i aria-hidden="true" class="fas fa-plus" />
+                </span>
+                <span>File</span>
+              </VButton>
+              <VButton @click="addFolderHandler" color="info" raised>
+                <span class="icon">
+                  <i aria-hidden="true" class="fas fa-folder-plus" />
+                </span>
+                <span>Folder</span>
+              </VButton>
+              <VButton @click="openDeleteFolderAlert" color="danger" raised>
+                <span class="icon">
+                  <i aria-hidden="true" class="fas fa-trash" />
+                </span>
+                <span>Folder</span>
+              </VButton>
+            </div>
+          </div>
+          <TransitionGroup name="list" tag="div" class="columns is-multiline">
+            <div
+              v-for="item in filteredData"
+              :key="item.id"
+              class="column is-3"
+            >
+              <a @click="openDocViewModalHandler(item)" class="card-grid-item">
+                <img
+                  :src="item.file"
+                  alt=""
+                  @error.once="onceImageErrored(400, 300)"
+                />
+                <div class="card-grid-item-footer">
+                  <VAvatar
+                    :picture="item.uploaded_by_info?.avatar"
+                    size="small"
+                  />
+                  <div class="meta">
+                    <span class="dark-inverted">{{
+                      item.uploaded_by_info.username
+                    }}</span>
+                    <span>{{ formatDateTime(item.created_at) }}</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </TransitionGroup>
+        </div>
+      </div>
+
       <div class="card-grid-toolbar">
         <VControl icon="feather:search">
           <input
@@ -241,17 +371,6 @@ onMounted(() => {
 
         <div>
           <TransitionGroup name="list" tag="div" class="columns is-multiline">
-            <!--Grid item-->
-            <!-- <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="column is-4"
-            >
-              <DocumentTile
-                :document="item"
-                @deleteSelectedFile="deleteSelectedDocumentHandler"
-              />
-            </div> -->
             <div
               v-for="item in filteredData"
               :key="item.id"
@@ -263,11 +382,6 @@ onMounted(() => {
                   alt=""
                   @error.once="onceImageErrored(400, 300)"
                 />
-                <!-- <div class="card-grid-item-content">
-                  <h3 class="dark-inverted">
-                    {{ item.title }}
-                  </h3>
-                </div> -->
                 <div class="card-grid-item-footer">
                   <VAvatar
                     :picture="item.uploaded_by_info?.avatar"
@@ -309,6 +423,15 @@ onMounted(() => {
         :DocumentType="DocumentType"
         :title="documentTitle"
         @update:closeModalHandler="openDocViewModal = false"
+      />
+      <CreateFolderModal
+        v-if="openCreateFolderModal"
+        :open-create-folder-modal="openCreateFolderModal"
+        :type="props.docType"
+        :object="props.objectId"
+        :parent="props.folderId"
+        @update:modal-handler="openCreateFolderModal = false"
+        @update:on-success=""
       />
     </div>
   </div>
