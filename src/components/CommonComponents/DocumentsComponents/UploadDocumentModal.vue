@@ -81,7 +81,7 @@ onMounted(() => {});
   <VModal
     is="form"
     :open="props.openFileModal"
-    title="Add Progress"
+    title="Add Attachment"
     size="medium"
     actions="right"
     @submit.prevent="uploadFileHandler"

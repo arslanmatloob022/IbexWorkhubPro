@@ -5,6 +5,7 @@ import * as listData from "/@src/data/layouts/flex-list-v2";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
+import { useUserSession } from "/@src/stores/userSession";
 export interface ProjectData {
   id: number;
   name: string;
@@ -16,6 +17,7 @@ export interface ProjectData {
   team: VAvatarProps[];
 }
 
+const userSession = useUserSession();
 const api = useApi();
 const projects = listData.projects as ProjectData[];
 const notyf = useNotyf();
@@ -282,6 +284,7 @@ onMounted(() => {
           />
         </VControl>
         <VButton
+          v-if="userSession.user.role != 'client'"
           @click="openTaskForm()"
           color="primary"
           icon="fas fa-plus"
@@ -318,11 +321,8 @@ onMounted(() => {
     </div>
 
     <div class="flex-list-wrapper flex-list-v2">
-      <!--Active Tab-->
       <div v-if="tab === 'active'" class="tab-content is-active">
         <div class="all-projects">
-          <!-- <ProjectsToolbar /> -->
-
           <div class="all-projects-header">
             <div class="header-item">
               <div class="item-inner">
@@ -358,13 +358,11 @@ onMounted(() => {
             v-if="filteredData.length"
             class="columns is-multiline projects-card-grid"
           >
-            <!--Project-->
             <div v-for="item in filteredData" class="column is-6">
               <div
                 class="grid-item cu-pointer"
-                @click="openTaskDetail(item, item.id)"
                 :style="{
-                  backgroundImage: `linear-gradient(350deg, white 65%, ${
+                  backgroundImage: `linear-gradient(350deg, transparent 65%, ${
                     statusColors[item.status]
                   }30)`,
                 }"
@@ -374,9 +372,19 @@ onMounted(() => {
                 }" -->
                 <div class="top-section">
                   <div class="head">
-                    <h3>{{ item.title }}</h3>
+                    <h3
+                      @click="openTaskDetail(item, item.id)"
+                      class="cu-pointer"
+                    >
+                      {{ item.title }}
+                    </h3>
                     <!--Dropdown-->
-                    <VDropdown icon="feather:more-vertical" spaced right>
+                    <VDropdown
+                      v-if="userSession.user.role != 'client'"
+                      icon="feather:more-vertical"
+                      spaced
+                      right
+                    >
                       <template #content>
                         <a
                           @click="updateTaskStatus(item.id, 'active')"
@@ -463,13 +471,19 @@ onMounted(() => {
                       </template>
                     </VDropdown>
                   </div>
-                  <div class="body">
+                  <div
+                    @click="openTaskDetail(item, item.id)"
+                    class="body cu-pointer"
+                  >
                     <p v-html="item.description">
                       <!-- {{ item.description }} -->
                     </p>
                   </div>
                 </div>
-                <div class="bottom-section">
+                <div
+                  @click="openTaskDetail(item, item.id)"
+                  class="cu-pointer bottom-section"
+                >
                   <div class="foot-block">
                     <h4 class="heading">Worker(s)</h4>
                     <div class="developers">

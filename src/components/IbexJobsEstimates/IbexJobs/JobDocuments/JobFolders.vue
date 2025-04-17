@@ -3,7 +3,6 @@ import { posts } from "/@src/data/layouts/card-grid-v4";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { clippingParents } from "@popperjs/core";
 
 const api = useApi();
 const notyf = useNotyf();
@@ -159,6 +158,7 @@ watch(
     getObjectFiles();
   }
 );
+
 onMounted(() => {
   getMediaFolders();
   getObjectFiles();

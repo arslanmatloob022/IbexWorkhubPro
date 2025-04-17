@@ -275,128 +275,137 @@ onMounted(() => {
               </VButton>
             </div>
           </div>
-          <TransitionGroup name="list" tag="div" class="columns is-multiline">
-            <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="column is-3"
-            >
-              <a @click="openDocViewModalHandler(item)" class="card-grid-item">
-                <img
-                  :src="item.file"
-                  alt=""
-                  @error.once="onceImageErrored(400, 300)"
-                />
-                <div class="card-grid-item-footer">
-                  <VAvatar
-                    :picture="item.uploaded_by_info?.avatar"
-                    size="small"
+          <div class="card-grid card-grid-v4">
+            <TransitionGroup name="list" tag="div" class="columns is-multiline">
+              <div
+                v-for="item in filteredData"
+                :key="item.id"
+                class="column is-3"
+              >
+                <a
+                  @click="openDocViewModalHandler(item)"
+                  class="card-grid-item"
+                >
+                  <img
+                    :src="item.file"
+                    alt=""
+                    @error.once="onceImageErrored(400, 300)"
                   />
-                  <div class="meta">
-                    <span class="dark-inverted">{{
-                      item.uploaded_by_info.username
-                    }}</span>
-                    <span>{{ formatDateTime(item.created_at) }}</span>
+                  <div class="card-grid-item-footer">
+                    <VAvatar
+                      :picture="item.uploaded_by_info?.avatar"
+                      size="small"
+                    />
+                    <div class="meta">
+                      <span class="dark-inverted">{{
+                        item.uploaded_by_info.username
+                      }}</span>
+                      <span>{{ formatDateTime(item.created_at) }}</span>
+                    </div>
                   </div>
-                </div>
-              </a>
-            </div>
-          </TransitionGroup>
+                </a>
+              </div>
+            </TransitionGroup>
+          </div>
         </div>
       </div>
+      <div v-else>
+        <div class="card-grid-toolbar">
+          <VControl icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </VControl>
 
-      <div class="card-grid-toolbar">
-        <VControl icon="feather:search">
-          <input
-            v-model="filters"
-            class="input custom-text-filter"
-            placeholder="Search..."
-          />
-        </VControl>
-
-        <div class="buttons">
-          <VField class="h-hidden-mobile">
-            <VControl>
-              <Multiselect
-                v-model="valueSingle"
-                :options="optionsSingle"
-                :max-height="145"
-                placeholder="Select an option"
-              />
-            </VControl>
-          </VField>
-          <VButton @click="openFileUploaderModal()" color="primary" raised>
-            <span class="icon">
-              <i aria-hidden="true" class="fas fa-plus" />
-            </span>
-            <span>Photos</span>
-          </VButton>
-          <VButton
-            v-if="props.showFolderDeleteBtn"
-            @click="openDeleteFolderAlert"
-            color="danger"
-            raised
-          >
-            <span class="icon">
-              <i aria-hidden="true" class="fas fa-trash" />
-            </span>
-            <span>Folder</span>
-          </VButton>
+          <div class="buttons">
+            <VField class="h-hidden-mobile">
+              <VControl>
+                <Multiselect
+                  v-model="valueSingle"
+                  :options="optionsSingle"
+                  :max-height="145"
+                  placeholder="Select an option"
+                />
+              </VControl>
+            </VField>
+            <VButton @click="openFileUploaderModal()" color="primary" raised>
+              <span class="icon">
+                <i aria-hidden="true" class="fas fa-plus" />
+              </span>
+              <span>Photos</span>
+            </VButton>
+            <VButton
+              v-if="props.showFolderDeleteBtn"
+              @click="openDeleteFolderAlert"
+              color="danger"
+              raised
+            >
+              <span class="icon">
+                <i aria-hidden="true" class="fas fa-trash" />
+              </span>
+              <span>Folder</span>
+            </VButton>
+          </div>
         </div>
-      </div>
 
-      <div class="card-grid card-grid-v4">
-        <!--List Empty Search Placeholder -->
-        <VPlaceholderPage
-          v-if="filteredData.length == 0 && !Loading"
-          title="We couldn't find any matching file of this directory."
-          subtitle="Too bad. Looks like we couldn't find any matching results for the
+        <div class="card-grid card-grid-v4">
+          <!--List Empty Search Placeholder -->
+          <VPlaceholderPage
+            v-if="filteredData.length == 0 && !Loading"
+            title="We couldn't find any matching file of this directory."
+            subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
           criteria."
-          larger
-        >
-          <template #image>
-            <img
-              class="light-image"
-              src="/@src/assets/illustrations/placeholders/search-4.svg"
-              alt=""
-            />
-            <img
-              class="dark-image"
-              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-              alt=""
-            />
-          </template>
-        </VPlaceholderPage>
+            larger
+          >
+            <template #image>
+              <img
+                class="light-image"
+                src="/@src/assets/illustrations/placeholders/search-4.svg"
+                alt=""
+              />
+              <img
+                class="dark-image"
+                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                alt=""
+              />
+            </template>
+          </VPlaceholderPage>
 
-        <div>
-          <TransitionGroup name="list" tag="div" class="columns is-multiline">
-            <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="column is-3"
-            >
-              <a @click="openDocViewModalHandler(item)" class="card-grid-item">
-                <img
-                  :src="item.file"
-                  alt=""
-                  @error.once="onceImageErrored(400, 300)"
-                />
-                <div class="card-grid-item-footer">
-                  <VAvatar
-                    :picture="item.uploaded_by_info?.avatar"
-                    size="small"
+          <div>
+            <TransitionGroup name="list" tag="div" class="columns is-multiline">
+              <div
+                v-for="item in filteredData"
+                :key="item.id"
+                class="column is-3"
+              >
+                <a
+                  @click="openDocViewModalHandler(item)"
+                  class="card-grid-item"
+                >
+                  <img
+                    :src="item.file"
+                    alt=""
+                    @error.once="onceImageErrored(400, 300)"
                   />
-                  <div class="meta">
-                    <span class="dark-inverted">{{
-                      item.uploaded_by_info.username
-                    }}</span>
-                    <span>{{ formatDateTime(item.created_at) }}</span>
+                  <div class="card-grid-item-footer">
+                    <VAvatar
+                      :picture="item.uploaded_by_info?.avatar"
+                      size="small"
+                    />
+                    <div class="meta">
+                      <span class="dark-inverted">{{
+                        item.uploaded_by_info.username
+                      }}</span>
+                      <span>{{ formatDateTime(item.created_at) }}</span>
+                    </div>
                   </div>
-                </div>
-              </a>
-            </div>
-          </TransitionGroup>
+                </a>
+              </div>
+            </TransitionGroup>
+          </div>
         </div>
       </div>
       <SweetAlert

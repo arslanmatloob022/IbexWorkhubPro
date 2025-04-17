@@ -4,6 +4,7 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
 
+const router = useRouter();
 const userSession = useUserSession();
 const api = useApi();
 const notyf = useNotyf();
@@ -230,14 +231,19 @@ const filteredData = computed(() => {
               <div class="list-view-item-inner">
                 <img
                   :src="item.image ? item.image : '/images/homePlaceholder.png'"
+                  class="cu-pointer"
                   alt="Sample home"
+                  @click="router.push(`/sidebar/client/projects/${item.id}`)"
                 />
-                <div class="meta-left">
+                <div
+                  @click="router.push(`/sidebar/client/projects/${item.id}`)"
+                  class="meta-left cu-pointer"
+                >
                   <h3>
                     <span>{{ item.title }}</span>
-                    <VRangeRating v-model="HomeRating" class="is-inline">
+                    <!-- <VRangeRating v-model="HomeRating" class="is-inline">
                       <i class="fas fa-star" aria-hidden="true" />
-                    </VRangeRating>
+                    </VRangeRating> -->
                   </h3>
                   <p>
                     <i

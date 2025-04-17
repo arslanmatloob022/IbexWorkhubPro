@@ -6,7 +6,6 @@ import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import { formatDate } from "/@src/composable/useSupportElement";
-
 const api = useApi();
 const calendarRef = ref(null);
 

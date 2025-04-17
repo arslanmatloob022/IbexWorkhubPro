@@ -483,7 +483,9 @@ onMounted(async () => {
     </div>
     <div
       v-if="
-        userSession.user.role == 'admin' || userSession.user.role == 'manager'
+        userSession.user.role == 'admin' ||
+        userSession.user.role == 'manager' ||
+        userSession.user.role == 'client'
       "
       class="tabs-inner"
     >
@@ -498,6 +500,15 @@ onMounted(async () => {
               ><span>Project info</span></a
             >
           </li>
+          <li :class="[tab === 'calendar' && 'is-active']">
+            <a
+              tabindex="0"
+              role="button"
+              @keydown.space.prevent="tab = 'calendar'"
+              @click="tab = 'calendar'"
+              ><span>Tasks Calendar</span></a
+            >
+          </li>
           <li :class="[tab === 'tasks' && 'is-active']">
             <a
               tabindex="0"
@@ -507,6 +518,7 @@ onMounted(async () => {
               ><span>Tasks</span></a
             >
           </li>
+
           <li class="tab-naver" />
         </ul>
       </div>
@@ -793,6 +805,9 @@ onMounted(async () => {
           :projectID="route.params.id"
         />
       </div>
+    </div>
+    <div v-if="tab === 'calendar'" class="columns is-multiline">
+      <ProjectTasksCalendar :projectID="route.params.id" />
     </div>
   </div>
 </template>

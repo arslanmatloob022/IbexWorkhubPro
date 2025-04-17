@@ -129,7 +129,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="toolbar-header toolbar is-flex space-between">
+    <div class="tabs-wrapper">
       <div class="tabs-inner">
         <div class="tabs is-boxed">
           <ul>
@@ -177,6 +177,7 @@ onMounted(() => {
     </div>
 
     <div v-if="mainTab == 'documents'">
+      <!-- <NewJobFolders type="documents" :objectId="props.leadId" /> -->
       <!-- <JobFolders type="documents" :object="props.leadId"></JobFolders> -->
       <div class="tabs-wrapper">
         <div class="tabs-inner">
@@ -285,7 +286,7 @@ onMounted(() => {
                   @keydown.space.prevent="addFolderHandler('documents')"
                   @click="addFolderHandler('documents')"
                   ><span>
-                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-folder-plus"></i>
 
                     Folder</span
                   ></a
@@ -385,7 +386,7 @@ onMounted(() => {
           />
         </div>
         <div v-if="tab == 'calculations'">
-          <ExcelSheetComponent />
+          <ExcelSheetComponent :object-id="props.leadId" />
         </div>
         <div v-for="item in documentsFoldersList" :key="item.id">
           <div v-if="tab == item.title">
@@ -399,95 +400,98 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
     <div v-if="mainTab == 'photos'">
-      <!-- <JobFolders type="photos" :object="props.leadId"></JobFolders> -->
+      <div class="tabs-wrapper">
+        <div class="tabs-inner">
+          <div class="tabs">
+            <ul>
+              <li :class="[photoTab === 'site_visits' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('site_visits')"
+                  @click="
+                    getGroupedProposals('site_visits');
+                    photoTab = 'site_visits';
+                  "
+                  ><span>Site Visit Photos</span></a
+                >
+              </li>
+              <li :class="[photoTab === 'inspiration_photos' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="
+                    getGroupedProposals('inspiration_photos')
+                  "
+                  @click="
+                    getGroupedProposals('inspiration_photos');
+                    photoTab = 'inspiration_photos';
+                  "
+                  ><span>Inspiration Photos</span></a
+                >
+              </li>
 
-      <div class="tabs-inner">
-        <div class="tabs">
-          <ul>
-            <li :class="[photoTab === 'site_visits' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('site_visits')"
-                @click="
-                  getGroupedProposals('site_visits');
-                  photoTab = 'site_visits';
-                "
-                ><span>Site Visit Photos</span></a
+              <li :class="[photoTab === 'trade_photos' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('trade_photos')"
+                  @click="
+                    getGroupedProposals('trade_photos');
+                    photoTab = 'trade_photos';
+                  "
+                  ><span>Trade Photos</span></a
+                >
+              </li>
+              <li :class="[photoTab === 'design_approval' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="
+                    getGroupedProposals('design_approval')
+                  "
+                  @click="
+                    getGroupedProposals('design_approval');
+                    photoTab = 'design_approval';
+                  "
+                  ><span>Design Approval Photos</span></a
+                >
+              </li>
+              <li
+                v-for="item in photosFoldersList"
+                :key="item.id"
+                :class="[photoTab === item.title && 'is-active']"
               >
-            </li>
-            <li :class="[photoTab === 'inspiration_photos' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="
-                  getGroupedProposals('inspiration_photos')
-                "
-                @click="
-                  getGroupedProposals('inspiration_photos');
-                  photoTab = 'inspiration_photos';
-                "
-                ><span>Inspiration Photos</span></a
-              >
-            </li>
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals(item.title)"
+                  @click="
+                    getGroupedProposals(item.title);
+                    photoTab = item.title;
+                  "
+                  ><span>{{ item.title }}</span></a
+                >
+              </li>
+              <li class="is-cus-active">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="addFolderHandler('photos')"
+                  @click="addFolderHandler('photos')"
+                  ><span>
+                    <i class="fas fa-plus"></i>
 
-            <li :class="[photoTab === 'trade_photos' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('trade_photos')"
-                @click="
-                  getGroupedProposals('trade_photos');
-                  photoTab = 'trade_photos';
-                "
-                ><span>Trade Photos</span></a
-              >
-            </li>
-            <li :class="[photoTab === 'design_approval' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('design_approval')"
-                @click="
-                  getGroupedProposals('design_approval');
-                  photoTab = 'design_approval';
-                "
-                ><span>Design Approval Photos</span></a
-              >
-            </li>
-            <li
-              v-for="item in photosFoldersList"
-              :key="item.id"
-              :class="[photoTab === item.title && 'is-active']"
-            >
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals(item.title)"
-                @click="
-                  getGroupedProposals(item.title);
-                  photoTab = item.title;
-                "
-                ><span>{{ item.title }}</span></a
-              >
-            </li>
-            <li class="is-cus-active">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="addFolderHandler('photos')"
-                @click="addFolderHandler('photos')"
-                ><span>
-                  <i class="fas fa-plus"></i>
+                    Folder</span
+                  ></a
+                >
+              </li>
 
-                  Folder</span
-                ></a
-              >
-            </li>
-
-            <li class="tab-naver" />
-          </ul>
+              <li class="tab-naver" />
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -556,67 +560,67 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="mainTab == 'videos'">
-      <!-- <JobFolders type="videos" :object="props.leadId"></JobFolders> -->
+      <div class="tabs-wrapper">
+        <div class="tabs-inner">
+          <div class="tabs">
+            <ul>
+              <li :class="[videoTab === 'job_videos' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('job_videos')"
+                  @click="
+                    videoTab = 'job_videos';
+                    getGroupedProposals('job_videos');
+                  "
+                  ><span>Job videos</span></a
+                >
+              </li>
+              <li :class="[videoTab === 'other_videos' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals('other_videos')"
+                  @click="
+                    videoTab = 'other_videos';
+                    getGroupedProposals('other_videos');
+                  "
+                  ><span>Other videos</span></a
+                >
+              </li>
 
-      <div class="tabs-inner">
-        <div class="tabs">
-          <ul>
-            <li :class="[videoTab === 'job_videos' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('job_videos')"
-                @click="
-                  videoTab = 'job_videos';
-                  getGroupedProposals('job_videos');
-                "
-                ><span>Job videos</span></a
+              <li
+                v-for="item in videosFoldersList"
+                :key="item.id"
+                :class="[videoTab === item.title && 'is-active']"
               >
-            </li>
-            <li :class="[videoTab === 'other_videos' && 'is-active']">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals('other_videos')"
-                @click="
-                  videoTab = 'other_videos';
-                  getGroupedProposals('other_videos');
-                "
-                ><span>Other videos</span></a
-              >
-            </li>
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="getGroupedProposals(item.title)"
+                  @click="
+                    getGroupedProposals(item.title);
+                    videoTab = item.title;
+                  "
+                  ><span>{{ item.title }}</span></a
+                >
+              </li>
+              <li class="is-cus-active">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="addFolderHandler('videos')"
+                  @click="addFolderHandler('videos')"
+                  ><span>
+                    <i class="fas fa-plus"></i>
 
-            <li
-              v-for="item in videosFoldersList"
-              :key="item.id"
-              :class="[videoTab === item.title && 'is-active']"
-            >
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="getGroupedProposals(item.title)"
-                @click="
-                  getGroupedProposals(item.title);
-                  videoTab = item.title;
-                "
-                ><span>{{ item.title }}</span></a
-              >
-            </li>
-            <li class="is-cus-active">
-              <a
-                tabindex="0"
-                role="button"
-                @keydown.space.prevent="addFolderHandler('videos')"
-                @click="addFolderHandler('videos')"
-                ><span>
-                  <i class="fas fa-plus"></i>
-
-                  Folder</span
-                ></a
-              >
-            </li>
-            <li class="tab-naver" />
-          </ul>
+                    Folder</span
+                  ></a
+                >
+              </li>
+              <li class="tab-naver" />
+            </ul>
+          </div>
         </div>
       </div>
       <div class="tile-grid tile-grid-v2">
