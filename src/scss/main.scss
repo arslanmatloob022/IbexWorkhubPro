@@ -217,6 +217,11 @@ SCSS Imports
   max-width: 100px;
 }
 
+.nowrap {
+  text-wrap: nowrap;
+  white-space: nowrap;
+}
+
 .show-text-150 {
   white-space: nowrap;
   overflow: hidden;

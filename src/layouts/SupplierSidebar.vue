@@ -584,7 +584,7 @@ onMounted(() => {
                 {{ viewWrapper.pageTitle }}
               </h1>
 
-              <VField class="m-0">
+              <!-- <VField class="m-0">
                 <VControl>
                   <VSwitchBlock
                     color="info"
@@ -594,14 +594,14 @@ onMounted(() => {
                     thin
                   />
                 </VControl>
-              </VField>
+              </VField> -->
             </div>
 
             <!-- toolbar -->
             <div class="toolbar">
               <SearchWorkerInput />
 
-              <ToolbarNotification />
+              <!-- <ToolbarNotification /> -->
 
               <a
                 class="toolbar-link right-panel-trigger"

@@ -383,7 +383,7 @@ onMounted(() => {
               isDesktopSideblockOpen = !isDesktopSideblockOpen
             "
             @click="isDesktopSideblockOpen = !isDesktopSideblockOpen"
-            style="width:100%; display:flex, align-items:right;"
+            style="width: 100%; display: flex; align-items: right"
           >
             <span v-if="isDesktopSideblockOpen">
               <img
@@ -565,7 +565,7 @@ onMounted(() => {
                 {{ viewWrapper.pageTitle }}
               </h1>
 
-              <VField class="m-0">
+              <!-- <VField class="m-0">
                 <VControl>
                   <VSwitchBlock
                     color="info"
@@ -575,16 +575,16 @@ onMounted(() => {
                     thin
                   />
                 </VControl>
-              </VField>
+              </VField> -->
             </div>
 
             <!-- toolbar -->
             <div class="toolbar">
               <SearchWorkerInput />
 
-              <ToolbarNotification />
+              <!-- <ToolbarNotification /> -->
 
-              <a
+              <!-- <a
                 class="toolbar-link right-panel-trigger"
                 aria-label="View activity panel"
                 tabindex="0"
@@ -597,7 +597,7 @@ onMounted(() => {
                   class="iconify"
                   data-icon="feather:grid"
                 />
-              </a>
+              </a> -->
               <!-- darkmode -->
               <div class="toolbar-link">
                 <label

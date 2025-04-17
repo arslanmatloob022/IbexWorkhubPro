@@ -5,6 +5,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useApi } from "/@src/composable/useAPI";
+// import addOneDayToDate from "/@src/use"
+import { addOneDayToDate } from "/@src/composable/useSupportElement";
 
 const api = useApi();
 
@@ -62,7 +64,7 @@ const getProjectTasks = async () => {
     events.value = tasks.value.map((task: any) => ({
       id: task.id,
       start: task.startDate,
-      end: task.endDate,
+      end: addOneDayToDate(task.endDate),
       title: task.title,
       color: task.color || "#2c3e50",
       description: task.description,
@@ -139,7 +141,7 @@ onMounted(() => {
 
 #CalendarStyling {
   td {
-    border: none;
+    border: 1px solid #ebebeb !important;
   }
 
   tr {
@@ -162,7 +164,6 @@ onMounted(() => {
     min-height: 100%;
     padding-top: 30px;
     position: relative;
-    cursor: crosshair;
   }
 
   .fc-event {
@@ -191,7 +192,7 @@ onMounted(() => {
   }
 
   .fc .fc-day-today {
-    background-color: #ffeb3b10;
+    background-color: #ffeb3b30;
   }
 
   .fc .fc-timegrid-now-indicator {

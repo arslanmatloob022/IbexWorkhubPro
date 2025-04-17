@@ -298,3 +298,9 @@ export function formatTime(inputDate: any) {
 
   return date.toLocaleTimeString("en-US", options);
 }
+
+export const addOneDayToDate = (dateString: any) => {
+  let date = new Date(dateString);
+  date.setDate(date.getDate() + 1);
+  return date.toISOString().slice(0, 10);
+};

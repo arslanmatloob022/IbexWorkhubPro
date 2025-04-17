@@ -432,6 +432,7 @@ declare module 'vue' {
     NavbarSearchLayout: typeof import('./../src/layouts/NavbarSearchLayout.vue')['default']
     NetworksSubnav: typeof import('./../src/layouts/navbar-items/NetworksSubnav.vue')['default']
     NetworksSubsidebar: typeof import('./../src/layouts/sidebar-subsidebar/NetworksSubsidebar.vue')['default']
+    NewDocumentViewer: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobDocuments/NewDocumentViewer.vue')['default']
     NewJobFolders: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobDocuments/NewJobFolders.vue')['default']
     NewLandingFooter: typeof import('./../src/components/partials/landing/NewLandingFooter.vue')['default']
     NewLandingNavigation: typeof import('./../src/components/partials/landing/NewLandingNavigation.vue')['default']

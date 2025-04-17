@@ -425,24 +425,12 @@ onMounted(async () => {
             :picture="projectData.image"
             squared
             color="primary"
-            badge="/images/icons/flags/united-states-of-america.svg"
             size="xxl"
           />
           <div class="user-meta is-dark-bordered-12">
             <h3 class="title is-4 is-narrow is-bold">
               {{ projectData.title ? projectData.title : "N/A" }}
             </h3>
-            <p class="light-text">
-              Current status:
-              <span class="info-text is-bold"
-                >{{
-                  projectData.status === "pending"
-                    ? "Pre Construction"
-                    : projectData.status.charAt(0).toUpperCase() +
-                      projectData.status.slice(1)
-                }}
-              </span>
-            </p>
             <Address>
               <i class="fas fa-home"></i> {{ projectData.address }}
             </Address>
@@ -497,7 +485,7 @@ onMounted(async () => {
               role="button"
               @keydown.space.prevent="tab = 'detail'"
               @click="tab = 'detail'"
-              ><span>Project info</span></a
+              ><span>Project Info</span></a
             >
           </li>
           <li :class="[tab === 'calendar' && 'is-active']">

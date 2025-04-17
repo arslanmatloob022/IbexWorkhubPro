@@ -247,41 +247,33 @@ onMounted(() => {
       <div v-if="loading" class="text-gray-500 text-sm">Loading...</div>
 
       <!-- Folders -->
-      <div v-if="folders.length" class="card-grid card-grid-v4">
+      <div class="card-grid card-grid-v4">
         <TransitionGroup name="list" tag="div" class="columns is-multiline">
-          <div v-for="folder in folders" :key="folder.id" class="column is-2">
+          <div
+            v-if="folders.length"
+            v-for="folder in folders"
+            :key="folder.id"
+            class="column is-2"
+          >
             <a @click="navigateToFolder(folder)" class="card-grid-item">
               <img src="/icons/folders.png" alt="item.title" />
               <div class="card-grid-item-content">
                 <h3 class="dark-inverted">{{ folder.title }}</h3>
               </div>
             </a>
-            <!-- <span @click="navigateToFolder(folder)" class="flex-1"
-              >📁 {{ folder.title }}</span
-            >
-            <button
-              @click.stop="deleteFolder(folder.id)"
-              class="btn-sm text-red-600"
-            >
-              🗑
-            </button> -->
           </div>
         </TransitionGroup>
+        <div v-if="files.length" v-for="file in files" :key="file.id">
+          <NewDocumentViewer :file="file" />
+        </div>
       </div>
 
       <!-- Files -->
-      <div v-if="files.length" class="space-y-2 mt-4">
-        <div
-          v-for="file in files"
-          :key="file.id"
-          class="flex justify-between items-center p-2 bg-white rounded shadow-sm"
-        >
-          <span class="flex-1">📄 {{ file.title }}</span>
-          <button @click="deleteFile(file.id)" class="btn-sm text-red-600">
-            🗑
-          </button>
+      <!-- <div v-if="files.length">
+        <div v-for="file in files" :key="file.id">
+          <NewDocumentViewer :file="file" />
         </div>
-      </div>
+      </div> -->
 
       <div
         v-if="!folders.length && !files.length && !loading"
