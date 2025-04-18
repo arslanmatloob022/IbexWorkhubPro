@@ -109,7 +109,7 @@ const leadProposalFormData = ref<leadProposalData>({
   worksheetItems: [],
   type: "proposal",
   project: "",
-  is_template: true,
+  is_template: false,
   attachments: [],
   columns_to_show: <any>[],
   status: "",
@@ -130,6 +130,9 @@ const addUpdateProposalHandler = async (closeModal: boolean = false) => {
     leadProposalFormData.value.columns_to_show = JSON.stringify(
       selectedColumnsToShow.value
     );
+    // if (props.createTemplate) {
+    //   leadProposalFormData.value.is_template = true;
+    // }
     const formDataAPI = convertToFormData(leadProposalFormData.value, []);
     if (props.proposalId || leadProposalFormData.value.id) {
       const response = await api.patch(
@@ -387,7 +390,7 @@ onUnmounted(() => {
               class="field"
               :class="
                 props.leadId || props.createTemplate
-                  ? 'column is-4'
+                  ? 'column is-2'
                   : 'column is-2'
               "
             >
@@ -427,6 +430,7 @@ onUnmounted(() => {
                 </VControl>
               </VField>
             </div>
+
             <div
               v-if="
                 !props.createTemplate &&
@@ -443,6 +447,17 @@ onUnmounted(() => {
                 style="width: 100%"
                 >Templates</VButton
               >
+            </div>
+            <div class="field column is-2">
+              <VField class="is-flex mt-3">
+                <VControl raw subcontrol>
+                  <VCheckbox
+                    v-model="leadProposalFormData.is_template"
+                    label="Create Template"
+                    color="primary"
+                  />
+                </VControl>
+              </VField>
             </div>
             <div class="column is-12">
               <!-- <VCollapse :items="data" with-chevron>
