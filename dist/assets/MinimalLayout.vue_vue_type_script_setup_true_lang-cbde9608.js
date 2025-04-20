@@ -1,1 +1,0 @@
-import{f as a,C as s,D as e,Z as t,I as r}from"./index-69081f3d.js";const m=a({__name:"MinimalLayout",props:{theme:{default:"darker"}},setup(a){const m=a;return(a,o)=>(s(),e("div",{class:r(["minimal-wrapper",[m.theme]])},[t(a.$slots,"default")],2))}});export{m as _};

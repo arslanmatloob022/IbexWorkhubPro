@@ -10,7 +10,32 @@ import { useApi } from "../composable/useAPI";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "../composable/useNotyf";
 // import { routerLinks } from "/@src/composable/CommonScripts/sideBarRoutes";
-import { routerLinks } from "/@src/composable/CommonScripts/sideBarRoutes";
+import {
+  routerLinks,
+  clientRouterLinks,
+  workerRouterLinks,
+  managerRouterLinks,
+  contractorRouterLinks,
+} from "/@src/composable/CommonScripts/sideBarRoutes";
+const userSession = useUserSession();
+
+const userRouterLinks = ref({
+  worker: workerRouterLinks,
+  client: clientRouterLinks,
+  manager: managerRouterLinks,
+  contractor: contractorRouterLinks,
+  admin: routerLinks,
+  superAdmin: routerLinks,
+  ultraAdmin: routerLinks,
+});
+const shouldShowPanel = ref({
+  worker: false,
+  client: false,
+  manager: true,
+  contractor: true,
+  admin: true,
+  superAdmin: true,
+});
 
 const notyf = useNotyf();
 const mostVisitedPages = ref([
@@ -21,7 +46,7 @@ const mostVisitedPages = ref([
     user: 0,
   },
 ]);
-const userSession = useUserSession();
+
 const layoutSwitcher = useLayoutSwitcher();
 const router = useRouter();
 const route = useRoute();
@@ -324,7 +349,10 @@ onMounted(() => {
         </template>
 
         <template #links>
-          <template v-for="link in routerLinks" :key="link.title">
+          <template
+            v-for="link in userRouterLinks[userSession.user.role]"
+            :key="link.title"
+          >
             <!-- Render RouterLink -->
             <li v-if="link.linkType === 'single'">
               <RouterLink :to="link.route" :class="link.class">
@@ -458,7 +486,10 @@ onMounted(() => {
 
         <template #links>
           <!-- dashboard -->
-          <template v-for="(link, index) in routerLinks" :key="index">
+          <template
+            v-for="(link, index) in userRouterLinks[userSession.user.role]"
+            :key="index"
+          >
             <li v-if="link.linkType == 'single'">
               <RouterLink
                 id="cus-routerLinks"
@@ -656,6 +687,7 @@ onMounted(() => {
               <!-- <ToolbarNotification /> -->
 
               <a
+                v-if="shouldShowPanel[userSession.user.role]"
                 class="toolbar-link right-panel-trigger"
                 aria-label="View activity panel"
                 tabindex="0"

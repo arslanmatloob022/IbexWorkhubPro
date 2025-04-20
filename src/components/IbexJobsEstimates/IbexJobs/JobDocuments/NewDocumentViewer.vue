@@ -8,14 +8,14 @@ const api = useApi();
 const notyf = useNotyf();
 
 const emits = defineEmits<{
-  (e: "updateOnSuccess", folder: string): void;
+  (e: "updateOnSuccess", value: any): void;
 }>();
 
 const props = defineProps<{
   file?: {};
 }>();
 
-const selectedParent = ref("");
+const selectedFileToDelete = ref("");
 const objectsFiles = ref([]);
 const documentToView = ref("");
 const openDocViewModal = ref(false);
@@ -49,37 +49,66 @@ const SweetAlertProps = ref({
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
+  icon: "",
 });
-const openDeleteFolderAlert = () => {
+
+const openDeleteFileAlert = (id: any) => {
+  selectedFileToDelete.value = id;
   SweetAlertProps.value = {
-    title: " Delete this folder?",
-    subtitle: "This action cannot be undone.",
+    title: " Delete this file?",
+    subtitle: "This file will be deleted permanently.",
     isSweetAlertOpen: true,
     btntext: "Delete",
+    icon: "fas fa-bell",
   };
+};
+
+const deleteFile = async () => {
+  try {
+    await api.delete(`/api/attachment/${selectedFileToDelete.value}/`);
+    emits("updateOnSuccess", null);
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    notyf.success("File deleted successfully");
+  } catch (error) {
+    console.error("Error deleting file:", error);
+  }
 };
 
 onMounted(() => {});
 </script>
 
 <template>
-  <div>
-    <!-- <div class="card-grid card-grid-v4"> -->
-    <TransitionGroup name="list" tag="div" class="columns is-multiline">
-      <div class="column is-2">
-        <a @click="openDocViewModalHandler(props.file)" class="card-grid-item">
-          <img
-            :src="getFilesIcons[props.file?.file_info?.type]"
-            alt="item.title"
-            @error.once="onceImageErrored(400, 300)"
-          />
-          <div class="card-grid-item-content">
-            <h3 class="dark-inverted">{{ props.file.title }}</h3>
-          </div>
-        </a>
+  <div class="column is-2">
+    <a class="card-grid-item">
+      <img
+        v-if="
+          props.file?.file_info?.type === 'png' ||
+          props.file?.file_info?.type === 'jpg' ||
+          props.file?.file_info?.type === 'jpeg'
+        "
+        :src="props.file?.file_info?.url"
+        :alt="props.file?.title"
+        @click="openDocViewModalHandler(props.file)"
+      />
+
+      <img
+        v-else
+        :src="getFilesIcons[props.file?.file_info?.type]"
+        :alt="props.file?.title"
+        @click="openDocViewModalHandler(props.file)"
+      />
+      <div
+        class="card-grid-item-content is-flex is-align-items-center space-between"
+      >
+        <h3 @click="openDocViewModalHandler(props.file)" class="dark-inverted">
+          {{ props.file?.title }}
+        </h3>
+        <i
+          @click="openDeleteFileAlert(props.file?.id)"
+          class="fas fa-trash danger-text"
+        ></i>
       </div>
-    </TransitionGroup>
-    <!-- </div> -->
+    </a>
     <DocumentViewer
       v-if="openDocViewModal"
       :openDocViewModal="openDocViewModal"
@@ -88,6 +117,20 @@ onMounted(() => {});
       :title="documentTitle"
       @update:closeModalHandler="openDocViewModal = false"
     />
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :icon="SweetAlertProps.icon"
+      :onCancel="
+        () => {
+          SweetAlertProps.isSweetAlertOpen = false;
+        }
+      "
+      :onConfirm="deleteFile"
+    >
+    </SweetAlert>
   </div>
 </template>
 

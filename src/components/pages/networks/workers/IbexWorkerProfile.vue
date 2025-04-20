@@ -15,6 +15,7 @@ const router = useRouter();
 const currentSelectedId = ref("");
 const openUserUpdateModal = ref(false);
 const tab = ref("calendar");
+const mainTab = ref("profile");
 const userId = ref("");
 const isPasswordModalOpen = ref(false);
 const workerData = ref({
@@ -265,20 +266,20 @@ onMounted(async () => {
         </h3>
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
-          <div class="summary-stat">
+          <!-- <div class="summary-stat">
             <span>Role</span>
             <span>{{ workerData?.role }}</span>
-          </div>
+          </div> -->
           <div class="summary-stat">
             <span>Status</span>
             <span>{{ workerData?.is_active ? "Active" : " In-Active" }}</span>
           </div>
-          <div class="summary-stat">
+          <!-- <div class="summary-stat">
             <span>Phone</span>
             <span>{{
               workerData?.phoneNumber ? workerData?.phoneNumber : "N/A"
             }}</span>
-          </div>
+          </div> -->
           <div class="summary-stat">
             <span>Email</span>
             <span>{{ workerData?.email }}</span>
@@ -301,97 +302,51 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="columns is-multiline is-flex-tablet-p">
-      <!--Tile-->
-      <div class="column is-3">
-        <div class="health-tile">
-          <div class="tile-head">
-            <VIconBox color="primary">
-              <i class="fas fa-clipboard-list" aria-hidden="true"></i>
-            </VIconBox>
-            <h4>
-              <span class="dark-inverted">{{
-                workerTasksStats?.stats?.pending +
-                workerTasksStats?.stats?.active +
-                workerTasksStats?.stats?.completed
-              }}</span>
-              <!-- <span>lbs</span> -->
-            </h4>
-          </div>
-          <h3 class="dark-inverted">Total Tasks</h3>
-          <p>Number of tasks assigned within 30 Days duration</p>
-        </div>
-      </div>
+    <div class="columns is-multiline">
+      <div class="tabs-wrapper column is-12">
+        <div class="tabs-inner">
+          <div class="tabs is-toggle">
+            <ul>
+              <li :class="[mainTab === 'profile' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="mainTab = 'profile'"
+                  @click="mainTab = 'profile'"
+                  ><span>Profile</span></a
+                >
+              </li>
+              <li :class="[mainTab === 'tasks' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="mainTab = 'tasks'"
+                  @click="mainTab = 'tasks'"
+                  ><span>Tasks</span></a
+                >
+              </li>
+              <li :class="[mainTab === 'activities' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="mainTab = 'activities'"
+                  @click="mainTab = 'activities'"
+                  ><span>Activities</span></a
+                >
+              </li>
 
-      <!--Tile-->
-      <div class="column is-3">
-        <div class="health-tile">
-          <div class="tile-head">
-            <VIconBox color="primary">
-              <i aria-hidden="true" class="fas fa-tint" />
-            </VIconBox>
-            <h4>
-              <span class="dark-inverted">{{
-                workerTasksStats?.stats?.active
-                  ? workerTasksStats?.stats?.active
-                  : 0
-              }}</span>
-
-              <!-- <span>Active</span> -->
-            </h4>
+              <li class="tab-naver" />
+            </ul>
           </div>
-          <h3 class="dark-inverted">Active Tasks</h3>
-          <p>Tasks are currently active and worker notified</p>
-        </div>
-      </div>
-
-      <!--Tile-->
-      <div class="column is-3">
-        <div class="health-tile">
-          <div class="tile-head">
-            <VIconBox color="primary">
-              <i class="fas fa-clipboard" aria-hidden="true"></i>
-            </VIconBox>
-            <h4>
-              <span class="dark-inverted">{{
-                workerTasksStats?.stats?.pending
-                  ? workerTasksStats?.stats?.pending
-                  : 0
-              }}</span>
-              <!-- <span>Bpm</span> -->
-            </h4>
-          </div>
-          <h3 class="dark-inverted">Pending Tasks</h3>
-          <p>Tasks that are pending and worker need to done.</p>
-        </div>
-      </div>
-
-      <!--Tile-->
-      <div class="column is-3">
-        <div class="health-tile">
-          <div class="tile-head">
-            <VIconBox color="primary">
-              <i class="fas fa-clipboard-check" aria-hidden="true"></i
-            ></VIconBox>
-            <h4>
-              <span class="dark-inverted">{{
-                workerTasksStats?.stats?.completed
-                  ? workerTasksStats?.stats?.completed
-                  : 0
-              }}</span>
-              <!-- <span>lbs</span> -->
-            </h4>
-          </div>
-          <h3 class="dark-inverted">Completed Tasks</h3>
-          <p>
-            The worker has done his job on these tasks and assure by the manager
-          </p>
         </div>
       </div>
     </div>
+    <div v-if="mainTab == 'profile'" class="columns is-multiline">
+      <WorkerProfileInfo :userId="route.params.id" />
+    </div>
 
-    <div class="columns is-multiline">
-      <div class="list-flex-toolbar is-reversed">
+    <div v-if="mainTab == 'tasks'" class="columns is-multiline">
+      <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs is-boxed">
             <ul>
@@ -478,6 +433,12 @@ onMounted(async () => {
       </div>
       <div v-if="tab == 'today'" class="column is-12">
         <ProjectTodayTasks :workerId="route.params.id" />
+      </div>
+    </div>
+    <div v-if="mainTab == 'activities'" class="columns is-multiline">
+      <div class="column is-12">
+        <!-- <WorkerActivities :userId="route.params.id" /> -->
+        <JobLeadActivities :user="route.params.id" />
       </div>
     </div>
     <ChangePasswordModal

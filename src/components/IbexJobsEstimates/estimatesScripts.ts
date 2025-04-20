@@ -4,6 +4,11 @@ export const getStatusColor = {
   sold: "success",
   lost: "danger",
 };
+export const getJobStatusColor = {
+  active: "info",
+  completed: "primary",
+  pending: "warning",
+};
 
 export const getLeadStatusName = {
   onHold: "On Hold",

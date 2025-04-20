@@ -88,7 +88,6 @@ const calendarOptions = ref({
       notyf.success(`Task clicked: ${resource.title}`);
       // Handle task (sub-resource) click event, such as opening task details
       const task = resource.extendedProps;
-      console.log(`Task details:`, task);
     }
   },
 
@@ -149,7 +148,6 @@ const calendarOptions = ref({
     ) {
       return;
     }
-    console.log("start date", info.startStr);
     editTaskId.value = 0;
     projectID.value = info.resource.extendedProps.project;
     startDate.value = info.startStr;
@@ -233,7 +231,6 @@ const addOneDayToDate = (dateString: any) => {
 };
 
 const workerImageClick = (worker: any) => {
-  console.log("worker data", worker);
   selectedWorkerId.value = worker.id;
   selectedWorkerName.value = worker.username;
   workerTasksModal.value = true;
@@ -241,7 +238,6 @@ const workerImageClick = (worker: any) => {
 };
 
 const eventClick = (info: any) => {
-  console.log(info.event);
   if (userSession.user.role === "contractor") {
     return;
   }
@@ -273,7 +269,6 @@ const editTask = async (id: any, start: any, end: any) => {
     renderCalender();
   } catch (err) {
     notyf.error("Something went wrong");
-    console.log(err);
   }
 };
 
@@ -347,8 +342,6 @@ const renderCalender = () => {
 };
 
 const changeFilterHandler = () => {
-  // console.log("func called", activeFilter.value);
-
   if (activeFilter.value !== "all") {
     let data = projects.value.filter(
       (project) => project.status === activeFilter.value
@@ -365,14 +358,11 @@ const changeFilterHandler = () => {
   }
 
   calendarOptions.value.resources = filteredResources.value;
-  // console.log(filteredResources.value);
-  // console.log(filteredResources.value.length);
 };
 
 const getProjectHandler = async () => {
   try {
     loading.value = true;
-    console.log("inside all projects func");
 
     const response = await api.get("/api/project/projects/", {});
     let newData = response.data;
@@ -407,7 +397,6 @@ const getTasksHandler = async () => {
     });
 
     tasks.value = newTasks;
-    console.log("new", tasks.value);
   } catch (err) {
     console.error("Error fetching tasks:", err);
     tasks.value = [];
@@ -678,7 +667,6 @@ onMounted(async () => {
       @update:modalHandler="
         () => {
           isTaskFormOpen = false;
-          console.log('Falling in main');
         }
       "
     />

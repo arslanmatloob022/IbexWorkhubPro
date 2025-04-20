@@ -402,6 +402,7 @@ onMounted(() => {
     </div>
 
     <div v-if="mainTab == 'photos'">
+      <!-- <NewJobFolders type="photos" :objectId="props.leadId" /> -->
       <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs">
@@ -560,6 +561,7 @@ onMounted(() => {
       </div>
     </div>
     <div v-if="mainTab == 'videos'">
+      <!-- <NewJobFolders type="videos" :objectId="props.leadId" /> -->
       <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs">

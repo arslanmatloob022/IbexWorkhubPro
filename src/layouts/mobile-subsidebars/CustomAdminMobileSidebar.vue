@@ -1,6 +1,22 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
-import { routerLinks } from "/@src/composable/CommonScripts/sideBarRoutes";
+import {
+  routerLinks,
+  workerRouterLinks,
+  managerRouterLinks,
+  contractorRouterLinks,
+  clientRouterLinks,
+} from "/@src/composable/CommonScripts/sideBarRoutes";
+import { useUserSession } from "/@src/stores/userSession";
+const userSession = useUserSession();
+const userRouterLinks = ref({
+  worker: workerRouterLinks,
+  client: clientRouterLinks,
+  manager: managerRouterLinks,
+  contractor: contractorRouterLinks,
+  admin: routerLinks,
+  superAdmin: routerLinks,
+});
 </script>
 <template>
   <div class="mobile-subsidebar">
@@ -10,7 +26,10 @@ import { routerLinks } from "/@src/composable/CommonScripts/sideBarRoutes";
       </div>
 
       <ul class="submenu" data-simplebar>
-        <template v-for="link in routerLinks" :key="link.title">
+        <template
+          v-for="link in userRouterLinks[userSession.user.role]"
+          :key="link.title"
+        >
           <li v-if="link.linkType == 'single'">
             <RouterLink :to="link.route"> {{ link.title }} </RouterLink>
           </li>

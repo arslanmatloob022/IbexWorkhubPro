@@ -336,6 +336,7 @@ onMounted(async () => {
                   @change="handleFileChange"
                   class="file-input"
                   type="file"
+                  accept=".xlsx, .xls, .csv"
                   name="resume"
                 />
                 <span class="file-cta">

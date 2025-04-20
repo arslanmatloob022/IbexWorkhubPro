@@ -33,6 +33,22 @@ const updateOnSuccessHandler = () => {
   emit("update:OnSuccess", null);
 };
 
+// const getFoldersOnSuccess = () => {
+//   currentFolder.value
+//     ? fetchFolderContents(currentFolder.value.id)
+//     : fetchTopLevelFolders();
+// };
+
+// <CreateFolderModal
+//         v-if="openCreateFolderModal"
+//         :open-create-folder-modal="openCreateFolderModal"
+//         :type="props.type"
+//         :object="currentFolder.id"
+//         :parent="parentFolder"
+//         @update:modalHandler="openCreateFolderModal = false"
+//         @update:onSuccess="getFolderContent(folderType)"
+//       />
+
 const folderData = ref({
   id: "",
   type: props.type,

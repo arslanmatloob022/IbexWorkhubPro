@@ -1,32 +1,49 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useApi } from "/@src/composable/useAPI";
+import { useNotyf } from "/@src/composable/useNotyf";
 
+const notyf = useNotyf();
 const api = useApi();
-
+const selectedObject = ref("");
+const openFileModal = ref(false);
+const openPhotoModal = ref(false);
+const folderStack = ref<any[]>([]);
+const folders = ref<any[]>([]);
+const files = ref<any[]>([]);
+const loading = ref(false);
+const selectedFolderToDelete = ref("");
 const props = defineProps({
-  objectId: {
-    type: String,
-    required: true,
-  },
+  objectId: String,
   type: {
     type: String,
     required: true,
   },
 });
 
-// Stack to manage navigation (each element = a folder level)
-const folderStack = ref<any[]>([]);
-
-// Currently viewed folder (null = root)
 const currentFolder = computed(
   () => folderStack.value[folderStack.value.length - 1] || null
 );
 
-const folders = ref<any[]>([]);
-const files = ref<any[]>([]);
-const loading = ref(false);
+const SweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+  Icon: "",
+});
 
+const openDeleteFolderAlert = (folder: any = "") => {
+  selectedFolderToDelete.value = folder.id;
+  SweetAlertProps.value = {
+    title: `Delete ${folder.title} folder?`,
+    subtitle:
+      "Once deleted, you will not be able to recover this folder and the content in it.",
+    isSweetAlertOpen: true,
+    btntext: "Delete",
+    Icon: "fas fa-bell",
+  };
+};
 // Fetch top-level folders
 const fetchTopLevelFolders = async () => {
   loading.value = true;
@@ -53,11 +70,9 @@ const fetchFolderContents = async (folderId: string) => {
       `/api/media-folder/${folderId}/sub-folders/`
     );
     folders.value = subfolderResp.data;
-
     const fileResp = await api.get(
       `/api/attachment/by-object/${folderId}/?type=${props.type}`
     );
-    // console.log("fileder", folderId);
     files.value = fileResp.data;
   } catch (error) {
     console.error("Error fetching folder contents:", error);
@@ -81,85 +96,74 @@ const goBack = async () => {
     await fetchTopLevelFolders();
   }
 };
-
+const openCreateFolderModal = ref(false);
+const selectedParentFolder = ref("");
 // Add new folder
 const openAddFolderModal = async () => {
-  const folderName = prompt("Enter folder name:");
-  if (!folderName) return;
+  selectedParentFolder.value = currentFolder.value
+    ? currentFolder.value.id
+    : "";
+  openCreateFolderModal.value = true;
+  // const folderName = prompt("Enter folder name:");
+  // if (!folderName) return;
 
-  try {
-    await api.post("/api/media-folder/", {
-      title: folderName,
-      object: props.objectId,
-      type: props.type,
-      parent: currentFolder.value ? currentFolder.value.id : null,
-    });
-    currentFolder.value
-      ? fetchFolderContents(currentFolder.value.id)
-      : fetchTopLevelFolders();
-  } catch (error) {
-    console.error("Error adding folder:", error);
+  // try {
+  //   await api.post("/api/media-folder/", {
+  //     title: folderName,
+  //     object: props.objectId,
+  //     type: props.type,
+  //     parent: currentFolder.value ? currentFolder.value.id : null,
+  //   });
+  //   currentFolder.value
+  //     ? fetchFolderContents(currentFolder.value.id)
+  //     : fetchTopLevelFolders();
+  // } catch (error) {
+  //   console.error("Error adding folder:", error);
+  // }
+};
+
+const getFoldersNow = async () => {
+  // notyf.success("Folder created successfully");
+  if (selectedParentFolder.value) {
+    await fetchFolderContents(selectedParentFolder.value);
+  } else {
+    await fetchTopLevelFolders();
   }
 };
 
-const selectedObject = ref("");
-const openFileModal = ref(false);
 const openAddFileModal = async () => {
   selectedObject.value = currentFolder.value
     ? currentFolder.value.id
     : props.objectId;
-  openFileModal.value = true;
-
-  // prompt(`${currentFolder.value.title} and id ${currentFolder.value.id}`);
-  // const fileTitle = prompt("Enter file title:");
-  // if (!fileTitle) return;
-
-  // try {
-  //   await api.post("/api/attachment/", {
-  //     title: fileTitle,
-  //     object: currentFolder.value ? currentFolder.value.id : props.objectId,
-  //     type: props.type,
-  //     file: "https://example.com/path-to-your-file",
-  //   });
-  //   if (currentFolder.value) {
-  //     await fetchFolderContents(currentFolder.value.id);
-  //   }
-  // } catch (error) {
-  //   console.error("Error adding file:", error);
-  // }
+  if (props.type === "photos") {
+    openPhotoModal.value = true;
+  } else {
+    openFileModal.value = true;
+  }
 };
 
-// Delete folder
-const deleteFolder = async (folderId: string) => {
-  if (!confirm("Are you sure you want to delete this folder?")) return;
-
+const deleteFolder = async () => {
   try {
-    await api.delete(`/api/media-folder/${folderId}/`);
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    await api.delete(`/api/media-folder/${selectedFolderToDelete.value}/`);
+    goBack();
     if (currentFolder.value) {
       await fetchFolderContents(currentFolder.value.id);
     } else {
       await fetchTopLevelFolders();
     }
+    notyf.success("Folder deleted successfully");
   } catch (error) {
     console.error("Error deleting folder:", error);
   }
 };
 
-// Delete file
-const deleteFile = async (fileId: string) => {
-  if (!confirm("Are you sure you want to delete this file?")) return;
-
-  try {
-    await api.delete(`/api/attachment/${fileId}/`);
-    if (currentFolder.value) {
-      await fetchFolderContents(currentFolder.value.id);
-    }
-  } catch (error) {
-    console.error("Error deleting file:", error);
+const getFolderContent = async () => {
+  if (currentFolder.value) {
+    await fetchFolderContents(currentFolder.value.id);
   }
 };
 
-// Initial load
 onMounted(() => {
   fetchTopLevelFolders();
 });
@@ -169,7 +173,7 @@ onMounted(() => {
   <div>
     <div class="card-grid-toolbar">
       <VButton
-        color="dark"
+        color="warning"
         light
         class="mr-1"
         size="medium"
@@ -180,44 +184,52 @@ onMounted(() => {
       >
       </VButton>
       <div>
-        <span v-if="!currentFolder">📂 Root Folders</span>
-        <span v-else>📂 {{ currentFolder.title }}</span>
+        <VButton
+          v-if="!currentFolder"
+          icon="fas fa-folder"
+          color="warning"
+          light
+          bold
+          fullwidth
+          >Main Folders</VButton
+        >
+        <VButton
+          v-else
+          color="warning"
+          light
+          bold
+          fullwidth
+          icon="fas fa-folder-open"
+          >{{ currentFolder.title }}</VButton
+        >
       </div>
-      <!-- <VControl icon="feather:search">
-        <input
-          v-model="filters"
-          class="input custom-text-filter"
-          placeholder="Search..."
-        />
-      </VControl> -->
 
       <div class="buttons">
-        <!-- <VField class="h-hidden-mobile">
-          <VControl>
-            <Multiselect
-              v-model="valueSingle"
-              :options="optionsSingle"
-              :max-height="145"
-              placeholder="Select an option"
-            />
-          </VControl>
-        </VField> -->
-        <VButton @click="openAddFileModal" color="primary" raised>
+        <VButton
+          v-if="currentFolder"
+          @click="openAddFileModal"
+          color="primary"
+          light
+          outlined
+          raised
+        >
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
           </span>
-          <span>File</span>
+          <span>{{ props.type == "photos" ? "Photos" : "File" }}</span>
         </VButton>
-        <VButton @click="openAddFolderModal" color="info" raised>
+        <VButton @click="openAddFolderModal" color="info" outlined raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-folder-plus" />
           </span>
           <span>Folder</span>
         </VButton>
         <VButton
-          @click.stop="deleteFolder(currentFolder.id)"
+          v-if="currentFolder"
+          @click="openDeleteFolderAlert(currentFolder)"
           color="danger"
           raised
+          outlined
         >
           <span class="icon">
             <i aria-hidden="true" class="fas fa-trash" />
@@ -228,23 +240,16 @@ onMounted(() => {
     </div>
 
     <div>
-      <!-- <h1 class="text-2xl font-bold">📁 Folder Navigator</h1>
-      <div class="mb-4 flex justify-between">
-        <div>
-          <span v-if="!currentFolder">📂 Root Folders</span>
-          <span v-else>📂 {{ currentFolder.title }}</span>
-        </div>
-        <div class="space-x-2">
-          <button v-if="folderStack.length" @click="goBack" class="btn">
-            ⬅️ Back
-          </button>
-          <button @click="openAddFolderModal" class="btn">+ Folder</button>
-          <button @click="openAddFileModal" class="btn">+ File</button>
-        </div>
-      </div> -->
-
       <!-- Loading -->
-      <div v-if="loading" class="text-gray-500 text-sm">Loading...</div>
+      <div v-if="loading" class="card-grid card-grid-v4">
+        <div class="columns is-multiline">
+          <div v-for="i in 18" :key="i" class="column is-2">
+            <div class="card-grid-item">
+              <VPlaceload height="160px" />
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Folders -->
       <div class="card-grid card-grid-v4">
@@ -262,24 +267,39 @@ onMounted(() => {
               </div>
             </a>
           </div>
+          <NewDocumentViewer
+            v-for="file in files"
+            v-if="files.length"
+            :key="file.id"
+            :file="file"
+            @updateOnSuccess="getFolderContent"
+          />
         </TransitionGroup>
-        <div v-if="files.length" v-for="file in files" :key="file.id">
-          <NewDocumentViewer :file="file" />
-        </div>
       </div>
-
-      <!-- Files -->
-      <!-- <div v-if="files.length">
-        <div v-for="file in files" :key="file.id">
-          <NewDocumentViewer :file="file" />
-        </div>
-      </div> -->
 
       <div
         v-if="!folders.length && !files.length && !loading"
-        class="text-gray-400 text-sm"
+        class="card-grid card-grid-v4"
       >
-        This folder is empty.
+        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+          <div class="column is-2">
+            <div class="card-grid-item">
+              <img
+                class="light-image"
+                src="/@src/assets/illustrations/placeholders/search-4.svg"
+                alt=""
+              />
+              <img
+                class="dark-image"
+                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                alt=""
+              />
+              <div class="card-grid-item-content">
+                <h3 class="dark-inverted">No Item Found</h3>
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
       </div>
       <UploadDocumentModal
         v-if="openFileModal"
@@ -288,6 +308,36 @@ onMounted(() => {
         :type="props.type"
         @close:ModalHandler="openFileModal = false"
         @update:OnSuccess="fetchFolderContents(selectedObject)"
+      />
+      <UploadPhotosModal
+        v-if="openPhotoModal"
+        :openFileModal="openPhotoModal"
+        :object="selectedObject"
+        :type="props.type"
+        @close:ModalHandler="openPhotoModal = false"
+        @update:OnSuccess="fetchFolderContents(selectedObject)"
+      />
+      <SweetAlert
+        v-if="SweetAlertProps.isSweetAlertOpen"
+        :title="SweetAlertProps.title"
+        :subtitle="SweetAlertProps.subtitle"
+        :btntext="SweetAlertProps.btntext"
+        :icon="SweetAlertProps.Icon"
+        :onCancel="
+          () => {
+            SweetAlertProps.isSweetAlertOpen = false;
+          }
+        "
+        :onConfirm="deleteFolder"
+      ></SweetAlert>
+      <CreateFolderModal
+        v-if="openCreateFolderModal"
+        :open-create-folder-modal="openCreateFolderModal"
+        :type="props.type"
+        :object="currentFolder.id"
+        :parent="selectedParentFolder"
+        @update:modalHandler="openCreateFolderModal = false"
+        @update:OnSuccess="getFoldersNow"
       />
     </div>
   </div>

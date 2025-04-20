@@ -17,6 +17,10 @@ const props = withDefaults(
     title: "Todo",
     labels: () => ["Today", "All"],
     getUserTodo: false,
+    todoId: "",
+    project: "",
+    task: "",
+    user: "",
   }
 );
 
@@ -107,12 +111,10 @@ const getProjectTodos = async () => {
     loading.value = false;
   }
 };
-const getUserTodos = async () => {
+const getUserTodos = async (id: any) => {
   try {
     loading.value = true;
-    const response = await api.get(
-      `/api/todo/?assigned_to=${userSession.user.id}`
-    );
+    const response = await api.get(`/api/todo/?assigned_to=${id}`);
     todosList.value = response.data;
   } catch (error) {
     console.log("getting todos", error);
@@ -170,11 +172,13 @@ const todayTodos = computed(() => {
 
 const getTodoHandler = () => {
   if (props.getUserTodo == true) {
-    getUserTodos();
+    getUserTodos(userSession.user.id);
   } else if (props.project) {
     getProjectTodos();
   } else if (props.task) {
     getTaskTodos();
+  } else if (props.user) {
+    getUserTodos(props.user);
   } else {
     getAllTodos();
   }

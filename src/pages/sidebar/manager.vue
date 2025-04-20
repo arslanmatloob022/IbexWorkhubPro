@@ -11,16 +11,17 @@ const layoutSwitcher = useLayoutSwitcher();
 </script>
 
 <template>
-  <!-- Content Wrapper -->
-  <ManagerSidebar
+  <component
+    :is="layoutSwitcher.dynamicLayoutComponent as any"
     v-bind="layoutSwitcher.dynamicLayoutProps"
     close-on-change
     default-sidebar="layout"
   >
+    <!-- Content Wrapper -->
     <RouterView v-slot="{ Component }">
-      <Transition name="fade-fast" mode="out-in">
+      <Transition name="translate-page-x" mode="out-in">
         <component :is="Component" />
       </Transition>
     </RouterView>
-  </ManagerSidebar>
+  </component>
 </template>

@@ -60,6 +60,7 @@ const valueSingle = ref("");
 const props = defineProps<{
   jobId?: "";
   getUserActivities?: boolean;
+  user?: string;
 }>();
 
 const openActivityModal = (activity: any) => {
@@ -67,10 +68,10 @@ const openActivityModal = (activity: any) => {
   showAddUpdateContactModal.value = true;
 };
 
-const getLeadActivitiesHandler = async () => {
+const getLeadActivitiesHandler = async (id: any) => {
   try {
     loading.value = true;
-    const response = await api.get(`/api/activity/by-object/${props.jobId}/`);
+    const response = await api.get(`/api/activity/by-object/${id}/`);
     activitiesList.value = response.data;
   } catch (error: any) {
     notyf.error(`something get wrong`);
@@ -79,12 +80,10 @@ const getLeadActivitiesHandler = async () => {
   }
 };
 
-const getUserActivitiesHandler = async () => {
+const getUserActivitiesHandler = async (id: any) => {
   try {
     loading.value = true;
-    const response = await api.get(
-      `/api/activity/by-user/${userSession.user.id}/`
-    );
+    const response = await api.get(`/api/activity/by-user/${id}/`);
     activitiesList.value = response.data;
   } catch (error: any) {
     notyf.error(`something get wrong`);
@@ -149,9 +148,11 @@ const filteredData = computed(() => {
 
 const getActivitiesHandler = () => {
   if (props.getUserActivities) {
-    getUserActivitiesHandler();
+    getUserActivitiesHandler(userSession.user.id);
+  } else if (props.user) {
+    getUserActivitiesHandler(props.user);
   } else if (props.jobId) {
-    getLeadActivitiesHandler();
+    getLeadActivitiesHandler(props.jobId);
   } else {
     getAllActivitiesHandler();
   }

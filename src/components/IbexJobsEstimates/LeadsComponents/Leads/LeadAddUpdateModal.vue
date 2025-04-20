@@ -407,6 +407,17 @@ const getAddressFromZip = async (zipCode: string) => {
   }
 };
 
+const selectedFileTitle = ref("");
+const handleFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const selectedFile = input.files?.[0];
+  input.value = "";
+  if (selectedFile) {
+    leadFormData.value.image = selectedFile;
+    selectedFileTitle.value = selectedFile.name;
+  }
+};
+
 watch(
   () => leadFormData.value.leadStatus,
 
@@ -481,7 +492,7 @@ onMounted(async () => {
           <VCard class="columns is-multiline">
             <h3 class="title is-6 mb-2">General Information</h3>
             <div class="columns is-multiline">
-              <div class="field column is-12 mb-0">
+              <div class="field column is-8 mb-0">
                 <label>Opportunity Title: *</label>
                 <div class="control">
                   <input
@@ -493,6 +504,37 @@ onMounted(async () => {
                     placeholder="Opportunity Title"
                   />
                 </div>
+              </div>
+              <div class="field column is-4 mb-0">
+                <label>Image</label>
+
+                <VField grouped>
+                  <VControl>
+                    <div class="file">
+                      <label class="file-label">
+                        <input
+                          class="file-input"
+                          type="file"
+                          name="resume"
+                          @change="handleFileChange"
+                          accept="image/*"
+                        />
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-cloud-upload-alt" />
+                          </span>
+                          <span class="file-label">
+                            {{
+                              selectedFileTitle
+                                ? selectedFileTitle
+                                : "Upload an image"
+                            }}
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                  </VControl>
+                </VField>
               </div>
 
               <div class="field column is-3 mb-0">
