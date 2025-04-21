@@ -505,7 +505,7 @@ onMounted(async () => {
                   />
                 </div>
               </div>
-              <div class="field column is-4 mb-0">
+              <div class="field column is-2 mb-0">
                 <label>Image</label>
 
                 <VField grouped>
@@ -535,6 +535,14 @@ onMounted(async () => {
                     </div>
                   </VControl>
                 </VField>
+              </div>
+              <div class="field column is-2 mb-0">
+                <VAvatar
+                  class="mt-2"
+                  size="medium"
+                  :picture="leadFormData.image"
+                >
+                </VAvatar>
               </div>
 
               <div class="field column is-3 mb-0">

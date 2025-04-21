@@ -292,15 +292,7 @@ onMounted(() => {
               <!--left-->
               <div class="left">
                 <div class="current-user">
-                  <VAvatar
-                    size="large"
-                    :picture="
-                      leadDetail.current_state == 'lead'
-                        ? '/icons/lead-shield-96.png'
-                        : '/icons/job-sheild.png'
-                    "
-                    squared
-                  />
+                  <VAvatar size="large" :picture="leadDetail.image" squared />
                   <h3>
                     {{ leadDetail.title ? leadDetail.title : "No Title" }}
                     <sup
@@ -314,6 +306,14 @@ onMounted(() => {
 
               <!--Center-->
               <div class="center">
+                <h4 class="block-heading">Current State</h4>
+
+                <p>
+                  {{
+                    leadDetail.current_state == "lead" ? "Is Lead" : "Is Job"
+                  }}
+                  <!-- {{ leadDetail.current_state == "lead" ? "Lead" : "Job" }} -->
+                </p>
                 <h4 class="block-heading">Address</h4>
                 <p class="block-text">
                   {{

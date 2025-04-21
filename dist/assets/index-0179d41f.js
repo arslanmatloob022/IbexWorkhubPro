@@ -1,0 +1,1 @@
+import{f as s,x as a,o as e,C as n,D as o}from"./index-cef3c94b.js";const r=s({__name:"index",setup(s){const r=a();return e((()=>{r.push("/navbar/dashboards")})),(s,a)=>(n(),o("div"))}});export{r as default};

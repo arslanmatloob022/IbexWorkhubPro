@@ -305,6 +305,15 @@ onMounted(() => {
                 ><span>All</span></a
               >
             </li>
+            <li :class="[tab === 'calendar' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'calendar'"
+                @click="tab = 'calendar'"
+                ><span>Calendar</span></a
+              >
+            </li>
             <li :class="[tab === 'closed' && 'is-active']">
               <a
                 tabindex="0"
@@ -321,7 +330,7 @@ onMounted(() => {
     </div>
 
     <div class="flex-list-wrapper flex-list-v2">
-      <div v-if="tab === 'active'" class="tab-content is-active">
+      <div v-if="tab === 'active'">
         <div class="all-projects">
           <div class="all-projects-header">
             <div class="header-item">
@@ -552,7 +561,7 @@ onMounted(() => {
       </div>
 
       <!--inactive Tab-->
-      <div v-else-if="tab === 'closed'" class="tab-content is-active">
+      <div v-else-if="tab === 'closed'">
         <div class="all-projects">
           <!-- <ProjectsToolbar /> -->
 
@@ -704,6 +713,11 @@ onMounted(() => {
               />
             </template>
           </VPlaceholderPage>
+        </div>
+      </div>
+      <div v-else-if="tab === 'calendar'">
+        <div class="all-projects">
+          <ProjectTasksCalendar :projectID="props.projectID" />
         </div>
       </div>
     </div>

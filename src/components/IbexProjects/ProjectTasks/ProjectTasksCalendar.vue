@@ -133,7 +133,7 @@ onMounted(() => {
   left: 0;
   min-width: 100%;
   height: 100%;
-  background-color: white;
+  // background-color: transparent;
   z-index: 99;
   padding: 6px;
   overflow: auto;
@@ -141,7 +141,7 @@ onMounted(() => {
 
 #CalendarStyling {
   td {
-    border: 1px solid #ebebeb !important;
+    border: 1px solid var(--dark-inverted) !important;
   }
 
   tr {
@@ -149,7 +149,10 @@ onMounted(() => {
   }
 
   th {
+    background-color: var(--primary) !important;
     border: none;
+
+    color: #f1f1f1 !important;
   }
 
   table {
@@ -211,7 +214,7 @@ onMounted(() => {
     left: 0;
     min-width: 100%;
     height: 100%;
-    background-color: white;
+    // background-color: white;
     z-index: 99;
     padding: 6px;
     overflow: auto;
@@ -219,19 +222,20 @@ onMounted(() => {
 
   #rota-celender {
     td {
-      border: 1px solid white !important;
+      border: 1px solid var(--dark-inverted) !important;
     }
 
     tr {
-      border: 1px solid white !important;
+      border: 1px solid var(--dark-inverted) !important;
     }
 
     th {
-      border: 1px solid white !important;
+      background-color: transparent !important;
+      border: 1px solid var(--dark-inverted) !important;
     }
 
     table {
-      border: 1px solid white !important;
+      border: 1px solid var(--dark-inverted) !important;
     }
 
     .fc .fc-col-header-cell-cushion {
