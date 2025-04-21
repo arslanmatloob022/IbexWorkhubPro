@@ -232,7 +232,7 @@ onMounted(() => {
   <div>
     <PlaceloadV1 v-if="loading" />
     <div v-else>
-      <div class="list-flex-toolbar flex-list-v1">
+      <div class="list-flex-toolbar">
         <VField>
           <VControl icon="feather:search">
             <input
@@ -300,28 +300,6 @@ onMounted(() => {
 
       <div class="page-content-inner">
         <div class="flex-list-wrapper flex-list-v1">
-          <VPlaceholderPage
-            v-if="!secondFiltered?.length"
-            title="We couldn't find any matching results."
-            subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
-            larger
-          >
-            <template #image>
-              <img
-                class="light-image"
-                src="/@src/assets/illustrations/placeholders/search-4.svg"
-                alt=""
-              />
-              <img
-                class="dark-image"
-                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-                alt=""
-              />
-            </template>
-          </VPlaceholderPage>
-
           <div class="tabs-wrapper column is-12">
             <div class="tabs-inner">
               <div class="tabs is-toggle">
@@ -350,6 +328,27 @@ onMounted(() => {
               </div>
             </div>
           </div>
+          <VPlaceholderPage
+            v-if="!secondFiltered?.length"
+            title="We couldn't find any matching results."
+            subtitle="Too bad. Looks like we couldn't find any matching results for the
+          search terms you've entered. Please try different search terms or
+          criteria."
+            larger
+          >
+            <template #image>
+              <img
+                class="light-image"
+                src="/@src/assets/illustrations/placeholders/search-4.svg"
+                alt=""
+              />
+              <img
+                class="dark-image"
+                src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                alt=""
+              />
+            </template>
+          </VPlaceholderPage>
           <div v-if="tab === 'all'">
             <VFlexTable
               v-if="secondFiltered?.length"
