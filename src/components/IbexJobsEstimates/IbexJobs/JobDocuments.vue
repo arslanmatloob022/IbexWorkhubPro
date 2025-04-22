@@ -177,9 +177,9 @@ onMounted(() => {
     </div>
 
     <div v-if="mainTab == 'documents'">
-      <!-- <NewJobFolders type="documents" :objectId="props.leadId" /> -->
+      <NewJobFolders type="documents" :objectId="props.leadId" />
       <!-- <JobFolders type="documents" :object="props.leadId"></JobFolders> -->
-      <div class="tabs-wrapper">
+      <!-- <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
@@ -297,7 +297,7 @@ onMounted(() => {
             </ul>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="tile-grid tile-grid-v2">
         <!--List Empty Search Placeholder -->
@@ -322,7 +322,7 @@ onMounted(() => {
             />
           </template>
         </VPlaceholderPage>
-        <div v-if="tab == 'contracts'">
+        <!-- <div v-if="tab == 'contracts'">
           <ObjectDocumentsTiles
             @deleteFolderUpdate="getAllFolders('documents')"
             doc-type="contracts"
@@ -377,8 +377,8 @@ onMounted(() => {
             doc-type="miscellaneous"
             :object-id="props.leadId"
           />
-        </div>
-        <div v-if="tab == 'files'">
+        </div> -->
+        <!-- <div v-if="tab == 'files'">
           <ProjectFiles
             :projectId="props.leadId"
             :files="props.uploaded_files"
@@ -387,8 +387,8 @@ onMounted(() => {
         </div>
         <div v-if="tab == 'calculations'">
           <ExcelSheetComponent :object-id="props.leadId" />
-        </div>
-        <div v-for="item in documentsFoldersList" :key="item.id">
+        </div> -->
+        <!-- <div v-for="item in documentsFoldersList" :key="item.id">
           <div v-if="tab == item.title">
             <ObjectDocumentsTiles
               @deleteFolderUpdate="getAllFolders('documents')"
@@ -397,13 +397,13 @@ onMounted(() => {
               :folderId="item.id"
             />
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div v-if="mainTab == 'photos'">
-      <!-- <NewJobFolders type="photos" :objectId="props.leadId" /> -->
-      <div class="tabs-wrapper">
+      <NewJobFolders type="photos" :objectId="props.leadId" />
+      <!-- <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
@@ -494,10 +494,9 @@ onMounted(() => {
             </ul>
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <div class="tile-grid tile-grid-v2">
-        <!--List Empty Search Placeholder -->
+      <!-- <div class="tile-grid tile-grid-v2">
         <VPlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
           title="We couldn't find any matching results."
@@ -558,11 +557,11 @@ onMounted(() => {
             />
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div v-if="mainTab == 'videos'">
-      <!-- <NewJobFolders type="videos" :objectId="props.leadId" /> -->
-      <div class="tabs-wrapper">
+      <NewJobFolders type="videos" :objectId="props.leadId" />
+      <!-- <div class="tabs-wrapper">
         <div class="tabs-inner">
           <div class="tabs">
             <ul>
@@ -624,9 +623,8 @@ onMounted(() => {
             </ul>
           </div>
         </div>
-      </div>
-      <div class="tile-grid tile-grid-v2">
-        <!--List Empty Search Placeholder -->
+      </div> -->
+      <!-- <div class="tile-grid tile-grid-v2">
         <VPlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
           title="We couldn't find any matching results."
@@ -672,7 +670,7 @@ onMounted(() => {
             />
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <UploadDocumentModal
       v-if="openFileModal"

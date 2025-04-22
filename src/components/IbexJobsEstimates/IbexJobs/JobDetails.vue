@@ -409,6 +409,15 @@ onMounted(() => {
                         ><span>Documents/Files</span></a
                       >
                     </li>
+                    <li :class="[tab === 'files' && 'is-active']">
+                      <a
+                        tabindex="0"
+                        role="button"
+                        @keydown.space.prevent="tab = 'files'"
+                        @click="tab = 'files'"
+                        ><span>Old Estimates</span></a
+                      >
+                    </li>
                     <li :class="[tab === 'proposals' && 'is-active']">
                       <a
                         tabindex="0"
@@ -748,6 +757,16 @@ onMounted(() => {
               </div>
             </div>
           </div>
+          <div v-if="tab == 'files'" class="column is-12">
+            <ProjectFiles
+              :projectId="route.params.id"
+              :files="leadDetail.uploaded_files"
+              @update:on-upload-file="getLeadDetailHandler"
+            />
+          </div>
+          <!-- <div v-if="tab == 'calculations'">
+            <ExcelSheetComponent :object-id="props.leadId" />
+          </div> -->
           <div v-if="tab === 'documents'" class="column is-12">
             <JobDocuments
               :leadId="route.params.id"
@@ -855,13 +874,13 @@ onMounted(() => {
               <CalculationsList :objectId="route.params.id" />
             </div>
           </div>
-          <div v-if="tab == 'files'">
+          <!-- <div v-if="tab == 'files'">
             <ProjectFiles
               :projectId="route.params.id"
               :files="leadDetail.uploaded_files"
               @update:on-upload-file="getLeadDetailHandler"
             />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
