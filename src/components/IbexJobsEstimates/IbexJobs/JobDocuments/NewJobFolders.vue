@@ -365,7 +365,7 @@ onMounted(() => {
     flex-direction: column;
     padding: 10px;
     border-radius: 16px;
-    min-height: 200px;
+    min-height: 180px;
 
     &:hover,
     &:focus {
@@ -375,13 +375,13 @@ onMounted(() => {
     > img {
       display: block;
       border-radius: 12px;
-      width: 100%;
-      height: 160px;
+      // width: 100%;
+      height: 64%;
       object-fit: cover;
     }
 
     .card-grid-item-content {
-      padding: 12px 5px;
+      padding: 8px 5px;
 
       h3 {
         font-family: var(--font-alt);

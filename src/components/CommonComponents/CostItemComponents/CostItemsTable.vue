@@ -314,7 +314,17 @@ onMounted(() => {});
 
 <style lang="scss" scoped>
 .custom-description {
-  color: #333 !important;
+  color: #000000 !important;
+
+  ::v-deep p {
+    color: var(--dark-text) !important;
+    font-style: normal !important;
+    font-family: var(--font) !important;
+  }
+}
+
+p {
+  color: var(--dark-text) !important;
 }
 
 .draggable-item {
