@@ -19,6 +19,7 @@ const api = useApi();
 const route = useRoute();
 const router = useRouter();
 const loading = ref(false);
+const fileLoading = ref(false);
 const selectedStatus = ref("");
 const selectedDeleteProposalId = ref("");
 const DeleteSweetAlertProps = ref({
@@ -251,6 +252,7 @@ const handleFileChange = (event: Event) => {
 
 const createEstimates = async () => {
   try {
+    fileLoading.value = true;
     const resp = await api.post(
       `/api/lead-proposal/upload-estimates/${route.params.id}/`,
       {
@@ -259,8 +261,12 @@ const createEstimates = async () => {
     );
     notyf.success(`${resp.data}`);
     getProposalDetail();
+    selectedFileTitle.value = "";
+    file.value = null;
   } catch (err) {
     console.log(err);
+  } finally {
+    fileLoading.value = false;
   }
 };
 
@@ -321,12 +327,13 @@ onMounted(async () => {
           class="mr-2"
           light
           outlined
+          :loading="fileLoading"
           color="warning"
           raised
           @click="createEstimates"
           v-if="selectedFileTitle"
         >
-          Create Estimates
+          {{ fileLoading ? "Generating Estimates.." : "Create Estimates" }}
         </VButton>
         <VField grouped class="mr-2">
           <VControl>
@@ -345,7 +352,9 @@ onMounted(async () => {
                   </span>
                   <span class="file-label">
                     {{
-                      selectedFileTitle ? selectedFileTitle : "Choose a file…"
+                      selectedFileTitle
+                        ? selectedFileTitle
+                        : "Upload Estimates File."
                     }}
                   </span>
                 </span>

@@ -298,6 +298,7 @@ onMounted(() => {});
                   >
                     <td v-for="(column, key) in props.columnsToShow" :key="key">
                       <div
+                        class="custom-description"
                         v-if="column === 'description'"
                         v-html="cost[getColumnData[column]]"
                       ></div>
@@ -391,6 +392,15 @@ onMounted(() => {});
 
 <style lang="scss" scoped>
 @import "/@src/scss/abstracts/all";
+.custom-description {
+  color: #000000 !important;
+
+  ::v-deep p {
+    color: var(--dark-text) !important;
+    font-style: normal !important;
+    font-family: var(--font) !important;
+  }
+}
 .footer {
   width: 100%;
   background-color: transparent;
