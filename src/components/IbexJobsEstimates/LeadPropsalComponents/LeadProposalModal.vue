@@ -245,6 +245,9 @@ onMounted(async () => {
   if (props.getLeadsList) {
     getLeadsList();
   }
+  if (props.createTemplate) {
+    leadProposalFormData.value.is_template = true;
+  }
 });
 onUnmounted(() => {
   emit("clearProposalId", null);
