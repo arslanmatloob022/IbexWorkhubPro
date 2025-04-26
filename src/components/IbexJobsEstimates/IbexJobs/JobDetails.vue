@@ -309,9 +309,14 @@ onMounted(() => {
                 <h4 class="block-heading">Current State</h4>
 
                 <p>
-                  {{
+                  <VTag rounded color="warning">
+                    {{
+                      leadDetail.current_state == "lead" ? "Is Lead" : "Is Job"
+                    }}
+                  </VTag>
+                  <!-- {{
                     leadDetail.current_state == "lead" ? "Is Lead" : "Is Job"
-                  }}
+                  }} -->
                   <!-- {{ leadDetail.current_state == "lead" ? "Lead" : "Job" }} -->
                 </p>
                 <h4 class="block-heading">Address</h4>
@@ -366,7 +371,7 @@ onMounted(() => {
                     icon="fas fa-pen"
                   >
                     Update
-                    {{ leadDetail.current_state == "lead" ? "lead" : "job" }}
+                    {{ leadDetail.current_state == "lead" ? "Lead" : "Job" }}
                   </VButton>
                   <VButton
                     v-if="leadDetail.current_state != 'lead'"

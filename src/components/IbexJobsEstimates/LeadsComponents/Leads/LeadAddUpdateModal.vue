@@ -175,6 +175,8 @@ const leadFormData = ref<leadData>({
   property_features: false,
 });
 
+const leadNotes = ref("Enter Notes");
+
 const lead_status = ref([
   { value: "open", label: "Open" },
   { value: "onHold", label: "On Hold" },
@@ -193,6 +195,7 @@ const projectTypes = ref([
 const addUpdateLeadHandler = async (loading: number = 0) => {
   try {
     isLoading.value = loading;
+    leadFormData.value.notes = leadNotes.value;
     leadFormData.value.tags = JSON.stringify(tagsValue.value);
     const formDataAPI = convertToFormData(leadFormData.value, ["image"]);
     if (!leadFormData.value.client) {
@@ -249,6 +252,7 @@ const getLeadDetailHandler = async () => {
     );
     leadFormData.value = response.data;
     tagsValue.value = response.data.tags;
+    leadNotes.value = response.data.notes ? response.data.notes : "";
   } catch (error: any) {
     notyf.error(` ${error}, Lead`);
   } finally {
@@ -936,7 +940,7 @@ onMounted(async () => {
             <h3 class="title is-6 mb-2">Notes</h3>
             <div class="field column is-12 mb-0">
               <CKEditor
-                v-model="leadFormData.notes"
+                v-model="leadNotes"
                 :editor="ClassicEditor"
                 :config="config"
               />

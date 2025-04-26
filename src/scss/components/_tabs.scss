@@ -46,7 +46,8 @@
         transition: all 0.3s; // transition-all test
 
         &:hover {
-          border-color: #dbdbdb;
+          border-color: var(--primary-light-24);
+          color: var(--primary);
         }
       }
     }
@@ -69,12 +70,12 @@
     a {
       font-family: var(--font);
       border-bottom-width: 2px;
-      color: var(--placeholder);
+      color: var(--dark-text);
       border-bottom-color: transparent;
 
       &:hover,
       &:focus {
-        color: var(--light-text);
+        color: var(--dark-text);
         border-bottom-color: transparent;
       }
 
@@ -243,7 +244,7 @@
         width: 50%;
 
         a {
-          color: var(--light-text);
+          color: var(--dark-text);
           font-family: var(--font);
           height: 40px;
           border-bottom: none;
@@ -338,7 +339,7 @@
         &.is-profile {
           li {
             a {
-              color: var(--smoke-white) !important;
+              color: var(--dark-text) !important;
             }
 
             &.is-active a {
@@ -352,7 +353,7 @@
         width: 33.3%;
 
         a {
-          color: var(--light-text);
+          color: var(--dark-text);
           font-family: var(--font);
           font-weight: 400;
           height: 40px;
