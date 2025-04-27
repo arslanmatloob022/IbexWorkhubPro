@@ -79,11 +79,12 @@ onMounted(() => {});
 
 <template>
   <div class="column is-2">
-    <a class="card-grid-item">
+    <a class="card-grid-item is-relative">
       <img
         v-if="
           props.file?.file_info?.type === 'png' ||
           props.file?.file_info?.type === 'jpg' ||
+          props.file?.file_info?.type === 'webp' ||
           props.file?.file_info?.type === 'jpeg'
         "
         :src="props.file?.file_info?.url"
@@ -103,10 +104,23 @@ onMounted(() => {});
         <h3 @click="openDocViewModalHandler(props.file)" class="dark-inverted">
           {{ props.file?.title }}
         </h3>
-        <i
+        <span>
+          <span
+            >{{
+              props.file?.file_info?.size ? props.file?.file_info?.size : 0.0
+            }}
+            MB</span
+          >
+          <!-- <i aria-hidden="true" class="fas fa-circle icon-separator" /> -->
+          <!-- <span>At:{{ formatDate(props.document.created_at) }}</span> -->
+        </span>
+        <VIconWrap
+          style="position: absolute; top: 1%; right: 1%"
           @click="openDeleteFileAlert(props.file?.id)"
-          class="fas fa-trash danger-text"
-        ></i>
+          icon="fas fa-trash"
+          color="danger"
+        >
+        </VIconWrap>
       </div>
     </a>
     <DocumentViewer

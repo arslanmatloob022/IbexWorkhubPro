@@ -123,7 +123,7 @@ onMounted(() => {
 <template>
   <div class="list-widget is-straight">
     <div class="widget-head">
-      <h3 class="dark-inverted">Tasks of Today</h3>
+      <h3 class="dark-inverted">Today Tasks</h3>
       <i
         @click="getTodayTask(true)"
         style="color: var(--primary)"
@@ -132,10 +132,10 @@ onMounted(() => {
       ></i>
     </div>
 
-    <div class="inner-list">
+    <div v-if="projectTodaysTasks.length" class="inner-list">
       <div>
         <VBlock
-          v-for="topic in projectTodaysTasks.tasks"
+          v-for="topic in projectTodaysTasks"
           :key="topic.id"
           center
           lighter
@@ -143,7 +143,7 @@ onMounted(() => {
         >
           <template #icon>
             <VIconWrap
-              icon="lucide:star"
+              icon="lucide:clock"
               dark-card-bordered
               dark="5"
               color="secondary"
@@ -160,6 +160,32 @@ onMounted(() => {
 
           <a href="#">{{ topic.title }}</a>
           <span>{{ topic.status }}</span>
+        </VBlock>
+      </div>
+    </div>
+    <div v-else class="inner-list">
+      <div>
+        <VBlock center lighter class="inner-list-item">
+          <template #icon>
+            <VIconWrap
+              icon="lucide:check"
+              dark-card-bordered
+              dark="5"
+              color="secondary"
+            />
+          </template>
+          <template #action>
+            <VIconWrap
+              color="success"
+              has-background
+              has-large-icon
+              icon="fas fa-check-circle"
+            >
+            </VIconWrap>
+          </template>
+
+          <a href="#">No Tasks Found Of This Day.</a>
+          <span>Today</span>
         </VBlock>
       </div>
     </div>

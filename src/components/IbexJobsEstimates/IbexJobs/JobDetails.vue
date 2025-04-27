@@ -6,9 +6,12 @@ import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { HotTable } from "@handsontable/vue3";
 // import saveAs from "file-saver";
+import { useFlexRadialChartCircle } from "/@src/data/widgets/charts/flexRadialChartCircleChart";
+
 import * as XLSX from "xlsx";
 import { settings } from "nprogress";
 import "handsontable/dist/handsontable.full.min.css";
+const { flexRadialChartCircleOptions } = useFlexRadialChartCircle();
 const route = useRoute();
 const router = useRouter();
 const api = useApi();
@@ -174,12 +177,12 @@ const data = [
   {
     type: "messages",
     count: 5,
-    status: "new",
+    status: "Approved",
   },
   {
     type: "tasks",
     count: 3,
-    status: "pending",
+    status: "Pending",
   },
 ];
 
@@ -511,7 +514,9 @@ onMounted(() => {
                   <!--Selector-->
                   <div class="column is-12">
                     <div class="feed-settings">
-                      <h3 class="dark-inverted">Job feeds</h3>
+                      <h3 class="dark-inverted">
+                        <!-- Job feeds -->
+                      </h3>
                       <div class="buttons">
                         <button
                           v-for="(tag, index) in leadDetail.tags"
@@ -524,17 +529,21 @@ onMounted(() => {
                     </div>
                   </div>
                   <!--Side Text-->
-                  <div class="column is-4">
-                    <div class="side-text">
+                  <div class="column is-12">
+                    <div class="side-text mt-0">
                       <h3 class="dark-inverted">Job Description</h3>
-
                       <div v-html="leadDetail.notes"></div>
 
-                      <a class="action-link" tabindex="0">Read More</a>
+                      <!-- <a class="action-link" tabindex="0">Read More</a> -->
                     </div>
                   </div>
+                  <div class="column is-12">
+                    <ProjectTasksStats :project="route.params.id" />
+                  </div>
+                  <!-- Progress -->
+
                   <!--Incoming-->
-                  <div class="column is-7 is-offset-1">
+                  <!-- <div class="column is-6">
                     <div class="incoming">
                       <VFlexTable rounded :data="data" :columns="columns">
                         <template #body-cell="{ row, column, value }">
@@ -551,10 +560,10 @@ onMounted(() => {
                             </VIconBox>
                             <div>
                               <span class="item-name dark-inverted"
-                                >Messages</span
+                                >Proposals</span
                               >
                               <span class="item-meta">
-                                <span>Inbox messages</span>
+                                <span>Approved Proposals</span>
                               </span>
                             </div>
                           </template>
@@ -595,14 +604,14 @@ onMounted(() => {
                         </template>
                       </VFlexTable>
                     </div>
-                  </div>
+                  </div> -->
 
                   <!--Rookies-->
                   <div class="column is-12">
                     <div class="recent-rookies">
                       <div class="recent-rookies-header">
                         <h3 class="dark-inverted">Internal Users</h3>
-                        <a class="action-link" tabindex="0">View All</a>
+                        <!-- <a class="action-link" tabindex="0">View All</a> -->
                       </div>
 
                       <div class="columns is-multiline user-grid user-grid-v4">
@@ -655,110 +664,7 @@ onMounted(() => {
                 <JobTodos :project="route.params.id" />
 
                 <!--Widget-->
-                <UIWidget class="picker-widget">
-                  <template #header>
-                    <div class="widget-toolbar">
-                      <div class="left">
-                        <a class="action-icon">
-                          <i
-                            aria-hidden="true"
-                            class="iconify ltr-hidden"
-                            data-icon="feather:chevron-right"
-                          />
-                          <i
-                            aria-hidden="true"
-                            class="iconify rtl-hidden"
-                            data-icon="feather:chevron-left"
-                          />
-                        </a>
-                      </div>
-                      <div class="center">
-                        <h3>October 2020</h3>
-                      </div>
-                      <div class="right">
-                        <a class="action-icon">
-                          <i
-                            aria-hidden="true"
-                            class="iconify rtl-hidden"
-                            data-icon="feather:chevron-right"
-                          />
-                          <i
-                            aria-hidden="true"
-                            class="iconify ltr-hidden"
-                            data-icon="feather:chevron-left"
-                          />
-                        </a>
-                      </div>
-                    </div>
-                  </template>
-                  <template #body>
-                    <table class="calendar">
-                      <thead>
-                        <tr>
-                          <th scope="col">Mon</th>
-                          <th scope="col">Tue</th>
-                          <th scope="col">Wed</th>
-                          <th scope="col">Thu</th>
-                          <th scope="col">Fri</th>
-                          <th scope="col">Sat</th>
-                          <th scope="col">Sun</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <td class="prev-month">29</td>
-                          <td class="prev-month">30</td>
-                          <td class="prev-month">31</td>
-                          <td>1</td>
-                          <td>2</td>
-                          <td>3</td>
-                          <td>4</td>
-                        </tr>
-
-                        <tr>
-                          <td>5</td>
-                          <td>6</td>
-                          <td>7</td>
-                          <td>8</td>
-                          <td>9</td>
-                          <td>10</td>
-                          <td>11</td>
-                        </tr>
-
-                        <tr>
-                          <td>12</td>
-                          <td>13</td>
-                          <td>14</td>
-                          <td>15</td>
-                          <td>16</td>
-                          <td>17</td>
-                          <td class="current-day">18</td>
-                        </tr>
-
-                        <tr>
-                          <td>19</td>
-                          <td>20</td>
-                          <td>21</td>
-                          <td>22</td>
-                          <td>23</td>
-                          <td>24</td>
-                          <td>25</td>
-                        </tr>
-
-                        <tr>
-                          <td>26</td>
-                          <td>27</td>
-                          <td>28</td>
-                          <td>29</td>
-                          <td>30</td>
-                          <td>31</td>
-                          <td class="next-month">1</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </template>
-                </UIWidget>
+                <ProjectTodayTasks :projectId="route.params.id" />
               </div>
             </div>
           </div>

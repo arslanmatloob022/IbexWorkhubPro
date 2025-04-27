@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { files } from "/@src/data/layouts/tile-grid-v2";
-import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { CreateActivityLog } from "/@src/composable/useSupportElement";
@@ -18,12 +16,14 @@ const emits = defineEmits<{
   (e: "deleteFolderUpdate", value: any): void;
 }>();
 
-const tab = ref("");
-const filters = ref("");
-const valueSingle = ref(0);
-const selectedType = ref("");
-const Loading = ref(false);
 const openFileModal = ref(false);
+const photosSubFolders = ref([]);
+const selectedType = ref("");
+const valueSingle = ref(0);
+const Loading = ref(false);
+const folderType = ref("");
+const filters = ref("");
+const tab = ref("");
 const objectsFiles = ref([
   {
     id: "27223081-e97a-4420-91f2-6a08da82d846",
@@ -101,11 +101,6 @@ const deleteFolderHandler = async () => {
   }
 };
 
-const openFolderDeleteModal = () => {
-  selectedType.value = props.docType;
-  openFileModal.value = !openFileModal.value;
-};
-
 const getObjectFiles = async () => {
   try {
     Loading.value = true;
@@ -119,7 +114,6 @@ const getObjectFiles = async () => {
     Loading.value = false;
   }
 };
-const photosSubFolders = ref([]);
 
 const getPhotosSubFolders = async () => {
   try {
@@ -151,7 +145,6 @@ const deleteSelectedDocumentHandler = async (id: any) => {
   }
 };
 
-const folderType = ref("");
 const openCreateFolderModal = ref(false);
 const addFolderHandler = (type: string = "") => {
   folderType.value = type;

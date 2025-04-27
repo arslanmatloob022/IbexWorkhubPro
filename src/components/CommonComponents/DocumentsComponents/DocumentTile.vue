@@ -28,6 +28,7 @@ const getFilesIcons = {
   ods: "/images/icons/files/sheet.svg",
   png: "/icons/png-icon.png",
   jpg: "/icons/jpg-50.png",
+  webp: "/icons/jpg-50.png",
   jpeg: "/icons/jpg-50.png",
   mp4: "/images/icons/files/video.svg",
 };

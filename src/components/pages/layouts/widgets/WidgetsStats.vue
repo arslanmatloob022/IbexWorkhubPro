@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import ApexChart from 'vue3-apexcharts'
+import ApexChart from "vue3-apexcharts";
 
-import { useSalesSparksCharts } from '/@src/data/widgets/charts/salesSparksChart'
-import { useRevenueAreaChart } from '/@src/data/widgets/charts/revenueAreaChart'
-import { useLineStatsWidgetCharts } from '/@src/data/widgets/charts/lineStatsWidgetChart'
-import { useFlexRadialChartCircle } from '/@src/data/widgets/charts/flexRadialChartCircleChart'
-import { useFlexRadialChartStripes } from '/@src/data/widgets/charts/flexRadialChartStripesChart'
-import { useGroupedCircleCharts } from '/@src/data/widgets/charts/groupedCircleCharts'
-import { useGroupedRadialCharts } from '/@src/data/widgets/charts/groupedRadialCharts'
-import { memberList } from '/@src/data/widgets/table/memberList'
+import { useSalesSparksCharts } from "/@src/data/widgets/charts/salesSparksChart";
+import { useRevenueAreaChart } from "/@src/data/widgets/charts/revenueAreaChart";
+import { useLineStatsWidgetCharts } from "/@src/data/widgets/charts/lineStatsWidgetChart";
+import { useFlexRadialChartCircle } from "/@src/data/widgets/charts/flexRadialChartCircleChart";
+import { useFlexRadialChartStripes } from "/@src/data/widgets/charts/flexRadialChartStripesChart";
+import { useGroupedCircleCharts } from "/@src/data/widgets/charts/groupedCircleCharts";
+import { useGroupedRadialCharts } from "/@src/data/widgets/charts/groupedRadialCharts";
+import { memberList } from "/@src/data/widgets/table/memberList";
 
-const { spark1, spark2, spark3, spark4 } = useSalesSparksCharts()
-const { revenueOptions } = useRevenueAreaChart()
-const { lineStatsChartOptions } = useLineStatsWidgetCharts()
-const { flexRadialChartCircleOptions } = useFlexRadialChartCircle()
-const { flexRadialChartStripesOptions } = useFlexRadialChartStripes()
-const { widgetGaugeGroup1Options, widgetGaugeGroup2Options, widgetGaugeGroup3Options } =
-  useGroupedRadialCharts()
+const { spark1, spark2, spark3, spark4 } = useSalesSparksCharts();
+const { revenueOptions } = useRevenueAreaChart();
+const { lineStatsChartOptions } = useLineStatsWidgetCharts();
+const { flexRadialChartCircleOptions } = useFlexRadialChartCircle();
+const { flexRadialChartStripesOptions } = useFlexRadialChartStripes();
+const {
+  widgetGaugeGroup1Options,
+  widgetGaugeGroup2Options,
+  widgetGaugeGroup3Options,
+} = useGroupedRadialCharts();
 const {
   widgetRadialGroup1Options,
   widgetRadialGroup2Options,
   widgetRadialGroup3Options,
-} = useGroupedCircleCharts()
+} = useGroupedCircleCharts();
 </script>
 
 <template>
@@ -117,10 +120,7 @@ const {
 
     <!--Flex Stat Widget-->
     <div class="column is-6">
-      <FlexStatWidget
-        title="Sales Revenue"
-        straight
-      >
+      <FlexStatWidget title="Sales Revenue" straight>
         <ApexChart
           id="flex-stat-circle"
           :height="flexRadialChartCircleOptions.chart.height"
@@ -133,10 +133,7 @@ const {
 
     <!--Flex Stat Widget-->
     <div class="column is-6">
-      <FlexStatWidget
-        title="Sales Revenue"
-        straight
-      >
+      <FlexStatWidget title="Sales Revenue" straight>
         <ApexChart
           id="flex-stat-radial"
           :height="flexRadialChartStripesOptions.chart.height"
@@ -224,31 +221,17 @@ const {
 
     <!--Followers Stat Widget-->
     <div class="column is-4">
-      <SocialStatWidget
-        icon="fab fa-twitter"
-        value="138K"
-        straight
-      />
+      <SocialStatWidget icon="fab fa-twitter" value="138K" straight />
     </div>
 
     <!--Followers Stat Widget-->
     <div class="column is-4">
-      <SocialStatWidget
-        icon="fab fa-twitter"
-        value="138K"
-        straight
-        squared
-      />
+      <SocialStatWidget icon="fab fa-twitter" value="138K" straight squared />
     </div>
 
     <!--Followers Stat Widget-->
     <div class="column is-4">
-      <SocialStatWidget
-        icon="fab fa-twitter"
-        value="138K"
-        straight
-        colored
-      />
+      <SocialStatWidget icon="fab fa-twitter" value="138K" straight colored />
     </div>
 
     <!--Table Widget-->

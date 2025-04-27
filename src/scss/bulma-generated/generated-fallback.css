@@ -3515,10 +3515,6 @@ code {
   color: rgb(255, 255, 255);
 }
 
-.tabs.is-toggle li a:hover {
-  color: rgb(42, 172, 142);
-}
-
 .tabs li.is-active a {
   border-bottom-color: rgb(42, 172, 142);
   color: rgb(42, 172, 142);
