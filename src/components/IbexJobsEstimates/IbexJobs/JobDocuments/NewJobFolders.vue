@@ -98,32 +98,20 @@ const goBack = async () => {
 };
 const openCreateFolderModal = ref(false);
 const selectedParentFolder = ref("");
+const selectedFolderObject = ref("");
 // Add new folder
 const openAddFolderModal = async () => {
-  selectedParentFolder.value = currentFolder.value
-    ? currentFolder.value.id
-    : "";
+  if (currentFolder.value) {
+    selectedParentFolder.value = currentFolder.value
+      ? currentFolder.value.id
+      : "";
+  } else {
+    selectedFolderObject.value = props.objectId;
+  }
   openCreateFolderModal.value = true;
-  // const folderName = prompt("Enter folder name:");
-  // if (!folderName) return;
-
-  // try {
-  //   await api.post("/api/media-folder/", {
-  //     title: folderName,
-  //     object: props.objectId,
-  //     type: props.type,
-  //     parent: currentFolder.value ? currentFolder.value.id : null,
-  //   });
-  //   currentFolder.value
-  //     ? fetchFolderContents(currentFolder.value.id)
-  //     : fetchTopLevelFolders();
-  // } catch (error) {
-  //   console.error("Error adding folder:", error);
-  // }
 };
 
 const getFoldersNow = async () => {
-  // notyf.success("Folder created successfully");
   if (selectedParentFolder.value) {
     await fetchFolderContents(selectedParentFolder.value);
   } else {
@@ -334,7 +322,7 @@ onMounted(() => {
         v-if="openCreateFolderModal"
         :open-create-folder-modal="openCreateFolderModal"
         :type="props.type"
-        :object="currentFolder.id"
+        :object="selectedFolderObject"
         :parent="selectedParentFolder"
         @update:modalHandler="openCreateFolderModal = false"
         @update:OnSuccess="getFoldersNow"
