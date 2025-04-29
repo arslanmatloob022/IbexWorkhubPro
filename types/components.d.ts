@@ -668,6 +668,7 @@ declare module 'vue' {
     UpdateTask: typeof import('./../src/components/IbexProjects/ProjectTasks/UpdateTask.vue')['default']
     UpdateWorkerProfile: typeof import('./../src/components/pages/networks/workers/UpdateWorkerProfile.vue')['default']
     UploadDocumentModal: typeof import('./../src/components/CommonComponents/DocumentsComponents/UploadDocumentModal.vue')['default']
+    UploadEstimateFileModal: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/UploadEstimateFileModal.vue')['default']
     UploadFilesModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/LeadJobModals/UploadFilesModal.vue')['default']
     UploadPhotosModal: typeof import('./../src/components/CommonComponents/DocumentsComponents/UploadPhotosModal.vue')['default']
     UserCardDropdown: typeof import('./../src/components/partials/dropdowns/UserCardDropdown.vue')['default']

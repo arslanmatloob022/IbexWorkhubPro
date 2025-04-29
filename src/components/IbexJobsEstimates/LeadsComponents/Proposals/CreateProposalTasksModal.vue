@@ -30,6 +30,7 @@ const closeModalHandler = () => {
 
 const createProposalTasks = async () => {
   try {
+    loading.value = true;
     const resp = await api.post(`/api/lead-proposal/create-tasks/`, {
       start: startDate.value,
       proposal: props.proposalId,
@@ -41,6 +42,8 @@ const createProposalTasks = async () => {
   } catch (err) {
     console.log(err);
     notyf.error("Something went wrong, please review the cost codes");
+  } finally {
+    loading.value = false;
   }
 };
 

@@ -4,7 +4,7 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
-import { downloadProposalPdf } from "../proposalsComponents";
+import { downloadProposalPdf, fileLoading } from "../proposalsComponents";
 import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
 import { useDropdown } from "/@src/composable/useDropdown";
 import { useCostCodeStore } from "/@src/stores/LeadEstimatesStore/costCodeStore";
@@ -18,16 +18,16 @@ const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
 const router = useRouter();
+const openCreateTemplate = ref(false);
+const openEstimatesModal = ref(false);
+const selectedProposalsIds = ref([]);
+const proposalData = ref({});
+const openCreateTasksModal = ref(false);
+const selectedProposalId = ref("");
 const loading = ref(false);
-const fileLoading = ref(false);
+const fileLoading2 = ref(false);
 const selectedStatus = ref("");
 const selectedDeleteProposalId = ref("");
-const DeleteSweetAlertProps = ref({
-  title: "",
-  subtitle: "test",
-  isSweetAlertOpen: false,
-  btntext: "text",
-});
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
@@ -37,6 +37,26 @@ const props = defineProps<{
   proposalId?: string;
   leadId?: string;
 }>();
+
+const DeleteSweetAlertProps = ref({
+  title: "",
+  subtitle: "test",
+  isSweetAlertOpen: false,
+  btntext: "text",
+});
+
+const openSendProposalModal = ref(false);
+const CKEditor = defineAsyncComponent(() =>
+  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
+);
+
+const editorConfig = {
+  fontFamily: {
+    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
+  },
+  height: "400px",
+  minHeight: "400px",
+};
 
 const data = [
   {
@@ -112,32 +132,6 @@ const getProposalDetail = async () => {
   }
 };
 
-const updateProposalHandler = async () => {
-  try {
-    loading.value = true;
-    leadProposalFormData.value.columns_to_show = JSON.stringify(
-      selectedColumnsToShow.value
-    );
-    const formDataAPI = convertToFormData(leadProposalFormData.value, []);
-    if (props.proposalId || leadProposalFormData.value.id) {
-      const response = await api.patch(
-        `/api/lead-proposal/${
-          props.proposalId ? props.proposalId : leadProposalFormData.value.id
-        }/`,
-        formDataAPI
-      );
-      leadProposalFormData.value = response.data;
-    }
-
-    notyf.success(`Proposal updated successfully`);
-    getProposalDetail();
-  } catch (error: any) {
-    notyf.error(`Something went wrong, try again`);
-  } finally {
-    loading.value = false;
-  }
-};
-
 const openProposalDeleteAlert = (id: any) => {
   selectedDeleteProposalId.value = id;
   DeleteSweetAlertProps.value = {
@@ -195,13 +189,6 @@ const updateProposalStatus = async () => {
   }
 };
 
-const openCreateTasksModal = ref(false);
-const selectedProposalId = ref("");
-const openCreateTasksModalHandler = (id: any) => {
-  selectedProposalId.value = id;
-  openCreateTasksModal.value = true;
-};
-
 function DataURIToBlob(dataURI: string) {
   const splitDataURI = dataURI.split(",");
   const byteString =
@@ -213,60 +200,26 @@ function DataURIToBlob(dataURI: string) {
   for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
   return new Blob([ia], { type: mimeString });
 }
-const tab = ref<"worksheet" | "format" | "preview">("worksheet");
-const CKEditor = defineAsyncComponent(() =>
-  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
-);
 
-const editorConfig = {
-  fontFamily: {
-    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
-  },
-  height: "400px",
-  minHeight: "400px",
-};
-
-const openCreateTemplate = ref(false);
-
-const selectedProposalsIds = ref([]);
-const proposalData = ref({});
-const openSendProposalModal = ref(false);
 const openSendProposalModalHandler = () => {
   proposalData.value = useProposal.leadProposalFormData;
   selectedProposalsIds.value.push(useProposal.leadProposalFormData);
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
-const selectedFileTitle = ref("");
-
-const file = ref<File | null>(null);
-const handleFileChange = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  const selectedFile = input.files?.[0];
-  input.value = "";
-  if (selectedFile) {
-    file.value = selectedFile;
-    selectedFileTitle.value = selectedFile.name;
-  }
+const openCreateTasksModalHandler = (id: any) => {
+  selectedProposalId.value = id;
+  openCreateTasksModal.value = true;
 };
 
-const createEstimates = async () => {
-  try {
-    fileLoading.value = true;
-    const resp = await api.post(
-      `/api/lead-proposal/upload-estimates/${route.params.id}/`,
-      {
-        file: file.value,
-      }
-    );
-    notyf.success(`${resp.data}`);
+const openEstimateFileModalHandler = () => {
+  openEstimatesModal.value = true;
+};
+
+const getProposalDetailItem = () => {
+  if (props.proposalId || route.params.id) {
     getProposalDetail();
-    selectedFileTitle.value = "";
-    file.value = null;
-  } catch (err) {
-    console.log(err);
-  } finally {
-    fileLoading.value = false;
+    useProposal.getProposalDetail(props.proposalId || route.params.id);
   }
 };
 
@@ -274,10 +227,7 @@ onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
-  if (props.proposalId || route.params.id) {
-    getProposalDetail();
-    useProposal.getProposalDetail(props.proposalId || route.params.id);
-  }
+  getProposalDetailItem();
   useCostCodes.getCostCodesHandler();
 });
 </script>
@@ -285,7 +235,7 @@ onMounted(async () => {
 <template>
   <div class="modal-form columns is-multiline">
     <div
-      class="column is-12 is-flex space-between align-items-center card mx-3"
+      class="column is-12 is-flex space-between align-items-center bg-grey mx-3"
     >
       <div class="is-flex">
         <VSnack
@@ -307,8 +257,7 @@ onMounted(async () => {
           color="info"
           raised
         >
-          <i class="fas fa-check"></i>
-          Mark Approved
+          Approve Proposal
         </VButton>
         <VButton
           v-else
@@ -320,48 +269,6 @@ onMounted(async () => {
         >
           Approved
         </VButton>
-      </div>
-      <div class="is-flex">
-        <VButton
-          size="small"
-          class="mr-2"
-          light
-          outlined
-          :loading="fileLoading"
-          color="warning"
-          raised
-          @click="createEstimates"
-          v-if="selectedFileTitle"
-        >
-          {{ fileLoading ? "Generating Estimates.." : "Create Estimates" }}
-        </VButton>
-        <VField grouped class="mr-2">
-          <VControl>
-            <div class="file">
-              <label class="file-label">
-                <input
-                  @change="handleFileChange"
-                  class="file-input"
-                  type="file"
-                  accept=".xlsx, .xls, .csv"
-                  name="resume"
-                />
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-cloud-upload-alt" />
-                  </span>
-                  <span class="file-label">
-                    {{
-                      selectedFileTitle
-                        ? selectedFileTitle
-                        : "Upload Estimates File."
-                    }}
-                  </span>
-                </span>
-              </label>
-            </div>
-          </VControl>
-        </VField>
         <VButton
           size="small"
           class="mr-2"
@@ -377,71 +284,74 @@ onMounted(async () => {
         >
           Generate Tasks
         </VButton>
+      </div>
+      <div class="is-flex">
+        <div
+          v-if="fileLoading2 || fileLoading == 3"
+          class="rounded-loader mr-2"
+        ></div>
+
         <VButton
-          @click="updateProposalHandler"
+          size="small"
+          class="mr-2"
+          v-tooltip.rounded.dark.bottom="`Upload File To Create Estimates`"
+          outlined
+          color="dark"
+          raised
+          @click="openEstimateFileModalHandler"
+        >
+          <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+        </VButton>
+
+        <VButton
           size="small"
           class="mr-2"
           light
+          v-tooltip.rounded.primary.bottom="`Create Template Of This Proposal`"
           outlined
+          @click="openCreateTemplate = !openCreateTemplate"
           color="primary"
           raised
         >
-          Update
+          <i class="fas fa-copy"> </i>
         </VButton>
 
-        <VDropdown spaced right icon="lucide:more-vertical">
-          <template #content>
-            <a
-              @click="openCreateTemplate = !openCreateTemplate"
-              class="dropdown-item is-media"
-            >
-              <div class="icon">
-                <i class="lnil lnil-copy" />
-              </div>
-              <div class="meta">
-                <span>Create Template</span>
-                <span>Save as template for next use </span>
-              </div>
-            </a>
-            <a
-              @click="openSendProposalModalHandler"
-              class="dropdown-item is-media"
-            >
-              <div class="icon">
-                <i class="lnil lnil-envelope" />
-              </div>
-              <div class="meta">
-                <span>Send Email</span>
-                <span>Send proposal email to the client </span>
-              </div>
-            </a>
-            <a
-              @click="downloadProposalPdf(leadProposalFormData)"
-              class="dropdown-item is-media"
-            >
-              <div class="icon">
-                <i class="lnil lnil-cloud-download" />
-              </div>
-              <div class="meta">
-                <span>Download</span>
-                <span>Download proposal as pdf </span>
-              </div>
-            </a>
-            <hr class="dropdown-divider" />
-            <a
-              @click="openProposalDeleteAlert(leadProposalFormData.id)"
-              class="dropdown-item is-media"
-            >
-              <div class="icon">
-                <i class="lnil lnil-trash" />
-              </div>
-              <div class="meta">
-                <span>Delete </span>
-                <span>Delete proposal permanently </span>
-              </div>
-            </a>
-          </template>
-        </VDropdown>
+        <VButton
+          size="small"
+          class="mr-2"
+          light
+          v-tooltip.rounded.warning.bottom="`Attach in email`"
+          outlined
+          @click="openSendProposalModalHandler"
+          color="warning"
+          raised
+        >
+          <i class="fas fa-envelope"> </i>
+        </VButton>
+        <VButton
+          size="small"
+          outlined
+          light
+          class="mr-2"
+          v-tooltip.rounded.info.bottom="`Attach in email`"
+          @click="downloadProposalPdf(leadProposalFormData)"
+          color="info"
+          raised
+        >
+          <i class="fas fa-cloud-download-alt" aria-hidden="true"></i>
+        </VButton>
+        <VButton
+          size="small"
+          class="mr-2"
+          light
+          v-tooltip.rounded.danger.bottom="`Delete Proposal`"
+          outlined
+          @click="openProposalDeleteAlert(leadProposalFormData.id)"
+          color="danger"
+          raised
+        >
+          <i class="fas fa-trash" />
+        </VButton>
       </div>
     </div>
     <div
@@ -610,7 +520,6 @@ onMounted(async () => {
       :createProposalTasksModal="openCreateTasksModal"
       :proposalId="selectedProposalId"
       @closeModalHandler="openCreateTasksModal = false"
-      @update:OnSuccess=""
     />
     <SendProposalEmailModal
       v-if="openSendProposalModal"
@@ -623,6 +532,13 @@ onMounted(async () => {
       "
     />
   </div>
+  <UploadEstimateFileModal
+    v-if="openEstimatesModal"
+    :openEstimatesModal="openEstimatesModal"
+    :proposalId="route.params.id"
+    @close:ModalHandler="openEstimatesModal = false"
+    @update:OnSuccess="getProposalDetailItem"
+  />
   <CreateTemplateModal
     v-if="openCreateTemplate"
     :proposalId="route.params.id"
