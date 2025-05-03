@@ -333,7 +333,7 @@ onMounted(async () => {
           outlined
           light
           class="mr-2"
-          v-tooltip.rounded.info.bottom="`Attach in email`"
+          v-tooltip.rounded.info.bottom="`Download Proposal As PDF`"
           @click="downloadProposalPdf(leadProposalFormData)"
           color="info"
           raised

@@ -11,10 +11,10 @@ const openPasswordModal = ref(false);
 const currentSelectId = ref("");
 const isOpenModal = ref(false);
 const loading = ref(false);
-
+const tab = ref("projects");
 const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
   usePersonalScoreGauge();
-const workerData = ref({
+const contractorData = ref({
   id: "",
   password: "",
   last_login: null,
@@ -34,7 +34,7 @@ const getContractorDetailHandler = async () => {
     const response = await api.get(
       `/api/users/${route.params.id ? route.params.id : userSession.user.id}`
     );
-    workerData.value = response.data;
+    contractorData.value = response.data;
     // renderCalendar();
   } catch (err) {
     console.log(err);
@@ -57,7 +57,7 @@ onMounted(async () => {
   <div class="lifestyle-dashboard lifestyle-dashboard-v3">
     <div class="illustration-header is-relative">
       <VIconBox
-        @click="openUserModal(workerData.id)"
+        @click="openUserModal(contractorData.id)"
         size="small"
         color="primary"
         style="position: absolute; right: 8px; top: 8px; cursor: pointer"
@@ -65,67 +65,87 @@ onMounted(async () => {
         <i class="lnil lnil-pencil" />
       </VIconBox>
       <div class="p-4">
-        <VAvatar size="xl" squared :picture="workerData.avatar" alt="" />
+        <VAvatar size="xl" squared :picture="contractorData.avatar" alt="" />
       </div>
       <div class="header-meta">
         <h3>
-          {{ loading ? "Loading..." : workerData?.username }}
+          {{ loading ? "Loading..." : contractorData?.username }}
+          {{ contractorData.last_name ? contractorData.last_name : "" }}
         </h3>
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
           <div class="summary-stat">
-            <span>Role</span>
-            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
-          </div>
-          <div class="summary-stat">
-            <span>Status</span>
-            <span>{{
-              loading
-                ? "Loading..."
-                : workerData?.is_active
-                ? "Active"
-                : " In-Active"
-            }}</span>
-          </div>
-          <div class="summary-stat">
-            <span>Phone</span>
-            <span>{{
-              loading
-                ? "Loading..."
-                : workerData?.phoneNumber
-                ? workerData?.phoneNumber
-                : "N/A"
-            }}</span>
-          </div>
-          <div class="summary-stat">
             <span>Email</span>
-            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
-          </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>Email Notification</span>
-            <span>{{
-              loading ? "Loading..." : workerData.is_sentMail ? "On" : "Off"
-            }}</span>
-          </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>Password</span>
-            <span
-              @click="openPasswordModal = !openPasswordModal"
-              class="link-text"
-              >Change Password</span
-            >
+            <span>{{ loading ? "Loading..." : contractorData?.email }}</span>
           </div>
         </div>
       </div>
     </div>
+    <div class="tabs-wrapper">
+      <div class="tabs-inner">
+        <div class="tabs is-boxed" slider>
+          <ul>
+            <li :class="[tab === 'projects' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'projects'"
+                @click="tab = 'projects'"
+                ><span>Projects</span></a
+              >
+            </li>
+            <li :class="[tab === 'profile' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'profile'"
+                @click="tab = 'profile'"
+                ><span>Profile Info</span></a
+              >
+            </li>
+            <li :class="[tab === 'todos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'todos'"
+                @click="tab = 'todos'"
+                ><span>Todos</span></a
+              >
+            </li>
+            <li :class="[tab === 'activities' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'activities'"
+                @click="tab = 'activities'"
+                ><span>Activities</span></a
+              >
+            </li>
+            <li class="tab-naver" />
+          </ul>
+        </div>
+      </div>
+    </div>
 
-    <div class="columns is-multiline is-flex-tablet-p profile-wrapper">
-      <div class="column is-12">
+    <div class="columns is-multiline">
+      <div v-if="tab === 'projects'" class="column is-12">
         <ContractorProjects
           :contractor-id="
             route.params.id ? route.params.id : userSession.user.id
           "
         />
+      </div>
+      <div v-if="tab === 'profile'" class="column is-12">
+        <UserProfileInfo
+          :userData="contractorData"
+          @update:action-update-handler="getContractorDetailHandler"
+        />
+      </div>
+      <div v-if="tab === 'todos'" class="column is-12">
+        <JobTodos :user="route.params.id" />
+      </div>
+      <div v-if="tab === 'activities'" class="column is-12">
+        <JobLeadActivities :user="route.params.id" />
       </div>
     </div>
     <ChangePasswordModal
@@ -154,7 +174,7 @@ onMounted(async () => {
     align-items: center;
     padding: 10px;
     border-radius: 16px;
-    background: #202944;
+    background-image: linear-gradient(90deg, #0700b8 0%, #00ff88 100%);
     font-family: var(--font);
     margin-bottom: 30px;
 

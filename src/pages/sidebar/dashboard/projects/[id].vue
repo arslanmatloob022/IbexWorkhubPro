@@ -6,7 +6,7 @@ meta:
   isContractorAllowed: false
   isPartnerAllowed: false
   isWorkerAllowed: false
-  isClientAllowed: false
+  isClientAllowed: true
 </route>
 
 <script setup lang="ts">
@@ -25,6 +25,6 @@ useHead({
     <Teleport to="[data-teleport-bg]">
       <div class="lifestyle-dashboard-bg has-top-nav" />
     </Teleport>
-    <ProjectDetail class="has-navbar-spacing" />
+    <JobDetails class="has-navbar-spacing" />
   </div>
 </template>

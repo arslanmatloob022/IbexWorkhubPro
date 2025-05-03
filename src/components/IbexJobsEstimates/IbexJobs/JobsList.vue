@@ -233,15 +233,36 @@ onMounted(() => {
     <PlaceloadV1 v-if="loading" />
     <div v-else>
       <div class="list-flex-toolbar">
-        <VField>
-          <VControl icon="feather:search">
-            <input
-              v-model="filters"
-              class="input custom-text-filter"
-              placeholder="Search..."
-            />
-          </VControl>
-        </VField>
+        <div class="column is-6">
+          <div class="tabs-wrapper">
+            <div class="tabs-inner">
+              <div class="tabs is-toggle">
+                <ul>
+                  <li :class="[tab === 'all' && 'is-active']">
+                    <a
+                      tabindex="0"
+                      role="button"
+                      @keydown.space.prevent="tab = 'all'"
+                      @click="tab = 'all'"
+                      ><span>All Jobs</span></a
+                    >
+                  </li>
+                  <li :class="[tab === 'completed' && 'is-active']">
+                    <a
+                      tabindex="0"
+                      role="button"
+                      @keydown.space.prevent="tab = 'completed'"
+                      @click="tab = 'completed'"
+                      ><span>Completed Jobs</span></a
+                    >
+                  </li>
+
+                  <li class="tab-naver" />
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <VButtons>
           <VButton
@@ -258,36 +279,18 @@ onMounted(() => {
       <div class="page-content-inner">
         <div class="flex-list-wrapper flex-list-v1">
           <div class="columns is-multiline">
-            <div class="column is-6">
-              <div class="tabs-wrapper">
-                <div class="tabs-inner">
-                  <div class="tabs is-toggle">
-                    <ul>
-                      <li :class="[tab === 'all' && 'is-active']">
-                        <a
-                          tabindex="0"
-                          role="button"
-                          @keydown.space.prevent="tab = 'all'"
-                          @click="tab = 'all'"
-                          ><span>All Jobs</span></a
-                        >
-                      </li>
-                      <li :class="[tab === 'completed' && 'is-active']">
-                        <a
-                          tabindex="0"
-                          role="button"
-                          @keydown.space.prevent="tab = 'completed'"
-                          @click="tab = 'completed'"
-                          ><span>Completed Jobs</span></a
-                        >
-                      </li>
-
-                      <li class="tab-naver" />
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <div class="column is-3">
+              <VField>
+                <VControl icon="feather:search">
+                  <input
+                    v-model="filters"
+                    class="input custom-text-filter"
+                    placeholder="Search..."
+                  />
+                </VControl>
+              </VField>
             </div>
+            <div class="column is-3"></div>
             <div class="column is-6 justify-right">
               <VDropdown title="Apply sorting" spaced>
                 <template #content>

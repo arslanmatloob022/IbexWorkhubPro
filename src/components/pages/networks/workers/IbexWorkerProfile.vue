@@ -288,16 +288,6 @@ onMounted(async () => {
             <span>Mail notify </span>
             <span>{{ workerData.is_sentMail ? "On" : "Off" }}</span>
           </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>Password </span>
-            <span
-              ><i
-                @click="openPasswordModal(workerData.id)"
-                class="fas fa-lock cu-pointer"
-                aria-hidden="true"
-              ></i
-            ></span>
-          </div>
         </div>
       </div>
     </div>
@@ -325,6 +315,15 @@ onMounted(async () => {
                   ><span>Tasks</span></a
                 >
               </li>
+              <li :class="[mainTab === 'todos' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="mainTab = 'todos'"
+                  @click="mainTab = 'todos'"
+                  ><span>Todos</span></a
+                >
+              </li>
               <li :class="[mainTab === 'activities' && 'is-active']">
                 <a
                   tabindex="0"
@@ -342,7 +341,7 @@ onMounted(async () => {
       </div>
     </div>
     <div v-if="mainTab == 'profile'" class="columns is-multiline">
-      <WorkerProfileInfo :userId="route.params.id" />
+      <UserProfileInfo :user-data="workerData" />
     </div>
 
     <div v-if="mainTab == 'tasks'" class="columns is-multiline">
@@ -437,8 +436,12 @@ onMounted(async () => {
     </div>
     <div v-if="mainTab == 'activities'" class="columns is-multiline">
       <div class="column is-12">
-        <!-- <WorkerActivities :userId="route.params.id" /> -->
         <JobLeadActivities :user="route.params.id" />
+      </div>
+    </div>
+    <div v-if="mainTab == 'todos'" class="columns is-multiline">
+      <div class="column is-12">
+        <JobTodos :user="route.params.id" />
       </div>
     </div>
     <ChangePasswordModal

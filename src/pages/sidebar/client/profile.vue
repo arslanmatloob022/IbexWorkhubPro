@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ClientProfile from "./ClientProfile.vue";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();

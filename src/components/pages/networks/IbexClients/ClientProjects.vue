@@ -2,6 +2,9 @@
 import { retails } from "/@src/data/layouts/view-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { useUserSession } from "/@src/stores/userSession";
+
+const userSession = useUserSession();
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
@@ -11,6 +14,7 @@ const activeFilter = ref("all");
 const HomeRating = ref(4);
 const projectIdDeleteTobe = ref(0);
 const projects = ref([]);
+const route = useRoute();
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
@@ -95,7 +99,9 @@ const getClientProjectHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/project/projects/?client=${props.clientID}`,
+      `/api/project/projects/?client=${
+        props.clientID ? props.clientID : userSession.user.id
+      }`,
       {}
     );
     filteredProjects.value = response.data;
@@ -286,50 +292,6 @@ const filteredData = computed(() => {
                         >Wifi</span
                       >
                     </span>
-                    <!-- <span class="text-danger danger-text">
-                      <i
-                        aria-hidden="true"
-                        class="text-danger danger-text lnil lnil-air-flow"
-                      ></i>
-                      <span>Heater</span>
-                    </span> -->
-                    <!-- <span>
-                      <i aria-hidden="true" class="lnil lnil-sun" />
-                      <span>Cleaning</span>
-                    </span> -->
-                    <!-- <span
-                      v-if="
-                        item.comodities.other &&
-                        item.comodities.otherThing &&
-                        item.comodities.otherCoolThing &&
-                        item.comodities.otherGreatCoolThing
-                      "
-                    >
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>4 more</span>
-                    </span>
-                    <span
-                      v-else-if="
-                        item.comodities.other &&
-                        item.comodities.otherThing &&
-                        item.comodities.otherCoolThing
-                      "
-                    >
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>3 more</span>
-                    </span>
-                    <span
-                      v-else-if="
-                        item.comodities.other && item.comodities.otherThing
-                      "
-                    >
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>2 more</span>
-                    </span>
-                    <span v-else-if="item.comodities.other">
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>1 more</span>
-                    </span> -->
                   </div>
                 </div>
                 <div class="meta-right">

@@ -63,15 +63,9 @@ const deleteSweetAlertProps = ref({
   btntext: "text",
 });
 const selectedUserId = ref("");
-const openDeleteModal = (user: any) => {
+const openEditModal = (user: any) => {
   selectedUserId.value = user.id;
-  deleteSweetAlertProps.value = {
-    title: `Delete ${user.username}?`,
-    subtitle:
-      "After deleting this worker you won't be able to recover it again.",
-    btntext: `Delete it`,
-    isSweetAlertOpen: true,
-  };
+  isOpenModal.value = !isOpenModal.value;
 };
 const deleteUser = async () => {
   try {
@@ -190,13 +184,13 @@ onMounted(() => {
               </button>
 
               <button
-                @click="openDeleteModal(item)"
+                @click="openEditModal(item)"
                 class="button v-button is-dark-outlined"
               >
                 <span class="icon">
-                  <VIcon icon="lucide:trash" />
+                  <VIcon icon="lucide:pencil" />
                 </span>
-                <span>Remove</span>
+                <span>Edit </span>
               </button>
             </div>
           </div>
@@ -217,7 +211,7 @@ onMounted(() => {
       v-if="isOpenModal"
       :is-modal-open="isOpenModal"
       user-role="contractor"
-      :user-id="currentSelectId"
+      :user-id="selectedUserId"
       @update:close-modal-handler="isOpenModal = false"
       @update:action-update-handler="getContractorshandler"
     />

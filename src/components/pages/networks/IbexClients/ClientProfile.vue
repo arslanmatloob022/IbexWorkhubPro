@@ -270,7 +270,7 @@ onMounted(async () => {
       margin-inline-start: 0;
 
       h3 {
-        color: var(--smoke-white);
+        color: var(--dark-text);
         font-family: var(--font-alt);
         font-weight: 700;
         font-size: 1.3rem;
@@ -278,7 +278,7 @@ onMounted(async () => {
 
       p {
         font-weight: 400;
-        color: var(--smoke-white-dark-16);
+        color: var(--dark-text);
         margin-bottom: 16px;
       }
 
@@ -295,11 +295,11 @@ onMounted(async () => {
             &:first-child {
               font-size: 1.1rem;
               font-family: var(--font-alt);
-              color: var(--smoke-white);
+              color: var(--dark-inverted);
             }
 
             &:nth-child(2) {
-              color: var(--primary-light-18);
+              color: var(--dark-inverted);
               font-size: 0.85rem;
             }
           }

@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
-import { useNotyf } from "/@src/composable/useNotyf";
-import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
-
-const notyf = useNotyf();
+import Worker from "/@src/pages/sidebar/worker.vue";
 const api = useApi();
 const route = useRoute();
-const events = ref<any>([]);
-
-const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
-  usePersonalScoreGauge();
-const workerData = ref({
+const loading = ref(false);
+const tab = ref("tasks");
+const subTab = ref("calendar");
+const subcontractorData = ref({
   id: "",
   password: "",
   last_login: null,
@@ -24,169 +20,21 @@ const workerData = ref({
   username: "",
   is_sentMail: false,
 });
-const fullWidthView = ref(false);
-const activeFilter = ref("all");
-const loading = ref(false);
-const tab = ref("chronic");
-
-// Tasks, Resources, Events, and Projects as Reactive Arrays
-const tasks = ref([]);
-const filteredResources = ref([]);
-const filteredEvents = ref([]);
-const projects = ref<any>([]);
-
-// Colors as an Object
-const colors = ref({
-  pending: "#fbcf33",
-  active: "#82d616",
-  completed: "#cb0c9f",
-  canceled: "#344767",
-});
-
-const calendarOptions = ref({
-  plugins: [resourceTimelinePlugin],
-  schedulerLicenseKey: "0965592368-fcs-1694657447",
-  initialView: "resourceTimelineMonth",
-  height: "auto",
-  resourceAreaWidth: "20%",
-  selectable: true,
-  events: [],
-  headerToolbar: {
-    left: "today prev,next",
-    center: "title",
-    right: "resourceTimelineWeek,resourceTimelineMonth,resourceTimelineYear",
-  },
-  editable: true,
-  views: {
-    resourceTimelineWeek: {
-      slotDuration: { days: 1, hours: 1 },
-      slotLabelFormat: {
-        weekday: "short",
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-      },
-    },
-  },
-  resourceAreaHeaderContent: "Projects",
-  resources: [],
-});
-
-const sendTasksMailToWorker = async () => {
-  try {
-    const resp = await api.post(`/api/task/worker-mail/`, {
-      worker: route.params.id,
-    });
-    console.log(resp);
-    notyf.success(
-      `List of tasks sent to ${workerData.value.username} successfully`
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const renderCalendar = () => {
-  events.value = tasks.value.map((task) => ({
-    id: task.id,
-    resourceId: task.project.id,
-    start: task.startDate,
-    end: task.endDate,
-    title: task.title,
-    color: task.color,
-    description: task.description,
-    workers: task.workers,
-    borderColor: colors[task.status],
-    status: task.status,
-  }));
-
-  projects.value = tasks.value.map((task) => ({
-    id: task.project.id,
-    start: task.project.startDate,
-    end: task.project.endDate,
-    title: task.project.title,
-    address: task.project.address,
-    status: task.project.status,
-    color: colors[task.project.status],
-  }));
-
-  filteredResources.value = projects.value;
-  filteredEvents.value = events.value;
-
-  // Update the reactive calendar options object properly
-  calendarOptions.value = {
-    ...calendarOptions.value, // Keep other properties intact
-    resources: filteredResources.value, // Assign resources in a reactive manner
-    events: filteredEvents.value, // Assign events in a reactive manner
-  };
-
-  console.log(
-    "tasks",
-    calendarOptions.value.events,
-    "resources",
-    calendarOptions.value.resources
-  );
-};
-
-const changeFilterHandler = () => {
-  if (activeFilter.value !== "all") {
-    const data = events.value.filter(
-      (event) => event.status === activeFilter.value
-    );
-    filteredEvents.value = data;
-  } else {
-    filteredEvents.value = events.value;
-  }
-  calendarOptions.value.events = filteredEvents.value;
-};
-
-// Method to get tasks for a worker
-const getTasksHandler = async () => {
-  try {
-    const response = await api.get(
-      `/api/task/${route.params.id}/worker-tasks/`
-    );
-    tasks.value = response.data;
-    console.log("worker tasks", tasks.value);
-  } catch (err) {
-    tasks.value = [];
-  }
-};
 
 const getContractorDetailHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get(`/api/users/${route.params.id}`);
-    workerData.value = response.data;
-    // renderCalendar();
+    subcontractorData.value = response.data;
   } catch (err) {
     console.log(err);
   } finally {
     loading.value = false;
   }
 };
-const showFullView = () => {
-  fullWidthView.value = !fullWidthView.value;
-};
-
-const workerTasksStats = ref({});
-const getWorkerTodayTask = async () => {
-  try {
-    const resp = await api.get(`/api/task/worker-today/${props.workerId}/`);
-    workerTasksStats.value = resp.data.stats;
-    if (refresh) {
-      notyf.green("Tasks list Refreshed");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 onMounted(async () => {
   await getContractorDetailHandler();
-  //   await getTasksHandler();
-  //   renderCalendar();
-  //   getWorkerTodayTask();
 });
 </script>
 
@@ -194,107 +42,147 @@ onMounted(async () => {
   <div class="lifestyle-dashboard lifestyle-dashboard-v3">
     <div class="illustration-header">
       <div class="p-4">
-        <VAvatar size="xl" squared :picture="workerData.avatar" alt="" />
+        <VAvatar size="xl" squared :picture="subcontractorData.avatar" alt="" />
       </div>
       <div class="header-meta">
-        <h3>{{ loading ? "Loading..." : workerData?.username }}</h3>
-        <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
+        <h3>
+          {{ loading ? "Loading..." : subcontractorData?.username }}
+          {{ subcontractorData.last_name ? subcontractorData.last_name : "" }}
+        </h3>
         <div class="summary-stats">
           <div class="summary-stat">
-            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
+            <span>{{ loading ? "Loading..." : "Subcontractor" }}</span>
             <span>Role</span>
           </div>
           <div class="summary-stat">
-            <span>{{
-              loading
-                ? "Loading..."
-                : workerData?.is_active
-                ? "Active"
-                : " In-Active"
-            }}</span>
-            <span>Status</span>
-          </div>
-          <div class="summary-stat">
-            <span>{{
-              loading
-                ? "Loading..."
-                : workerData?.phoneNumber
-                ? workerData?.phoneNumber
-                : "N/A"
-            }}</span>
-            <span>Phone</span>
-          </div>
-          <div class="summary-stat">
-            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
+            <span>{{ loading ? "Loading..." : subcontractorData?.email }}</span>
             <span>Email</span>
-          </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>{{
-              loading ? "Loading..." : workerData.is_sentMail ? "On" : "Off"
-            }}</span>
-            <span>Email Notification</span>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="columns is-multiline is-flex-tablet-p">
+    <div class="tabs-wrapper">
+      <div class="tabs-inner">
+        <div class="tabs is-boxed" slider>
+          <ul>
+            <li :class="[tab === 'tasks' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'tasks'"
+                @click="tab = 'tasks'"
+                ><span>Tasks</span></a
+              >
+            </li>
+            <li :class="[tab === 'workers' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'workers'"
+                @click="tab = 'workers'"
+                ><span>Workers</span></a
+              >
+            </li>
+            <li :class="[tab === 'profile' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'profile'"
+                @click="tab = 'profile'"
+                ><span>Profile Info</span></a
+              >
+            </li>
+            <li :class="[tab === 'todos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'todos'"
+                @click="tab = 'todos'"
+                ><span>Todos</span></a
+              >
+            </li>
+            <li :class="[tab === 'activities' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'activities'"
+                @click="tab = 'activities'"
+                ><span>Activities</span></a
+              >
+            </li>
+            <li class="tab-naver" />
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div v-if="tab == 'tasks'" class="columns is-multiline is-flex-tablet-p">
       <div class="list-flex-toolbar is-reversed">
         <div class="tabs-inner">
           <div class="tabs is-boxed">
             <ul>
-              <li :class="[tab === 'chronic' && 'is-active']">
+              <li :class="[subTab === 'calendar' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
-                  @keydown.space.prevent="tab = 'chronic'"
-                  @click="tab = 'chronic'"
+                  @keydown.space.prevent="subTab = 'calendar'"
+                  @click="subTab = 'calendar'"
+                  ><span>Tasks Calendar</span></a
+                >
+              </li>
+              <li :class="[subTab === 'chronic' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="subTab = 'chronic'"
+                  @click="subTab = 'chronic'"
                   ><span>Chronic View</span></a
                 >
               </li>
-              <li :class="[tab === 'tasks' && 'is-active']">
+              <li :class="[subTab === 'tasks' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
-                  @keydown.space.prevent="tab = 'tasks'"
-                  @click="tab = 'tasks'"
+                  @keydown.space.prevent="subTab = 'tasks'"
+                  @click="subTab = 'tasks'"
                   ><span>Tasks</span></a
                 >
               </li>
-              <li :class="[tab === 'workers' && 'is-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'workers'"
-                  @click="tab = 'workers'"
-                  ><span>Workers</span></a
-                >
-              </li>
-              <!-- <li :class="[tab === 'today' && 'is-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'today'"
-                  @click="tab = 'today'"
-                  ><span>Today Tasks</span></a
-                >
-              </li> -->
+
               <li class="tab-naver" />
             </ul>
           </div>
         </div>
       </div>
-      <div v-if="tab == 'chronic'" class="column is-12">
+      <div v-if="subTab == 'calendar'" class="column is-12">
+        <WorkerCalendar :worker-id="route.params.id" />
+      </div>
+
+      <div v-if="subTab == 'chronic'" class="column is-12">
         <ChronicTasksView :userId="route.params.id" />
       </div>
-      <div v-if="tab == 'tasks'" class="column is-12">
+      <div v-if="subTab == 'tasks'" class="column is-12">
         <WorkerTasks :workerId="route.params.id" />
       </div>
-      <div v-if="tab == 'workers'" class="column is-12">
+    </div>
+    <div v-if="tab == 'workers'" class="columns is-multiline is-flex-tablet-p">
+      <div class="column is-12">
         <WorkersOfSubcontractors
           :supplier-id="route.params.id"
         ></WorkersOfSubcontractors>
       </div>
+    </div>
+    <div v-if="tab == 'profile'" class="columns is-multiline is-flex-tablet-p">
+      <div class="column is-12">
+        <UserProfileInfo :user-data="subcontractorData" />
+      </div>
+    </div>
+    <div v-if="tab == 'todos'" class="columns is-multiline is-flex-tablet-p">
+      <div class="column is-12">
+        <JobTodos :user="route.params.id" />
+      </div>
+    </div>
+    <div v-if="tab === 'activities'" class="column is-12">
+      <JobLeadActivities :user="route.params.id" />
     </div>
   </div>
 </template>
@@ -308,7 +196,18 @@ onMounted(async () => {
     align-items: center;
     padding: 10px;
     border-radius: 16px;
-    background: #202944;
+    background: #23074d; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to left,
+      #cc5333,
+      #23074d
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to left,
+      #cc5333,
+      #23074d
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
     font-family: var(--font);
     margin-bottom: 30px;
 

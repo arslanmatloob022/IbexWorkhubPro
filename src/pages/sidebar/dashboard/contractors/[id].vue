@@ -15,7 +15,7 @@ const viewWrapper = useViewWrapper();
 viewWrapper.setPageTitle("Contractor Info");
 
 useHead({
-  title: "Contractor - Ibex",
+  title: "Contractor - Info",
 });
 </script>
 
