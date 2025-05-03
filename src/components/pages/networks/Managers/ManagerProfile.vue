@@ -1,28 +1,12 @@
 <script setup lang="ts">
-import ApexChart from "vue3-apexcharts";
-import FullCalendar from "@fullcalendar/vue3";
-import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { useApi } from "/@src/composable/useAPI";
-import { useNotyf } from "/@src/composable/useNotyf";
-import { useEnergyChart } from "/@src/data/dashboards/lifestyle-v3/energyChart";
-import { useOverallChart } from "/@src/data/dashboards/lifestyle-v3/overallChart";
-import { useOxygenChart } from "/@src/data/dashboards/lifestyle-v3/oxygenChart";
-import { useProgressChart } from "/@src/data/dashboards/lifestyle-v3/progressChart";
-import { usePersonalScoreGauge } from "/@src/data/widgets/charts/personalScoreGauge";
 import { useUserSession } from "/@src/stores/userSession";
 import ManagerProjectsList from "/@src/pages/sidebar/manager/projects/ManagerProjectsList.vue";
 
 const userSession = useUserSession();
-const notyf = useNotyf();
 const api = useApi();
 const route = useRoute();
-const events = ref<any>([]);
-const router = useRouter();
-const tab = ref("cards");
-
-const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
-  usePersonalScoreGauge();
-const workerData = ref({
+const managerData = ref({
   id: "",
   password: "",
   last_login: null,
@@ -32,128 +16,24 @@ const workerData = ref({
   avatar: "",
   is_active: true,
   phoneNumber: "",
+  last_name: "",
   username: "",
   is_sentMail: false,
 });
-const fullWidthView = ref(false);
-const activeFilter = ref("all");
 const loading = ref(false);
-
-// Tasks, Resources, Events, and Projects as Reactive Arrays
-const tasks = ref([]);
-const filteredResources = ref([]);
-const filteredEvents = ref([]);
-const projects = ref<any>([]);
-
-// Colors as an Object
-const colors = ref({
-  pending: "#fbcf33",
-  active: "#82d616",
-  completed: "#cb0c9f",
-  canceled: "#344767",
-});
-
-const calendarOptions = ref({
-  plugins: [resourceTimelinePlugin],
-  schedulerLicenseKey: "0965592368-fcs-1694657447",
-  initialView: "resourceTimelineMonth",
-  height: "auto",
-  resourceAreaWidth: "20%",
-  selectable: true,
-  events: [],
-  headerToolbar: {
-    left: "today prev,next",
-    center: "title",
-    right: "resourceTimelineWeek,resourceTimelineMonth,resourceTimelineYear",
-  },
-  editable: true,
-  views: {
-    resourceTimelineWeek: {
-      slotDuration: { days: 1, hours: 1 },
-      slotLabelFormat: {
-        weekday: "short",
-        month: "numeric",
-        day: "numeric",
-        year: "numeric",
-      },
-    },
-  },
-  resourceAreaHeaderContent: "Projects",
-  resources: [],
-});
-
-const sendTasksMailToWorker = async () => {
-  try {
-    const resp = await api.post(`/api/task/worker-mail/`, {
-      worker: route.params.id,
-    });
-    console.log(resp);
-    notyf.success(
-      `List of tasks sent to ${workerData.value.username} successfully`
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const renderCalendar = () => {
-  events.value = tasks.value.map((task) => ({
-    id: task.id,
-    resourceId: task.project.id,
-    start: task.startDate,
-    end: task.endDate,
-    title: task.title,
-    color: task.color,
-    description: task.description,
-    workers: task.workers,
-    borderColor: colors[task.status],
-    status: task.status,
-  }));
-
-  projects.value = tasks.value.map((task) => ({
-    id: task.project.id,
-    start: task.project.startDate,
-    end: task.project.endDate,
-    title: task.project.title,
-    address: task.project.address,
-    status: task.project.status,
-    color: colors[task.project.status],
-  }));
-
-  filteredResources.value = projects.value;
-  filteredEvents.value = events.value;
-
-  // Update the reactive calendar options object properly
-  calendarOptions.value = {
-    ...calendarOptions.value, // Keep other properties intact
-    resources: filteredResources.value, // Assign resources in a reactive manner
-    events: filteredEvents.value, // Assign events in a reactive manner
-  };
-
-  console.log(
-    "tasks",
-    calendarOptions.value.events,
-    "resources",
-    calendarOptions.value.resources
-  );
-};
-
+const tab = ref("projects");
 const getManagerDetailHandler = async () => {
   try {
     loading.value = true;
     const response = await api.get(
       `/api/users/${route.params.id ? route.params.id : userSession.user.id}`
     );
-    workerData.value = response.data;
-    // renderCalendar();
+    managerData.value = response.data;
   } catch (err) {
     console.log(err);
   } finally {
     loading.value = false;
   }
-};
-const showFullView = () => {
-  fullWidthView.value = !fullWidthView.value;
 };
 
 onMounted(async () => {
@@ -165,56 +45,98 @@ onMounted(async () => {
   <div class="lifestyle-dashboard lifestyle-dashboard-v3">
     <div class="illustration-header">
       <div class="p-4">
-        <VAvatar size="xl" squared :picture="workerData.avatar" alt="" />
+        <VAvatar size="xl" squared :picture="managerData.avatar" alt="" />
       </div>
       <div class="header-meta">
-        <h3>{{ loading ? "Loading..." : workerData?.username }}</h3>
-        <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
+        <h3>
+          {{ loading ? "Loading..." : managerData?.username }}
+          {{ managerData.last_name ? managerData.last_name : "" }}
+        </h3>
         <div class="summary-stats">
           <div class="summary-stat">
             <span>Role</span>
-            <span>{{ loading ? "Loading..." : workerData?.role }}</span>
+            <span>{{ loading ? "Loading..." : managerData?.role }}</span>
           </div>
           <div class="summary-stat">
             <span>Status</span>
             <span>{{
               loading
                 ? "Loading..."
-                : workerData?.is_active
+                : managerData?.is_active
                 ? "Active"
                 : " In-Active"
-            }}</span>
-          </div>
-          <div class="summary-stat">
-            <span>Phone</span>
-            <span>{{
-              loading
-                ? "Loading..."
-                : workerData?.phoneNumber
-                ? workerData?.phoneNumber
-                : "N/A"
-            }}</span>
-          </div>
-          <div class="summary-stat">
-            <span>Email</span>
-            <span>{{ loading ? "Loading..." : workerData?.email }}</span>
-          </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>Email Notification</span>
-            <span>{{
-              loading ? "Loading..." : workerData.is_sentMail ? "On" : "Off"
             }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="columns is-multiline is-flex-tablet-p">
-      <ManagerProjectsList v-if="userSession.user.role == 'manager'" />
-      <ManagerProjects
-        v-else
-        :managerID="route.params.id ? route.params.id : userSession.user.id"
-      />
+    <div class="tabs-wrapper">
+      <div class="tabs-inner">
+        <div class="tabs is-boxed" slider>
+          <ul>
+            <li :class="[tab === 'projects' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'projects'"
+                @click="tab = 'projects'"
+                ><span>Projects</span></a
+              >
+            </li>
+            <li :class="[tab === 'profile' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'profile'"
+                @click="tab = 'profile'"
+                ><span>Profile Info</span></a
+              >
+            </li>
+            <li :class="[tab === 'todos' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'todos'"
+                @click="tab = 'todos'"
+                ><span>Todos</span></a
+              >
+            </li>
+            <li :class="[tab === 'activities' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'activities'"
+                @click="tab = 'activities'"
+                ><span>Activities</span></a
+              >
+            </li>
+            <li class="tab-naver" />
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-multiline">
+      <div v-if="tab === 'projects'" class="column is-12">
+        <ManagerProjectsList v-if="userSession.user.role == 'manager'" />
+        <ManagerProjects
+          v-else
+          :managerID="route.params.id ? route.params.id : userSession.user.id"
+        />
+      </div>
+      <div v-if="tab === 'profile'" class="column is-12">
+        <UserProfileInfo
+          :userData="managerData"
+          @update:action-update-handler="getManagerDetailHandler"
+        />
+      </div>
+      <div v-if="tab === 'todos'" class="column is-12">
+        <JobTodos :user="route.params.id" />
+      </div>
+      <div v-if="tab === 'activities'" class="column is-12">
+        <JobLeadActivities :user="route.params.id" />
+      </div>
     </div>
   </div>
 </template>

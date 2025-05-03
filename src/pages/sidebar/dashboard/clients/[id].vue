@@ -15,12 +15,12 @@ const viewWrapper = useViewWrapper();
 viewWrapper.setPageTitle("Client Info");
 
 useHead({
-  title: "Client - Ibex",
+  title: "Client - Info",
 });
 </script>
 
 <template>
-  <div class="">
+  <div>
     <ClientProfile />
   </div>
 </template>

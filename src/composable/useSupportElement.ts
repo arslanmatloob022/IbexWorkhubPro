@@ -169,7 +169,7 @@ export const getAddressComponents = async (zip_code: any) => {
       const lng = result.geometry?.location?.lng ?? null;
       const city =
         result.address_components?.find((c: any) =>
-          c.types.includes("locality")
+          c.types.includes("postal_town")
         )?.long_name ?? "";
       const state =
         result.address_components?.find((c: any) =>

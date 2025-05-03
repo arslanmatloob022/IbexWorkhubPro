@@ -141,7 +141,7 @@ const filteredData = computed(() => {
 
 <template>
   <PlaceloadV1 v-if="loading" />
-  <div v-else>
+  <div v-else class="column is-12">
     <div class="list-view-toolbar">
       <VField>
         <VControl icon="feather:search">
@@ -155,19 +155,18 @@ const filteredData = computed(() => {
       </VField>
 
       <div class="tabs-inner">
-        <VButton
+        <!-- <VButton
           color="primary"
           to="/sidebar/dashboard/projects/add-project"
           elevated
           >Add Project</VButton
-        >
+        > -->
       </div>
     </div>
 
     <div class="page-content-inner">
       <!--List-->
       <div class="list-view list-view-v2">
-        <!--List Empty Search Placeholder -->
         <VPlaceholderPage
           :class="[filteredData.length !== 0 && 'is-hidden']"
           title="We couldn't find any matching results."
@@ -189,8 +188,6 @@ const filteredData = computed(() => {
             />
           </template>
         </VPlaceholderPage>
-
-        <!--Active Tab-->
 
         <div class="list-view-inner">
           <TransitionGroup name="list-complete" tag="div">

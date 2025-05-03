@@ -469,49 +469,50 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div
-      v-if="
-        userSession.user.role == 'admin' ||
-        userSession.user.role == 'manager' ||
-        userSession.user.role == 'client'
-      "
-      class="tabs-inner"
-    >
-      <div class="tabs is-boxed" slider>
-        <ul>
-          <li :class="[tab === 'detail' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'detail'"
-              @click="tab = 'detail'"
-              ><span>Project Info</span></a
-            >
-          </li>
-          <li :class="[tab === 'calendar' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'calendar'"
-              @click="tab = 'calendar'"
-              ><span>Tasks Calendar</span></a
-            >
-          </li>
-          <li :class="[tab === 'tasks' && 'is-active']">
-            <a
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="tab = 'tasks'"
-              @click="tab = 'tasks'"
-              ><span>Tasks</span></a
-            >
-          </li>
+    <div class="tabs-wrapper">
+      <div
+        v-if="
+          userSession.user.role == 'admin' ||
+          userSession.user.role == 'manager' ||
+          userSession.user.role == 'client'
+        "
+        class="tabs-inner"
+      >
+        <div class="tabs is-boxed" slider>
+          <ul>
+            <li :class="[tab === 'detail' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'detail'"
+                @click="tab = 'detail'"
+                ><span>Project Info</span></a
+              >
+            </li>
+            <li :class="[tab === 'calendar' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'calendar'"
+                @click="tab = 'calendar'"
+                ><span>Tasks Calendar</span></a
+              >
+            </li>
+            <li :class="[tab === 'tasks' && 'is-active']">
+              <a
+                tabindex="0"
+                role="button"
+                @keydown.space.prevent="tab = 'tasks'"
+                @click="tab = 'tasks'"
+                ><span>Tasks</span></a
+              >
+            </li>
 
-          <li class="tab-naver" />
-        </ul>
+            <li class="tab-naver" />
+          </ul>
+        </div>
       </div>
     </div>
-
     <div v-if="tab === 'detail'" class="columns is-multiline">
       <div
         v-if="

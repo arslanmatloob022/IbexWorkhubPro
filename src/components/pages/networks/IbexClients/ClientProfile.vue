@@ -19,7 +19,7 @@ const api = useApi();
 const route = useRoute();
 const events = ref<any>([]);
 const router = useRouter();
-const tab = ref("cards");
+const tab = ref("projects");
 
 const { personalScoreGaugeOptions, onPersonalScoreGaugeReady } =
   usePersonalScoreGauge();
@@ -33,6 +33,7 @@ const clientData = ref({
   avatar: "",
   is_active: true,
   phoneNumber: "",
+  last_name: "",
   username: "",
   is_sentMail: false,
 });
@@ -168,7 +169,10 @@ onMounted(async () => {
         <VAvatar size="xl" squared :picture="clientData.avatar" alt="" />
       </div>
       <div class="header-meta">
-        <h3>{{ loading ? "Loading..." : clientData?.username }}</h3>
+        <h3>
+          {{ loading ? "Loading..." : clientData?.username }}
+          {{ clientData.last_name ? clientData.last_name : "" }}
+        </h3>
         <!-- <p>Monitor your activity and keep improving your weak points.</p> -->
         <div class="summary-stats">
           <div class="summary-stat">
@@ -185,34 +189,52 @@ onMounted(async () => {
                 : " In-Active"
             }}</span>
           </div>
-          <div class="summary-stat">
-            <span>Phone</span>
-            <span>{{
-              loading
-                ? "Loading..."
-                : clientData?.phoneNumber
-                ? clientData?.phoneNumber
-                : "N/A"
-            }}</span>
-          </div>
-          <div class="summary-stat">
-            <span>Email</span>
-            <span>{{ loading ? "Loading..." : clientData?.email }}</span>
-          </div>
-          <div class="summary-stat h-hidden-tablet-p">
-            <span>Email Notification</span>
-            <span>{{
-              loading ? "Loading..." : clientData.is_sentMail ? "On" : "Off"
-            }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-multiline">
+      <div class="tabs-wrapper">
+        <div class="tabs-inner">
+          <div class="tabs is-boxed" slider>
+            <ul>
+              <li :class="[tab === 'projects' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'projects'"
+                  @click="tab = 'projects'"
+                  ><span>Projects</span></a
+                >
+              </li>
+              <li :class="[tab === 'profile' && 'is-active']">
+                <a
+                  tabindex="0"
+                  role="button"
+                  @keydown.space.prevent="tab = 'profile'"
+                  @click="tab = 'profile'"
+                  ><span>Profile Info</span></a
+                >
+              </li>
+              <li class="tab-naver" />
+            </ul>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="columns is-multiline is-flex-tablet-p">
-      <ClientProjects
-        :clientID="route.params.id ? route.params.id : userSession.user.id"
-      />
+    <div class="columns is-multiline">
+      <div v-if="tab === 'projects'" class="column is-12">
+        <ClientProjects
+          :clientID="route.params.id ? route.params.id : userSession.user.id"
+        />
+      </div>
+      <div v-if="tab === 'profile'" class="column is-12">
+        <UserProfileInfo
+          :userData="clientData"
+          @update:action-update-handler="getClientDetailHandler"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -226,7 +248,7 @@ onMounted(async () => {
     align-items: center;
     padding: 10px;
     border-radius: 16px;
-    background: #202944;
+    background: #1dc598;
     font-family: var(--font);
     margin-bottom: 30px;
 

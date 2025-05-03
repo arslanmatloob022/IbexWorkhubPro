@@ -676,6 +676,7 @@ declare module 'vue' {
     UserDeleteComponent: typeof import('./../src/components/ActionsComponents/UserDeleteComponent.vue')['default']
     UserPopoverContent: typeof import('./../src/components/partials/popover/UserPopoverContent.vue')['default']
     UserProfileDropdown: typeof import('./../src/components/partials/dropdowns/UserProfileDropdown.vue')['default']
+    UserProfileInfo: typeof import('./../src/components/CommonComponents/UsersCommonComponents/UserProfileInfo.vue')['default']
     UsersGridV1: typeof import('./../src/components/pages/layouts/users-grid/UsersGridV1.vue')['default']
     UsersGridV2: typeof import('./../src/components/pages/layouts/users-grid/UsersGridV2.vue')['default']
     UsersGridV3: typeof import('./../src/components/pages/layouts/users-grid/UsersGridV3.vue')['default']

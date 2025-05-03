@@ -172,9 +172,13 @@ onMounted(() => {
                   @click="gotoManagerProfile(item.id)"
                   :picture="item.avatar"
                   size="large"
+                  class="cu-pointer"
                 />
                 <!-- :badge="item.medias.flag" -->
-                <div @click="gotoManagerProfile(item.id)" class="meta-left">
+                <div
+                  @click="gotoManagerProfile(item.id)"
+                  class="meta-left cu-pointer"
+                >
                   <h3>
                     {{ item.username }}
                     {{ item.last_name ? item.last_name : "" }}
@@ -193,7 +197,10 @@ onMounted(() => {
                     />
                   </div>
 
-                  <div class="stats">
+                  <div
+                    @click="gotoManagerProfile(item.id)"
+                    class="stats cu-pointer"
+                  >
                     <div class="stat">
                       <span>{{ item.is_sentMail ? "On " : "Off" }}</span>
                       <span>Email notify</span>

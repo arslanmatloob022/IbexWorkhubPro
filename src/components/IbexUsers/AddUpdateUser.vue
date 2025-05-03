@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { convertToFormData } from "/@src/composable/useSupportElement";
+import {
+  convertToFormData,
+  getAddressComponents,
+} from "/@src/composable/useSupportElement";
 
 const notyf = useNotyf();
 const api = useApi();
@@ -54,6 +57,14 @@ const userFormData = ref<any>({
   phoneNumber: "",
   avatar: "",
   supplier: "",
+  address: "",
+  city: "",
+  state: "",
+  country: "",
+  postalCode: "",
+  latitude: "",
+  longitude: "",
+  about: "",
 });
 
 const handleFileChange = (event) => {
@@ -72,6 +83,22 @@ const handleFileChange = (event) => {
   }
 };
 
+const handlePostCodeChange = async () => {
+  if (!userFormData.value.postalCode) return;
+  const response = await getAddressComponents(userFormData.value.postalCode);
+  console.log("API Response:", response);
+  if (response?.status && response.data) {
+    userFormData.value.latitude = response.data.lat;
+    userFormData.value.longitude = response.data.lng;
+    userFormData.value.address = response.data.address;
+    userFormData.value.city = response.data.city;
+    userFormData.value.state = response.data.state;
+    notyf.success("Address fetched successfully");
+  } else {
+    console.log("Address not found.");
+  }
+};
+
 const onRemoveFile = () => {
   userFormData.value.avatar = null;
   preview.value = null;
@@ -86,13 +113,15 @@ const addUpdateUserHandler = async () => {
     const formData = convertToFormData(userFormData.value, ["avatar"]);
     if (props.userId) {
       const resp = await api.patch(`/api/users/${props.userId}/`, formData);
+      actionUpdateHandler();
+      closeUserModalHandler();
       notyf.info("User updated successfully");
     } else {
       const resp = await api.post("/api/users/", formData);
+      actionUpdateHandler();
+      closeUserModalHandler();
       notyf.success("User added successfully");
     }
-    actionUpdateHandler();
-    closeUserModalHandler();
   } catch (err: any) {
     if (
       err.response?.data?.email &&
@@ -153,7 +182,7 @@ onMounted(() => {
   <VModal
     is="form"
     :open="props.isModalOpen"
-    :title="props.userId ? `Update ${props.userRole}` : `Add ${props.userRole}`"
+    :title="props.userId ? `Update User` : `Add User`"
     size="big"
     actions="right"
     @submit.prevent="addUpdateUserHandler"
@@ -319,51 +348,75 @@ onMounted(() => {
           </VControl>
         </VField>
 
-        <!-- <div class="column is-12">
-          <VField label="User role">
-            <VControl>
-              <VRadio
-                v-model="userFormData.role"
-                value="manager"
-                label="Manager"
-                name="outlined_radio"
-                color="primary"
-              />
+        <div class="column is-12">
+          <VCard class="columns is-multiline mt-3">
+            <div class="column is-12">
+              <h3 class="title is-6 mb-2">Other Details</h3>
+            </div>
+            <div class="field column is-4 mb-0">
+              <label>Postal Code </label>
+              <div class="control">
+                <input
+                  type="text"
+                  name="state"
+                  @blur="handlePostCodeChange"
+                  v-model="userFormData.postalCode"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Postal Code"
+                />
+              </div>
+            </div>
+            <div class="field column is-4 mb-0">
+              <label>City </label>
+              <div class="control">
+                <input
+                  type="text"
+                  name="city"
+                  v-model="userFormData.city"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="City"
+                />
+              </div>
+            </div>
+            <div class="field column is-4 mb-0">
+              <label>State </label>
+              <div class="control">
+                <input
+                  type="text"
+                  name="state"
+                  v-model="userFormData.state"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="State"
+                />
+              </div>
+            </div>
 
-              <VRadio
-                v-model="userFormData.role"
-                value="worker"
-                label="Worker"
-                name="outlined_radio"
-                color="primary"
-              />
-
-              <VRadio
-                v-model="userFormData.role"
-                value="contractor"
-                label="Contractor"
-                name="outlined_radio"
-                color="info"
-              />
-
-              <VRadio
-                v-model="userFormData.role"
-                value="supplier"
-                label="Sub Contractor"
-                name="outlined_radio"
-                color="success"
-              />
-
-              <VRadio
-                v-model="userFormData.role"
-                value="client"
-                label="Client"
-                name="outlined_radio"
-                color="warning"
-              />
-            </VControl>
-          </VField>
-        </div> -->
+            <div class="field column is-12 mb-0">
+              <label>Street Address</label>
+              <div class="control">
+                <input
+                  type="tel"
+                  name="phone"
+                  v-model="userFormData.address"
+                  class="input is-primary-focus is-primary-focus"
+                  placeholder="Street Address"
+                />
+              </div>
+            </div>
+            <div class="field column is-12 mb-0">
+              <label>About </label>
+              <VField>
+                <VControl>
+                  <VTextarea
+                    v-model="userFormData.about"
+                    rows="3"
+                    placeholder="Enter about..."
+                  />
+                </VControl>
+              </VField>
+            </div>
+          </VCard>
+        </div>
       </div>
     </template>
     <template #action>
