@@ -1,5 +1,3 @@
-How i can use luckysheet instead of hotTable,
-
 <script setup lang="ts">
 import axios from "axios";
 import { useUserSession } from "/@src/stores/userSession";

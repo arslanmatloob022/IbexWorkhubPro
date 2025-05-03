@@ -4,9 +4,10 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useUserSession } from "/@src/stores/userSession";
 import { formatDate } from "/@src/composable/useSupportElement";
 import { activityTypes } from "../../estimatesScripts";
+import { sub } from "date-fns";
 
 const searchQuery = ref("");
-const selectedActivity = ref("");
+const selectedActivity = ref({});
 const showAddUpdateContactModal = ref(false);
 const showMailSenderModal = ref(false);
 const activitiesList = ref([
@@ -146,6 +147,58 @@ const filteredData = computed(() => {
   });
 });
 
+const selectedActivityInfo = ref({});
+const selectedId = ref("");
+const SweetAlertProps = ref({
+  title: "Are you sure?",
+  subtitle: "This action cannot be undone.",
+  color: "warning",
+  btnText: "Yes Complete It",
+  icon: "fas fa-bell",
+  isSweetAlertOpen: false,
+});
+
+const openCompleteActivityAlert = (act: any) => {
+  selectedActivityInfo.value = act;
+  selectedId.value = act.id;
+  SweetAlertProps.value = {
+    title: `${act.title}`,
+    subtitle: `Are you sure you have ${
+      selectedActivityInfo.value.status == "completed" ? "pending" : "completed"
+    } this activity?`,
+    color: "warning",
+    btnText: `Yes, Mark ${
+      selectedActivityInfo.value.status == "completed" ? "pending" : "completed"
+    }`,
+    icon: "fas fa-bell",
+    isSweetAlertOpen: true,
+  };
+};
+
+const ChangeStatus = async () => {
+  try {
+    loading.value = false;
+    let payload = {
+      status:
+        selectedActivityInfo.value.status == "completed"
+          ? "pending"
+          : "completed",
+    };
+
+    const response = await api.patch(
+      `/api/activity/${selectedId.value}/`,
+      payload
+    );
+    notyf.success("Activity updated successfully");
+    getActivitiesHandler();
+    SweetAlertProps.value.isSweetAlertOpen = false;
+  } catch (error: any) {
+    notyf.error(` ${error}, Activity`);
+  } finally {
+    loading.value = false;
+  }
+};
+
 const getActivitiesHandler = () => {
   if (props.getUserActivities) {
     getUserActivitiesHandler(userSession.user.id);
@@ -189,15 +242,15 @@ onMounted(() => {
         </VField>
 
         <!-- <VField class="h-hidden-mobile">
-          <VControl>
-            <Multiselect
-              v-model="valueSingle"
-              :options="optionsSingle"
-              :max-height="145"
-              placeholder="Select an option"
-            />
-          </VControl>
-        </VField> -->
+<VControl>
+<Multiselect
+v-model="valueSingle"
+:options="optionsSingle"
+:max-height="145"
+placeholder="Select an option"
+/>
+</VControl>
+</VField> -->
         <VButton
           @click="showAddUpdateContactModal = !showAddUpdateContactModal"
           color="warning"
@@ -222,8 +275,8 @@ onMounted(() => {
         :class="[filteredData.length !== 0 && 'is-hidden']"
         title="We couldn't find any matching results."
         subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
+search terms you've entered. Please try different search terms or
+criteria."
         larger
       >
         <template #image>
@@ -250,13 +303,13 @@ onMounted(() => {
             class="card-grid-item"
             :style="{
               backgroundImage: `linear-gradient(
-                    -175deg,
-                    transparent 70%,
-                  ${item.color}30
-                  `,
+-175deg,
+transparent 70%,
+${item.color}30
+`,
             }"
           >
-            <label class="h-toggle">
+            <label class="h-toggle" @click="openCompleteActivityAlert(item)">
               <input type="checkbox" :checked="item.status == 'completed'" />
               <span class="toggler">
                 <span class="active">
@@ -278,9 +331,7 @@ onMounted(() => {
               {{ item.title }}
             </h3>
             <p>{{ formatDate(item.date) }} remaining</p>
-            <div class="description">
-              <p>{{ item.description ?? "Not Added" }}</p>
-            </div>
+
             <div class="people">
               <VAvatar
                 v-for="user in item.attendees_info"
@@ -322,77 +373,77 @@ onMounted(() => {
 
       <!--Card Grid v3-->
       <!-- <TransitionGroup
-        name="list"
-        tag="div"
-        class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
-      >
-        <div v-for="item in filteredData" :key="item.id" class="column is-4">
-          <div class="card-grid-item">
-            <label v-if="item.lockable" class="h-toggle">
-              <input type="checkbox" :checked="item.locked" />
-              <span class="toggler">
-                <span class="active">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:lock"
-                  />
-                </span>
-                <span class="inactive">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  />
-                </span>
-              </span>
-            </label>
-            <VAvatar
-              size="large"
-              :picture="item.image"
-              :badge="item.badge"
-              squared
-            />
-            <h3 class="dark-inverted">
-              {{ item.name }}
-            </h3>
-            <p>{{ item.remaining }} remaining</p>
-            <div class="description">
-              <p>{{ item.description }}</p>
-            </div>
-            <div class="people">
-              <VAvatar
-                v-for="user in item.team"
-                :key="user.id"
-                size="small"
-                v-bind="getAvatarData(user)"
-              />
-            </div>
-            <div class="buttons">
-              <button class="button v-button is-dark-outlined">
-                <span class="icon">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:eye"
-                  />
-                </span>
-                <span>View</span>
-              </button>
-              <button class="button v-button is-dark-outlined">
-                <span class="icon">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:edit-2"
-                  />
-                </span>
-                <span>Edit</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </TransitionGroup> -->
+name="list"
+tag="div"
+class="columns is-multiline is-flex-tablet-p is-half-tablet-p"
+>
+<div v-for="item in filteredData" :key="item.id" class="column is-4">
+<div class="card-grid-item">
+<label v-if="item.lockable" class="h-toggle">
+<input type="checkbox" :checked="item.locked" />
+<span class="toggler">
+<span class="active">
+<i
+aria-hidden="true"
+class="iconify"
+data-icon="feather:lock"
+/>
+</span>
+<span class="inactive">
+<i
+aria-hidden="true"
+class="iconify"
+data-icon="feather:check"
+/>
+</span>
+</span>
+</label>
+<VAvatar
+size="large"
+:picture="item.image"
+:badge="item.badge"
+squared
+/>
+<h3 class="dark-inverted">
+{{ item.name }}
+</h3>
+<p>{{ item.remaining }} remaining</p>
+<div class="description">
+<p>{{ item.description }}</p>
+</div>
+<div class="people">
+<VAvatar
+v-for="user in item.team"
+:key="user.id"
+size="small"
+v-bind="getAvatarData(user)"
+/>
+</div>
+<div class="buttons">
+<button class="button v-button is-dark-outlined">
+<span class="icon">
+<i
+aria-hidden="true"
+class="iconify"
+data-icon="feather:eye"
+/>
+</span>
+<span>View</span>
+</button>
+<button class="button v-button is-dark-outlined">
+<span class="icon">
+<i
+aria-hidden="true"
+class="iconify"
+data-icon="feather:edit-2"
+/>
+</span>
+<span>Edit</span>
+</button>
+</div>
+</div>
+</div>
+</TransitionGroup> -->
     </div>
     <LeadActivityModal
       v-if="showAddUpdateContactModal"
@@ -406,6 +457,20 @@ onMounted(() => {
       v-if="showMailSenderModal"
       :mailSchedulerModal="showMailSenderModal"
       @update:modal-handler="showMailSenderModal = false"
+    />
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btnText"
+      :onConfirm="ChangeStatus"
+      :onCancel="
+        () => {
+          SweetAlertProps.isSweetAlertOpen = false;
+          getActivitiesHandler();
+        }
+      "
     />
   </div>
 </template>

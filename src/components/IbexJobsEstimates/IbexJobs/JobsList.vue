@@ -73,11 +73,11 @@ const leadsStatusFilters = ref([
 
 const columns = {
   username: {
-    label: "Contractor/Client",
+    label: "Job",
     grow: true,
   },
   location: {
-    label: "Job",
+    label: "Contractor/Client",
     grow: true,
   },
   contacts: "Date Created",
@@ -243,49 +243,6 @@ onMounted(() => {
           </VControl>
         </VField>
 
-        <VDropdown title="Apply sorting" spaced>
-          <template #content>
-            <a @click="sortJobs('ascending')" class="dropdown-item is-media">
-              <div class="icon">
-                <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
-              </div>
-              <div class="meta">
-                <span>Ascending</span>
-                <span>Alphabetical Ascending Sorting</span>
-              </div>
-            </a>
-            <a
-              @click="sortJobs('descending')"
-              class="dropdown-item is-media is-active"
-            >
-              <div class="icon">
-                <i class="fas fa-sort-alpha-down-alt" aria-hidden="true"></i>
-              </div>
-              <div class="meta">
-                <span>Descending</span>
-                <span>Alphabetical Descending Sorting</span>
-              </div>
-            </a>
-            <a @click="sortJobs('new')" class="dropdown-item is-media">
-              <div class="icon">
-                <i class="fas fa-sort-numeric-down" aria-hidden="true"></i>
-              </div>
-              <div class="meta">
-                <span>Most Recent</span>
-                <span>Sort most recently created</span>
-              </div>
-            </a>
-            <a @click="sortJobs('old')" class="dropdown-item is-media">
-              <div class="icon">
-                <i class="fas fa-sort-numeric-down-alt" aria-hidden="true"></i>
-              </div>
-              <div class="meta">
-                <span>Most Old</span>
-                <span>Sort the most oldest</span>
-              </div>
-            </a>
-          </template>
-        </VDropdown>
         <VButtons>
           <VButton
             @click="openLeadUpdateModal('')"
@@ -300,40 +257,101 @@ onMounted(() => {
 
       <div class="page-content-inner">
         <div class="flex-list-wrapper flex-list-v1">
-          <div class="tabs-wrapper column is-12">
-            <div class="tabs-inner">
-              <div class="tabs is-toggle">
-                <ul>
-                  <li :class="[tab === 'all' && 'is-active']">
-                    <a
-                      tabindex="0"
-                      role="button"
-                      @keydown.space.prevent="tab = 'all'"
-                      @click="tab = 'all'"
-                      ><span>All Jobs</span></a
-                    >
-                  </li>
-                  <li :class="[tab === 'completed' && 'is-active']">
-                    <a
-                      tabindex="0"
-                      role="button"
-                      @keydown.space.prevent="tab = 'completed'"
-                      @click="tab = 'completed'"
-                      ><span>Completed Jobs</span></a
-                    >
-                  </li>
+          <div class="columns is-multiline">
+            <div class="column is-6">
+              <div class="tabs-wrapper">
+                <div class="tabs-inner">
+                  <div class="tabs is-toggle">
+                    <ul>
+                      <li :class="[tab === 'all' && 'is-active']">
+                        <a
+                          tabindex="0"
+                          role="button"
+                          @keydown.space.prevent="tab = 'all'"
+                          @click="tab = 'all'"
+                          ><span>All Jobs</span></a
+                        >
+                      </li>
+                      <li :class="[tab === 'completed' && 'is-active']">
+                        <a
+                          tabindex="0"
+                          role="button"
+                          @keydown.space.prevent="tab = 'completed'"
+                          @click="tab = 'completed'"
+                          ><span>Completed Jobs</span></a
+                        >
+                      </li>
 
-                  <li class="tab-naver" />
-                </ul>
+                      <li class="tab-naver" />
+                    </ul>
+                  </div>
+                </div>
               </div>
+            </div>
+            <div class="column is-6 justify-right">
+              <VDropdown title="Apply sorting" spaced>
+                <template #content>
+                  <a
+                    @click="sortJobs('ascending')"
+                    class="dropdown-item is-media"
+                  >
+                    <div class="icon">
+                      <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
+                    </div>
+                    <div class="meta">
+                      <span>Ascending</span>
+                      <span>Alphabetical Ascending Sorting</span>
+                    </div>
+                  </a>
+                  <a
+                    @click="sortJobs('descending')"
+                    class="dropdown-item is-media is-active"
+                  >
+                    <div class="icon">
+                      <i
+                        class="fas fa-sort-alpha-down-alt"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                    <div class="meta">
+                      <span>Descending</span>
+                      <span>Alphabetical Descending Sorting</span>
+                    </div>
+                  </a>
+                  <a @click="sortJobs('new')" class="dropdown-item is-media">
+                    <div class="icon">
+                      <i
+                        class="fas fa-sort-numeric-down"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                    <div class="meta">
+                      <span>Most Recent</span>
+                      <span>Sort most recently created</span>
+                    </div>
+                  </a>
+                  <a @click="sortJobs('old')" class="dropdown-item is-media">
+                    <div class="icon">
+                      <i
+                        class="fas fa-sort-numeric-down-alt"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                    <div class="meta">
+                      <span>Most Old</span>
+                      <span>Sort the most oldest</span>
+                    </div>
+                  </a>
+                </template>
+              </VDropdown>
             </div>
           </div>
           <VPlaceholderPage
             v-if="!secondFiltered?.length"
             title="We couldn't find any matching results."
             subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
+search terms you've entered. Please try different search terms or
+criteria."
             larger
           >
             <template #image>
@@ -363,6 +381,24 @@ onMounted(() => {
                     :key="item.id"
                     class="flex-table-item"
                   >
+                    <VFlexTableCell
+                      @click="
+                        () => {
+                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                        }
+                      "
+                      class="cu-pointer"
+                      :column="{ media: true, grow: true }"
+                    >
+                      <div>
+                        <span class="item-name dark-inverted show-text-200">{{
+                          item.title ? item.title : "N/A"
+                        }}</span>
+                        <span class="item-meta show-text-200">
+                          <span>{{ item.address ? item.address : "N/A" }}</span>
+                        </span>
+                      </div>
+                    </VFlexTableCell>
                     <VFlexTableCell
                       @click="
                         () => {
@@ -402,24 +438,6 @@ onMounted(() => {
                       </div>
                     </VFlexTableCell>
 
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                      :column="{ media: true, grow: true }"
-                    >
-                      <div>
-                        <span class="item-name dark-inverted show-text-200">{{
-                          item.title ? item.title : "N/A"
-                        }}</span>
-                        <span class="item-meta show-text-200">
-                          <span>{{ item.address ? item.address : "N/A" }}</span>
-                        </span>
-                      </div>
-                    </VFlexTableCell>
                     <VFlexTableCell
                       @click="
                         () => {
