@@ -1,20 +1,28 @@
 <script setup lang="ts">
-import { useDropdown, type DropdownOptions } from '/@src/composable/useDropdown'
+import {
+  useDropdown,
+  type DropdownOptions,
+} from "/@src/composable/useDropdown";
 
-export type VDropdownColor = 'primary' | 'info' | 'success' | 'warning' | 'danger'
+export type VDropdownColor =
+  | "primary"
+  | "info"
+  | "success"
+  | "warning"
+  | "danger";
 export interface VDropdownProps {
-  title?: string
-  color?: VDropdownColor
-  icon?: string
-  up?: boolean
-  right?: boolean
-  modern?: boolean
-  spaced?: boolean
-  options?: DropdownOptions
+  title?: string;
+  color?: VDropdownColor;
+  icon?: string;
+  up?: boolean;
+  right?: boolean;
+  modern?: boolean;
+  spaced?: boolean;
+  options?: DropdownOptions;
   classes?: {
-    wrapper?: string | string[]
-    content?: string | string[]
-  }
+    wrapper?: string | string[];
+    content?: string | string[];
+  };
 }
 
 const props = withDefaults(defineProps<VDropdownProps>(), {
@@ -23,14 +31,14 @@ const props = withDefaults(defineProps<VDropdownProps>(), {
   icon: undefined,
   options: undefined,
   classes: undefined,
-})
+});
 
-const dropdownElement = ref<HTMLElement>()
-const dropdown = useDropdown(dropdownElement, props.options)
+const dropdownElement = ref<HTMLElement>();
+const dropdown = useDropdown(dropdownElement, props.options);
 
 defineExpose({
   ...dropdown,
-})
+});
 </script>
 
 <template>
@@ -48,10 +56,7 @@ defineExpose({
     ]"
     class="dropdown"
   >
-    <slot
-      name="button"
-      v-bind="dropdown"
-    >
+    <slot name="button" v-bind="dropdown">
       <a
         v-if="props.icon"
         tabindex="0"
@@ -72,31 +77,18 @@ defineExpose({
         @click="dropdown.toggle"
       >
         <span v-if="props.title">{{ props.title }}</span>
-        <span :class="[!props.modern && 'base-caret', props.modern && 'base-caret']">
-          <VIcon
-            v-if="!dropdown.isOpen"
-            icon="fa6-solid:angle-down"
-          />
-          <VIcon
-            v-else
-            icon="fa6-solid:angle-up"
-          />
+        <span
+          :class="[!props.modern && 'base-caret', props.modern && 'base-caret']"
+        >
+          <VIcon v-if="!dropdown.isOpen" icon="fa6-solid:angle-down" />
+          <VIcon v-else icon="fa6-solid:angle-up" />
         </span>
       </a>
     </slot>
 
-    <div
-      class="dropdown-menu"
-      role="menu"
-    >
-      <div
-        class="dropdown-content"
-        :class="props.classes?.content"
-      >
-        <slot
-          name="content"
-          v-bind="dropdown"
-        />
+    <div class="dropdown-menu" role="menu">
+      <div class="dropdown-content" :class="props.classes?.content">
+        <slot name="content" v-bind="dropdown" />
       </div>
     </div>
   </div>
@@ -308,6 +300,7 @@ defineExpose({
 
   .is-trigger {
     &.button {
+      height: 38px;
       font-family: var(--font);
 
       &:focus {

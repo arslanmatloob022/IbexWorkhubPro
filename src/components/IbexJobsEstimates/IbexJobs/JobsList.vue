@@ -121,9 +121,9 @@ const SweetAlertProps = ref({
 const openLeadDeleteAlert = (id: any) => {
   selectedLeadId.value = id;
   SweetAlertProps.value = {
-    title: "Delete Proposal?",
+    title: "Delete Job?",
     subtitle:
-      "Are you sure to delete this proposal? After delete you will not be able to recover it again.",
+      "Are you sure to delete this Job? After delete you will not be able to recover it again.",
     btntext: "Yes delete",
     isSweetAlertOpen: true,
   };
@@ -232,36 +232,65 @@ onMounted(() => {
   <div>
     <PlaceloadV1 v-if="loading" />
     <div v-else>
-      <div class="list-flex-toolbar">
-        <div class="column is-6">
-          <div class="tabs-wrapper">
-            <div class="tabs-inner">
-              <div class="tabs is-toggle">
-                <ul>
-                  <li :class="[tab === 'all' && 'is-active']">
-                    <a
-                      tabindex="0"
-                      role="button"
-                      @keydown.space.prevent="tab = 'all'"
-                      @click="tab = 'all'"
-                      ><span>All Jobs</span></a
-                    >
-                  </li>
-                  <li :class="[tab === 'completed' && 'is-active']">
-                    <a
-                      tabindex="0"
-                      role="button"
-                      @keydown.space.prevent="tab = 'completed'"
-                      @click="tab = 'completed'"
-                      ><span>Completed Jobs</span></a
-                    >
-                  </li>
-
-                  <li class="tab-naver" />
-                </ul>
-              </div>
-            </div>
-          </div>
+      <div class="list-flex-toolbar columns is-multiline">
+        <div class="column is-3">
+          <VField>
+            <VControl icon="feather:search">
+              <input
+                v-model="filters"
+                class="input custom-text-filter"
+                placeholder="Search..."
+              />
+            </VControl>
+          </VField>
+        </div>
+        <div class="column is-2">
+          <VDropdown title="Apply sorting" modern spaced>
+            <template #content>
+              <a @click="sortJobs('ascending')" class="dropdown-item is-media">
+                <div class="icon">
+                  <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
+                </div>
+                <div class="meta">
+                  <span>Ascending</span>
+                  <span>Alphabetical Ascending Sorting</span>
+                </div>
+              </a>
+              <a
+                @click="sortJobs('descending')"
+                class="dropdown-item is-media is-active"
+              >
+                <div class="icon">
+                  <i class="fas fa-sort-alpha-down-alt" aria-hidden="true"></i>
+                </div>
+                <div class="meta">
+                  <span>Descending</span>
+                  <span>Alphabetical Descending Sorting</span>
+                </div>
+              </a>
+              <a @click="sortJobs('new')" class="dropdown-item is-media">
+                <div class="icon">
+                  <i class="fas fa-sort-numeric-down" aria-hidden="true"></i>
+                </div>
+                <div class="meta">
+                  <span>Most Recent</span>
+                  <span>Sort most recently created</span>
+                </div>
+              </a>
+              <a @click="sortJobs('old')" class="dropdown-item is-media">
+                <div class="icon">
+                  <i
+                    class="fas fa-sort-numeric-down-alt"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+                <div class="meta">
+                  <span>Most Old</span>
+                  <span>Sort the most oldest</span>
+                </div>
+              </a>
+            </template>
+          </VDropdown>
         </div>
 
         <VButtons>
@@ -279,75 +308,8 @@ onMounted(() => {
       <div class="page-content-inner">
         <div class="flex-list-wrapper flex-list-v1">
           <div class="columns is-multiline">
-            <div class="column is-3">
-              <VField>
-                <VControl icon="feather:search">
-                  <input
-                    v-model="filters"
-                    class="input custom-text-filter"
-                    placeholder="Search..."
-                  />
-                </VControl>
-              </VField>
-            </div>
             <div class="column is-3"></div>
-            <div class="column is-6 justify-right">
-              <VDropdown title="Apply sorting" spaced>
-                <template #content>
-                  <a
-                    @click="sortJobs('ascending')"
-                    class="dropdown-item is-media"
-                  >
-                    <div class="icon">
-                      <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
-                    </div>
-                    <div class="meta">
-                      <span>Ascending</span>
-                      <span>Alphabetical Ascending Sorting</span>
-                    </div>
-                  </a>
-                  <a
-                    @click="sortJobs('descending')"
-                    class="dropdown-item is-media is-active"
-                  >
-                    <div class="icon">
-                      <i
-                        class="fas fa-sort-alpha-down-alt"
-                        aria-hidden="true"
-                      ></i>
-                    </div>
-                    <div class="meta">
-                      <span>Descending</span>
-                      <span>Alphabetical Descending Sorting</span>
-                    </div>
-                  </a>
-                  <a @click="sortJobs('new')" class="dropdown-item is-media">
-                    <div class="icon">
-                      <i
-                        class="fas fa-sort-numeric-down"
-                        aria-hidden="true"
-                      ></i>
-                    </div>
-                    <div class="meta">
-                      <span>Most Recent</span>
-                      <span>Sort most recently created</span>
-                    </div>
-                  </a>
-                  <a @click="sortJobs('old')" class="dropdown-item is-media">
-                    <div class="icon">
-                      <i
-                        class="fas fa-sort-numeric-down-alt"
-                        aria-hidden="true"
-                      ></i>
-                    </div>
-                    <div class="meta">
-                      <span>Most Old</span>
-                      <span>Sort the most oldest</span>
-                    </div>
-                  </a>
-                </template>
-              </VDropdown>
-            </div>
+            <div class="column is-6 justify-right"></div>
           </div>
           <VPlaceholderPage
             v-if="!secondFiltered?.length"
@@ -583,227 +545,6 @@ criteria."
             </VFlexTable>
             <VFlexPagination
               v-if="secondFiltered?.length > 5"
-              v-model:current-page="page"
-              :item-per-page="10"
-              :total-items="80"
-              :max-links-displayed="7"
-              no-router
-            />
-          </div>
-          <!-- completedLeads -->
-          <div v-if="tab === 'completed'">
-            <VFlexTable
-              v-if="completedLeads?.length"
-              :data="completedLeads"
-              :columns="columns"
-              compact
-            >
-              <template #body>
-                <TransitionGroup name="list" tag="div" class="flex-list-inner">
-                  <div
-                    v-for="item in completedLeads"
-                    :key="item.id"
-                    class="flex-table-item"
-                  >
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                      :column="{ media: true, grow: true }"
-                    >
-                      <div v-if="item.clientInfo" class="show-text-200">
-                        <span class="item-name">{{
-                          item.clientInfo?.username
-                            ? item.clientInfo?.username
-                            : "N/A"
-                        }}</span>
-                        <span class="item-meta">
-                          <span>{{
-                            item.clientInfo?.email
-                              ? item.clientInfo?.email
-                              : "N/A"
-                          }}</span>
-                        </span>
-                      </div>
-                      <div v-if="item.contractor_info" class="show-text-200">
-                        <span class="item-name dark-inverted">{{
-                          item.contractor_info?.username
-                            ? item.contractor_info?.username
-                            : "N/A"
-                        }}</span>
-                        <span class="item-meta">
-                          <span>{{
-                            item.contractor_info?.email
-                              ? item.contractor_info?.email
-                              : "N/A"
-                          }}</span>
-                        </span>
-                      </div>
-                    </VFlexTableCell>
-
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                      :column="{ media: true, grow: true }"
-                    >
-                      <div>
-                        <span class="item-name dark-inverted show-text-200">{{
-                          item.title ? item.title : "N/A"
-                        }}</span>
-                        <span class="item-meta show-text-200">
-                          <span>{{ item.address ? item.address : "N/A" }}</span>
-                        </span>
-                      </div>
-                    </VFlexTableCell>
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                      :column="{ media: true }"
-                    >
-                      <div>
-                        <span class="item-name dark-inverted">{{
-                          formatDate(item.created)
-                        }}</span>
-                        <span class="item-meta">
-                          <span>At:{{ formatTime(item.created) }}</span>
-                        </span>
-                      </div>
-                    </VFlexTableCell>
-
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                    >
-                      <VTag
-                        class="capitalized"
-                        :color="getJobStatusColor[item.status]"
-                        rounded
-                      >
-                        {{ item.status ? item.status : "N/A" }}
-                      </VTag>
-                    </VFlexTableCell>
-
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                      :column="{ media: true }"
-                    >
-                      <div>
-                        <VAvatar
-                          v-for="manager in item.managers_list"
-                          :initials="manager.username.slice(0, 2)"
-                          :picture="manager.avatar"
-                          v-tooltip.center.primary.rounded="
-                            `${manager.username} ${manager.last_name ?? ''}`
-                          "
-                          color="primary"
-                          size="small"
-                        />
-                      </div>
-                    </VFlexTableCell>
-
-                    <VFlexTableCell :column="{ align: 'end' }">
-                      <VDropdown
-                        icon="feather:more-vertical"
-                        class="is-pushed-mobile"
-                        spaced
-                        right
-                      >
-                        <template #content="{ close }">
-                          <a
-                            role="menuitem"
-                            class="dropdown-item is-media"
-                            @click="
-                              () => {
-                                router.push(
-                                  `/sidebar/dashboard/jobs/${item.id}`
-                                );
-                              }
-                            "
-                          >
-                            <div class="icon">
-                              <i aria-hidden="true" class="lnil lnil-eye" />
-                            </div>
-                            <div class="meta">
-                              <span>View</span>
-                              <span>View user details</span>
-                            </div>
-                          </a>
-
-                          <a
-                            role="menuitem"
-                            @click="openAddProposalModalHandler(item.id)"
-                            class="dropdown-item is-media"
-                          >
-                            <div class="icon">
-                              <i class="lnil lnil-copy" aria-hidden="true"></i>
-                            </div>
-                            <div class="meta">
-                              <span>Add Proposals</span>
-                              <span>Add new proposal to lead</span>
-                            </div>
-                          </a>
-
-                          <a
-                            role="menuitem"
-                            class="dropdown-item is-media"
-                            @click.prevent="openLeadUpdateModal(item.id)"
-                          >
-                            <div class="icon">
-                              <i aria-hidden="true" class="lnil lnil-pencil" />
-                            </div>
-                            <div class="meta">
-                              <span>Edit</span>
-                              <span>Update Lead Info</span>
-                            </div>
-                          </a>
-
-                          <hr class="dropdown-divider" />
-
-                          <a
-                            role="menuitem"
-                            class="dropdown-item is-media"
-                            @click.prevent="openLeadDeleteAlert(item.id)"
-                          >
-                            <div class="icon">
-                              <i
-                                aria-hidden="true"
-                                class="lnil lnil-trash-can-alt"
-                              />
-                            </div>
-                            <div class="meta">
-                              <span>Delete</span>
-                              <span>Delete Proposal Permanently</span>
-                            </div>
-                          </a>
-                        </template>
-                      </VDropdown>
-                    </VFlexTableCell>
-                  </div>
-                </TransitionGroup>
-              </template>
-            </VFlexTable>
-            <VFlexPagination
-              v-if="completedLeads?.length > 5"
               v-model:current-page="page"
               :item-per-page="10"
               :total-items="80"

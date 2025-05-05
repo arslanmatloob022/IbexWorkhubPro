@@ -26,38 +26,42 @@ export interface UserData extends VAvatarProps {
   contacts: VAvatarProps[];
 }
 
-const leadsList = ref({
-  id: "54985a54-db61-4761-becd-3b35f8ec503e",
-  sales_people_info: [],
-  clientInfo: null,
-  created_by_info: null,
-  manager_info: null,
-  title: "test job",
-  address: null,
-  current_state: "lead",
-  city: null,
-  state: null,
-  status: null,
-  zip_code: null,
-  confidence: "0.00",
-  sale_date: null,
-  tags: [],
-  estimated_from: null,
-  estimated_to: null,
-  sources: null,
-  project_type: null,
-  notes: null,
-  attach_mail: null,
-  created: "2025-01-15T19:55:18.448485Z",
-  updated_at: "2025-01-15T19:55:18.448510Z",
-  created_by: null,
-  manager: null,
-  client: null,
-  sales_people: [],
-});
+const leadsList = ref([
+  {
+    id: "54985a54-db61-4761-becd-3b35f8ec503e",
+    sales_people_info: [],
+    clientInfo: null,
+    created_by_info: null,
+    manager_info: null,
+    title: "test job",
+    address: null,
+    current_state: "lead",
+    city: null,
+    state: null,
+    status: null,
+    zip_code: null,
+    confidence: "0.00",
+    sale_date: null,
+    tags: [],
+    estimated_from: null,
+    estimated_to: null,
+    sources: null,
+    project_type: null,
+    notes: null,
+    attach_mail: null,
+    created: "2025-01-15T19:55:18.448485Z",
+    updated_at: "2025-01-15T19:55:18.448510Z",
+    created_by: null,
+    manager: null,
+    client: null,
+    sales_people: [],
+  },
+]);
 
-const page = ref(42);
+const page = ref(1);
+const itemsPerPage = ref(20);
 const filters = ref("");
+const route = useRoute();
 const statusFilter = ref("");
 const openLeadProposalModal = ref(false);
 const openLeadModal = ref(false);
@@ -156,6 +160,16 @@ const openAddProposalModalHandler = (id: any) => {
   openLeadProposalModal.value = !openLeadProposalModal.value;
 };
 
+const currentPage = computed(() => {
+  let index: any = route.query.page as string;
+  if (index == undefined || index == "undefined") {
+    index = 1;
+  } else {
+    index = route.query.page as string;
+  }
+  return Number.parseInt(route.query.page as string) || 1;
+});
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return leadsList.value;
@@ -183,6 +197,12 @@ const secondFiltered = computed(() => {
       return item.leadStatus == statusFilter.value;
     });
   }
+});
+
+const pagedData = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+  const endIndex = startIndex + itemsPerPage.value;
+  return secondFiltered.value.slice(startIndex, endIndex);
 });
 
 onMounted(() => {
@@ -254,15 +274,15 @@ onMounted(() => {
           </VPlaceholderPage>
 
           <VFlexTable
-            v-if="secondFiltered?.length"
-            :data="secondFiltered"
+            v-if="pagedData?.length"
+            :data="pagedData"
             :columns="columns"
             compact
           >
             <template #body>
               <TransitionGroup name="list" tag="div" class="flex-list-inner">
                 <div
-                  v-for="item in secondFiltered"
+                  v-for="item in pagedData"
                   :key="item.id"
                   class="flex-table-item"
                 >
@@ -333,7 +353,7 @@ onMounted(() => {
                     :column="{ media: true }"
                   >
                     <div>
-                      <span class="item-name">{{
+                      <span class="item-name dark-inverted">{{
                         formatDate(item.created)
                       }}</span>
                       <span class="item-meta">
@@ -476,12 +496,12 @@ onMounted(() => {
 
           <!--Table Pagination-->
           <VFlexPagination
-            v-if="secondFiltered?.length > 5"
-            v-model:current-page="page"
-            :item-per-page="10"
-            :total-items="80"
+            v-if="leadsList?.length > itemsPerPage"
+            :item-per-page="itemsPerPage"
+            v-model="currentPage"
+            :total-items="leadsList.length"
+            :current-page="currentPage"
             :max-links-displayed="7"
-            no-router
           />
         </div>
       </div>

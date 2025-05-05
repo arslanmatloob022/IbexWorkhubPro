@@ -1,20 +1,41 @@
 <script setup lang="ts">
+import { getJobStatusColor } from "../IbexJobsEstimates/estimatesScripts";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { formatDate, formatTime } from "/@src/composable/useSupportElement";
 const api = useApi();
 const notyf = useNotyf();
+const router = useRouter();
 const loading = ref(false);
 const query = ref("");
 const HomeRating = ref(4);
 const projectIdDeleteTobe = ref(0);
 const projects = ref([]);
-
+const page = ref(1);
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
 });
+
+const columns = {
+  username: {
+    label: "Job",
+    grow: true,
+  },
+  location: {
+    label: "Contractor/Client",
+    grow: true,
+  },
+  contacts: "Date Created",
+  status: "Status",
+  industry: "Manager",
+  actions: {
+    label: "Actions",
+    align: "end",
+  },
+} as const;
 
 const openDeleteAlert = (id: any) => {
   projectIdDeleteTobe.value = id;
@@ -28,7 +49,7 @@ const openDeleteAlert = (id: any) => {
 const getProjectHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/project/completed/", {});
+    const response = await api.get("/api/project/project-jobs/", {});
     let data = response.data;
 
     projects.value = data.filter((project) => {
@@ -39,6 +60,24 @@ const getProjectHandler = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const openLeadModal = ref(false);
+const selectedLeadId = ref("");
+const openLeadUpdateModal = (id: any) => {
+  selectedLeadId.value = id;
+  openLeadModal.value = true;
+};
+
+const openLeadDeleteAlert = (id: any) => {
+  selectedLeadId.value = id;
+  SweetAlertProps.value = {
+    title: "Delete job?",
+    subtitle:
+      "Are you sure to delete this job? After delete you will not be able to recover it again.",
+    btntext: "Yes delete",
+    isSweetAlertOpen: true,
+  };
 };
 
 const deleteProject = async () => {
@@ -60,7 +99,7 @@ const filteredData = computed(() => {
     return projects.value;
   } else {
     return projects.value.filter((item) => {
-      return item.title.match(new RegExp(query.value, "i"));
+      return item?.title.match(new RegExp(query.value, "i"));
     });
   }
 });
@@ -89,172 +128,253 @@ onMounted(() => {
           color="primary"
           to="/sidebar/dashboard/projects/add-project"
           elevated
-          >Add Project</VButton
-        >
+          >Add Project
+        </VButton>
       </div>
     </div>
 
     <div class="page-content-inner">
       <!--List-->
-      <div class="list-view list-view-v2">
-        <!--List Empty Search Placeholder -->
+      <div class="flex-list-wrapper flex-list-v1">
+        <div class="columns is-multiline">
+          <div class="column is-3"></div>
+          <div class="column is-6 justify-right"></div>
+        </div>
         <VPlaceholderPage
-          :class="[filteredData.length !== 0 && 'is-hidden']"
-          title="There is no completed project "
+          v-if="!filteredData?.length"
+          title="We couldn't find any matching results."
           subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
+search terms you've entered. Please try different search terms or
+criteria."
           larger
         >
           <template #image>
             <img
               class="light-image"
-              src="/@src/assets/illustrations/placeholders/search-2.svg"
+              src="/@src/assets/illustrations/placeholders/search-4.svg"
               alt=""
             />
             <img
               class="dark-image"
-              src="/@src/assets/illustrations/placeholders/search-2-dark.svg"
+              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
               alt=""
             />
           </template>
         </VPlaceholderPage>
 
-        <!--Active Tab-->
-
-        <div class="list-view-inner">
-          <TransitionGroup name="list-complete" tag="div">
-            <div
-              v-for="item in filteredData"
-              :key="item.id"
-              class="list-view-item"
-            >
-              <div class="list-view-item-inner">
-                <img
-                  :src="item.image ? item.image : '/images/homePlaceholder.png'"
-                  alt="Sample home"
-                />
-                <div class="meta-left">
-                  <h3>
-                    <span>{{ item?.title }}</span>
-                    <VRangeRating v-model="HomeRating" class="is-inline">
-                      <i class="fas fa-star" aria-hidden="true" />
-                    </VRangeRating>
-                  </h3>
-                  <p>
-                    <i
-                      aria-hidden="true"
-                      class="iconify"
-                      data-icon="feather:map-pin"
-                    />
-                    <span>{{ item?.description ? item.description : "" }}</span>
-                  </p>
-                  <span>
-                    <span>
-                      {{
-                        item.managers.length > 1
-                          ? `${item.managers.length} Managers`
-                          : `${item.managers.length} room`
-                      }}
+        <VFlexTable
+          v-if="filteredData?.length"
+          :data="filteredData"
+          :columns="columns"
+          compact
+        >
+          <template #body>
+            <TransitionGroup name="list" tag="div" class="flex-list-inner">
+              <div
+                v-for="item in filteredData"
+                :key="item.id"
+                class="flex-table-item"
+              >
+                <VFlexTableCell
+                  @click="
+                    () => {
+                      router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                    }
+                  "
+                  class="cu-pointer"
+                  :column="{ media: true, grow: true }"
+                >
+                  <div>
+                    <span class="item-name dark-inverted show-text-200">{{
+                      item?.title ? item?.title : "N/A"
+                    }}</span>
+                    <span class="item-meta show-text-200">
+                      <span>{{ item?.address ? item.address : "N/A" }}</span>
                     </span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <span> 4 role </span>
-                    <i
-                      aria-hidden="true"
-                      class="fas fa-circle icon-separator"
-                    />
-                    <!-- <span>
-                      {{
-                        item.details.bathrooms > 1
-                          ? `${item.details.bathrooms} bathrooms`
-                          : `${item.details.bathrooms} bathroom`
-                      }}
-                    </span> -->
-                  </span>
-
-                  <div class="icon-list">
-                    <span>
-                      <i aria-hidden="true" class="lnil lnil-car" />
-                      <span>Parking</span>
-                    </span>
-                    <span>
-                      <i aria-hidden="true" class="lnil lnil-signal" />
-                      <span>Wifi</span>
-                    </span>
-                    <span>
-                      <i aria-hidden="true" class="lnil lnil-air-flow" />
-                      <span>Heater</span>
-                    </span>
-                    <span>
-                      <i aria-hidden="true" class="lnil lnil-sun" />
-                      <span>Cleaning</span>
-                    </span>
-                    <!-- <span
-                      v-if="
-                        item.comodities.other &&
-                        item.comodities.otherThing &&
-                        item.comodities.otherCoolThing &&
-                        item.comodities.otherGreatCoolThing
-                      "
-                    >
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>4 more</span>
-                    </span>
-                    <span
-                      v-else-if="
-                        item.comodities.other &&
-                        item.comodities.otherThing &&
-                        item.comodities.otherCoolThing
-                      "
-                    >
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>3 more</span>
-                    </span>
-                    <span
-                      v-else-if="
-                        item.comodities.other && item.comodities.otherThing
-                      "
-                    >
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>2 more</span>
-                    </span>
-                    <span v-else-if="item.comodities.other">
-                      <i aria-hidden="true" class="lnil lnil-more" />
-                      <span>1 more</span>
-                    </span> -->
                   </div>
-                </div>
-                <div class="meta-right">
-                  <div class="buttons">
-                    <VButton
-                      :to="`/sidebar/dashboard/projects/${item.id}`"
-                      light
-                    >
-                      View Details
-                    </VButton>
-                    <VButton
-                      @click="openDeleteAlert(item.id)"
-                      color="danger"
-                      raised
-                    >
-                      Delete
-                    </VButton>
+                </VFlexTableCell>
+                <VFlexTableCell
+                  @click="
+                    () => {
+                      router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                    }
+                  "
+                  class="cu-pointer"
+                  :column="{ media: true, grow: true }"
+                >
+                  <div v-if="item?.clientInfo" class="show-text-200">
+                    <span class="item-name">{{
+                      item.clientInfo?.username
+                        ? item.clientInfo?.username
+                        : "N/A"
+                    }}</span>
+                    <span class="item-meta">
+                      <span>{{
+                        item.clientInfo?.email ? item.clientInfo?.email : "N/A"
+                      }}</span>
+                    </span>
                   </div>
-                </div>
+                  <div v-if="item.contractor_info" class="show-text-200">
+                    <span class="item-name dark-inverted">{{
+                      item.contractor_info?.username
+                        ? item.contractor_info?.username
+                        : "N/A"
+                    }}</span>
+                    <span class="item-meta">
+                      <span>{{
+                        item.contractor_info?.email
+                          ? item.contractor_info?.email
+                          : "N/A"
+                      }}</span>
+                    </span>
+                  </div>
+                </VFlexTableCell>
+
+                <VFlexTableCell
+                  @click="
+                    () => {
+                      router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                    }
+                  "
+                  class="cu-pointer"
+                  :column="{ media: true }"
+                >
+                  <div>
+                    <span class="item-name dark-inverted">{{
+                      formatDate(item.created)
+                    }}</span>
+                    <span class="item-meta">
+                      <span>At:{{ formatTime(item.created) }}</span>
+                    </span>
+                  </div>
+                </VFlexTableCell>
+
+                <VFlexTableCell
+                  @click="
+                    () => {
+                      router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                    }
+                  "
+                  class="cu-pointer"
+                >
+                  <VTag
+                    class="capitalized"
+                    :color="getJobStatusColor[item.status]"
+                    rounded
+                  >
+                    {{ item.status ? item.status : "N/A" }}
+                  </VTag>
+                </VFlexTableCell>
+
+                <VFlexTableCell
+                  @click="
+                    () => {
+                      router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                    }
+                  "
+                  class="cu-pointer"
+                  :column="{ media: true }"
+                >
+                  <div>
+                    <VAvatar
+                      v-for="manager in item?.managers_list"
+                      :initials="manager.username.slice(0, 2)"
+                      :picture="manager.avatar"
+                      v-tooltip.center.primary.rounded="
+                        `${manager.username} ${manager.last_name ?? ''}`
+                      "
+                      color="primary"
+                      size="small"
+                    />
+                  </div>
+                </VFlexTableCell>
+
+                <VFlexTableCell :column="{ align: 'end' }">
+                  <VDropdown
+                    icon="feather:more-vertical"
+                    class="is-pushed-mobile"
+                    spaced
+                    right
+                  >
+                    <template #content="{ close }">
+                      <a
+                        role="menuitem"
+                        class="dropdown-item is-media"
+                        @click="
+                          () => {
+                            router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                          }
+                        "
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-eye" />
+                        </div>
+                        <div class="meta">
+                          <span>View</span>
+                          <span>View user details</span>
+                        </div>
+                      </a>
+
+                      <!-- <a
+                        role="menuitem"
+                        @click="openAddProposalModalHandler(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i class="lnil lnil-copy" aria-hidden="true"></i>
+                        </div>
+                        <div class="meta">
+                          <span>Add Proposals</span>
+                          <span>Add new proposal to lead</span>
+                        </div>
+                      </a> -->
+
+                      <!-- <a
+                        role="menuitem"
+                        class="dropdown-item is-media"
+                        @click.prevent="openLeadUpdateModal(item.id)"
+                      >
+                        <div class="icon">
+                          <i aria-hidden="true" class="lnil lnil-pencil" />
+                        </div>
+                        <div class="meta">
+                          <span>Edit</span>
+                          <span>Update Lead Info</span>
+                        </div>
+                      </a> -->
+
+                      <hr class="dropdown-divider" />
+
+                      <a
+                        role="menuitem"
+                        class="dropdown-item is-media"
+                        @click.prevent="openLeadDeleteAlert(item.id)"
+                      >
+                        <div class="icon">
+                          <i
+                            aria-hidden="true"
+                            class="lnil lnil-trash-can-alt"
+                          />
+                        </div>
+                        <div class="meta">
+                          <span>Delete</span>
+                          <span>Delete Proposal Permanently</span>
+                        </div>
+                      </a>
+                    </template>
+                  </VDropdown>
+                </VFlexTableCell>
               </div>
-            </div>
-          </TransitionGroup>
-        </div>
-
+            </TransitionGroup>
+          </template>
+        </VFlexTable>
         <VFlexPagination
-          v-if="filteredData.length > 5"
+          v-if="filteredData?.length > 5"
+          v-model:current-page="page"
           :item-per-page="10"
-          :total-items="873"
-          :current-page="42"
-          :max-links-displayed="5"
+          :total-items="80"
+          :max-links-displayed="7"
+          no-router
         />
       </div>
       <SweetAlert

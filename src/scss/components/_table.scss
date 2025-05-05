@@ -27,6 +27,7 @@
   .pagination-previous {
     background: var(--white);
     min-width: 85px;
+    border-radius: 10px !important;
 
     &.has-chevron {
       min-width: 55px;
@@ -54,6 +55,7 @@
         background: var(--white);
         font-family: var(--font);
         font-size: 0.9em;
+        border-radius: 10px;
 
         &.is-current {
           background: var(--primary);

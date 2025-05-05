@@ -3,7 +3,7 @@ import { ref, computed, onMounted, toRefs } from "vue";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
-
+import { CalendarTaskStatus } from "../../IbexJobsEstimates/estimatesScripts";
 const notyf = useNotyf();
 const api = useApi();
 const allWorkers = ref([]);
@@ -107,8 +107,8 @@ const editTaskHandler = async () => {
     }
     closeModalHandler();
   } catch (err) {
-    notyf.error("Something went wrong");
     console.log(err);
+    // notyf.error("Something went wrong");
   } finally {
     loading.value = false;
   }
@@ -163,6 +163,52 @@ const getSubContractorHandler = async () => {
   }
 };
 
+// const getWorkerConflictedTaskDate = async () => {
+//   try {
+//     const resp = await api.get(
+//       `/api/task/worker-wise-tasks-stats-by-date/${taskData.value.workers}/`,
+//       {
+//         start_date: taskData.value.startDate,
+//         end_date: taskData.value.endDate,
+//       }
+//     );
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+// watch(
+//   () => taskData.value.workers,
+//   () => {
+//     getWorkerConflictedTaskDate();
+//   }
+// );
+
+const Loading = ref(false);
+const costCodesWholeList = ref([]);
+const costCodesList = ref([]);
+const getCostCodesHandler = async () => {
+  try {
+    Loading.value = true;
+    const response = await api.get(`/api/cost-code/`);
+    costCodesWholeList.value = response.data;
+    costCodesList.value = response.data.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.name,
+        labour_cost: item.labour_cost,
+        unit_cost: item.unit_cost ?? 0.0,
+        worker_cost: item.worker_cost ?? 0.0,
+        unit: item.unit ?? "--",
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    Loading.value = false;
+  }
+};
+
 const closeModalHandler = () => {
   emit("update:modalHandler", false);
   console.log("modal closed");
@@ -172,6 +218,7 @@ onMounted(() => {
   if (props.taskIdSelected) {
     fetchTaskData();
   }
+  getCostCodesHandler();
   getWorkershandler();
   getSubContractorHandler();
   if (props.startDate) {
@@ -219,10 +266,10 @@ onMounted(() => {
               >
                 <VOption value="">Select Status</VOption>
                 <VOption
-                  v-for="task in TaskStatus"
+                  v-for="task in CalendarTaskStatus"
                   :key="task.value"
                   :value="task.value"
-                  >{{ task.value }}
+                  >{{ task.name }}
                 </VOption>
               </VSelect>
             </VControl>
@@ -239,6 +286,22 @@ onMounted(() => {
                 type="text"
                 :placeholder="loading ? 'Loading...' : 'Cost code'"
                 v-model="taskData.costCode"
+              />
+            </VControl>
+          </VField>
+        </div>
+
+        <div class="field column is-6">
+          <label>New Cost Code List *</label>
+          <VField v-slot="{ id }">
+            <VControl>
+              <Multiselect
+                required
+                v-model="taskData.costCode"
+                :attrs="{ id }"
+                :searchable="true"
+                :options="costCodesList"
+                placeholder="Select a cost code"
               />
             </VControl>
           </VField>
@@ -273,7 +336,7 @@ onMounted(() => {
         </div>
 
         <!-- lin manger -->
-        <div class="field column is-6 mb-0">
+        <div class="field column is-3 mb-0">
           <VField>
             <VLabel>Start Date</VLabel>
             <VControl>
@@ -286,7 +349,7 @@ onMounted(() => {
           </VField>
         </div>
 
-        <div class="field column is-6 mb-0">
+        <div class="field column is-3 mb-0">
           <VField>
             <VLabel>End Date</VLabel>
             <VControl>
@@ -320,7 +383,6 @@ onMounted(() => {
             <VControl>
               <Multiselect
                 v-model="selectWorkersSlot"
-                :required="taskData.supplier ? false : true"
                 :attrs="{ id }"
                 mode="tags"
                 :searchable="true"

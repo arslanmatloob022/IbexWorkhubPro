@@ -30,7 +30,7 @@ export const routerLinks = ref([
         activeClass: "projects",
       },
       {
-        title: "Manage Jobs",
+        title: "Jobs Manager",
         icon: "lnir lnir-appointment",
         class: "is-submenu",
         route: "/sidebar/dashboard/manage-projects",

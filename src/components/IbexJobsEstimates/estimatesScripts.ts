@@ -63,6 +63,13 @@ export const leadStatus = ref([
   { value: "noOpportunity", label: "No Opportunity" },
 ]);
 
+export const CalendarTaskStatus = [
+  { value: "active", name: "Active" },
+  { value: "pending", name: "Pending" },
+  { value: "completed", name: "Completed" },
+  { value: "cancelled", name: "Cancelled" },
+];
+
 export const generalUnits = [
   {
     label: "Square Foot",

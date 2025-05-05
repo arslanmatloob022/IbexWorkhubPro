@@ -53,6 +53,7 @@ const calendarOptions = ref({
   resourcesInitiallyExpanded: false,
   selectable: true,
   dragScroll: true,
+  resourceClickable: true,
   nowIndicator: true,
   eventOrder: "start",
   resourceOrder: "start",
@@ -61,6 +62,9 @@ const calendarOptions = ref({
     center: "title",
     right: "resourceTimelineWeek,resourceTimelineMonth,resourceTimelineYear",
   },
+  resourceAreaHeaderContent: "Projects",
+  resources: [],
+  events: [],
   buttonText: {
     today: "Today",
     resourceTimelineWeek: "Week",
@@ -68,29 +72,6 @@ const calendarOptions = ref({
     resourceTimelineYear: "Year",
   },
   editable: true,
-
-  // Move resourceClick here
-  resourceClick: (info) => {
-    const resource = info.resource;
-
-    // If the clicked resource is a project (main resource)
-    if (!resource.extendedProps.isSubResource) {
-      notyf.success(`Project clicked: ${resource.title}`);
-      // You can scroll to this project or open a project detail, etc.
-      const calendar = this.$refs.calendarRef.getApi(); // Access calendar API
-      calendar.scrollTo({
-        left: resource.el.offsetLeft,
-        behavior: "smooth", // Optional smooth scrolling
-      });
-    }
-    // If the clicked resource is a task (sub-resource)
-    else {
-      notyf.success(`Task clicked: ${resource.title}`);
-      // Handle task (sub-resource) click event, such as opening task details
-      const task = resource.extendedProps;
-    }
-  },
-
   views: {
     resourceTimelineWeek: {
       slotDuration: { days: 1, hours: 1 },
@@ -117,7 +98,41 @@ const calendarOptions = ref({
       dayMinHeight: 26,
     },
   },
+  eventDidMount: function (info) {
+    if (
+      info.el &&
+      info.event &&
+      info.event._def &&
+      info.event._def.resourceIds
+    ) {
+      const resourceId = info.event._def.resourceIds[0]; // assuming one resource per event
+      info.el.setAttribute("data-resource-id", resourceId);
+    }
+  },
+  resourceLabelDidMount: function (info) {
+    const resource = info.resource;
 
+    info.el.style.cursor = "pointer";
+    info.el.style.color = "blue";
+
+    info.el.addEventListener("click", function () {
+      console.log("Clicked resource:", resource.title, resource.id);
+
+      setTimeout(() => {
+        const resourceRow = document.querySelector(
+          `.fc-event[data-resource-id="${resource.id}"]`
+        );
+
+        if (resourceRow) {
+          resourceRow.scrollIntoView({
+            behavior: "smooth",
+            inline: "center",
+            block: "center",
+          });
+        }
+      }, 100);
+    });
+  },
   dayCellDidMount: function (info) {
     const day = info.date.getDay();
 
@@ -125,10 +140,6 @@ const calendarOptions = ref({
       info.el.classList.add("fc-day-sat", "fc-day-sun");
     }
   },
-
-  resourceAreaHeaderContent: "Projects",
-  resources: [],
-  events: [],
 
   eventDrop: (info: any) => {
     eventChangeHandler(info);
@@ -155,36 +166,6 @@ const calendarOptions = ref({
     isTaskFormOpen.value = true;
   },
 });
-
-const scrollToTaskEvent = (event: any) => {
-  const calendarEl = document.querySelector(".fc-scrollgrid-sync-inner");
-  notyf.blue("calling");
-  if (calendarEl && event.start) {
-    const taskStartTime = event.start.getTime();
-
-    // Get the current view's start and end times
-    const viewStart = calendarOptions.value.getApi().view.activeStart.getTime();
-    const viewEnd = calendarOptions.value.getApi().view.activeEnd.getTime();
-
-    // Ensure the task's start date is within the visible calendar range
-    if (taskStartTime >= viewStart && taskStartTime <= viewEnd) {
-      // Smooth scroll to the task's position
-      const eventEl = document.querySelector(`[data-event-id="${event.id}"]`);
-      if (eventEl) {
-        eventEl.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    } else {
-      // Change the view if the task is not in the current range
-      calendarOptions.value.getApi().gotoDate(event.start);
-      setTimeout(() => {
-        const eventEl = document.querySelector(`[data-event-id="${event.id}"]`);
-        if (eventEl) {
-          eventEl.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 500);
-    }
-  }
-};
 
 const eventChangeHandler = (info: any) => {
   if (userSession.user.role === "contractor") {
@@ -337,6 +318,7 @@ const renderCalender = () => {
 
   // Now, assign the resources to FullCalendar
   calendarOptions.value.resources = projectResources;
+  console.log("resources", projectResources);
 
   calendarOptions.value.events = allEvents;
 };
@@ -425,6 +407,17 @@ const getCalendarData = async () => {
 onMounted(async () => {
   await getCalendarData();
   showWorkerChart.value = true;
+  document.querySelectorAll(".fc-datagrid-cell-cushion").forEach((el) => {
+    el.addEventListener("click", () => {
+      const resourceId = el
+        .closest("[data-resource-id]")
+        ?.getAttribute("data-resource-id");
+      if (resourceId) {
+        console.log("Clicked resource ID:", resourceId);
+        // Add your custom logic here
+      }
+    });
+  });
 });
 </script>
 
