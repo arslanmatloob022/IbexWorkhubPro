@@ -4,6 +4,7 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { CalendarTaskStatus } from "../../IbexJobsEstimates/estimatesScripts";
+import { start } from "nprogress";
 const notyf = useNotyf();
 const api = useApi();
 const allWorkers = ref([]);
@@ -57,6 +58,7 @@ const taskData = ref({
   color: "",
   project: "",
   priority: "",
+  internalNotes: "",
   workers: [],
 });
 
@@ -163,26 +165,49 @@ const getSubContractorHandler = async () => {
   }
 };
 
-// const getWorkerConflictedTaskDate = async () => {
-//   try {
-//     const resp = await api.get(
-//       `/api/task/worker-wise-tasks-stats-by-date/${taskData.value.workers}/`,
-//       {
-//         start_date: taskData.value.startDate,
-//         end_date: taskData.value.endDate,
-//       }
-//     );
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+const conflictsMappedTasks = ref({
+  found_tasks: false,
+  map: [
+    {
+      month: "April 2025",
+      found_task: false,
+      dates: [
+        {
+          date: "2025-04-15",
+          count: 0,
+          tasks: [],
+        },
+      ],
+    },
+  ],
+});
 
-// watch(
-//   () => taskData.value.workers,
-//   () => {
-//     getWorkerConflictedTaskDate();
-//   }
-// );
+const openConflictModal = ref(false);
+
+const getWorkerConflictedTaskDate = async () => {
+  try {
+    const resp = await api.get(
+      `/api/task/worker-wise-date-map/${selectWorkersSlot.value}/?start_date=${taskData.value.startDate}&end_date=${taskData.value.endDate}`
+    );
+    conflictsMappedTasks.value = resp.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+watch(
+  () => selectWorkersSlot.value,
+  () => {
+    getWorkerConflictedTaskDate();
+  }
+);
+
+watch(
+  () => taskData.value.endDate,
+  () => {
+    getWorkerConflictedTaskDate();
+  }
+);
 
 const Loading = ref(false);
 const costCodesWholeList = ref([]);
@@ -361,24 +386,16 @@ onMounted(() => {
             </VControl>
           </VField>
         </div>
-
-        <!-- priority level 
-        <div class="field column is-6 mb-0">
-          <VField>
-            <VLabel>Priority</VLabel>
-            <VControl>
-              <VSelect v-model="taskData.priority">
-                <VOption value=""> Select priority level </VOption>
-                <VOption value="Low"> Low </VOption>
-                <VOption value="Medium"> Medium </VOption>
-                <VOption value="High"> High </VOption>
-              </VSelect>
-            </VControl>
-          </VField>
-        </div>-->
-
         <div class="field column is-6 mb-0">
           <label>Select workers * </label>
+          <span
+            @click="openConflictModal = true"
+            v-if="conflictsMappedTasks.found_tasks"
+            class="warning-text cu-pointer"
+          >
+            Found Tasks Conflicts
+            <i class="fas fa-exclamation-triangle ml-2" aria-hidden="true"></i>
+          </span>
           <VField v-slot="{ id }">
             <VControl>
               <Multiselect
@@ -439,6 +456,14 @@ onMounted(() => {
             </VControl>
           </VField>
         </div>
+        <WorkerTasksConflicts
+          v-if="openConflictModal"
+          :conflicts-detail-modal="openConflictModal"
+          :conflict-data="conflictsMappedTasks"
+          :startDate="taskData.startDate"
+          :endDate="taskData.endDate"
+          @update:modal-handler="openConflictModal = false"
+        />
       </div>
     </template>
     <template #action>

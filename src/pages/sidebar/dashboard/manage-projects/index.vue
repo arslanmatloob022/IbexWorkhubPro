@@ -21,11 +21,7 @@ useHead({
 </script>
 
 <template>
-  <div class="page-content-inner">
-    <Teleport to="[data-teleport-bg]">
-      <div class="lifestyle-dashboard-bg has-top-nav" />
-    </Teleport>
-
-    <ProjectManagerCalendar />
+  <div>
+    <ProjectsManager />
   </div>
 </template>

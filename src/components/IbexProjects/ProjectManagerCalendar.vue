@@ -48,7 +48,7 @@ const calendarOptions = ref({
   initialDate: new Date().toISOString().split("T")[0],
   height: "auto",
   themeSystem: "cerulean",
-  resourceAreaWidth: "20%",
+  resourceAreaWidth: "16%",
   slotMinHeight: 20,
   resourcesInitiallyExpanded: false,
   selectable: true,
@@ -263,7 +263,7 @@ const getManagersById = (id: any) => {
 };
 
 const renderCalender = () => {
-  const bgEvents = projects.value.map((project) => ({
+  const bgEvents = projects.value.map((project: any) => ({
     id: project.id,
     resourceId: project.id,
     start: project.startDate,
@@ -273,7 +273,7 @@ const renderCalender = () => {
     color: project.color,
   }));
 
-  const events = tasks.value.map((task) => ({
+  const events = tasks.value.map((task: any) => ({
     id: task.id,
     resourceId: task.id,
     project: task.project,
@@ -283,7 +283,7 @@ const renderCalender = () => {
     color: task.color,
     description: task.description,
     workers: task.workers,
-    borderColor: colors[task.status],
+    borderColor: colors[task?.status],
     managers: getManagersById(task.project),
   }));
 
@@ -309,17 +309,13 @@ const renderCalender = () => {
       eventBackgroundColor: project.color,
       project: project.id,
       initiallyExpanded: true,
-      children: taskResources, // Nest tasks under the project
+      children: taskResources,
       extendedProps: {
-        isSubResource: false, // Mark this as a main resource (project)
+        isSubResource: false,
       },
     };
   });
-
-  // Now, assign the resources to FullCalendar
   calendarOptions.value.resources = projectResources;
-  console.log("resources", projectResources);
-
   calendarOptions.value.events = allEvents;
 };
 
@@ -387,11 +383,6 @@ const getTasksHandler = async () => {
   }
 };
 
-const toggleFullScreen = () => {
-  fullWidthView.value = !fullWidthView.value;
-  const fullScreenCalender = document.getElementById("fullCalendarView");
-};
-
 watch(activeFilter, (newValue, oldValue) => {
   changeFilterHandler();
 });
@@ -414,7 +405,6 @@ onMounted(async () => {
         ?.getAttribute("data-resource-id");
       if (resourceId) {
         console.log("Clicked resource ID:", resourceId);
-        // Add your custom logic here
       }
     });
   });
