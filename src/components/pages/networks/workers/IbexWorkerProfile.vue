@@ -324,7 +324,7 @@ onMounted(async () => {
                   ><span>Todos</span></a
                 >
               </li>
-              <li :class="[mainTab === 'activities' && 'is-active']">
+              <!-- <li :class="[mainTab === 'activities' && 'is-active']">
                 <a
                   tabindex="0"
                   role="button"
@@ -332,7 +332,7 @@ onMounted(async () => {
                   @click="mainTab = 'activities'"
                   ><span>Activities</span></a
                 >
-              </li>
+              </li> -->
 
               <li class="tab-naver" />
             </ul>
@@ -434,11 +434,11 @@ onMounted(async () => {
         <ProjectTodayTasks :workerId="route.params.id" />
       </div>
     </div>
-    <div v-if="mainTab == 'activities'" class="columns is-multiline">
+    <!-- <div v-if="mainTab == 'activities'" class="columns is-multiline">
       <div class="column is-12">
         <JobLeadActivities :user="route.params.id" />
       </div>
-    </div>
+    </div> -->
     <div v-if="mainTab == 'todos'" class="columns is-multiline">
       <div class="column is-12">
         <JobTodos :user="route.params.id" />

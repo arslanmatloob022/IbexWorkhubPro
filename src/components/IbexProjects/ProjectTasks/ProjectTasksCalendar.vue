@@ -151,7 +151,6 @@ onMounted(() => {
   th {
     background-color: var(--primary) !important;
     border: none;
-
     color: #f1f1f1 !important;
   }
 

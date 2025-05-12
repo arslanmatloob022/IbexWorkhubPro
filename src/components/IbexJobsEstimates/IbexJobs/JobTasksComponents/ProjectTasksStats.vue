@@ -36,7 +36,7 @@ const getProjectTasksStats = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/task/project-wise-tasks-stats/${props.project}/`
+      `/api/task/project-wise-stats/${props.project}/`
     );
     projectTasksStats.value = response.data;
   } catch (err) {

@@ -195,16 +195,15 @@ const getWorkerConflictedTaskDate = async () => {
   }
 };
 
+const isInitialized = ref(false);
+
 watch(
   () => selectWorkersSlot.value,
   () => {
-    getWorkerConflictedTaskDate();
-  }
-);
-
-watch(
-  () => taskData.value.endDate,
-  () => {
+    if (!isInitialized.value) {
+      isInitialized.value = true;
+      return;
+    }
     getWorkerConflictedTaskDate();
   }
 );

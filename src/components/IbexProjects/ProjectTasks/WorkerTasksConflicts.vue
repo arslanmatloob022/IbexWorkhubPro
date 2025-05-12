@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { formatDate } from "/@src/composable/useSupportElement";
-import { round } from "cypress/types/lodash";
 
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
@@ -14,8 +12,6 @@ const props = defineProps<{
   startDate?: string;
   endDate?: string;
 }>();
-
-const tab = ref<"info" | "progress">("info");
 
 const closeModalHandler = () => {
   emit("update:modalHandler", true);
@@ -38,15 +34,7 @@ const generateTooltip = (tasks: any) => {
   >
     <template #content>
       <div class="heatmap-wrapper">
-        <!-- {{ props.conflictData }} -->
         <div class="heatmap-title">
-          <!-- <div class="title-avatar">
-            <img
-              src="/demo/photos/faces/girl1.jpg"
-              alt=""
-              @error.once="onceImageErrored(150)"
-            />
-          </div> -->
           <div class="title-meta">
             <p>
               Tasks found within given date range:
@@ -70,7 +58,7 @@ const generateTooltip = (tasks: any) => {
                 v-for="date in item.dates"
                 :key="item.date"
                 class="heatmap-row-item is-relative"
-                v-tooltip.rounded="generateTooltip(date.tasks)"
+                v-tooltip.rounded.warning="generateTooltip(date.tasks)"
               >
                 <span
                   style="
@@ -84,7 +72,13 @@ const generateTooltip = (tasks: any) => {
                 >
                 <i
                   v-if="date.count"
-                  class="fas fa-exclamation-triangle text-warning warning-text"
+                  class="fas fa-exclamation-triangle warning-text"
+                  aria-hidden="true"
+                ></i>
+
+                <i
+                  v-else
+                  class="fas fa-check primary-text"
                   aria-hidden="true"
                 ></i>
               </div>
@@ -150,15 +144,20 @@ const generateTooltip = (tasks: any) => {
 
       .heatmap-row-content {
         display: flex;
-        flex-grow: 2;
+        flex-wrap: wrap; /* Allow wrapping of items */
+        gap: 5px; /* Add spacing between items */
+        // flex-grow: 2;
+        justify-content: flex-start; /* Align items to the start of the row */
+        align-items: center;
 
         .heatmap-row-item {
           margin: 5px;
-          flex: 1 1 0;
+          // flex: 1 1 0;
           display: flex;
           justify-content: center;
           align-items: center;
-          min-height: 30px;
+          height: 30px;
+          width: 50px;
           border-radius: var(--radius-large);
           background: var(--widget-grey-dark-2);
 

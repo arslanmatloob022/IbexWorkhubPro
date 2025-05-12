@@ -8,32 +8,12 @@ import { useCompany } from "/@src/stores/company";
 
 const company = useCompany();
 const tab = ref("general");
-const showModal = ref(false);
-
-const openEditModal = () => {
-  showModal.value = true;
-};
-
-const closeEditModal = () => {
-  showModal.value = false;
-};
 </script>
 
 <template>
   <div class="container">
     <div class="box cu-property">
       <div class="box-body">
-        <!-- <div class="position-relative">
-          <div class="position-absolute" style="top: 0px; right: 0px">
-            <VButton
-              color="primary"
-              @click="openEditModal()"
-              size="xsmall"
-              rounded
-              ><i class="fas fa-pen"></i> Edit</VButton
-            >
-          </div>
-        </div> -->
         <div class="columns is-multiline p-5 align-items-center">
           <div class="column is-2 text-align-center">
             <img
@@ -104,7 +84,7 @@ const closeEditModal = () => {
     <div class="m-t-20">
       <div class="tabs-wrapper">
         <div class="tabs-inner">
-          <div class="tabs is-boxed">
+          <div class="tabs is-toggle">
             <ul>
               <li :class="[tab === 'general' ? 'is-active' : 'not-active']">
                 <a
@@ -161,29 +141,10 @@ const closeEditModal = () => {
                   role="button"
                   @keydown.space.prevent="tab = 'permissions'"
                   @click="tab = 'permissions'"
-                  ><span>Users permissions</span></a
+                  ><span>Permissions & Roles</span></a
                 >
               </li>
-              <li
-                :class="[tab === 'roleManagement' ? 'is-active' : 'not-active']"
-              >
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'roleManagement'"
-                  @click="tab = 'roleManagement'"
-                  ><span>Role Management</span></a
-                >
-              </li>
-              <li :class="[tab === 'manageRole' ? 'is-active' : 'not-active']">
-                <a
-                  tabindex="0"
-                  role="button"
-                  @keydown.space.prevent="tab = 'manageRole'"
-                  @click="tab = 'manageRole'"
-                  ><span>Manage Role</span></a
-                >
-              </li>
+
               <li :class="[tab === 'logs' ? 'is-active' : 'not-active']">
                 <a
                   tabindex="0"
@@ -211,58 +172,12 @@ const closeEditModal = () => {
       </div>
 
       <div v-if="tab === 'permissions'">
-        <UsersPermissions />
-      </div>
-      <div v-if="tab === 'roleManagement'">
-        <RoleManagement />
-      </div>
-      <div v-if="tab === 'manageRole'">
-        <ManageRole />
+        <RolesAndPermissionsMain />
       </div>
 
       <div v-if="tab === 'logs'">
         <CompanyActivitylog />
       </div>
-
-      <!-- <div class="" v-if="tab === 'proposalsTemplates'">
-        <div class="tabs-wrapper">
-          <div class="tabs-inner">
-            <div class="tabs">
-              <ul>
-                <li
-                  :class="[
-                    proposaltab === 'proposals' ? 'is-active' : 'not-active',
-                  ]"
-                >
-                  <a
-                    tabindex="0"
-                    role="button"
-                    @keydown.space.prevent="proposaltab = 'proposals'"
-                    @click="proposaltab = 'proposals'"
-                    ><span>Templates</span></a
-                  >
-                </li>
-                <li
-                  :class="[
-                    proposaltab === 'Catalog' ? 'is-active' : 'not-active',
-                  ]"
-                >
-                  <a
-                    tabindex="0"
-                    role="button"
-                    @keydown.space.prevent="proposaltab = 'Catalog'"
-                    @click="proposaltab = 'Catalog'"
-                    ><span>Catalog</span></a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="" v-if="proposaltab === 'proposals'">
-          <TemplatePropsalsList />
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
