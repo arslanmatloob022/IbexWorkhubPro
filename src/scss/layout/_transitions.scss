@@ -138,6 +138,32 @@
     transition: none;
   }
 }
+/* ==========================================================================
+5. list-down
+========================================================================== */
+
+.list-down-item {
+  display: inline-block;
+  margin-inline-end: 10px;
+}
+
+.list-down-enter-active,
+.list-down-leave-active {
+  transition: all 0.4s ease;
+}
+
+.list-down-enter-from,
+.list-down-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list-down-enter-active,
+  .list-down-leave-active {
+    transition: none;
+  }
+}
 
 /* ==========================================================================
 6. list-complete

@@ -11,10 +11,10 @@ const selectedModuleIdHandler = (id: string) => {
   <div>
     <div class="columns is-multiline">
       <div class="column is-4">
-        <ModulesList @select-module="selectedModuleIdHandler" />
+        <RolesList @select-role="selectedModuleIdHandler" />
       </div>
       <div class="column is-8">
-        <PermissionsList :moduleId="selectedModuleId" />
+        <ModulePermissionsList :objectId="selectedModuleId" />
       </div>
     </div>
   </div>

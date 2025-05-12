@@ -1,9 +1,8 @@
 <script setup lang="ts">
 const filters = ref("");
-const selectedModuleId = ref("");
-
-const selectedModuleIdHandler = (id: string) => {
-  selectedModuleId.value = id;
+const selectedObjectId = ref("");
+const selectedObjectIdHandler = (id: string) => {
+  selectedObjectId.value = id;
 };
 </script>
 
@@ -11,10 +10,10 @@ const selectedModuleIdHandler = (id: string) => {
   <div>
     <div class="columns is-multiline">
       <div class="column is-4">
-        <ModulesList @select-module="selectedModuleIdHandler" />
+        <CompanyUsersList @select-module="selectedObjectIdHandler" />
       </div>
       <div class="column is-8">
-        <PermissionsList :moduleId="selectedModuleId" />
+        <ModulePermissionsList :objectId="selectedObjectId" />
       </div>
     </div>
   </div>
