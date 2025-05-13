@@ -242,6 +242,7 @@ onMounted(() => {
   if (props.taskIdSelected) {
     fetchTaskData();
   }
+  isInitialized.value = true;
   getCostCodesHandler();
   getWorkershandler();
   getSubContractorHandler();

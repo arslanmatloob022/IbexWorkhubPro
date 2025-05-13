@@ -149,7 +149,7 @@ onMounted(() => {
   }
 
   th {
-    background-color: var(--primary) !important;
+    background-color: var(--dark) !important;
     border: none;
     color: #f1f1f1 !important;
   }

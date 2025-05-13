@@ -216,7 +216,7 @@ onMounted(() => {
   }
 
   th {
-    background-color: var(--primary) !important;
+    background: var(--dark) !important;
     border: none;
     color: #0e0c0c !important;
   }
@@ -244,7 +244,7 @@ onMounted(() => {
   }
 
   .fc-toolbar button {
-    background-color: var(--primary);
+    background-color: var(--dark);
     color: #ffffff;
     border: none;
     border-radius: 4px;
@@ -262,13 +262,16 @@ onMounted(() => {
 
   /* Calendar Header */
   .fc-col-header-cell {
-    background-color: var(--primary) !important;
-    background: var(--primary) !important;
-    color: #fff !important;
+    background-color: var(--dark) !important;
+    background: var(--dark) !important;
+
     font-weight: bold;
     text-align: center;
     padding: 4px 2px !important;
     border: 1px solid #ddd;
+    a {
+      color: #fff !important;
+    }
   }
 
   .fc-month-start {
@@ -290,7 +293,7 @@ onMounted(() => {
 
   /* Events */
   .fc-event {
-    border-left: 6px solid #2ec184 !important;
+    border-left: 6px solid #2b3041 !important;
     border-bottom: none;
     border-right: none;
     margin-bottom: 4px !important;
@@ -299,13 +302,13 @@ onMounted(() => {
     background: #4ff1ae; /* fallback for old browsers */
     background: -webkit-linear-gradient(
       to right,
-      #84f6c7,
+      #2b3041,
       #d3faea
     ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(
       to right,
-      #84f6c7,
-      #d3faea
+      #d2d8ef,
+      transparent
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
     border-radius: 0 4px 4px 0 !important;
@@ -321,7 +324,7 @@ onMounted(() => {
       box-shadow 0.2s ease;
 
     .event-title {
-      color: #20b778;
+      color: var(--dark-inverted);
       font-weight: 500;
       margin-bottom: 0px;
       padding-left: 1px;

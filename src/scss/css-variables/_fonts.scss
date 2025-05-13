@@ -4,23 +4,23 @@
   --font: "Roboto", sans-serif;
   --font-alt: "Montserrat", sans-serif;
   --font-monospace: "Fira Code", monospace;
-  --font-size: 14px;
+  --font-size: 13px;
 }
 
-@media (min-width: 1440px) {
-  :root {
-    --font-size: 14px; // Extra-large screens (e.g., desktops)
-  }
-}
+// @media (min-width: 1440px) {
+//   :root {
+//     --font-size: 14px; // Extra-large screens (e.g., desktops)
+//   }
+// }
 
-@media (min-width: 1920px) {
-  :root {
-    --font-size: 18px; // 2K screens
-  }
-}
+// @media (min-width: 1920px) {
+//   :root {
+//     --font-size: 18px; // 2K screens
+//   }
+// }
 
-@media (min-width: 3840px) {
-  :root {
-    --font-size: 20px; // 4K screens
-  }
-}
+// @media (min-width: 3840px) {
+//   :root {
+//     --font-size: 20px; // 4K screens
+//   }
+// }
