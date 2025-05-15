@@ -211,7 +211,7 @@ onMounted(() => {});
         <div class="invoice-body">
           <div class="invoice-card">
             <!-- Company info -->
-            <div class="invoice-section is-flex pt-0">
+            <div class="invoice-section is-flex pt-0 mt-4">
               <img
                 style="height: 110px; padding: 0; margin: 0"
                 :src="company.currentCompany.invoice_header_logo"
