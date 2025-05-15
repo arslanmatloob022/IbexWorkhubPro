@@ -3,6 +3,7 @@ import { onBeforeMount } from "vue";
 import { useDarkmode } from "/@src/stores/darkmode";
 import { useUserSession } from "/@src/stores/userSession";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { useCompany } from "/@src/stores/company";
 import { useApi } from "/@src/composable/useAPI";
 import axios from "axios";
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
@@ -14,6 +15,7 @@ const isLoading = ref(false);
 const darkmode = useDarkmode();
 const router = useRouter();
 const route = useRoute();
+const company = useCompany();
 const notyf = useNotyf();
 const api = useApi();
 const userSession = useUserSession();
@@ -53,7 +55,8 @@ const handleLogin = async () => {
 };
 
 const loginSuccess = () => {
-  console.log("inside login success");
+  // console.log("inside login success");
+  company.loadCompany();
   layoutSwitcher.setDynamicLayoutId("sideblock-default");
   notyf.success(`Welcome back, ${userSession.user.username}`);
   isLoading.value = false;
