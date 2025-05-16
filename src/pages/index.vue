@@ -6,6 +6,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useApi } from "/@src/composable/useAPI";
 import axios from "axios";
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
+import { useCompany } from "../stores/company";
 
 const layoutSwitcher = useLayoutSwitcher();
 type StepId = "login" | "forgot-password" | "show-message";
@@ -16,6 +17,7 @@ const router = useRouter();
 const route = useRoute();
 const notyf = useNotyf();
 const api = useApi();
+const company = useCompany();
 const userSession = useUserSession();
 let is_superuser = false;
 const redirect = route.query.redirect as string;
@@ -53,9 +55,14 @@ const handleLogin = async () => {
 };
 
 const loginSuccess = () => {
-  console.log("inside login success");
+  company.loadCompany();
+
   layoutSwitcher.setDynamicLayoutId("sideblock-default");
   notyf.success(`Welcome back, ${userSession.user.username}`);
+  if (redirect) {
+    router.push(redirect);
+    return;
+  }
   isLoading.value = false;
   if (userSession.user.role == "admin") {
     router.push("/sidebar/dashboard");

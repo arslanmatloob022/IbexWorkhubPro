@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { formatDate } from "/@src/composable/useSupportElement";
+import { useNotyf } from "/@src/composable/useNotyf";
 
+const notyf = useNotyf();
 const emit = defineEmits<{
   (e: "update:modalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
@@ -24,15 +26,27 @@ const generateTooltip = (tasks: any) => {
 
 const tooltip = ref({
   visible: false,
-  tasks: [],
+  tasks: <any>[
+    {
+      id: "36913bdf-8056-4a06-823a-86e92c591615",
+      title: "Bathroom Tiling 3",
+    },
+    {
+      id: "369178bdf-8056-4a06-823a-86e92c591615",
+      title: "Bathroom Tiling 1",
+    },
+  ],
   x: 0,
   y: 0,
 });
 
 const showTooltip = (tasks: any[], event: MouseEvent) => {
+  notyf.success("Tasks found within given date range");
   tooltip.value.tasks = tasks;
+
   tooltip.value.x = event.pageX + 10; // Offset for better positioning
   tooltip.value.y = event.pageY + 10;
+  console.log("tasks", tooltip.value.tasks);
   tooltip.value.visible = true;
 };
 
@@ -76,42 +90,54 @@ const hideTooltip = () => {
                 v-for="date in item.dates"
                 :key="item.date"
                 class="heatmap-row-item is-relative"
-                v-tooltip.rounded.dark="generateTooltip(date.tasks)"
-                @mouseenter="showTooltip(date.tasks, $event)"
-                @mouseleave="hideTooltip"
               >
-                <span
-                  style="
-                    position: absolute;
-                    font-weight: bold;
-                    top: 1px;
-                    right: 1px;
-                    color: var(--dark-inverted);
-                  "
-                  >{{ date.date.slice(8, 10) }}</span
-                >
-                <i
-                  v-if="date.count"
-                  class="fas fa-exclamation-triangle danger-text"
-                  aria-hidden="true"
-                ></i>
+                <Tippy placement="top">
+                  <span
+                    style="
+                      position: absolute;
+                      font-weight: bold;
+                      top: 1px;
+                      right: 1px;
+                      color: var(--dark-inverted);
+                    "
+                    >{{ date.date.slice(8, 10) }}</span
+                  >
+                  <i
+                    v-if="date.count"
+                    class="fas fa-exclamation-triangle danger-text cu-pointer"
+                    aria-hidden="true"
+                  ></i>
 
-                <i
-                  v-else
-                  class="fas fa-check primary-text"
-                  aria-hidden="true"
-                ></i>
-              </div>
-              <div
-                v-if="tooltip.visible"
-                class="tooltip"
-                :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }"
-              >
-                <ul>
-                  <li v-for="task in tooltip.tasks" :key="task.id">
-                    <a>{{ task.title }}</a>
-                  </li>
-                </ul>
+                  <i
+                    v-if="!date.count"
+                    class="fas fa-check primary-text"
+                    aria-hidden="true"
+                  ></i>
+                  <template #content>
+                    <div class="v-popover-content is-text">
+                      <div class="popover-head">
+                        <h4 class="dark-inverted">
+                          {{
+                            date.tasks?.length
+                              ? "Conflicts Found"
+                              : "No Conflicts Found"
+                          }}
+                        </h4>
+                      </div>
+                      <div v-if="date.tasks?.length" class="popover-body">
+                        <ol>
+                          <li v-for="task in date.tasks" :key="task.id">
+                            <p class="primary-text">{{ task.job_title }}</p>
+                            <p>{{ task.title }}</p>
+                          </li>
+                        </ol>
+                      </div>
+                      <div v-else class="popover-body">
+                        <p>You can add tasks on this date</p>
+                      </div>
+                    </div>
+                  </template>
+                </Tippy>
               </div>
             </div>
           </div>
@@ -128,44 +154,26 @@ const hideTooltip = () => {
 </template>
 
 <style lang="scss" scoped>
-.tooltip {
-  position: absolute;
-  background-color: #ffffff;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  z-index: 9999;
-  font-size: 0.9rem;
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.popover-body {
+  padding: 6px;
+  ol li {
+    margin-bottom: 5px;
+  }
+
+  ol li:last-child {
+    margin-bottom: 0;
+  }
+
+  ol li p:first-child {
+    color: #333 !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+  }
+}
+.primary-text {
+  color: var(--primary) !important;
 }
 
-.tooltip ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.tooltip ul li {
-  margin-bottom: 5px;
-}
-
-.tooltip ul li:last-child {
-  margin-bottom: 0;
-}
-
-.tooltip ul li a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.tooltip ul li a:hover {
-  text-decoration: underline;
-}
 .heatmap-wrapper {
   .heatmap-title {
     display: flex;
@@ -221,6 +229,7 @@ const hideTooltip = () => {
 
         .heatmap-row-item {
           margin: 5px;
+          position: relative;
           // flex: 1 1 0;
           display: flex;
           justify-content: center;

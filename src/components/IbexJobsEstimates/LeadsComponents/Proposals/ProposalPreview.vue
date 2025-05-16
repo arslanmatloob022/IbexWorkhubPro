@@ -203,9 +203,6 @@ onMounted(() => {});
                 />
               </a>
             </div>
-            <!-- <div>
-              {{ useProposal.leadProposalFormData }}
-            </div> -->
           </div>
         </div>
         <div class="invoice-body">

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, toRefs } from "vue";
+import { ref, onMounted } from "vue";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import { convertToFormData } from "/@src/composable/useSupportElement";
 import { CalendarTaskStatus } from "../../IbexJobsEstimates/estimatesScripts";
-import { start } from "nprogress";
+
 const notyf = useNotyf();
 const api = useApi();
 const allWorkers = ref([]);
@@ -12,16 +12,11 @@ const allSupplier = ref([]);
 const loading = ref(false);
 const delLoading = ref(false);
 let selectWorkersSlot = ref<any>([]);
-let selectSupplierSlot = ref<any>([]);
-const selectedWorkers = ref([]);
-const selectSupplierSlotValue = ref();
-const selectSupplierSlotOptions = [
-  {
-    value: "javascript",
-    name: "Javascript",
-    icon: "/images/icons/stacks/js.svg",
-  },
-];
+const Loading = ref(false);
+const costCodesWholeList = ref([]);
+const costCodesList = ref([]);
+const isInitialized = ref(false);
+const openConflictModal = ref(false);
 
 const props = withDefaults(
   defineProps<{
@@ -62,13 +57,6 @@ const taskData = ref({
   workers: [],
 });
 
-const TaskStatus = [
-  { value: "active", name: "Active" },
-  { value: "pending", name: "Pending" },
-  { value: "completed", name: "Completed" },
-  { value: "cancelled", name: "Cancelled" },
-];
-
 const fetchTaskData = async () => {
   try {
     loading.value = true;
@@ -85,10 +73,6 @@ const fetchTaskData = async () => {
     loading.value = false;
   }
 };
-
-watch(selectWorkersSlot.value, () => {
-  console.log("data type", selectWorkersSlot);
-});
 
 const editTaskHandler = async () => {
   try {
@@ -110,7 +94,6 @@ const editTaskHandler = async () => {
     closeModalHandler();
   } catch (err) {
     console.log(err);
-    // notyf.error("Something went wrong");
   } finally {
     loading.value = false;
   }
@@ -182,8 +165,6 @@ const conflictsMappedTasks = ref({
   ],
 });
 
-const openConflictModal = ref(false);
-
 const getWorkerConflictedTaskDate = async () => {
   try {
     const resp = await api.get(
@@ -195,22 +176,6 @@ const getWorkerConflictedTaskDate = async () => {
   }
 };
 
-const isInitialized = ref(false);
-
-watch(
-  () => selectWorkersSlot.value,
-  () => {
-    if (!isInitialized.value) {
-      isInitialized.value = true;
-      return;
-    }
-    getWorkerConflictedTaskDate();
-  }
-);
-
-const Loading = ref(false);
-const costCodesWholeList = ref([]);
-const costCodesList = ref([]);
 const getCostCodesHandler = async () => {
   try {
     Loading.value = true;
@@ -237,6 +202,28 @@ const closeModalHandler = () => {
   emit("update:modalHandler", false);
   console.log("modal closed");
 };
+
+watch(
+  () => selectWorkersSlot.value,
+  () => {
+    if (!isInitialized.value) {
+      isInitialized.value = true;
+      return;
+    }
+    getWorkerConflictedTaskDate();
+  }
+);
+
+watch(
+  () => taskData.value.endDate,
+  () => {
+    if (!isInitialized.value) {
+      isInitialized.value = true;
+      return;
+    }
+    getWorkerConflictedTaskDate();
+  }
+);
 
 onMounted(() => {
   if (props.taskIdSelected) {
