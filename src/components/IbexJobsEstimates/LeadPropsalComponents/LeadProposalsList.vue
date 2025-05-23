@@ -4,6 +4,7 @@ import * as listData from "/@src/data/layouts/flex-list-v2";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import {
+  formatAmount,
   formatDate,
   formatDateTime,
   formatTime,
@@ -333,10 +334,10 @@ onMounted(() => {
                   :column="{ media: true }"
                 >
                   <div>
-                    <span class="item-name dark-inverted"
-                      >${{ item.proposalAmount }}</span
-                    >
-                    <span class="light-text">{{ item.payment_status }}</span>
+                    <span class="item-name dark-inverted">{{
+                      formatAmount(item?.proposalAmount)
+                    }}</span>
+                    <!-- <span class="light-text">{{ item.payment_status }}</span> -->
                   </div>
                 </VFlexTableCell>
                 <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
@@ -352,19 +353,6 @@ onMounted(() => {
                     right
                   >
                     <template #content>
-                      <!-- <a
-                      role="menuitem"
-                      @click="gotoDetail(item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-briefcase" />
-                      </div>
-                      <div class="meta">
-                        <span>View Detail</span>
-                        <span>View detail in page</span>
-                      </div>
-                    </a> -->
                       <a
                         role="menuitem"
                         @click="openLeadProposalModalHandler(item.id)"

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+const expandedModules = ref<Set<string>>(new Set());
 const api = useApi();
 const notyf = useNotyf();
 const props = defineProps<{
-  moduleId?: string;
+  objectId?: string;
+  type?: string;
 }>();
-const expandedModules = ref<Set<string>>(new Set());
 const modulePermissionsList = ref([
   {
     id: "",
@@ -78,6 +79,43 @@ const isExpanded = (moduleId: string) => {
   return expandedModules.value.has(moduleId);
 };
 
+const assignPermissionsHandler = async (perm: any, action: any) => {
+  try {
+    const permissions_list = [
+      {
+        id: perm.id,
+        is_assigned: action, // use is_assigned, not isAssign
+      },
+    ];
+
+    const payload: any = {
+      actions_list: permissions_list, // do NOT stringify
+      type: props.type,
+    };
+
+    if (props.type === "user") {
+      payload.user = props.objectId;
+    } else if (props.type === "role") {
+      payload.role = props.objectId;
+    }
+
+    const resp = await api.post(
+      `/api/users-permissions/assign-permissions-to-user-role/`,
+      payload
+    );
+    notyf.success("Permission Assigned Successfully");
+    getModulePermissionsList();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getObjectAssignedPermissions = async () => {
+  try {
+  } catch (err) {
+    console.log(err);
+  }
+};
 const filteredData = computed(() => {
   if (!filters.value) {
     return modulePermissionsList.value;
@@ -116,6 +154,7 @@ onMounted(() => {
           </span>
           <span>Permission</span>
         </VButton>
+        {{ props.objectId }}
       </div>
     </div>
 
@@ -187,9 +226,11 @@ onMounted(() => {
                     </div>
                     <VControl subcontrol class="mr-4">
                       <VSwitchBlock
+                        @update:model-value="
+                          assignPermissionsHandler(perm, true)
+                        "
                         thin
                         color="success"
-                        v-model="perm.is_assigned"
                       />
                     </VControl>
                   </li>
@@ -218,7 +259,7 @@ onMounted(() => {
     <AddUpdatePermissionModal
       v-if="permissionModal"
       :open-permission-modal="permissionModal"
-      :module-id="props.moduleId"
+      :module-id="props.objectId"
       :permId="selectedPermId"
       @close:modalHandler="permissionModal = false"
       @update:OnSuccess="getModulePermissionsList"

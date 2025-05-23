@@ -167,22 +167,21 @@ const updateOnSuccess = () => {
 
 const unitCost = ref(0);
 const quantity = ref(0);
-const builderPrice = computed(
-  () => costItem.value.unit_cost * costItem.value.quantity
-);
-
+const builderPrice = computed(() => {
+  const value = costItem.value.unit_cost * costItem.value.quantity;
+  return Number.isFinite(value) ? Number(value.toFixed(2)) : 0;
+});
 const markup = ref(0);
 const margin = ref(0);
 
 const totalPrice = computed(() => {
+  let value = builderPrice.value;
   if (costItem.value.markup > 0) {
-    return (
-      builderPrice.value + (builderPrice.value * costItem.value.markup) / 100
-    );
+    value = value + (value * costItem.value.markup) / 100;
   } else if (costItem.value.margin > 0) {
-    return builderPrice.value / (1 - costItem.value.margin / 100);
+    value = value / (1 - costItem.value.margin / 100);
   }
-  return builderPrice.value;
+  return Number.isFinite(value) ? Number(value.toFixed(2)) : 0;
 });
 
 // Extract markup and margin dynamically

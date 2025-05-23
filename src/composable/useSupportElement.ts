@@ -304,3 +304,12 @@ export const addOneDayToDate = (dateString: any) => {
   date.setDate(date.getDate() + 1);
   return date.toISOString().slice(0, 10);
 };
+
+export function formatAmount(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
