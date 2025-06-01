@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { convertToFormData } from "/@src/composable/useSupportElement";
 const expandedModules = ref<Set<string>>(new Set());
 const api = useApi();
 const notyf = useNotyf();
@@ -11,13 +12,14 @@ const props = defineProps<{
 const modulePermissionsList = ref([
   {
     id: "",
-    title: "",
+    name: "",
     value: "",
+    count: 0,
     description: "",
     permissions: [
       {
         id: "",
-        title: "",
+        name: "",
         key: "",
         module: "",
       },
@@ -49,7 +51,7 @@ const toggleModulePermissions = (perm: any) => {
 
 const getModulePermissionsList = async () => {
   try {
-    const resp = await api.get(`api/app-modules/list/`);
+    const resp = await api.get(`api/generic-modules/list/`);
     modulePermissionsList.value = resp.data;
   } catch (Error) {
     console.log(Error);
@@ -99,9 +101,10 @@ const assignPermissionsHandler = async (perm: any, action: any) => {
       payload.role = props.objectId;
     }
 
+    const formattedPayload = convertToFormData(payload, [""]);
     const resp = await api.post(
-      `/api/users-permissions/assign-permissions-to-user-role/`,
-      payload
+      `/api/generic-modules/assign-permissions-to-user-role/`,
+      formattedPayload
     );
     notyf.success("Permission Assigned Successfully");
     getModulePermissionsList();
@@ -121,7 +124,7 @@ const filteredData = computed(() => {
     return modulePermissionsList.value;
   } else {
     return modulePermissionsList.value.filter((item) => {
-      return item.title.match(new RegExp(filters.value, "i"));
+      return item.name.match(new RegExp(filters.value, "i"));
     });
   }
 });
@@ -193,7 +196,7 @@ onMounted(() => {
           <div class="tile-grid-item">
             <div class="tile-grid-item-inner">
               <div class="meta">
-                <span class="dark-inverted">{{ item.title }}</span>
+                <span class="dark-inverted">{{ item.name }}</span>
                 <span>{{ item.description }}</span>
               </div>
               <div class="dropdown align-items-center">
@@ -222,7 +225,7 @@ onMounted(() => {
                   <li class="list-item">
                     <div>
                       <!-- <span class="small-circular-span">{{ index + 1 }}</span> -->
-                      <span> {{ perm.title }}</span>
+                      <span> {{ perm.name }}</span>
                     </div>
                     <VControl subcontrol class="mr-4">
                       <VSwitchBlock

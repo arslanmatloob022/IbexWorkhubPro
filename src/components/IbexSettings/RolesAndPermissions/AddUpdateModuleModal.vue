@@ -25,7 +25,7 @@ const emit = defineEmits<{
 }>();
 
 const moduleData = ref({
-  title: "",
+  name: "",
   description: "",
 });
 
@@ -45,12 +45,15 @@ const fetchModuleData = async () => {
 const addUpdateModuleHandler = async () => {
   try {
     loading.value = true;
-    let formData = convertToFormData(moduleData.value, [""]);
+    let payload = convertToFormData(moduleData.value, [""]);
     if (!props.moduleId) {
-      await api.post(`/api/app-modules/`, formData);
+      const resp = await api.post(`/api/app-modules/`, payload);
       notyf.success("Module added successfully");
     } else {
-      await api.patch(`/api/app-modules/${props.moduleId}/`, formData);
+      const resp = await api.patch(
+        `/api/app-modules/${props.moduleId}/`,
+        payload
+      );
       notyf.success("Module updated successfully");
     }
     updateOnSuccess();
@@ -96,7 +99,7 @@ onMounted(() => {
             <VControl>
               <VInput
                 required
-                v-model="moduleData.title"
+                v-model="moduleData.name"
                 type="text"
                 :placeholder="loading ? 'Loading...' : 'Title'"
               />

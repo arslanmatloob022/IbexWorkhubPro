@@ -11,38 +11,43 @@ const api = useApi();
 const router = useRouter();
 const filters = ref("");
 const tab = ref("paid");
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(12);
 const maxLinksDisplayed = ref(6);
 const paymentsLoading = ref(false);
 
-const paymentsList = ref([
-  {
-    id: "",
-    client_info: {
+const paymentsList = ref({
+  count: 0,
+  next: null,
+  previous: null,
+  results: [
+    {
       id: "",
-      username: "",
-      email: "",
-      role: "",
-      avatar: "",
-    },
-    description: "",
-    checkoutLink: "",
-    type: "",
-    created_by_info: {
-      id: "",
-      username: "",
-      email: "",
-      role: "",
-      avatar: "",
-    },
-    amount: 0.0,
+      client_info: {
+        id: "",
+        username: "",
+        email: "",
+        role: "",
+        avatar: "",
+      },
+      description: "",
+      checkoutLink: "",
+      type: "",
+      created_by_info: {
+        id: "",
+        username: "",
+        email: "",
+        role: "",
+        avatar: "",
+      },
+      amount: 0.0,
 
-    status: "",
-    created_at: "",
-    created_by: "",
-    client: null,
-  },
-]);
+      status: "",
+      created_at: "",
+      created_by: "",
+      client: null,
+    },
+  ],
+});
 
 const columns = {
   description: {
@@ -81,13 +86,22 @@ const pagedData = computed(() => {
   return filteredData.value.slice(startIndex, endIndex);
 });
 
+watch(
+  () => route.query.page,
+  (newVal, oldVal) => {
+    if (newVal != oldVal) {
+      getPaymentsList();
+    }
+  }
+);
+
 const filteredData = computed(() => {
   if (!filters.value) {
-    return paymentsList.value;
+    return paymentsList.value.results;
   } else {
     const filterRe = new RegExp(filters.value, "i");
 
-    return paymentsList.value.filter((item) => {
+    return paymentsList.value.results.filter((item) => {
       return (
         item.id.match(filterRe) ||
         item.created_by_info.username.match(filterRe) ||
@@ -108,10 +122,16 @@ const currentPage = computed(() => {
   return Number.parseInt(route.query.page as string) || 1;
 });
 
+const page = ref(1);
+
 const getPaymentsList = async () => {
   try {
     paymentsLoading.value = true;
-    const resp = await api.get(`/api/paypal/`);
+    const resp = await api.get(
+      `/api/paypal/?page=${route.query.page ? route.query.page : 1}&page_size=${
+        itemsPerPage.value
+      }`
+    );
     paymentsList.value = resp.data;
   } catch (err) {
     console.log(err);
@@ -227,7 +247,7 @@ onMounted(() => {
         <!--Active Tab-->
         <div v-if="tab === 'paid'" class="tab-content is-active">
           <VFlexTable
-            v-if="filteredData.length"
+            v-if="paymentsList.count"
             :data="filteredData"
             :columns="columns"
             rounded
@@ -236,7 +256,7 @@ onMounted(() => {
               <TransitionGroup name="list" tag="div" class="flex-list-inner">
                 <!--Table item-->
                 <div
-                  v-for="item in pagedData"
+                  v-for="item in filteredData"
                   :key="item.id"
                   class="flex-table-item"
                 >
@@ -346,10 +366,10 @@ onMounted(() => {
 
           <!--Table Pagination-->
           <VFlexPagination
-            v-if="paymentsList.length > itemsPerPage"
+            v-if="paymentsList.count > itemsPerPage"
             :item-per-page="itemsPerPage"
             v-model="currentPage"
-            :total-items="paymentsList.length"
+            :total-items="paymentsList.count"
             :current-page="currentPage"
             :max-links-displayed="maxLinksDisplayed"
           />

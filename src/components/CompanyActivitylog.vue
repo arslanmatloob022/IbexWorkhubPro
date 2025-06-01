@@ -8,9 +8,33 @@ const router = useRouter();
 const route = useRoute();
 const api = useApi();
 const Loading = ref(false);
-const actions = ref([]); // Store all actions
-const Logs_exist = ref(false); // Tracks if any logs exist after search
+const actions = ref({
+  count: 0,
+  next: null,
+  previous: null,
+  results: [
+    {
+      id: "298d8a63-1acb-4d5c-b395-b27d389ddf09",
+      action: "UPDATE",
+      timestamp: "2025-05-28T16:12:22.424612-04:00",
+      actor_info: {
+        id: "73462666-c7f0-41eb-b978-24f5ffe7a539",
+        role: "admin",
+        email: "mike@ibexbuilderstudios.com",
+        avatar: null,
+        username: "Mike",
+        last_name: null,
+      },
+      message:
+        "updated proposal titled <a>Wood Floor Refinishing</a> information.",
+      object_id: "32e3d9a6-ee38-4f34-912c-8202fb797882",
+      object_type: "proposal",
+      actor: "73462666-c7f0-41eb-b978-24f5ffe7a539",
+    },
+  ],
+});
 
+const Logs_exist = ref(false);
 const props = defineProps({
   id: {
     type: String,
@@ -36,7 +60,9 @@ const radioOptions = [
 const getCompanyLogs = async () => {
   Loading.value = true;
   try {
-    const response = await api.get(`/api/activity-logs/`);
+    const response = await api.get(
+      `/api/activity-logs/?page=${currentPage.value}&page_size=${maxItemsPerPage}`
+    );
     actions.value = response.data;
   } catch (error) {
     console.error("Error fetching worker activities:", error);
@@ -96,44 +122,25 @@ function calculateDateRange(option: string) {
 
 // Pagination and search
 const currentPage = ref(1);
-const maxItemsPerPage = ref(10);
+const maxItemsPerPage = ref(20);
+
 const filter = ref("");
-
-// Compute filtered actions based on the search query and selected date range
 const filteredActions = computed(() => {
-  const searchTerm = filter.value.toLowerCase();
-  const dateRange = calculateDateRange(selectedOption.value);
+  if (!filter.value) {
+    return actions.value.results;
+  } else {
+    const filterRe = new RegExp(filter.value, "i");
 
-  const results = actions.value.filter((item) => {
-    // Filter by search term
-    const matchesSearch =
-      item.actor_info?.username.toLowerCase().includes(searchTerm) ||
-      (item.actor_info?.last_name &&
-        item.actor_info?.last_name?.toLowerCase().includes(searchTerm)) ||
-      item.message.toLowerCase().includes(searchTerm);
-
-    // Filter by date range
-    if (dateRange) {
-      const actionDate = new Date(item.timestamp); // Correctly parse ISO datetime
+    return actions.value.results.filter((item) => {
       return (
-        matchesSearch &&
-        actionDate >= dateRange.start &&
-        actionDate <= dateRange.end
+        item.id.match(filterRe) ||
+        item.actor_info.username.match(filterRe) ||
+        item.actor_info.email.match(filterRe) ||
+        item.message.match(filterRe) ||
+        item.timestamp.match(filterRe)
       );
-    }
-
-    return matchesSearch;
-  });
-
-  Logs_exist.value = results.length > 0; // Update Logs_exist based on search results
-  return results;
-});
-
-// Compute paginated actions for the current page
-const paginatedActions = computed(() => {
-  const startIndex = (currentPage.value - 1) * maxItemsPerPage.value;
-  const endIndex = startIndex + maxItemsPerPage.value;
-  return filteredActions.value.slice(startIndex, endIndex);
+    });
+  }
 });
 
 // Compute if pagination should be shown
@@ -148,6 +155,7 @@ const handlePageChange = (page: number) => {
     path: route.path,
     query: { ...route.query, page },
   });
+  getCompanyLogs();
 };
 
 // Lifecycle hooks
@@ -177,7 +185,7 @@ onUnmounted(() => {});
             />
           </VControl>
           <VControl>
-            <VButton color="primary" @click="getCompanyLogs">
+            <VButton color="primary">
               <i class="fa fa-search"></i>
             </VButton>
           </VControl>
@@ -190,7 +198,7 @@ onUnmounted(() => {});
 
               <div
                 class="timeline-item is-unread"
-                v-for="item in actions"
+                v-for="item in filteredActions"
                 :key="item?.id"
               >
                 <div class="date">
@@ -228,7 +236,7 @@ onUnmounted(() => {});
 
               <!-- No Logs Placeholder -->
               <VPlaceholderPage
-                v-if="!Logs_exist && !Loading"
+                v-if="!actions.count"
                 title="No Activity found."
                 subtitle="Looks like you haven't done any activity on this worker yet. Anything you do will show up here."
               >
@@ -250,10 +258,10 @@ onUnmounted(() => {});
 
           <!-- Pagination -->
           <VFlexPagination
-            v-if="showPagination"
+            v-if="actions.count > maxItemsPerPage"
             v-model:current-page="currentPage"
             :item-per-page="maxItemsPerPage"
-            :total-items="filteredActions.length"
+            :total-items="actions.count"
             :max-links-displayed="7"
             no-router
             class="mt-4"

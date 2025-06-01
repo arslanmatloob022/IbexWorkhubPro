@@ -596,6 +596,7 @@ declare module 'vue' {
     StockDashboard: typeof import('./../src/components/pages/dashboards/finance/StockDashboard.vue')['default']
     StockDropdown: typeof import('./../src/components/partials/dropdowns/StockDropdown.vue')['default']
     SubContractorProfile: typeof import('./../src/components/pages/networks/IbexSubContractors/SubContractorProfile.vue')['default']
+    SuccessefullPayments: typeof import('./../src/components/IbexPayments/SuccessefullPayments.vue')['default']
     SuperAdminDashboard: typeof import('./../src/components/pages/networks/dashboard/SuperAdminDashboard.vue')['default']
     SupplierDashboardTwo: typeof import('./../src/components/pages/networks/Service-Partners/SupplierDashboardTwo.vue')['default']
     SupplierProfile: typeof import('./../src/components/pages/networks/Service-Partners/SupplierProfile.vue')['default']

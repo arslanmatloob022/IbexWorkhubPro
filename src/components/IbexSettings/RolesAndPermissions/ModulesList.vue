@@ -9,22 +9,34 @@ const api = useApi();
 const filters = ref("");
 const selectedModule = ref("");
 const loading = ref(false);
+const selectedModuleId = ref("");
+const selectedModuleToDelete = ref("");
+const openModuleModal = ref(false);
+
 const appModulesList = ref([
   {
     id: "1c84ef34-8149-40c3-81ba-0b6625bebfee",
-    title: "Test Module",
+    name: "Test Module",
     value: "test_module",
     description: "string",
   },
 ]);
-const openModuleModal = ref(false);
+
+const SweetAlertProps = ref({
+  title: "Delete Module",
+  subtitle: "Are you sure you want to delete this module?",
+  icon: "fas fa-bell",
+  btntext: "Delete",
+  isSweetAlertOpen: false,
+});
+
 const filteredData = computed(() => {
   if (!filters.value) {
     return appModulesList.value;
   } else {
     return appModulesList.value.filter((item) => {
       return (
-        item.title.match(new RegExp(filters.value, "i")) ||
+        item.name.match(new RegExp(filters.value, "i")) ||
         item.description.match(new RegExp(filters.value, "i"))
       );
     });
@@ -48,11 +60,29 @@ const getModulesListHandler = async () => {
   }
 };
 
-const selectedModuleId = ref("");
-
 const selectModule = (module: any) => {
   selectedModuleId.value = module;
   emits("select-module", module);
+};
+
+const openDeleteModuleAlert = (id: any = "") => {
+  selectedModuleToDelete.value = id;
+  SweetAlertProps.value.isSweetAlertOpen = true;
+};
+
+const deleteModuleHandler = async () => {
+  try {
+    loading.value = true;
+    const resp = await api.delete(
+      `/api/app-modules/${selectedModuleToDelete.value}/`
+    );
+    SweetAlertProps.value.isSweetAlertOpen = false;
+    getModulesListHandler();
+  } catch (Error) {
+    console.log(Error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 onMounted(() => {
@@ -122,14 +152,58 @@ onMounted(() => {
           <div
             class="tile-grid-item cu-pointer"
             :class="selectedModuleId === item.id ? 'active-card' : ''"
-            @click="selectModule(item.id)"
           >
             <div class="tile-grid-item-inner">
-              <div class="meta">
-                <span class="dark-inverted">{{ item.title }}</span>
-                <span>{{ item.description }}</span>
+              <div @click="selectModule(item.id)" class="meta">
+                <span class="dark-inverted">{{ item.name }}</span>
+                <!-- <span>{{ item.description }}</span> -->
               </div>
-              <UserCardDropdown />
+              <VDropdown icon="feather:more-vertical" spaced right>
+                <template #content>
+                  <a
+                    @click="selectModule(item.id)"
+                    role="menuitem"
+                    class="dropdown-item is-media"
+                  >
+                    <div class="icon">
+                      <i aria-hidden="true" class="lnil lnil-lock" />
+                    </div>
+                    <div class="meta">
+                      <span>Permissions</span>
+                      <span>Edit permissions</span>
+                    </div>
+                  </a>
+                  <a
+                    @click="openModuleModalHandler(item.id)"
+                    role="menuitem"
+                    class="dropdown-item is-media"
+                  >
+                    <div class="icon">
+                      <i aria-hidden="true" class="lnil lnil-pencil" />
+                    </div>
+                    <div class="meta">
+                      <span>Edit</span>
+                      <span>Edit Module</span>
+                    </div>
+                  </a>
+
+                  <hr class="dropdown-divider" />
+
+                  <a
+                    @click="openDeleteModuleAlert(item.id)"
+                    role="menuitem"
+                    class="dropdown-item is-media"
+                  >
+                    <div class="icon">
+                      <i aria-hidden="true" class="lnil lnil-trash-can-alt" />
+                    </div>
+                    <div class="meta">
+                      <span>Remove</span>
+                      <span>Remove module</span>
+                    </div>
+                  </a>
+                </template>
+              </VDropdown>
             </div>
           </div>
         </div>
@@ -137,10 +211,19 @@ onMounted(() => {
     </div>
     <AddUpdateModuleModal
       v-if="openModuleModal"
-      :open-app-module-modal="openModuleModal"
-      :module-id="selectedModule"
-      @close:modal-handler="openModuleModal = false"
+      :openAppModuleModal="openModuleModal"
+      :moduleId="selectedModule"
+      @close:modalHandler="openModuleModal = false"
       @update:OnSuccess="getModulesListHandler"
+    />
+    <SweetAlert
+      v-if="SweetAlertProps.isSweetAlertOpen"
+      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+      :title="SweetAlertProps.title"
+      :subtitle="SweetAlertProps.subtitle"
+      :btntext="SweetAlertProps.btntext"
+      :onConfirm="deleteModuleHandler"
+      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
     />
   </div>
 </template>

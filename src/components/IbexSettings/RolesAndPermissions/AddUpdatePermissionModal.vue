@@ -26,7 +26,7 @@ const emit = defineEmits<{
 }>();
 
 const permissionData = ref({
-  title: "",
+  name: "",
   module: props.moduleId ? props.moduleId : null,
 });
 
@@ -34,7 +34,7 @@ const fetchPermissionData = async () => {
   try {
     loading.value = true;
     const response = await api.get(
-      `/api/module-permissions/${props.permId ? props.permId : ""}/`
+      `/api/module-permission/${props.permId ? props.permId : ""}/`
     );
     permissionData.value = response.data;
   } catch (err) {
@@ -43,16 +43,24 @@ const fetchPermissionData = async () => {
     loading.value = false;
   }
 };
+
 const addUpdateModuleHandler = async () => {
   try {
     loading.value = true;
-    let formData = convertToFormData(permissionData.value, [""]);
-
-    await api.post(`/api/module-permissions/`, formData);
-
+    if (props.permId) {
+      const resp = await api.patch(
+        `/api/module-permission/${props.permId}/`,
+        permissionData.value
+      );
+    } else {
+      const resp = await api.post(
+        `/api/module-permission/`,
+        permissionData.value
+      );
+    }
     emit("update:OnSuccess", null);
-    closeModalHandler();
     notyf.success("Permission added successfully");
+    closeModalHandler();
   } catch (err) {
     console.log(err);
   } finally {
@@ -89,7 +97,7 @@ onMounted(() => {
             <VControl>
               <VInput
                 required
-                v-model="permissionData.title"
+                v-model="permissionData.name"
                 type="text"
                 :placeholder="loading ? 'Loading...' : 'Title'"
               />

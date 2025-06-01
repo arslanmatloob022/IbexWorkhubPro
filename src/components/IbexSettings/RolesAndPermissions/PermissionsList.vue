@@ -10,7 +10,7 @@ const props = defineProps<{
 const permissionsList = ref([
   {
     id: "",
-    title: "",
+    name: "",
     key: "",
     module: "",
   },
@@ -49,7 +49,7 @@ const filteredData = computed(() => {
 const getModulePermissionsHandler = async () => {
   try {
     const resp = await api.get(
-      `/api/app-modules/${props.moduleId}/permissions/`
+      `/api/app-modules/${props.moduleId}/permissions-list/`
     );
     permissionsList.value = resp.data;
   } catch (Error) {
@@ -60,8 +60,9 @@ const getModulePermissionsHandler = async () => {
 const deletePermissionHandler = async () => {
   try {
     const resp = await api.delete(
-      `/api/permissions/${selectedPermToDelete.value}`
+      `/api/module-permission/${selectedPermToDelete.value}/`
     );
+    SweetAlertProps.value.openSweetAlert = false;
     notyf.success("Permission Deleted Successfully");
     getModulePermissionsHandler();
   } catch (err) {
@@ -145,7 +146,7 @@ onMounted(() => {
           <div class="tile-grid-item">
             <div class="tile-grid-item-inner">
               <div class="meta">
-                <span class="dark-inverted">{{ item.title }}</span>
+                <span class="dark-inverted">{{ item.name }}</span>
                 <span>{{ item.key }}</span>
               </div>
               <div class="dropdown">
@@ -189,7 +190,12 @@ onMounted(() => {
       :open-permission-modal="permissionModal"
       :module-id="props.moduleId"
       :permId="selectedPermId"
-      @close:modalHandler="permissionModal = false"
+      @close:modalHandler="
+        () => {
+          permissionModal = false;
+          selectedPermId = '';
+        }
+      "
       @update:OnSuccess="getModulePermissionsHandler"
     >
     </AddUpdatePermissionModal>
