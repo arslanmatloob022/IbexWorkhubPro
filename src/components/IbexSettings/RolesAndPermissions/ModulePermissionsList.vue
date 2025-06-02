@@ -26,6 +26,7 @@ const modulePermissionsList = ref([
     ],
   },
 ]);
+const objectAssignedPermissions = ref<any>([]);
 const permissionModal = ref(false);
 const selectedPermId = ref("");
 const filters = ref("");
@@ -38,16 +39,6 @@ const SweetAlertProps = ref({
   btnTxt: "Yes, delete it!",
   openSweetAlert: false,
 });
-
-const openDeleteSweetAlert = (perm: any) => {
-  selectedPermToDelete.value = perm.id;
-  SweetAlertProps.value.openSweetAlert = true;
-};
-
-const toggleModulePermissions = (perm: any) => {
-  selectedPermId.value = perm.id;
-  permissionModal.value = true;
-};
 
 const getModulePermissionsList = async () => {
   try {
@@ -83,31 +74,31 @@ const isExpanded = (moduleId: string) => {
 
 const assignPermissionsHandler = async (perm: any, action: any) => {
   try {
-    const permissions_list = [
+    const selectedPerms = [
       {
         id: perm.id,
-        is_assigned: action, // use is_assigned, not isAssign
+        isAssign: action,
       },
     ];
 
-    const payload: any = {
-      actions_list: permissions_list, // do NOT stringify
-      type: props.type,
+    const payload = {
+      actions_list: JSON.stringify(selectedPerms),
     };
 
     if (props.type === "user") {
       payload.user = props.objectId;
+      payload.mode = "user";
     } else if (props.type === "role") {
       payload.role = props.objectId;
+      payload.mode = "role";
     }
 
-    const formattedPayload = convertToFormData(payload, [""]);
     const resp = await api.post(
       `/api/generic-modules/assign-permissions-to-user-role/`,
-      formattedPayload
+      payload
     );
     notyf.success("Permission Assigned Successfully");
-    getModulePermissionsList();
+    getObjectAssignedPermissions();
   } catch (err) {
     console.log(err);
   }
@@ -115,19 +106,38 @@ const assignPermissionsHandler = async (perm: any, action: any) => {
 
 const getObjectAssignedPermissions = async () => {
   try {
+    const resp = await api.get(
+      `api/generic-modules/permissions-by-type/${props.objectId}/${props.type}/`
+    );
+    objectAssignedPermissions.value = resp.data;
   } catch (err) {
     console.log(err);
   }
 };
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return modulePermissionsList.value;
-  } else {
-    return modulePermissionsList.value.filter((item) => {
-      return item.name.match(new RegExp(filters.value, "i"));
-    });
-  }
+
+const assignedMappedPermissions = computed(() => {
+  // Create a Set of assigned permission IDs for fast lookup
+  const assignedIds = new Set(
+    objectAssignedPermissions.value.map((p: any) => p)
+  );
+  console.log("ids", assignedIds);
+
+  // Map over modules and their permissions, adding "assigned" property
+  return modulePermissionsList.value.map((module) => ({
+    ...module,
+    permissions: module.permissions.map((perm) => ({
+      ...perm,
+      assigned: assignedIds.has(perm.id),
+    })),
+  }));
 });
+
+watch(
+  () => props.objectId,
+  () => {
+    getObjectAssignedPermissions();
+  }
+);
 onMounted(() => {
   getModulePermissionsList();
 });
@@ -157,14 +167,14 @@ onMounted(() => {
           </span>
           <span>Permission</span>
         </VButton>
-        {{ props.objectId }}
+        <!-- {{ props.objectId }} -->
       </div>
     </div>
 
     <div class="tile-grid tile-grid-v1">
       <!--List Empty Search Placeholder -->
       <VPlaceholderPage
-        :class="[filteredData.length !== 0 && 'is-hidden']"
+        :class="[assignedMappedPermissions.length !== 0 && 'is-hidden']"
         title="We couldn't find any matching results."
         subtitle="Too bad. Looks like we couldn't find any matching results for the
           search terms you've entered. Please try different search terms or
@@ -189,7 +199,7 @@ onMounted(() => {
       <TransitionGroup name="list" tag="div" class="columns is-multiline">
         <!--Grid item-->
         <div
-          v-for="(item, key) in filteredData"
+          v-for="(item, key) in assignedMappedPermissions"
           :key="key"
           class="column is-12"
         >
@@ -229,8 +239,9 @@ onMounted(() => {
                     </div>
                     <VControl subcontrol class="mr-4">
                       <VSwitchBlock
+                        :model-value="perm.assigned"
                         @update:model-value="
-                          assignPermissionsHandler(perm, true)
+                          assignPermissionsHandler(perm, $event)
                         "
                         thin
                         color="success"

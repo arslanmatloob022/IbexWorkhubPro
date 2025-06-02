@@ -17,8 +17,6 @@ const mailLoading = ref(false);
 const editor = shallowRef<any>();
 const baseURL = window.origin;
 
-const porposalIds = ["HDE827BSAD1982", "ASGDG87E39HHHSAK", "SHDAUD98QW9QJD"];
-
 const proposalLink = ref(
   `${baseURL}/proposal-view/?proposal=${props.proposalData?.id}`
 );
@@ -51,8 +49,6 @@ const proposalLinks = proposalIds
       }, </a>`
   )
   .join("<br>"); // Join all links with line breaks
-
-// console.log(proposalLinks);
 
 const mailData = ref({
   email: useProposal.leadProposalFormData?.jobInfo?.clientInfo?.email
@@ -97,19 +93,24 @@ const mailData = ref({
     Ibex Team
   </p>`,
   link: proposalLinks[0],
-  // message: `${proposalLinks}`,
   columns: ["cost_code", "title", "description", "unit_cost"],
   showClient: true,
   proposal_ids: proposalIds,
 });
 
+const selectedEmails = ref([]);
+const peopleOptions = ref([{ value: "", label: "" }]);
+
 const sendProposalMailHandler = async () => {
   try {
     mailLoading.value = true;
-    // const payload = convertToFormData(mailData.value, []);
-    let payload = mailData.value;
-    payload.proposal_ids = JSON.stringify(mailData.value.proposal_ids);
-    payload.columns = JSON.stringify(mailData.value.columns);
+    // Build a fresh payload object
+    const payload = {
+      ...mailData.value,
+      proposal_ids: mailData.value.proposal_ids, // already an array
+      columns: mailData.value.columns, // already an array
+      cc_emails: selectedEmails.value.map((e) => e), // array of strings
+    };
     const response = await api.post(
       `/api/lead-proposal/send-proposal-template/`,
       payload
@@ -120,6 +121,22 @@ const sendProposalMailHandler = async () => {
     console.log(err);
   } finally {
     mailLoading.value = false;
+  }
+};
+
+const getCompanyAdmins = async () => {
+  try {
+    const resp = await api.get(`/api/users/by-role/admin/`);
+    peopleOptions.value = resp.data.map((user) => {
+      const firstName = user.username || "";
+      const lastName = user.last_name || "";
+      return {
+        value: user.email,
+        label: `${firstName}${lastName ? " " + lastName : ""}`,
+      };
+    });
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -140,6 +157,7 @@ onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
+  getCompanyAdmins();
 });
 </script>
 <template>
@@ -156,17 +174,6 @@ onMounted(async () => {
       >
         <template #content>
           <div class="modal-form columns is-multiline">
-            <!-- <div class="column is-12">
-              Ids:{{ proposalIds }}
-              <br />
-              email:{{ mailData.email }}
-              <br />
-              subject:{{ mailData.subject }}
-              <br />
-              message: {{ mailData.message }}
-              <br />
-              columns {{ mailData.columns }}
-            </div> -->
             <div class="column is-full">
               <div class="field">
                 <label class="label">Send To </label>
@@ -195,6 +202,21 @@ onMounted(async () => {
                   />
                 </div>
               </div>
+            </div>
+            <div class="column is-full">
+              <VField v-slot="{ id }" label="Cc">
+                <VControl>
+                  <Multiselect
+                    v-model="selectedEmails"
+                    :attrs="{ id }"
+                    mode="tags"
+                    :searchable="true"
+                    :create-tag="true"
+                    :options="peopleOptions"
+                    placeholder="Add people"
+                  />
+                </VControl>
+              </VField>
             </div>
             <div class="field column is-full mt-5">
               <label class="label">Message</label>
