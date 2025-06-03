@@ -130,9 +130,7 @@ const addUpdateProposalHandler = async (closeModal: boolean = false) => {
     leadProposalFormData.value.columns_to_show = JSON.stringify(
       selectedColumnsToShow.value
     );
-    // if (props.createTemplate) {
-    //   leadProposalFormData.value.is_template = true;
-    // }
+
     const formDataAPI = convertToFormData(leadProposalFormData.value, []);
     if (props.proposalId || leadProposalFormData.value.id) {
       const response = await api.patch(
@@ -403,7 +401,6 @@ onUnmounted(() => {
                   type="date"
                   name="firstName"
                   v-model="leadProposalFormData.approval_deadline"
-                  required
                   class="input is-primary-focus is-primary-focus"
                   placeholder="Proposal Approval deadline"
                 />

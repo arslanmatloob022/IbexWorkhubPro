@@ -21,7 +21,135 @@ const router = useRouter();
 const openCreateTemplate = ref(false);
 const openEstimatesModal = ref(false);
 const selectedProposalsIds = ref([]);
-const proposalData = ref({});
+const proposalData = ref({
+  id: "6514840e-97e7-443c-b383-0b1368aee7ba",
+  jobInfo: {
+    id: "1be101da-7a93-43af-b3e3-d1ca908aa2c9",
+    sales_people_info: [
+      {
+        id: "085f43b6-e869-495e-a712-781324ecc497",
+        username: "Arslan",
+        last_name: "Matloob",
+        email: "raoarslan263@gmail.com",
+        role: "admin",
+        avatar: null,
+      },
+      {
+        id: "709ef38f-b1e3-48f2-8cd9-5a8e3e0c9a1b",
+        username: "APIs",
+        last_name: "Dev",
+        email: "api@dev.com",
+        role: "admin",
+        avatar: null,
+      },
+      {
+        id: "0feda007-d8a0-4b96-acb7-d7763614854e",
+        username: "Test &",
+        last_name: "Dev",
+        email: "test@dev.com",
+        role: "admin",
+        avatar:
+          "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/Screenshot_from_2025-01-17_15-14-32.png",
+      },
+    ],
+    clientInfo: {
+      id: "5989539e-7914-47de-b29f-6009df3887da",
+      username: "Client",
+      last_name: "Test",
+      email: "testclient@ibex.com",
+      role: "client",
+      avatar:
+        "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/Untitled_design.png",
+    },
+    created_by_info: null,
+    contractor_info: {
+      id: "4a097ddf-49cd-4274-9db9-c17de02f7847",
+      username: "Leighton Cash",
+      last_name: "",
+      email: "lc@ibex.com",
+      role: "contractor",
+      avatar: null,
+    },
+    managers_list: [
+      {
+        id: "0d8a9a08-b932-463c-8795-5bd290f88c1a",
+        username: "Test",
+        last_name: "Manager",
+        email: "raoarslanmatloob@gmail.com",
+        role: "manager",
+        avatar:
+          "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/not-available_j5Ubfud.png",
+      },
+    ],
+    title: "HENNING (Test Arslan)",
+    description: "",
+    image:
+      "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/projects_images/powerpoint.png",
+    color: "#2c3e50",
+    startDate: "2025-03-03",
+    endDate: "2025-03-08",
+    status: "completed",
+    is_active: false,
+    address: "Lahore, 54000, Pakistan",
+    wifiAvaliabe: false,
+    parkingAvaliable: false,
+    property_features: null,
+    created: "2025-02-20T14:42:53.915448-05:00",
+    uploaded_files: [],
+    leadStatus: "open",
+    current_state: "job",
+    city: "Lahore",
+    state: "Punjab",
+    zip_code: "54000",
+    confidence: "0.00",
+    sale_date: null,
+    estimated_from: null,
+    estimated_to: null,
+    tags: ["Lead", "Floor Work", "Tile Work", "Carpenter"],
+    sources: "Contact Form",
+    project_type: null,
+    notes:
+      "<p>We’re excited to have you on board as our <strong>Marketing Expert and Social Media Manager</strong>. Looking forward to your <i>creativity</i>, <i>insights</i>, and the amazing work ahead. Here's to filling the gap with the perfect fit—we're glad you're here!</p>",
+    attach_mail: null,
+    latitude: 31.5440886,
+    longitude: 74.3839007,
+    client: "5989539e-7914-47de-b29f-6009df3887da",
+    contractor: "4a097ddf-49cd-4274-9db9-c17de02f7847",
+    created_by: null,
+    managers: ["0d8a9a08-b932-463c-8795-5bd290f88c1a"],
+    sales_people: [
+      "085f43b6-e869-495e-a712-781324ecc497",
+      "709ef38f-b1e3-48f2-8cd9-5a8e3e0c9a1b",
+      "0feda007-d8a0-4b96-acb7-d7763614854e",
+    ],
+  },
+  proposalAmount: 0,
+  cost_items: 0,
+  title: "Test propoosal",
+  approval_deadline: "2025-04-30",
+  internal_notes: "Internal notes",
+  introductory_text: null,
+  closing_text: null,
+  payment_status: "Pending",
+  type: "draft",
+  status: "pending",
+  columns_to_show: [
+    "title",
+    "cost_code",
+    "description",
+    "quantity",
+    "unit_cost",
+    "unit",
+    "total_price",
+  ],
+  client_note: null,
+  created_at: "2025-05-05T12:45:39.264071-04:00",
+  updated_at: "2025-05-23T13:57:27.955954-04:00",
+  is_task_created: false,
+  is_template: false,
+  job: null,
+  project: "1be101da-7a93-43af-b3e3-d1ca908aa2c9",
+});
 const openCreateTasksModal = ref(false);
 const selectedProposalId = ref("");
 const loading = ref(false);
@@ -189,6 +317,22 @@ const updateProposalStatus = async () => {
   }
 };
 
+const updateProposal = async (payload: any) => {
+  try {
+    loading.value = true;
+    const resp = await api.patch(
+      `/api/lead-proposal/${route.params.id}/`,
+      payload
+    );
+    notyf.success("Proposal updated successfully");
+    getProposalDetail();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+const openLeadProposalModal = ref(false);
 function DataURIToBlob(dataURI: string) {
   const splitDataURI = dataURI.split(",");
   const byteString =
@@ -294,6 +438,18 @@ onMounted(async () => {
         <VButton
           size="small"
           class="mr-2"
+          v-tooltip.rounded.dark.bottom="`Update Proposal`"
+          outlined
+          color="info"
+          raised
+          @click="openLeadProposalModal = true"
+        >
+          <i class="fas fa-pen" aria-hidden="true"></i>
+        </VButton>
+
+        <VButton
+          size="small"
+          class="mr-2"
           v-tooltip.rounded.dark.bottom="`Upload File To Create Estimates`"
           outlined
           color="dark"
@@ -373,6 +529,7 @@ onMounted(async () => {
           name="firstName"
           v-model="leadProposalFormData.title"
           required
+          disabled
           class="input is-primary-focus is-primary-focus"
           placeholder="Proposal Title"
         />
@@ -388,12 +545,14 @@ onMounted(async () => {
             name="solid_squared_radio"
             color="primary"
             square
+            @update:model-value="updateProposal({ type: 'proposal' })"
             solid
           />
 
           <VRadio
             v-model="leadProposalFormData.type"
             value="change_order"
+            @update:model-value="updateProposal({ type: 'change_order' })"
             label="Change Order"
             name="solid_squared_radio"
             color="info"
@@ -405,6 +564,7 @@ onMounted(async () => {
             v-model="leadProposalFormData.type"
             value="draft"
             label="Draft"
+            @update:model-value="updateProposal({ type: 'draft' })"
             name="solid_squared_radio"
             color="warning"
             square
@@ -420,7 +580,7 @@ onMounted(async () => {
           type="date"
           name="firstName"
           v-model="leadProposalFormData.approval_deadline"
-          required
+          disabled
           class="input is-primary-focus is-primary-focus"
           placeholder="Proposal Approval deadline"
         />
@@ -550,4 +710,18 @@ onMounted(async () => {
     "
     @update:modalHandler="openCreateTemplate = false"
   ></CreateTemplateModal>
+  <LeadProposalModal
+    v-if="openLeadProposalModal"
+    :leadId="proposalData.project"
+    :proposalId="route.params.id"
+    :leadProposalModal="openLeadProposalModal"
+    :getLeadsList="false"
+    @update:modalHandler="
+      () => {
+        getProposalDetailItem();
+        openLeadProposalModal = false;
+      }
+    "
+    @clearProposalId="selectedProposalId = ''"
+  />
 </template>

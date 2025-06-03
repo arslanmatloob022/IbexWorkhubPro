@@ -103,7 +103,13 @@ onUnmounted(() => {
         <div>
           <h1 class="title is-4">Proposal Worksheet</h1>
         </div>
-        <div>
+        <div class="is-flex align-items-center">
+          <h1
+            v-if="props.proposalData?.proposalAmount"
+            class="title is-6 mt-5 mr-3"
+          >
+            Total Amount: ${{ props.proposalData?.proposalAmount }}
+          </h1>
           <VButton
             size="small"
             light
@@ -114,24 +120,6 @@ onUnmounted(() => {
             @click="showDropdown = !showDropdown"
             >Customize Columns</VButton
           >
-          <!-- <VButton
-            size="small"
-            light
-            outlined
-            class="mr-2"
-            color="info"
-            @click="centeredActionsOpen = !centeredActionsOpen"
-            >Import</VButton
-          > -->
-          <!-- <VButton
-            size="small"
-            light
-            outlined
-            class="mr-2"
-            color="warning"
-            @click="addCostItemModal = !addCostItemModal"
-            >Add From</VButton
-          > -->
           <VButton
             size="small"
             light
@@ -204,6 +192,7 @@ onUnmounted(() => {
           <CostItemsTable
             :columnsToShow="selectedColumnsToShow"
             :proposalId="props.proposalId"
+            :proposalData="props.leadProposalModal"
           />
         </div>
       </TransitionGroup>
