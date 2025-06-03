@@ -281,6 +281,10 @@ const openLeadUpdateModal = (id: any) => {
 
 onMounted(() => {
   getLeadDetailHandler();
+
+  if (route.query.jobTab) {
+    tab.value = route.query.jobTab as string;
+  }
 });
 </script>
 
@@ -403,8 +407,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'management'"
-                        @click="tab = 'management'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'management';
+                            router.push({
+                              query: { ...route.query, jobTab: 'management' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'management';
+                            router.push({
+                              query: { ...route.query, jobTab: 'management' },
+                            });
+                          }
+                        "
                         ><span>Job Management</span></a
                       >
                     </li>
@@ -412,8 +430,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'documents'"
-                        @click="tab = 'documents'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'documents';
+                            router.push({
+                              query: { ...route.query, jobTab: 'documents' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'documents';
+                            router.push({
+                              query: { ...route.query, jobTab: 'documents' },
+                            });
+                          }
+                        "
                         ><span>Documents/Files</span></a
                       >
                     </li>
@@ -421,8 +453,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'files'"
-                        @click="tab = 'files'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'files';
+                            router.push({
+                              query: { ...route.query, jobTab: 'files' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'files';
+                            router.push({
+                              query: { ...route.query, jobTab: 'files' },
+                            });
+                          }
+                        "
                         ><span>Old Estimates</span></a
                       >
                     </li>
@@ -430,8 +476,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'proposals'"
-                        @click="tab = 'proposals'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'proposals';
+                            router.push({
+                              query: { ...route.query, jobTab: 'proposals' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'proposals';
+                            router.push({
+                              query: { ...route.query, jobTab: 'proposals' },
+                            });
+                          }
+                        "
                         ><span>Proposals</span></a
                       >
                     </li>
@@ -439,8 +499,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'tasks'"
-                        @click="tab = 'tasks'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'tasks';
+                            router.push({
+                              query: { ...route.query, jobTab: 'tasks' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'tasks';
+                            router.push({
+                              query: { ...route.query, jobTab: 'tasks' },
+                            });
+                          }
+                        "
                         ><span>Tasks</span></a
                       >
                     </li>
@@ -448,8 +522,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'activities'"
-                        @click="tab = 'activities'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'activities';
+                            router.push({
+                              query: { ...route.query, jobTab: 'activities' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'activities';
+                            router.push({
+                              query: { ...route.query, jobTab: 'activities' },
+                            });
+                          }
+                        "
                         ><span>Activities</span></a
                       >
                     </li>
@@ -466,8 +554,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'progress'"
-                        @click="tab = 'progress'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'progress';
+                            router.push({
+                              query: { ...route.query, jobTab: 'progress' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'progress';
+                            router.push({
+                              query: { ...route.query, jobTab: 'progress' },
+                            });
+                          }
+                        "
                         ><span>Job progress</span></a
                       >
                     </li>
@@ -475,8 +577,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'calculations'"
-                        @click="tab = 'calculations'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'calculations';
+                            router.push({
+                              query: { ...route.query, jobTab: 'calculations' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'calculations';
+                            router.push({
+                              query: { ...route.query, jobTab: 'calculations' },
+                            });
+                          }
+                        "
                         ><span>Calculations</span></a
                       >
                     </li>
@@ -484,8 +600,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'finance'"
-                        @click="tab = 'finance'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'finance';
+                            router.push({
+                              query: { ...route.query, jobTab: 'finance' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'finance';
+                            router.push({
+                              query: { ...route.query, jobTab: 'finance' },
+                            });
+                          }
+                        "
                         ><span>Finance</span></a
                       >
                     </li>
@@ -494,8 +624,22 @@ onMounted(() => {
                       <a
                         tabindex="0"
                         role="button"
-                        @keydown.space.prevent="tab = 'report'"
-                        @click="tab = 'report'"
+                        @keydown.space.prevent="
+                          () => {
+                            tab = 'report';
+                            router.push({
+                              query: { ...route.query, jobTab: 'report' },
+                            });
+                          }
+                        "
+                        @click="
+                          () => {
+                            tab = 'report';
+                            router.push({
+                              query: { ...route.query, jobTab: 'report' },
+                            });
+                          }
+                        "
                         ><span>Report</span></a
                       >
                     </li>
