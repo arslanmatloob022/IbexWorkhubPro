@@ -5,9 +5,7 @@ import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import {
   formatAmount,
-  formatDate,
   formatDateTime,
-  formatTime,
 } from "/@src/composable/useSupportElement";
 import {
   getProposalStatusColor,
@@ -15,51 +13,6 @@ import {
   getProposalTypeColor,
   getProposalTypeName,
 } from "../estimatesScripts";
-const router = useRouter();
-const route = useRoute();
-const api = useApi();
-const notyf = useNotyf();
-export interface ProjectData {
-  id: number;
-  name: string;
-  customer: string;
-  duration: string;
-  picture: string;
-  industry: string;
-  status: string;
-  team: VAvatarProps[];
-}
-const loading = ref(false);
-interface Proposal {
-  id: string;
-  title: string;
-  approval_deadline: string;
-  internal_notes: string | null;
-  introductory_text: string | null;
-  closing_text: string | null;
-  payment_status: string;
-  type: string;
-  created_at: string;
-  updated_at: string;
-  job: string;
-}
-
-const proposalsList = ref<Proposal[]>([]);
-const openLeadProposalModal = ref(false);
-const selectedProposalId = ref("");
-const openCreateTasksModal = ref(false);
-const openProposalGroupModal = ref(false);
-const openLeadProposalModalHandler = (id: any) => {
-  selectedProposalId.value = id;
-  openLeadProposalModal.value = true;
-};
-const openCreateTasksModalHandler = (id: any) => {
-  selectedProposalId.value = id;
-  openCreateTasksModal.value = true;
-};
-const openProposalGroupModalHandler = () => {
-  openProposalGroupModal.value = true;
-};
 
 const props = withDefaults(
   defineProps<{
@@ -74,13 +27,71 @@ const props = withDefaults(
   }
 );
 
+const router = useRouter();
+const route = useRoute();
+const api = useApi();
+const notyf = useNotyf();
+const proposalsList = ref<Proposal[]>([]);
+const selectedProposalId = ref("");
+const loading = ref(false);
+const openLeadProposalModal = ref(false);
+const openCreateTasksModal = ref(false);
+const openProposalGroupModal = ref(false);
+const previewModal = ref(false);
+const selectedProposal = ref(false);
+const addCostItemModal = ref(false);
+const proposalId = ref("");
+const filters = ref("");
+const selectedDeleteProposalId = ref("");
+const tab = ref(props.activeTab);
+
+export interface ProjectData {
+  id: number;
+  name: string;
+  customer: string;
+  duration: string;
+  picture: string;
+  industry: string;
+  status: string;
+  team: VAvatarProps[];
+}
+interface Proposal {
+  id: string;
+  title: string;
+  approval_deadline: string;
+  internal_notes: string | null;
+  introductory_text: string | null;
+  closing_text: string | null;
+  payment_status: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+  job: string;
+}
+
+const columns = {
+  picture: {
+    label: "Proposal",
+    grow: true,
+    media: true,
+  },
+  industry: "Type",
+  status: "Status",
+  amount: {
+    label: "Total Amount",
+    media: true,
+  },
+  customer: "Calendar Tasks ",
+  actions: {
+    label: "Actions",
+    align: "end",
+  },
+} as const;
+
 const emits = defineEmits<{
   (e: "updateCompany", value: null): void;
 }>();
 
-const filters = ref("");
-const selectedDeleteProposalId = ref("");
-const tab = ref(props.activeTab);
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
@@ -106,15 +117,18 @@ const openProposalDeleteAlert = (id: any) => {
   };
 };
 
-const createTasksOfProposal = (id: any) => {
-  selectedDeleteProposalId.value = id;
-  TasksSweetAlertProps.value = {
-    title: "Generate Tasks?",
-    subtitle:
-      "Tasks will be generated of all cost items are listed in this proposal.",
-    btntext: "Yes Generate",
-    isSweetAlertOpen: true,
-  };
+const openLeadProposalModalHandler = (id: any) => {
+  selectedProposalId.value = id;
+  openLeadProposalModal.value = true;
+};
+
+const openCreateTasksModalHandler = (id: any) => {
+  selectedProposalId.value = id;
+  openCreateTasksModal.value = true;
+};
+
+const openProposalGroupModalHandler = () => {
+  openProposalGroupModal.value = true;
 };
 
 const DeleteProposalHandler = async () => {
@@ -133,25 +147,6 @@ const DeleteProposalHandler = async () => {
     SweetAlertProps.value.isSweetAlertOpen = false;
   }
 };
-const columns = {
-  picture: {
-    label: "Proposal",
-    grow: true,
-    media: true,
-  },
-  industry: "Type",
-  // deadline: "Cost Items",
-  status: "Status",
-  amount: {
-    label: "Total Amount",
-    media: true,
-  },
-  customer: "Calendar Tasks ",
-  actions: {
-    label: "Actions",
-    align: "end",
-  },
-} as const;
 
 const getLeadProposals = async () => {
   try {
@@ -179,27 +174,10 @@ const getCompanyProposals = async () => {
   }
 };
 
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return proposalsList.value;
-  } else {
-    const filterRe = new RegExp(filters.value, "i");
-
-    return proposalsList.value.filter((item) => {
-      return item.title.match(filterRe);
-    });
-  }
-});
-
-const previewModal = ref(false);
-const selectedProposal = ref(false);
 const openProposalPreview = (id: any) => {
   selectedProposal.value = id;
   previewModal.value = !previewModal.value;
 };
-
-const addCostItemModal = ref(false);
-const proposalId = ref("");
 
 const updateProposalStatus = async (status: any, id: any) => {
   try {
@@ -217,14 +195,10 @@ const updateProposalStatus = async (status: any, id: any) => {
   }
 };
 
-const openCostItemModal = (id: any) => {
-  proposalId.value = id;
-  addCostItemModal.value = !addCostItemModal.value;
-};
-
 const gotoDetail = (id: any) => {
   router.push(`/sidebar/dashboard/proposals/${id}`);
 };
+
 const getCompanyProposalList = () => {
   if (props.allProposal == true) {
     getCompanyProposals();
@@ -232,6 +206,17 @@ const getCompanyProposalList = () => {
     getLeadProposals();
   }
 };
+
+const filteredData = computed(() => {
+  if (!filters.value) {
+    return proposalsList.value;
+  } else {
+    const filterRe = new RegExp(filters.value, "i");
+    return proposalsList.value.filter((item) => {
+      return item.title.match(filterRe);
+    });
+  }
+});
 
 onMounted(() => {
   getCompanyProposalList();

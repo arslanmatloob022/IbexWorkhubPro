@@ -1,1 +1,0 @@
-import{u as e}from"./viewWrapper-5f66bd52.js";import{f as a,A as s,B as r,C as t,D as m,F as n}from"./index-b2e47166.js";const o={class:"page-content-inner"},i=a({__name:"team-members",setup:a=>(e().setPageTitle("Team Members"),s({title:"Team Members - Arez"}),(e,a)=>{const s=r("TeamMembaresDashboard");return t(),m("div",o,[n(s)])})});export{i as default};
