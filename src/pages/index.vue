@@ -7,7 +7,7 @@ import { useApi } from "/@src/composable/useAPI";
 import axios from "axios";
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 import { useCompany } from "../stores/company";
-
+import { useElements } from "../stores/supportElements";
 const layoutSwitcher = useLayoutSwitcher();
 type StepId = "login" | "forgot-password" | "show-message";
 const step = ref<StepId>("login");
@@ -19,6 +19,7 @@ const notyf = useNotyf();
 const api = useApi();
 const company = useCompany();
 const userSession = useUserSession();
+const elements = useElements();
 let is_superuser = false;
 const redirect = route.query.redirect as string;
 const Email = ref("");
@@ -44,6 +45,7 @@ const handleLogin = async () => {
       const user = response.data.user;
       userSession.setToken(token);
       userSession.setUser(user);
+      elements.getUserPermissions(user.id);
       loginSuccess();
     } catch (error) {
       isLoading.value = false;

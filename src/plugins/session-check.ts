@@ -4,7 +4,7 @@ import { useUserSession } from "/@src/stores/userSession";
 import { useApi } from "../composable/useAPI";
 import { useLayoutSwitcher } from "/@src/stores/layoutSwitcher";
 import { useCompany } from "/@src/stores/company";
-
+import { useElements } from "../stores/supportElements";
 const layoutSwitcher = useLayoutSwitcher();
 /**
  * Here we are setting up two router navigation guards
@@ -31,6 +31,7 @@ export default definePlugin(async ({ router, pinia }) => {
   const userSession = useUserSession(pinia);
   const api = useApi();
   const company = useCompany();
+  const elements = useElements();
 
   // 1. Check token validity at app startup
   if (userSession.isLoggedIn) {
@@ -39,6 +40,7 @@ export default definePlugin(async ({ router, pinia }) => {
       const user = response.data;
       layoutSwitcher.setDynamicLayoutId("sideblock-default");
       userSession.setUser(user);
+      elements.getUserPermissions(user.id);
       company.loadCompany();
     } catch (err) {
       // delete stored token if it fails

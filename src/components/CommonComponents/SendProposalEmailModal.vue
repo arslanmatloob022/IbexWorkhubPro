@@ -104,13 +104,10 @@ const peopleOptions = ref([{ value: "", label: "" }]);
 const sendProposalMailHandler = async () => {
   try {
     mailLoading.value = true;
-    // Build a fresh payload object
-    const payload = {
-      ...mailData.value,
-      proposal_ids: mailData.value.proposal_ids, // already an array
-      columns: mailData.value.columns, // already an array
-      cc_emails: selectedEmails.value.map((e) => e), // array of strings
-    };
+    let payload = mailData.value;
+    payload.proposal_ids = JSON.stringify(mailData.value.proposal_ids);
+    payload.columns = JSON.stringify(mailData.value.columns);
+    payload.cc_emails = JSON.stringify(selectedEmails.value);
     const response = await api.post(
       `/api/lead-proposal/send-proposal-template/`,
       payload

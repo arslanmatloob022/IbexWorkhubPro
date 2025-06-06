@@ -186,9 +186,7 @@ const filteredData = computed(() => {
     const filterRe = new RegExp(filters.value, "i");
 
     return proposalsList.value.filter((item) => {
-      return (
-        item.title.match(filterRe) || item.approval_deadline.match(filterRe)
-      );
+      return item.title.match(filterRe);
     });
   }
 });

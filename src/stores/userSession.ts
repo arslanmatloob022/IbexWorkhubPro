@@ -18,8 +18,9 @@ export interface User {
 }
 
 export const useUserSession = defineStore("userSession", () => {
-  const token = useStorage("token", ""); // Store token in localStorage
-  const code = useStorage("code", ""); // Store code in localStorage
+  const token = useStorage("token", "");
+  const code = useStorage("code", "");
+  const userPermissions = ref<string[]>([]);
 
   // Ref for user data with a default empty structure
   const user = ref<User>(
@@ -51,7 +52,6 @@ export const useUserSession = defineStore("userSession", () => {
   // Set user data
   function setUser(newUser: User) {
     user.value = newUser;
-    console.log("user data in store", user.value);
   }
 
   // Set token
@@ -69,9 +69,21 @@ export const useUserSession = defineStore("userSession", () => {
     loading.value = newLoading;
   }
 
+  function checkUserPermission(permission: string) {
+    // return true;
+    if (userPermissions.value[permission]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function setUserPermissions(permissions: string[]) {
+    userPermissions.value = permissions;
+  }
+
   // Logout the user and clear the data
   async function logoutUser() {
-    console.log("User logout function called");
     token.value = ""; // Use empty string instead of undefined
     code.value = ""; // Use empty string instead of undefined
     // Reset user to an empty object structure
@@ -97,6 +109,9 @@ export const useUserSession = defineStore("userSession", () => {
     token,
     isLoggedIn,
     loading,
+    userPermissions,
+    setUserPermissions,
+    checkUserPermission,
     logoutUser,
     setUser,
     setToken,

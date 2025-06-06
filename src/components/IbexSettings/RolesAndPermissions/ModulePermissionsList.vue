@@ -72,7 +72,11 @@ const isExpanded = (moduleId: string) => {
   return expandedModules.value.has(moduleId);
 };
 
-const assignPermissionsHandler = async (perm: any, action: any) => {
+const assignPermissionsHandler = async (
+  perm: any,
+  action: any,
+  isModule: boolean = false
+) => {
   try {
     const selectedPerms = [
       {
@@ -80,7 +84,6 @@ const assignPermissionsHandler = async (perm: any, action: any) => {
         isAssign: action,
       },
     ];
-
     const payload = {
       actions_list: JSON.stringify(selectedPerms),
     };
@@ -91,6 +94,12 @@ const assignPermissionsHandler = async (perm: any, action: any) => {
     } else if (props.type === "role") {
       payload.role = props.objectId;
       payload.mode = "role";
+    }
+
+    if (isModule) {
+      delete payload.actions_list;
+      payload.module = perm.id;
+      payload.assignModule = action;
     }
 
     const resp = await api.post(
@@ -120,16 +129,25 @@ const assignedMappedPermissions = computed(() => {
   const assignedIds = new Set(
     objectAssignedPermissions.value.map((p: any) => p)
   );
-  console.log("ids", assignedIds);
 
   // Map over modules and their permissions, adding "assigned" property
-  return modulePermissionsList.value.map((module) => ({
-    ...module,
-    permissions: module.permissions.map((perm) => ({
+  return modulePermissionsList.value.map((module) => {
+    const permissionsWithAssigned = module.permissions.map((perm) => ({
       ...perm,
       assigned: assignedIds.has(perm.id),
-    })),
-  }));
+    }));
+
+    // Check if all permissions are assigned
+    const isAssign =
+      permissionsWithAssigned.length > 0 &&
+      permissionsWithAssigned.every((perm) => perm.assigned);
+
+    return {
+      ...module,
+      permissions: permissionsWithAssigned,
+      isAssign, // <-- add this property
+    };
+  });
 });
 
 watch(
@@ -161,6 +179,7 @@ onMounted(() => {
           light
           color="success"
           raised
+          :disabled="props.objectId ? false : true"
         >
           <span class="icon">
             <i aria-hidden="true" class="fas fa-plus" />
@@ -211,7 +230,14 @@ onMounted(() => {
               </div>
               <div class="dropdown align-items-center">
                 <VControl subcontrol class="mr-4">
-                  <VSwitchBlock thin color="primary" :model-value="true" />
+                  <VSwitchBlock
+                    :model-value="item.isAssign"
+                    @update:model-value="
+                      assignPermissionsHandler(item, $event, true)
+                    "
+                    thin
+                    color="success"
+                  />
                 </VControl>
                 <VIconWrap
                   @click="toggleExpand(item.id)"
@@ -241,7 +267,7 @@ onMounted(() => {
                       <VSwitchBlock
                         :model-value="perm.assigned"
                         @update:model-value="
-                          assignPermissionsHandler(perm, $event)
+                          assignPermissionsHandler(perm, $event, false)
                         "
                         thin
                         color="success"

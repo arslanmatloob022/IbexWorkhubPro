@@ -11,10 +11,12 @@
 import { ref, computed } from "vue";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { useApi } from "/@src/composable/useAPI";
+import { useUserSession } from "./userSession";
 import { convertUrlToFile } from "../composable/useSupportElement";
 
 export const useElements = defineStore("elements", () => {
   const api = useApi();
+  const userSession = useUserSession();
   const selectedIcon = ref<any>({
     url: "",
     file: "",
@@ -65,12 +67,24 @@ export const useElements = defineStore("elements", () => {
     }
   }
 
+  async function getUserPermissions(id: string = "") {
+    try {
+      const response = await api.get(
+        `/api/generic-modules/user-permissions-mapping/${id}/`
+      );
+      userSession.setUserPermissions(response.data);
+    } catch (error) {
+      console.error("Error fetching user permissions:", error);
+    }
+  }
+
   return {
     setIcon,
     loadIcons,
     openTemplateModal,
     closeTemplateModal,
     clear,
+    getUserPermissions,
     isOpenTemplateModal,
     templateIcons,
     loading,

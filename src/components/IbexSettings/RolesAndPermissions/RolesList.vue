@@ -132,7 +132,7 @@ onMounted(() => {});
                 <span class="dark-inverted">{{ item.title }}</span>
                 <!-- <span class="capitalized">{{ item.role }}</span> -->
               </div>
-              <UserCardDropdown />
+              <!-- <UserCardDropdown /> -->
             </div>
           </div>
         </div>

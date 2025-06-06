@@ -5,6 +5,7 @@ export const routerLinks = ref([
     class: "single-link",
     route: "/sidebar/dashboard",
     linkType: "single",
+    tabKey: "dashboard",
   },
   {
     title: "Jobs & Leads",
@@ -14,6 +15,7 @@ export const routerLinks = ref([
     headerIcon: "lnir lnir-library",
     headerTitle: "Jobs & Leads",
     linkType: "collapse",
+    tabKey: "jobs_and_leads",
     children: [
       {
         title: "Lead Opportunity",
@@ -21,6 +23,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/leads",
         activeClass: "leads",
+        tabKey: "jal_lead_opportunity",
       },
       {
         title: "All Jobs",
@@ -28,6 +31,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/jobs",
         activeClass: "projects",
+        tabKey: "jal_all_jobs",
       },
       {
         title: "Jobs Manager",
@@ -35,6 +39,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/manage-projects",
         activeClass: "manage-projects",
+        tabKey: "jal_jobs_manager",
       },
       {
         title: "Workers Chart",
@@ -42,12 +47,14 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/workers-tasks",
         activeClass: "workers-tasks",
+        tabKey: "jal_workers_chart",
       },
       {
         title: "Lead Proposals",
         icon: "lnir lnir-add-files",
         class: "is-submenu",
         route: "/sidebar/dashboard/proposals",
+        tabKey: "jal_lead_proposals",
       },
       {
         title: "Completed Jobs",
@@ -55,60 +62,19 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/completed-projects",
         activeClass: "pre-construction",
+        tabKey: "jal_completed_jobs",
       },
     ],
   },
-  // {
-  //   title: "Leads & Jobs",
-  //   icon: "lnir lnir-list-alt-1",
-  //   collapseId: "Projects",
-  //   class: "collapse-wrap",
-  //   headerIcon: "lnir lnir-list-alt-1",
-  //   headerTitle: "Leads & Jobs",
-  //   linkType: "collapse",
-  //   children: [
-  //     {
-  //       title: "All Jobs",
-  //       icon: "lnir lnir-list-alt",
-  //       class: "is-submenu",
-  //       route: "/sidebar/dashboard/projects",
-  //       activeClass: "projects",
-  //     },
-  //     {
-  //       title: "Manage Projects",
-  //       icon: "lnir lnir-appointment",
-  //       class: "is-submenu",
-  //       route: "/sidebar/dashboard/manage-projects",
-  //       activeClass: "manage-projects",
-  //     },
-  //     {
-  //       title: "Workers Chart",
-  //       icon: "lnir lnir-calendar",
-  //       class: "is-submenu",
-  //       route: "/sidebar/dashboard/workers-tasks",
-  //       activeClass: "workers-tasks",
-  //     },
-  //     {
-  //       title: "Completed Projects",
-  //       icon: "lnir lnir-list",
-  //       class: "is-submenu",
-  //       route: "/sidebar/dashboard/completed-projects",
-  //       activeClass: "pre-construction",
-  //     },
-  //   ],
-  // },
   {
     title: "Finance",
     icon: "lnir lnir-bank",
     collapseId: "payments",
     class: "collapse-wrap",
     headerIcon: "lnir lnir-bank",
-    userIds: [
-      "f6c283ec-9499-4983-997c-0456362e6650",
-      "73462666-c7f0-41eb-b978-24f5ffe7a539",
-    ],
     linkType: "collapse",
     headerTitle: "Finance",
+    tabKey: "finance",
     children: [
       {
         title: "Create Payment",
@@ -116,6 +82,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/create-payment",
         activeClass: "projects",
+        tabKey: "fi_create_payments",
       },
       {
         title: "All Payments",
@@ -123,6 +90,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/received-payments",
         activeClass: "received-payments",
+        tabKey: "fi_all_payments",
       },
       // {
       //   title: "Approved Payments",
@@ -137,6 +105,7 @@ export const routerLinks = ref([
         class: "is-submenu",
         route: "/sidebar/dashboard/succeeded-payments",
         activeClass: "succeeded-payments",
+        tabKey: "fi_succeeded_payments",
       },
     ],
   },
@@ -148,36 +117,42 @@ export const routerLinks = ref([
     headerIcon: "lnir lnir-users",
     headerTitle: "System Users",
     linkType: "collapse",
+    tabKey: "system_users",
     children: [
       {
         title: "Clients",
         icon: "lnir lnir-user-alt-2",
         class: "is-submenu",
         route: "/sidebar/dashboard/clients",
+        tabKey: "su_clients",
       },
       {
         title: "Managers",
         icon: "lnir lnir-user-alt-1",
         class: "is-submenu",
         route: "/sidebar/dashboard/managers",
+        tabKey: "su_managers",
       },
       {
         title: "Contractors",
         icon: "lnir lnir-user-alt",
         class: "is-submenu",
         route: "/sidebar/dashboard/contractors",
+        tabKey: "su_contractors",
       },
       {
         title: "Sub Contractors",
         icon: "lnir lnir-user",
         class: "is-submenu",
         route: "/sidebar/dashboard/subcontractors",
+        tabKey: "su_subcontractors",
       },
       {
         title: "Workers",
         icon: "lnir lnir-users",
         class: "is-submenu",
         route: "/sidebar/dashboard/workers",
+        tabKey: "su_workers",
       },
     ],
   },
@@ -189,18 +164,21 @@ export const routerLinks = ref([
     headerIcon: "lnir lnir-cogs",
     headerTitle: "Company Settings",
     linkType: "collapse",
+    tabKey: "company_settings",
     children: [
       {
         title: "Settings",
         icon: "lnir lnir-cog",
         class: "is-submenu",
         route: "/sidebar/dashboard/company-settings",
+        tabKey: "cs_settings",
       },
       {
         title: "Templates & Catalogs",
         icon: "lnir lnir-files",
         class: "is-submenu",
         route: "/sidebar/dashboard/proposal-templates",
+        tabKey: "cs_templates_and_catalogs",
       },
       // {
       //   title: "Files",
@@ -216,6 +194,7 @@ export const routerLinks = ref([
     class: "single-link",
     route: "/sidebar/dashboard/profile",
     linkType: "single",
+    tabKey: "profile",
   },
 ]);
 

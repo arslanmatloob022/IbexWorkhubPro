@@ -256,13 +256,13 @@ onMounted(() => {});
                   }}
                 </span>
 
-                <span v-else>{{
+                <!-- <span v-else>{{
                   useProposal.leadProposalFormData?.jobInfo?.contractor_info
                     ?.email
                     ? useProposal.leadProposalFormData?.jobInfo?.contractor_info
                         ?.email
                     : ""
-                }}</span>
+                }}</span> -->
                 <span>
                   {{ getProposalType[useProposal.leadProposalFormData?.type] }}
                 </span>

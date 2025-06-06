@@ -148,6 +148,12 @@ const updateTime = () => {
 
 let intervalId = ref(0);
 
+const filterAssignedPermissions = (links: any[]) => {
+  return links.filter((item: any) =>
+    userSession.checkUserPermission(item.tabKey)
+  );
+};
+
 onMounted(() => {
   updateTime(); // Set initial time
   intervalId.value = setInterval(updateTime, 1000); // Update every second
@@ -354,7 +360,12 @@ onMounted(() => {
             :key="link.title"
           >
             <!-- Render RouterLink -->
-            <li v-if="link.linkType === 'single'">
+            <li
+              v-if="
+                link.linkType === 'single' &&
+                userSession.checkUserPermission(link.tabKey)
+              "
+            >
               <RouterLink :to="link.route" :class="link.class">
                 <span class="icon">
                   <i :class="link.icon" aria-hidden="true"></i>
@@ -365,7 +376,10 @@ onMounted(() => {
 
             <!-- Render VCollapseLinks -->
             <VCollapseLinks
-              v-else-if="link.linkType === 'collapse'"
+              v-else-if="
+                link.linkType === 'collapse' &&
+                userSession.checkUserPermission(link.tabKey)
+              "
               v-model:open="openSideblockLinks"
               :collapse-id="link.collapseId"
               class="collapse-wrap"
@@ -391,7 +405,7 @@ onMounted(() => {
               <!-- Child Links -->
               <!-- <template v-for="child in link.children" :key="child.title"> -->
               <RouterLink
-                v-for="child in link.children"
+                v-for="child in filterAssignedPermissions(link.children)"
                 :key="child.title"
                 :to="child.route"
                 class="is-submenu"
