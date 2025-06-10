@@ -3,6 +3,7 @@ import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore"
 import { selectedColumnsToShow, columnsTitle } from "./costItems";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { formatAmount } from "/@src/composable/useSupportElement";
 const api = useApi();
 const notyf = useNotyf();
 
@@ -108,7 +109,8 @@ onUnmounted(() => {
             v-if="props.proposalData?.proposalAmount"
             class="title is-6 mt-5 mr-3"
           >
-            Total Amount: ${{ props.proposalData?.proposalAmount }}
+            Total Amount:
+            {{ formatAmount(props.proposalData?.proposalAmount) }}
           </h1>
           <VButton
             size="small"
@@ -126,7 +128,8 @@ onUnmounted(() => {
             outlined
             color="primary"
             @click="addCostItemModal = !addCostItemModal"
-            >Add Item</VButton
+          >
+            Add Item</VButton
           >
         </div>
       </div>
@@ -194,6 +197,26 @@ onUnmounted(() => {
             :proposalId="props.proposalId"
             :proposalData="props.leadProposalModal"
           />
+          <div class="card column is-12 mt-3 is-flex space-between">
+            <VButton
+              size="small"
+              light
+              outlined
+              color="primary"
+              @click="addCostItemModal = !addCostItemModal"
+            >
+              Add Item</VButton
+            >
+            <div>
+              Total Amount:
+              <h1
+                v-if="props.proposalData?.proposalAmount"
+                class="title is-6 ml-2"
+              >
+                {{ formatAmount(props.proposalData?.proposalAmount) }}
+              </h1>
+            </div>
+          </div>
         </div>
       </TransitionGroup>
 
@@ -250,6 +273,11 @@ onUnmounted(() => {
       v-if="addCostItemModal"
       :costItemModal="addCostItemModal"
       :proposalId="props.proposalId"
+      :previousItemIndex="
+        proposalStore.proposalCostItems[
+          proposalStore.proposalCostItems.length - 1
+        ].index
+      "
       @update:modalHandler="addCostItemModal = false"
       @update:OnSuccess="getProposalCostItems"
     >

@@ -4,6 +4,7 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { useApi } from "/@src/composable/useAPI";
 import { getColumnData, getColumnName } from "./costItems";
+import { formatAmount } from "/@src/composable/useSupportElement";
 
 const api = useApi();
 const dragItem = ref("");
@@ -181,18 +182,12 @@ onMounted(() => {});
                   cursor: pointer;
                   z-index: 99;
                   font-weight: 600;
+                  font-size: 14px;
                 "
                 @click="openProposalCostItems(cost)"
                 class="lnir lnir-circle-plus info-text"
                 aria-hidden="true"
               ></i>
-
-              <!-- <i
-                style="cursor: grab"
-                class="lnir lnir-sort"
-                aria-hidden="true"
-              ></i> -->
-              <!-- {{ index + 1 }} -->
             </td>
             <td v-for="(column, index) in props.columnsToShow" :key="index">
               <div
@@ -200,6 +195,27 @@ onMounted(() => {});
                 v-if="column === 'description'"
                 v-html="cost[getColumnData[column]]"
               ></div>
+              <span v-else-if="column === 'unit_cost'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
+              <span v-else-if="column === 'markup'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
+              <span v-else-if="column === 'total_price'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
+              <span v-else-if="column === 'builder_cost'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
+              <span v-else-if="column === 'margin'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
+              <span v-else-if="column === 'profit'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
+              <span v-else-if="column === 'worker_cost'">
+                {{ formatAmount(cost[getColumnData[column]]) }}
+              </span>
               <span v-else>
                 {{ cost[getColumnData[column]] }}
               </span>

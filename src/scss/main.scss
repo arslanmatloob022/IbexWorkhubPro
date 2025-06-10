@@ -99,6 +99,11 @@ SCSS Imports
   height: 20px;
   font-size: 12px;
 }
+.justify-content-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 
 .show-text-50 {
   white-space: nowrap;
