@@ -274,9 +274,11 @@ onUnmounted(() => {
       :costItemModal="addCostItemModal"
       :proposalId="props.proposalId"
       :previousItemIndex="
-        proposalStore.proposalCostItems[
-          proposalStore.proposalCostItems.length - 1
-        ].index
+        proposalStore.proposalCostItems.length
+          ? proposalStore.proposalCostItems[
+              proposalStore.proposalCostItems.length - 1
+            ].index
+          : 0
       "
       @update:modalHandler="addCostItemModal = false"
       @update:OnSuccess="getProposalCostItems"
