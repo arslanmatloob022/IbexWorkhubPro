@@ -549,20 +549,21 @@ onMounted(async () => {
                 </VAvatar>
               </div>
 
-              <div class="field column is-3 mb-0">
-                <label>Zip Code: without slash </label>
+              <!-- Address -->
+              <div class="field column is-6 mb-0">
+                <label>Address: </label>
                 <div class="control">
                   <input
-                    @blur="handlePostCodeChange"
                     type="text"
-                    name="zipCode"
-                    v-model="leadFormData.zip_code"
+                    name="address"
+                    v-model="leadFormData.address"
                     class="input is-primary-focus is-primary-focus"
-                    placeholder="Zip code"
+                    placeholder="Street Address"
                   />
                 </div>
               </div>
 
+              <!-- city -->
               <div class="field column is-3 mb-0">
                 <label>City: </label>
                 <div class="control">
@@ -576,7 +577,8 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <div class="field column is-6 mb-0">
+              <!-- state -->
+              <div class="field column is-3 mb-0">
                 <label>State: </label>
                 <div class="control">
                   <input
@@ -588,15 +590,17 @@ onMounted(async () => {
                   />
                 </div>
               </div>
+              <!-- Zip code -->
               <div class="field column is-6 mb-0">
-                <label>Address: </label>
+                <label>Zip Code: without slash </label>
                 <div class="control">
                   <input
+                    @blur="handlePostCodeChange"
                     type="text"
-                    name="address"
-                    v-model="leadFormData.address"
+                    name="zipCode"
+                    v-model="leadFormData.zip_code"
                     class="input is-primary-focus is-primary-focus"
-                    placeholder="Street Address"
+                    placeholder="Zip code"
                   />
                 </div>
               </div>

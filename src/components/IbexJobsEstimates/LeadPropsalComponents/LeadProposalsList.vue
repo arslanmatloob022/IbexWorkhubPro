@@ -207,15 +207,81 @@ const getCompanyProposalList = () => {
   }
 };
 
+const statusFilter = ref("");
+const sortProposalsOptions = ref([
+  {
+    desc: "Proposals default list. ",
+    icon: "fas fa-align-left",
+    value: "default",
+    label: "Default",
+  },
+  {
+    desc: "Newly created proposals ",
+    icon: "fas fa-calendar-day",
+    value: "recent",
+    label: "New Proposals",
+  },
+  {
+    desc: "Proposals created recently ",
+    icon: "fas fa-calendar-minus ",
+    value: "old",
+    label: "Old Proposals",
+  },
+  {
+    desc: "Proposals ascending order ",
+    icon: "fas fa-sort-alpha-down",
+    value: "asc",
+    label: "Ascending",
+  },
+  {
+    desc: "Proposals descending order ",
+    icon: "fas fa-sort-alpha-up ",
+    value: "desc",
+    label: "Descending",
+  },
+]);
+
 const filteredData = computed(() => {
-  if (!filters.value) {
-    return proposalsList.value;
-  } else {
+  let data = proposalsList.value;
+
+  // Filter by search
+  if (filters.value) {
     const filterRe = new RegExp(filters.value, "i");
-    return proposalsList.value.filter((item) => {
-      return item.title.match(filterRe);
-    });
+    data = data.filter((item) => item.title.match(filterRe));
   }
+
+  // Sort based on statusFilter
+  switch (statusFilter.value) {
+    case "recent":
+      data = [...data].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      break;
+    case "old":
+      data = [...data].sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+      break;
+    case "asc":
+      data = [...data].sort((a, b) => a.title.localeCompare(b.title));
+      break;
+    case "desc":
+      data = [...data].sort((a, b) => b.title.localeCompare(a.title));
+      break;
+    default:
+      break;
+  }
+
+  // Always move 'draft' proposals to the bottom
+  data = [...data].sort((a, b) => {
+    if (a.type === "draft" && b.type !== "draft") return 1;
+    if (a.type !== "draft" && b.type === "draft") return -1;
+    return 0;
+  });
+
+  return data;
 });
 
 onMounted(() => {
@@ -230,13 +296,36 @@ onMounted(() => {
     </div>
     <div v-else>
       <div class="flex-toolbar is-reversed is-flex space-between my-4">
-        <VControl icon="feather:search">
-          <input
-            v-model="filters"
-            class="input custom-text-filter"
-            placeholder="Search..."
-          />
-        </VControl>
+        <div class="is-flex g-2">
+          <VControl icon="feather:search">
+            <input
+              v-model="filters"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </VControl>
+          <VField class="ml-2">
+            <VDropdown title="Sort proposal" spaced>
+              <template #content>
+                <a
+                  v-for="link in sortProposalsOptions"
+                  :value="link.value"
+                  @click="statusFilter = link.value"
+                  class="dropdown-item is-media"
+                  :class="statusFilter === link.value && 'is-active'"
+                >
+                  <div class="icon">
+                    <i :class="link.icon" />
+                  </div>
+                  <div class="meta">
+                    <span>{{ link.label }}</span>
+                    <span>{{ link.desc }}</span>
+                  </div>
+                </a>
+              </template>
+            </VDropdown>
+          </VField>
+        </div>
 
         <div>
           <VButton
