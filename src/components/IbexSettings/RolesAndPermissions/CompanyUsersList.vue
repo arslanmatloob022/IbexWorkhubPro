@@ -130,7 +130,7 @@ onMounted(() => {
       </VPlaceholderPage>
 
       <!--Tile Grid v1-->
-      <TransitionGroup name="list" tag="div" class="columns is-multiline">
+      <TransitionGroup name="list" tag="div">
         <!--Grid item-->
         <div
           v-for="(item, key) in filteredData"
@@ -174,7 +174,7 @@ onMounted(() => {
 @import "/@src/scss/abstracts/all";
 
 .active-card {
-  background-color: #ebf8ff !important;
+  // background-color: #ebf8ff !important;
   border-color: var(--info) !important;
 }
 

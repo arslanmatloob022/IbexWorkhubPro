@@ -14,7 +14,7 @@ import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
 
-viewWrapper.setPageTitle("Clients Ibex");
+viewWrapper.setPageTitle("Ibex Clients");
 useHead({
   title: "Clients - Ibex",
 });

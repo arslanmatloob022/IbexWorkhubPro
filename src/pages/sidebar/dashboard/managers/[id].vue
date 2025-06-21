@@ -15,7 +15,7 @@ const viewWrapper = useViewWrapper();
 viewWrapper.setPageTitle("Manager Info");
 
 useHead({
-  title: "Manager - Ibex",
+  title: "Manager Info - Ibex",
 });
 </script>
 

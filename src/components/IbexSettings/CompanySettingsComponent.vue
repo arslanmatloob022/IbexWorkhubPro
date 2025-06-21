@@ -191,6 +191,6 @@ const tab = ref("general");
 }
 .cu-property {
   border-radius: 8px;
-  background: radial-gradient(#ededed, #ffffff);
+  background: radial-gradient(transparent, #20294412) !important;
 }
 </style>

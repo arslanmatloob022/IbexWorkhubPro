@@ -665,12 +665,18 @@ onMounted(async () => {
     :onCancel="SweetAlertProps.onCancel"
   />
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 .fc-day-sat,
 .fc-day-sun {
   background-color: #f2f2f2;
 }
 
+.fc .fc-scrollgrid-section-sticky > * {
+  background-color: #f2f2f2 !important;
+}
+.fc-scrollgrid-section-header {
+  background-color: black;
+}
 .fc-event.fc-event-draggable {
   margin-right: 1px;
   border-width: 1px;

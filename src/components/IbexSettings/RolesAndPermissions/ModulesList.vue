@@ -232,7 +232,7 @@ onMounted(() => {
 @import "/@src/scss/abstracts/all";
 
 .active-card {
-  background-color: #ebf8ff !important;
+  // background-color: #ebf8ff !important;
   border-color: var(--info) !important;
 }
 

@@ -342,11 +342,11 @@ watch(
 <style lang="scss">
 #rota-celender {
   td {
-    border: 1px solid white !important;
+    border: 1px solid rgb(109, 17, 17) !important;
   }
 
   tr {
-    border: 1px solid white !important;
+    border: 1px solid rgb(100, 16, 16) !important;
   }
 
   th {

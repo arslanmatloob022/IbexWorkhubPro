@@ -11,10 +11,10 @@ meta:
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Completed Projects");
+viewWrapper.setPageTitle("Completed Jobs");
 
 useHead({
-  title: "Completed Projects - Ibex",
+  title: "Completed Jobs - Ibex",
 });
 </script>
 

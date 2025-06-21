@@ -283,8 +283,13 @@ onMounted(async () => {
   </TaskInfoModal>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "/@src/scss/abstracts/all";
+
+.fc-scrollgrid-section {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 
 .lifestyle-dashboard-v3 {
   .illustration-header {

@@ -164,6 +164,7 @@ onMounted(() => {});
 .is-dark {
   .tile-grid {
     .tile-grid-item {
+      background-color: transparent !important;
       @include vuero-card--dark;
     }
   }

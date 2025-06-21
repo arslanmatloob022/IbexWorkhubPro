@@ -14,10 +14,10 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Payments");
+viewWrapper.setPageTitle("All Payments");
 
 useHead(() => ({
-  title: "Payments",
+  title: "All Payments - Ibex",
 }));
 </script>
 

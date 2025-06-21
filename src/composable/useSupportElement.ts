@@ -313,3 +313,15 @@ export function formatAmount(amount: number): string {
     maximumFractionDigits: 2,
   }).format(amount);
 }
+
+export async function getReverseGeocodeLocationIQ(query: string) {
+  try {
+    const resp = await axios.get(
+      `https://api.locationiq.com/v1/autocomplete?key=pk.26eb33474e805c6deeea40508e844d84&q=${query}&limit=5&dedupe=1&`
+    );
+    return resp.data;
+  } catch (err) {
+    console.error("Error fetching reverse geocode:", err);
+    return { status: false, data: null };
+  }
+}

@@ -2,10 +2,10 @@
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Sub Contractors");
+viewWrapper.setPageTitle("Company Subcontractors");
 
 useHead({
-  title: "Ibex Sub Contractors",
+  title: "Ibex Subcontractors",
 });
 </script>
 <template>

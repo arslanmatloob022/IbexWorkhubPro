@@ -1,1 +1,0 @@
-import{f as s,C as t,D as a,Z as e,I as o}from"./index-0d90b31f.js";const r=s({__name:"UIWidget",props:{straight:{type:Boolean}},setup(s){const r=s;return(s,i)=>(t(),a("div",{class:o(["widget",[r.straight&&"is-straight"]])},[e(s.$slots,"header"),e(s.$slots,"body")],2))}});export{r as _};

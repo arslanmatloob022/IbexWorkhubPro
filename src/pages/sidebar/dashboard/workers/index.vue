@@ -14,11 +14,11 @@ import { useViewWrapper } from "/@src/stores/viewWrapper";
 const route = useRoute();
 
 const viewWrapper = useViewWrapper();
-let title = "Workers";
+let title = "Ibex Workers";
 
 viewWrapper.setPageTitle(title);
 useHead({
-  title: "Workers - Ibex",
+  title: "Ibex Workers - Ibex",
 });
 </script>
 

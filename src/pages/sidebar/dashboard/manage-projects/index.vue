@@ -13,10 +13,10 @@ meta:
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 
 const viewWrapper = useViewWrapper();
-viewWrapper.setPageTitle("Manage Projects");
+viewWrapper.setPageTitle("Jobs Manager");
 
 useHead({
-  title: "Manage Projects",
+  title: "Jobs Manager -Ibex",
 });
 </script>
 

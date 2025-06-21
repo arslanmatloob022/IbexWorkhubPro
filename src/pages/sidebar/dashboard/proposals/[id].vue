@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import LeadProposalsList from "/@src/components/IbexJobsEstimates/LeadPropsalComponents/LeadProposalsList.vue";
 import ProposalDetailComponent from "/@src/components/IbexJobsEstimates/LeadPropsalComponents/ProposalDetailComponent.vue";
 import { useViewWrapper } from "/@src/stores/viewWrapper";
 const viewWrapper = useViewWrapper();
 
-viewWrapper.setPageTitle("Lead Proposals");
+viewWrapper.setPageTitle("Proposal Details");
+
 useHead({
-  title: "Lead Proposals - Ibex",
+  title: "Proposal Details - Ibex",
 });
 </script>
 

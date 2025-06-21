@@ -2,7 +2,10 @@
 import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { convertToFormData } from "/@src/composable/useSupportElement";
+import {
+  convertToFormData,
+  getReverseGeocodeLocationIQ,
+} from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import CKE from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -357,7 +360,56 @@ const getManagersHandler = async () => {
   }
 };
 
+const respAddressList = ref([
+  {
+    place_id: "323063513605",
+    osm_id: "7442087",
+    osm_type: "relation",
+    licence: "https:\/\/locationiq.com\/attribution",
+    lat: "31.4334994",
+    lon: "-86.9569176",
+    boundingbox: ["31.3960883", "31.4666943", "-87.0455186", "-86.9233412"],
+    class: "place",
+    type: "town",
+    display_name: "Evergreen, Evergreen, Conecuh County, Alabama, 36401, USA",
+    display_place: "Evergreen",
+    display_address: "Conecuh County, Alabama, 36401, USA",
+    address: {
+      name: "Evergreen",
+      city: "Evergreen",
+      county: "Conecuh County",
+      state: "Alabama",
+      postcode: "36401",
+      country: "United States of America",
+      country_code: "us",
+    },
+  },
+]);
+
+const showListDropdown = ref(false);
+
+const loadItemData = (item: any) => {
+  leadFormData.value.address = item.display_name;
+  leadFormData.value.latitude = item.lat;
+  leadFormData.value.longitude = item.lon;
+  leadFormData.value.city = item.address?.city || "N/A";
+  leadFormData.value.state = item.address?.state || "N/A";
+  leadFormData.value.zip_code = item.address?.postcode || "N/A";
+  respAddressList.value = [];
+  showListDropdown.value = false;
+  notyf.success("Address Added");
+};
+
 const handlePostCodeChange = async () => {
+  const res = await getReverseGeocodeLocationIQ(leadFormData.value.address);
+  respAddressList.value = res;
+  if (res.length != 0) {
+    // notyf.error("Invalid Post-Code");
+    showListDropdown.value = true;
+  }
+};
+
+const handlePostCodeChange2 = async () => {
   try {
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${leadFormData.value.zip_code}&key=AIzaSyDWHedwkLGGa4_3XgPqYxIzMkFpOdKJRik`
@@ -550,16 +602,30 @@ onMounted(async () => {
               </div>
 
               <!-- Address -->
-              <div class="field column is-6 mb-0">
+
+              <div class="field column is-6 mb-0 is-relative">
                 <label>Address: </label>
                 <div class="control">
                   <input
                     type="text"
                     name="address"
+                    @keydown.enter.prevent="handlePostCodeChange()"
                     v-model="leadFormData.address"
                     class="input is-primary-focus is-primary-focus"
                     placeholder="Street Address"
                   />
+                </div>
+                <div
+                  v-if="respAddressList.length && showListDropdown"
+                  class="dropdown-list"
+                >
+                  <ul>
+                    <li v-for="item in respAddressList">
+                      <span @click="loadItemData(item)">
+                        {{ item.display_name }}
+                      </span>
+                    </li>
+                  </ul>
                 </div>
               </div>
 
@@ -593,9 +659,9 @@ onMounted(async () => {
               <!-- Zip code -->
               <div class="field column is-6 mb-0">
                 <label>Zip Code: without slash </label>
+                <!-- @blur="handlePostCodeChange" -->
                 <div class="control">
                   <input
-                    @blur="handlePostCodeChange"
                     type="text"
                     name="zipCode"
                     v-model="leadFormData.zip_code"
@@ -1087,6 +1153,45 @@ onMounted(async () => {
 </template>
 
 <style lang="scss">
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 2%;
+  width: 96%;
+  max-height: 200px;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  ul {
+    width: 100%;
+    padding: 2px 12px;
+    li {
+      margin-bottom: 4px;
+      padding: 2px 8px;
+      cursor: pointer;
+      text-wrap: wrap;
+    }
+  }
+}
+.is-dark {
+  .dropdown-list {
+    background-color: var(--dark-sidebar-light-2);
+    border-color: var(--dark-sidebar-light-4);
+    ul {
+      li {
+        color: var(--dark-dark-text) !important;
+        &:hover {
+          background-color: var(--primary-light-2);
+          color: #fff !important;
+        }
+      }
+    }
+  }
+}
+.is-light {
+  .dropdown-list {
+    background-color: var(--light);
+  }
+}
 .ck-editor__editable {
   color: black !important;
   p {

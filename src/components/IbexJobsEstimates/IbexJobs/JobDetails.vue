@@ -7,13 +7,13 @@ import { useNotyf } from "/@src/composable/useNotyf";
 import { HotTable } from "@handsontable/vue3";
 // import saveAs from "file-saver";
 import { useFlexRadialChartCircle } from "/@src/data/widgets/charts/flexRadialChartCircleChart";
-
 import * as XLSX from "xlsx";
 import { settings } from "nprogress";
 import "handsontable/dist/handsontable.full.min.css";
 const { flexRadialChartCircleOptions } = useFlexRadialChartCircle();
 const route = useRoute();
 const router = useRouter();
+const userSession = useUserSession();
 const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
@@ -403,7 +403,12 @@ onMounted(() => {
               <div class="tabs-inner">
                 <div class="tabs is-toggle">
                   <ul>
-                    <li :class="[tab === 'management' && 'is-active']">
+                    <li
+                      :class="[tab === 'management' && 'is-active']"
+                      v-if="
+                        userSession.checkUserPermission('jdp_job_management')
+                      "
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -426,7 +431,14 @@ onMounted(() => {
                         ><span>Job Management</span></a
                       >
                     </li>
-                    <li :class="[tab === 'documents' && 'is-active']">
+                    <li
+                      :class="[tab === 'documents' && 'is-active']"
+                      v-if="
+                        userSession.checkUserPermission(
+                          'jdp_documents_and_files'
+                        )
+                      "
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -449,7 +461,10 @@ onMounted(() => {
                         ><span>Documents/Files</span></a
                       >
                     </li>
-                    <li :class="[tab === 'files' && 'is-active']">
+                    <li
+                      :class="[tab === 'files' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_old_files')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -472,7 +487,10 @@ onMounted(() => {
                         ><span>Old Estimates</span></a
                       >
                     </li>
-                    <li :class="[tab === 'proposals' && 'is-active']">
+                    <li
+                      :class="[tab === 'proposals' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_proposals')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -495,7 +513,10 @@ onMounted(() => {
                         ><span>Proposals</span></a
                       >
                     </li>
-                    <li :class="[tab === 'tasks' && 'is-active']">
+                    <li
+                      :class="[tab === 'tasks' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_tasks')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -518,7 +539,10 @@ onMounted(() => {
                         ><span>Tasks</span></a
                       >
                     </li>
-                    <li :class="[tab === 'activities' && 'is-active']">
+                    <li
+                      :class="[tab === 'activities' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_activities')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -550,7 +574,10 @@ onMounted(() => {
                         ><span>Activity Logs</span></a
                       >
                     </li> -->
-                    <li :class="[tab === 'progress' && 'is-active']">
+                    <li
+                      :class="[tab === 'progress' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_job_progress')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -573,7 +600,10 @@ onMounted(() => {
                         ><span>Job progress</span></a
                       >
                     </li>
-                    <li :class="[tab === 'calculations' && 'is-active']">
+                    <li
+                      :class="[tab === 'calculations' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_calculations')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -596,7 +626,10 @@ onMounted(() => {
                         ><span>Calculations</span></a
                       >
                     </li>
-                    <li :class="[tab === 'finance' && 'is-active']">
+                    <li
+                      :class="[tab === 'finance' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_finance')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
@@ -620,7 +653,10 @@ onMounted(() => {
                       >
                     </li>
 
-                    <li :class="[tab === 'report' && 'is-active']">
+                    <li
+                      :class="[tab === 'report' && 'is-active']"
+                      v-if="userSession.checkUserPermission('jdp_report')"
+                    >
                       <a
                         tabindex="0"
                         role="button"
