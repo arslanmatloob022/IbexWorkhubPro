@@ -233,7 +233,7 @@ onMounted(() => {
     <PlaceloadV1 v-if="loading" />
     <div v-else>
       <div class="list-flex-toolbar columns is-multiline">
-        <div class="column is-3">
+        <div class="column is-6 is-flex">
           <VField>
             <VControl icon="feather:search">
               <input
@@ -243,8 +243,8 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-        </div>
-        <div class="column is-2">
+          <!-- </div> -->
+          <!-- <div class="column is-2"> -->
           <VDropdown title="Apply sorting" modern spaced>
             <template #content>
               <a @click="sortJobs('ascending')" class="dropdown-item is-media">
@@ -293,16 +293,18 @@ onMounted(() => {
           </VDropdown>
         </div>
 
-        <VButtons>
-          <VButton
-            @click="openLeadUpdateModal('')"
-            color="primary"
-            icon="fas fa-plus"
-            elevated
-          >
-            Lead Opportunity
-          </VButton>
-        </VButtons>
+        <div class="column is-6">
+          <VButtons>
+            <VButton
+              @click="openLeadUpdateModal('')"
+              color="primary"
+              icon="fas fa-plus"
+              elevated
+            >
+              Lead Opportunity
+            </VButton>
+          </VButtons>
+        </div>
       </div>
 
       <div class="page-content-inner">
@@ -355,6 +357,13 @@ criteria."
                       class="cu-pointer"
                       :column="{ media: true, grow: true }"
                     >
+                      <VAvatar
+                        :picture="
+                          item.image ? item.image : '/IbexImages/home-icon.png'
+                        "
+                        squared
+                        size="medium"
+                      />
                       <div>
                         <span class="item-name dark-inverted show-text-200">{{
                           item.title ? item.title : "N/A"

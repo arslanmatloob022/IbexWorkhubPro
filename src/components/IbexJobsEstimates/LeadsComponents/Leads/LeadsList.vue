@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { VAvatarProps } from "/@src/components/base/avatar/VAvatar.vue";
-import * as listData from "/@src/data/layouts/flex-list-v1";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
 import {
@@ -41,6 +40,7 @@ const leadsList = ref([
     status: null,
     zip_code: null,
     confidence: "0.00",
+    image: "",
     sale_date: null,
     tags: [],
     estimated_from: null,
@@ -65,7 +65,6 @@ const route = useRoute();
 const statusFilter = ref("");
 const openLeadProposalModal = ref(false);
 const openLeadModal = ref(false);
-const users = listData.users as UserData[];
 
 const leadsStatusFilters = ref([
   { value: "open", label: "Open" },
@@ -214,38 +213,55 @@ onMounted(() => {
   <div>
     <PlaceloadV1 v-if="loading" />
     <div v-else>
-      <div class="list-flex-toolbar flex-list-v1">
-        <VField>
-          <VControl icon="feather:search">
-            <input
-              v-model="filters"
-              class="input custom-text-filter"
-              placeholder="Search..."
-            />
-          </VControl>
-        </VField>
+      <div class="list-flex-toolbar columns is-multiline">
+        <div class="column is-6 is-flex">
+          <VField>
+            <VControl icon="feather:search">
+              <input
+                v-model="filters"
+                class="input custom-text-filter"
+                placeholder="Search..."
+              />
+            </VControl>
+          </VField>
+          <VDropdown title="Apply sorting" modern spaced>
+            <template #content>
+              <a
+                v-for="link in leadsStatusFilters"
+                :value="link.value"
+                class="dropdown-item is-media"
+                @click="statusFilter = link.value"
+              >
+                <div class="meta">
+                  <span>{{ link.label }}</span>
+                </div>
+              </a>
+            </template>
+          </VDropdown>
 
-        <VField>
-          <VControl class="has-icons-left" icon="fas fa-globe">
-            <VSelect v-model="statusFilter">
-              <VOption value=""> All </VOption>
-              <VOption v-for="link in leadsStatusFilters" :value="link.value">
-                {{ link.label }}
-              </VOption>
-            </VSelect>
-          </VControl>
-        </VField>
-
-        <VButtons>
-          <VButton
-            @click="openLeadUpdateModal('')"
-            color="primary"
-            icon="fas fa-plus"
-            elevated
-          >
-            Lead Opportunity
-          </VButton>
-        </VButtons>
+          <!-- <VField style="min-width: 120px">
+            <VControl class="has-icons-left" icon="fas fa-globe">
+              <VSelect v-model="statusFilter">
+                <VOption value=""> All </VOption>
+                <VOption v-for="link in leadsStatusFilters" :value="link.value">
+                  {{ link.label }}
+                </VOption>
+              </VSelect>
+            </VControl>
+          </VField> -->
+        </div>
+        <div class="column is-6">
+          <VButtons>
+            <VButton
+              @click="openLeadUpdateModal('')"
+              color="primary"
+              icon="fas fa-plus"
+              elevated
+            >
+              Lead Opportunity
+            </VButton>
+          </VButtons>
+        </div>
       </div>
 
       <div class="page-content-inner">
@@ -295,6 +311,13 @@ onMounted(() => {
                     class="cu-pointer"
                     :column="{ media: true, grow: true }"
                   >
+                    <VAvatar
+                      :picture="
+                        item.image ? item.image : '/IbexImages/home-icon.png'
+                      "
+                      squared
+                      size="medium"
+                    />
                     <div>
                       <span class="item-name dark-inverted show-text-200">{{
                         item.title ? item.title : "N/A"

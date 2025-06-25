@@ -1138,7 +1138,7 @@ onMounted(async () => {
         type="submit"
         :color="props.leadId ? 'info' : 'primary'"
         raised
-        >{{ props.leadId ? "Update" : "Create" }} Lead</VButton
+        >{{ props.leadId ? "Update" : "Create" }}</VButton
       >
 
       <VButton

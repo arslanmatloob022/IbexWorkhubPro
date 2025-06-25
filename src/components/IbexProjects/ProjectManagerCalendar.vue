@@ -395,6 +395,12 @@ const getCalendarData = async () => {
   loading.value = false;
 };
 
+const toolbarRef = ref(null);
+
+const toggleFullScreen = () => {
+  fullWidthView.value = !fullWidthView.value;
+};
+
 onMounted(async () => {
   await getCalendarData();
   showWorkerChart.value = true;
@@ -412,225 +418,227 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <form @submit.prevent="changeFilterHandler">
-      <div class="datatable-toolbar">
-        <VField elevated>
-          <VControl icon="fas fa-search">
-            <VInput
-              type="text"
-              placeholder="Search projects..."
-              v-model="query"
-              @input="changeFilterHandler()"
-              class=""
-            />
-          </VControl>
-        </VField>
-        <div v-if="loading" class="rota-loader"></div>
+  <div
+    class="main-div"
+    :class="{ 'fullscreen-sim': fullWidthView }"
+    ref="toolbarRef"
+  >
+    <div class="flex-list-toolbar">
+      <form @submit.prevent="changeFilterHandler">
+        <div class="datatable-toolbar align-items-center">
+          <VField elevated>
+            <VControl icon="fas fa-search">
+              <VInput
+                type="text"
+                placeholder="Search projects..."
+                v-model="query"
+                @input="changeFilterHandler()"
+                class=""
+              />
+            </VControl>
+          </VField>
+          <div v-if="loading" class="rota-loader"></div>
 
-        <VButtons>
-          <VDropdown class="mr-1" title="Select project filter" right spaced>
-            <template #content>
-              <a
-                @click="
-                  () => {
-                    changeFilterHandler();
-                    activeFilter = 'all';
-                  }
-                "
-                class="dropdown-item is-media"
-                :class="activeFilter == 'all' ? 'is-active' : ''"
-              >
-                <div class="icon">
-                  <i class="lnil lnil-menu" aria-hidden="true"></i>
-                </div>
-                <div class="meta">
-                  <span>All</span>
-                  <span>All projects owned by company</span>
-                </div>
-              </a>
-              <a
-                href="#"
-                @click="
-                  () => {
-                    changeFilterHandler();
-                    activeFilter = 'active';
-                  }
-                "
-                :class="activeFilter == 'active' ? 'is-active' : ''"
-                class="dropdown-item is-media"
-              >
-                <div class="icon">
-                  <i class="lnil lnil-play" aria-hidden="true"></i>
-                </div>
-                <div class="meta">
-                  <span>Active</span>
-                  <span>Projects that are in progress</span>
-                </div>
-              </a>
-              <a
-                @click="
-                  () => {
-                    changeFilterHandler();
-                    activeFilter = 'pending';
-                  }
-                "
-                :class="activeFilter == 'pending' ? 'is-active' : ''"
-                class="dropdown-item is-media"
-              >
-                <div class="icon">
-                  <i class="lnil lnil-alarm-clock" aria-hidden="true"></i>
-                </div>
-                <div class="meta">
-                  <span>Pending</span>
-                  <span>Projects listed but not started</span>
-                </div>
-              </a>
-              <hr class="dropdown-divider" />
-              <a
-                @click="
-                  () => {
-                    changeFilterHandler();
-                    activeFilter = 'completed';
-                  }
-                "
-                :class="activeFilter == 'completed' ? 'is-active' : ''"
-                class="dropdown-item is-media"
-              >
-                <div class="icon">
-                  <i class="lnil lnil-round-box-check" aria-hidden="true"></i>
-                </div>
-                <div class="meta">
-                  <span>Completed</span>
-                  <span>Projects that are done</span>
-                </div>
-              </a>
-            </template>
-          </VDropdown>
+          <div class="buttons is-flex align-items-center">
+            <VDropdown class="mr-1" title="Select project filter" right spaced>
+              <template #content>
+                <a
+                  @click="
+                    () => {
+                      changeFilterHandler();
+                      activeFilter = 'all';
+                    }
+                  "
+                  class="dropdown-item is-media"
+                  :class="activeFilter == 'all' ? 'is-active' : ''"
+                >
+                  <div class="icon">
+                    <i class="lnil lnil-menu" aria-hidden="true"></i>
+                  </div>
+                  <div class="meta">
+                    <span>All</span>
+                    <span>All projects owned by company</span>
+                  </div>
+                </a>
+                <a
+                  href="#"
+                  @click="
+                    () => {
+                      changeFilterHandler();
+                      activeFilter = 'active';
+                    }
+                  "
+                  :class="activeFilter == 'active' ? 'is-active' : ''"
+                  class="dropdown-item is-media"
+                >
+                  <div class="icon">
+                    <i class="lnil lnil-play" aria-hidden="true"></i>
+                  </div>
+                  <div class="meta">
+                    <span>Active</span>
+                    <span>Projects that are in progress</span>
+                  </div>
+                </a>
+                <a
+                  @click="
+                    () => {
+                      changeFilterHandler();
+                      activeFilter = 'pending';
+                    }
+                  "
+                  :class="activeFilter == 'pending' ? 'is-active' : ''"
+                  class="dropdown-item is-media"
+                >
+                  <div class="icon">
+                    <i class="lnil lnil-alarm-clock" aria-hidden="true"></i>
+                  </div>
+                  <div class="meta">
+                    <span>Pending</span>
+                    <span>Projects listed but not started</span>
+                  </div>
+                </a>
+                <hr class="dropdown-divider" />
+                <a
+                  @click="
+                    () => {
+                      changeFilterHandler();
+                      activeFilter = 'completed';
+                    }
+                  "
+                  :class="activeFilter == 'completed' ? 'is-active' : ''"
+                  class="dropdown-item is-media"
+                >
+                  <div class="icon">
+                    <i class="lnil lnil-round-box-check" aria-hidden="true"></i>
+                  </div>
+                  <div class="meta">
+                    <span>Completed</span>
+                    <span>Projects that are done</span>
+                  </div>
+                </a>
+              </template>
+            </VDropdown>
 
-          <!-- <VButton elevated raised color="dark" @click="toggleFullScreen()">
-            <i :class="fullWidthView ? 'fa fa-compress' : 'fa fa-expand'"></i>
-          </VButton> -->
-        </VButtons>
-      </div>
-    </form>
-    <FullCalendar :options="calendarOptions" ref="calendarRef">
-      <template v-slot:eventContent="arg">
-        <div style="height: 100%; position: relative">
-          <p
-            v-if="arg.event?.display == 'background'"
-            style="font-weight: 500; margin-bottom: 0px; color: black"
-          >
-            Job: {{ arg.event.title }}
-          </p>
-
-          <div
-            v-else
-            style="
-              display: flex;
-              flex-wrap: wrap;
-              align-items: center;
-              justify-content: space-between;
-            "
-          >
+            <VButton elevated raised color="dark" @click="toggleFullScreen()">
+              <i :class="fullWidthView ? 'fa fa-compress' : 'fa fa-expand'"></i>
+            </VButton>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="project-full-calendar">
+      <FullCalendar :options="calendarOptions" ref="calendarRef">
+        <template v-slot:eventContent="arg">
+          <div style="height: 100%; position: relative">
             <p
-              @click="eventClick(arg)"
+              v-if="arg.event?.display == 'background'"
               style="
                 font-weight: 500;
                 margin-bottom: 0px;
-                padding-left: 1px;
-                padding-right: 1px;
-                z-index: 99;
-                text-shadow: 2px 2px 2px black;
+                color: #000 !important;
               "
             >
-              <span
-                v-for="worker in arg.event.extendedProps?.workers"
-                :key="worker.id"
-              >
-                {{ worker.username }},
-              </span>
+              Job: {{ arg.event.title }}
             </p>
-            <div
-              class="avatars"
-              v-if="arg.event.extendedProps?.workers?.length"
-            >
-              <div
-                class="avatars__item"
-                v-for="worker in arg.event.extendedProps?.workers"
-                :key="worker.id"
-              >
-                <!-- <VAvatar
-                  @click="workerImageClick(worker)"
-                  :picture="worker.avatar"
-                /> -->
-                <img
-                  v-if="worker.avatar"
-                  :src="worker.avatar"
-                  @click="workerImageClick(worker)"
-                  :title="worker.username"
-                  :data-bs-original-title="
-                    worker.username
-                      ? worker.username.slice(0, 2).toUpperCase()
-                      : 'Hi'
-                  "
-                />
 
-                <!-- data-bs-toggle="tooltip" -->
-                <div
-                  v-if="arg.event.extendedProps?.workers?.length == 0"
-                  @click="workerImageClick(worker)"
-                  data-bs-placement="bottom"
-                  :data-bs-original-title="
-                    worker.username ? worker.username : 'Hi'
-                  "
-                  :title="worker.username"
-                  style="
-                    width: 100%;
-                    height: 100%;
-                    background-color: #292f3c;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                  "
+            <div
+              v-else
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <p
+                @click="eventClick(arg)"
+                style="
+                  font-weight: 500;
+                  margin-bottom: 0px;
+                  padding-left: 1px;
+                  padding-right: 1px;
+                  z-index: 99;
+                  text-shadow: 2px 2px 2px black;
+                "
+              >
+                <span
+                  v-for="worker in arg.event.extendedProps?.workers"
+                  :key="worker.id"
                 >
-                  <h6
-                    class="mb-0"
+                  {{ worker.username }},
+                </span>
+              </p>
+              <div
+                class="avatars"
+                v-if="arg.event.extendedProps?.workers?.length"
+              >
+                <div
+                  class="avatars__item"
+                  v-for="worker in arg.event.extendedProps?.workers"
+                  :key="worker.id"
+                >
+                  <img
+                    v-if="worker.avatar"
+                    :src="worker.avatar"
                     @click="workerImageClick(worker)"
-                    style="color: white"
-                    data-bs-toggle="tooltip"
+                    :title="worker.username"
+                    :data-bs-original-title="
+                      worker.username
+                        ? worker.username.slice(0, 2).toUpperCase()
+                        : 'Hi'
+                    "
+                  />
+
+                  <div
+                    v-if="arg.event.extendedProps?.workers?.length == 0"
+                    @click="workerImageClick(worker)"
                     data-bs-placement="bottom"
                     :data-bs-original-title="
                       worker.username ? worker.username : 'Hi'
                     "
                     :title="worker.username"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      background-color: #292f3c;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
                   >
-                    {{ worker.username ? worker.username.slice(0, 2) : "AA" }}
-                  </h6>
-                </div>
+                    <h6
+                      class="mb-0"
+                      @click="workerImageClick(worker)"
+                      style="color: white"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      :data-bs-original-title="
+                        worker.username ? worker.username : 'Hi'
+                      "
+                      :title="worker.username"
+                    >
+                      {{ worker.username ? worker.username.slice(0, 2) : "AA" }}
+                    </h6>
+                  </div>
 
-                <p @click="workerImageClick(worker)">{{ worker.username }}</p>
+                  <p @click="workerImageClick(worker)">{{ worker.username }}</p>
+                </div>
               </div>
-              <!-- <VAvatarStack
-                :avatars="arg.event.extendedProps?.workers"
-                size="small"
+              <p
+                v-if="
+                  !arg.event.extendedProps?.workers?.length &&
+                  arg.event?.display != 'background'
+                "
+                @click="eventClick(arg)"
+                style="font-weight: 500; margin-bottom: 0px; padding-left: 10px"
               >
-              </VAvatarStack> -->
+                No worker is assigned yet
+              </p>
             </div>
-            <p
-              v-if="
-                !arg.event.extendedProps?.workers?.length &&
-                arg.event?.display != 'background'
-              "
-              @click="eventClick(arg)"
-              style="font-weight: 500; margin-bottom: 0px; padding-left: 10px"
-            >
-              No worker is assigned yet
-            </p>
           </div>
-        </div>
-      </template>
-    </FullCalendar>
+        </template>
+      </FullCalendar>
+    </div>
 
     <WorkersTaskCalendarModal
       v-if="workerTasksModal"
@@ -665,30 +673,272 @@ onMounted(async () => {
     :onCancel="SweetAlertProps.onCancel"
   />
 </template>
-<style lang="scss" scoped>
-.fc-day-sat,
-.fc-day-sun {
-  background-color: #f2f2f2;
+<style lang="scss">
+.main-div.fullscreen-sim {
+  position: fixed;
+  top: 0;
+  padding: 8px;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fff; /* or your desired color */
+  z-index: 9999;
+  overflow: auto;
 }
 
-.fc .fc-scrollgrid-section-sticky > * {
-  background-color: #f2f2f2 !important;
-}
-.fc-scrollgrid-section-header {
-  background-color: black;
-}
-.fc-event.fc-event-draggable {
-  margin-right: 1px;
-  border-width: 1px;
-  border-radius: 4px;
-  height: 100% !important;
-  padding: 0.4rem !important;
-  p {
-    color: #fff;
+.project-full-calendar {
+  border: 1px solid #ddd;
+  background-color: transparent !important;
+  table {
+    border: none;
+    th {
+      background: #f1f1f1f1 !important;
+      background-color: #f1f1f1f1 !important; /* Blue background */
+      border: none;
+      color: #f2f2f2 !important;
+    }
+  }
+  td {
+    border: 1px solid var(--dark-inverted) !important;
+  }
+
+  tr {
+    border: none;
+  }
+
+  .fc .fc-timeline-slot-cushion {
+    color: #555 !important;
+  }
+
+  .fc-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: transparent !important; /* Blue background */
+    color: var(--primary) !important;
+    padding: 10px;
+    border-radius: 6px;
+  }
+
+  .fc-toolbar h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .fc-toolbar button {
+    background-color: var(--dark);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .fc-toolbar button:hover {
+    background-color: var(--dark);
+    color: #ffffff;
+  }
+
+  /* Calendar Header */
+  .fc-col-header-cell {
+    background-color: var(--dark) !important;
+    background: var(--dark) !important;
+    font-weight: bold;
+    text-align: center;
+    padding: 4px 2px !important;
+    border: 1px solid #ddd;
+    a {
+      color: #fff !important;
+    }
+  }
+
+  .fc-month-start {
+    background-color: #f8f0a3 !important;
+    border: none !important;
+    font-weight: bold;
+    color: var(--primary) !important;
+  }
+  /* Calendar Day Cells */
+  .fc-daygrid-day {
+    border: 1px solid #ddd;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+
+  .fc-daygrid-day:hover {
+    background-color: #f0f8ff;
+  }
+
+  /* Events */
+  .fc-bg-event {
+    background: var(--dark-sidebar-light-14) !important;
+    background-color: var(--dark-sidebar-light-14) !important;
+    border: none !important;
+    color: var(--dark) !important;
+    p {
+      color: var(--dark) !important;
+      font-weight: bold;
+    }
+  }
+  .fc-event {
+    border-left: 6px solid #2b3041 !important;
+    border-bottom: none;
+    border-right: none;
+    margin-bottom: 4px !important;
+    border-top: none;
+    text-align: left !important;
+    background: #4ff1ae;
+    background: -webkit-linear-gradient(to left, #2b3041, #d3faea);
+    background: linear-gradient(to left, #d2d8ef, transparent);
+    border-radius: 0 4px 4px 0 !important;
+    padding: 5px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-align: center;
+    text-overflow: ellipsis !important;
+    text-wrap: wrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    .event-title {
+      color: var(--dark-inverted);
+      font-weight: 500;
+      margin-bottom: 0px;
+      padding-left: 1px;
+      padding-right: 1px;
+      z-index: 9;
+      // text-shadow: 0px 1px 1px rgb(255, 255, 255);
+    }
+  }
+
+  .fc-event:hover {
+    z-index: 99 !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .fc-event-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fc-day-today {
+    background-color: #d3d078 !important;
+    border: 2px solid var(--danger);
+  }
+
+  .fc-day-sat,
+  .fc-day-sun {
+    background-color: #f2f2f2 !important;
+  }
+
+  /* Loading Spinner */
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .loading-spinner::after {
+    content: "";
+    width: 40px;
+    height: 40px;
+    border: 4px solid #007bff;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 }
-.fc-event {
-  margin-bottom: 0px !important;
+
+.is-dark {
+  .project-full-calendar {
+    border-color: var(--dark-sidebar-light-12);
+
+    table {
+      border-color: var(--dark-sidebar-light-12);
+    }
+
+    th {
+      background: var(--dark-light-4) !important;
+      border: none;
+      color: #f2f2f2 !important;
+    }
+
+    .fc .fc-timeline-slot-cushion {
+      color: var(--light-text) !important;
+    }
+    .fc-toolbar button {
+      background-color: var(--dark-sidebar-light-4);
+      color: #ffffff;
+    }
+
+    .fc-toolbar button:hover {
+      background-color: var(--dark);
+      color: #ffffff;
+    }
+    .fc-toolbar button:active {
+      background-color: var(--primary) !important;
+      color: #ffffff;
+    }
+
+    .fc-day-today {
+      background-color: var(--dark-sidebar-light-12) !important;
+      border: 2px solid var(--danger);
+    }
+
+    .fc-day-sat,
+    .fc-day-sun {
+      background-color: var(--dark-sidebar-light-12) !important;
+    }
+  }
+}
+@media screen and (max-width: 724px) {
+  .project-full-calendar {
+    .fc-toolbar h2 {
+      font-size: 0.9rem !important;
+      font-weight: bold;
+      margin: 0;
+    }
+    .fc-toolbar {
+      display: flex;
+      margin-top: 8px;
+      padding: 4px;
+    }
+
+    .fc-toolbar button {
+      background-color: var(--dark);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 7px 7px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .fc-toolbar button:hover {
+      background-color: var(--dark);
+      color: #ffffff;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -710,10 +960,6 @@ onMounted(async () => {
   flex-direction: row;
   align-items: center;
 }
-
-// .avatars:hover .avatars__item {
-//   margin-right: 10px;
-// }
 .avatars__item {
   background-color: #555;
   border: 1px solid var(--primary);
@@ -727,70 +973,10 @@ onMounted(async () => {
   width: 30px;
   line-height: 20px;
   text-align: center;
-  // transition: margin 0.1s ease-in-out;
   overflow: hidden;
-  // transition: all 0.4s ease-in-out;
 }
-//margin-left: -10px;
 
 .avatars__item > img {
   width: 100%;
-}
-</style>
-<style lang="scss">
-.datatable-toolbar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-
-  &.is-reversed {
-    flex-direction: row-reverse;
-  }
-
-  .field {
-    margin-bottom: 0;
-
-    .control {
-      .button {
-        color: var(--light-text);
-
-        &:hover,
-        &:focus {
-          background: var(--primary);
-          border-color: var(--primary);
-          color: var(--primary--color-invert);
-        }
-      }
-    }
-  }
-
-  .buttons {
-    margin-left: auto;
-    margin-bottom: 0;
-
-    .v-button {
-      margin-bottom: 0;
-    }
-  }
-}
-
-.is-dark {
-  .datatable-toolbar {
-    .field {
-      .control {
-        .button {
-          background: var(--dark-sidebar) !important;
-          color: var(--light-text);
-
-          &:hover,
-          &:focus {
-            background: var(--primary) !important;
-            border-color: var(--primary) !important;
-            color: var(--smoke-white) !important;
-          }
-        }
-      }
-    }
-  }
 }
 </style>

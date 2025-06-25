@@ -42,6 +42,7 @@ const uploadFileHandler = async () => {
     loading.value = true;
     const payload = convertToFormData(fileData.value, ["file"]);
     const response = await api.post(`/api/attachment/`, payload);
+    getFileUploadingStatus(response.data.task_id);
     CreateActivityLog({
       object_type: "files",
       object_id: props.object,
@@ -59,20 +60,51 @@ const uploadFileHandler = async () => {
   }
 };
 
+const getFileUploadingStatus = async (id: any) => {
+  try {
+    const resp = await api.get(`api/upload-status/${id}/`);
+    notyf.green(`res: ${resp.data}`);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const selectedFileTitle = ref("");
 const triggerFileInput = (): void => {
   if (fileInput.value) {
     fileInput.value.click();
   }
 };
-const handleFileChange = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  const selectedFile = input.files?.[0];
-  input.value = "";
-  if (selectedFile) {
-    fileData.value.file = selectedFile;
-    selectedFileTitle.value = selectedFile.name;
+// const handleFileChange = (event: Event) => {
+//   const input = event.target as HTMLInputElement;
+//   const selectedFile = input.files?.[0];
+//   input.value = "";
+//   if (selectedFile) {
+//     fileData.value.file = selectedFile;
+//     selectedFileTitle.value = selectedFile.name;
+//   }
+// };
+
+const filesNames = ref([]);
+
+const handleFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    const files = Array.from(target.files);
+    fileData.value.file = files;
+    filesNames.value = files.map((file) => file.name);
+    selectedFileTitle.value =
+      files.length > 1 ? `${files.length} photos selected` : files[0].name;
+
+    if (fromCamera.value) {
+      // 🔧 Upload immediately if taken from camera
+      fileData.value.title = files[0].name;
+      await uploadFileHandler();
+    }
   }
+
+  // Reset input so that same file can be selected again
+  if (fileInput.value) fileInput.value.value = "";
 };
 
 onMounted(() => {});
@@ -89,7 +121,7 @@ onMounted(() => {});
   >
     <template #content>
       <div class="modal-form columns is-multiline">
-        <div class="column is-full">
+        <!-- <div class="column is-full">
           <div class="field">
             <label class="label">Title </label>
             <div class="control">
@@ -102,7 +134,7 @@ onMounted(() => {});
               />
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="field column is-half">
           <VField grouped>
             <VControl>
@@ -113,6 +145,7 @@ onMounted(() => {});
                     class="file-input"
                     type="file"
                     name="resume"
+                    multiple
                   />
                   <span class="file-cta">
                     <span class="file-icon">
@@ -128,6 +161,10 @@ onMounted(() => {});
               </div>
             </VControl>
           </VField>
+        </div>
+        <div class="column is-full">
+          <p>Selected Photos</p>
+          <span v-for="file in filesNames"> {{ file }} <br /> </span>
         </div>
       </div>
     </template>
