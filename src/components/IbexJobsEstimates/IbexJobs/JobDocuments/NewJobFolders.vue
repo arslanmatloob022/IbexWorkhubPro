@@ -8,6 +8,7 @@ const api = useApi();
 const selectedObject = ref("");
 const openFileModal = ref(false);
 const openPhotoModal = ref(false);
+const openVideoModal = ref(false);
 const folderStack = ref<any[]>([]);
 const folders = ref<any[]>([]);
 const files = ref<any[]>([]);
@@ -119,12 +120,15 @@ const getFoldersNow = async () => {
   }
 };
 
-const openAddFileModal = async () => {
+const openAddFileModal = () => {
   selectedObject.value = currentFolder.value
     ? currentFolder.value.id
     : props.objectId;
-  if (props.type === "photos") {
+  // notyf.success(`Detail ${props.type}`);
+  if (props.type == "photos") {
     openPhotoModal.value = true;
+  } else if (props.type == "videos") {
+    openVideoModal.value = true;
   } else {
     openFileModal.value = true;
   }
@@ -149,6 +153,23 @@ const deleteFolder = async () => {
 const getFolderContent = async () => {
   if (currentFolder.value) {
     await fetchFolderContents(currentFolder.value.id);
+  }
+};
+
+let uploadingState = ref({
+  state: "",
+  result: [],
+});
+
+const getFileUploadingStatus = async (id: any) => {
+  try {
+    const resp = await api.get(`api/upload-status/${id}/`);
+    notyf.info("Your files will be uploaded soon.");
+    setTimeout(() => {
+      fetchFolderContents(selectedObject.value);
+    }, 90000);
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -190,6 +211,9 @@ onMounted(() => {
           icon="fas fa-folder-open"
           >{{ currentFolder.title }}</VButton
         >
+        <!-- <VButton outlined light color="info">
+          Uploaded Files: ({{ uploadingState.result.length }})
+        </VButton> -->
       </div>
 
       <div class="buttons">
@@ -296,7 +320,19 @@ onMounted(() => {
         :type="props.type"
         @close:ModalHandler="openFileModal = false"
         @update:OnSuccess="fetchFolderContents(selectedObject)"
+        @updateTask:OnSuccess="getFileUploadingStatus"
       />
+
+      <UploadJobVideosModal
+        v-if="openVideoModal"
+        :openFileModal="openVideoModal"
+        :object="selectedObject"
+        :type="props.type"
+        @close:ModalHandler="openVideoModal = false"
+        @update:OnSuccess="fetchFolderContents(selectedObject)"
+        @updateTask:OnSuccess="getFileUploadingStatus"
+      />
+
       <UploadPhotosModal
         v-if="openPhotoModal"
         :openFileModal="openPhotoModal"
@@ -304,6 +340,7 @@ onMounted(() => {
         :type="props.type"
         @close:ModalHandler="openPhotoModal = false"
         @update:OnSuccess="fetchFolderContents(selectedObject)"
+        @updateTask:OnSuccess="getFileUploadingStatus"
       />
       <SweetAlert
         v-if="SweetAlertProps.isSweetAlertOpen"

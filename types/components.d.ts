@@ -684,6 +684,7 @@ declare module 'vue' {
     UploadDocumentModal: typeof import('./../src/components/CommonComponents/DocumentsComponents/UploadDocumentModal.vue')['default']
     UploadEstimateFileModal: typeof import('./../src/components/IbexJobsEstimates/LeadPropsalComponents/UploadEstimateFileModal.vue')['default']
     UploadFilesModal: typeof import('./../src/components/IbexJobsEstimates/LeadsComponents/LeadJobModals/UploadFilesModal.vue')['default']
+    UploadJobVideosModal: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobDocuments/UploadJobVideosModal.vue')['default']
     UploadPhotosModal: typeof import('./../src/components/CommonComponents/DocumentsComponents/UploadPhotosModal.vue')['default']
     UserCardDropdown: typeof import('./../src/components/partials/dropdowns/UserCardDropdown.vue')['default']
     UserDeleteComponent: typeof import('./../src/components/ActionsComponents/UserDeleteComponent.vue')['default']

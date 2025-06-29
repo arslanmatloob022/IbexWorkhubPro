@@ -57,7 +57,10 @@ SCSS Imports
   background-clip: text;
   animation: l7 2s infinite steps(11);
 }
-
+.is-justify-content-center {
+  display: flex;
+  justify-content: center;
+}
 .rota-loader:before {
   content: "Loading...";
 }

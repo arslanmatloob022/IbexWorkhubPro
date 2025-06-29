@@ -9,6 +9,8 @@ const api = useApi();
 const notyf = useNotyf();
 const loading = ref(false);
 const userSession = useUserSession();
+const selectedFileTitle = ref("");
+const filesNames = ref([]);
 
 const props = defineProps<{
   openFileModal?: boolean;
@@ -19,10 +21,15 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "close:ModalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
+  (e: "updateTask:OnSuccess", value: null): void;
 }>();
 
 const closeModalHandler = () => {
   emit("close:ModalHandler", false);
+};
+
+const updateTaskOnSuccess = (task: any) => {
+  emit("updateTask:OnSuccess", task);
 };
 
 const updateOnSuccess = () => {
@@ -42,7 +49,6 @@ const uploadFileHandler = async () => {
     loading.value = true;
     const payload = convertToFormData(fileData.value, ["file"]);
     const response = await api.post(`/api/attachment/`, payload);
-    getFileUploadingStatus(response.data.task_id);
     CreateActivityLog({
       object_type: "files",
       object_id: props.object,
@@ -51,6 +57,7 @@ const uploadFileHandler = async () => {
       performedOnName: "job",
     });
     notyf.success("File uploaded successfully!");
+    updateTaskOnSuccess(response.data.task_id);
     updateOnSuccess();
     closeModalHandler();
   } catch (err) {
@@ -60,33 +67,6 @@ const uploadFileHandler = async () => {
   }
 };
 
-const getFileUploadingStatus = async (id: any) => {
-  try {
-    const resp = await api.get(`api/upload-status/${id}/`);
-    notyf.green(`res: ${resp.data}`);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const selectedFileTitle = ref("");
-const triggerFileInput = (): void => {
-  if (fileInput.value) {
-    fileInput.value.click();
-  }
-};
-// const handleFileChange = (event: Event) => {
-//   const input = event.target as HTMLInputElement;
-//   const selectedFile = input.files?.[0];
-//   input.value = "";
-//   if (selectedFile) {
-//     fileData.value.file = selectedFile;
-//     selectedFileTitle.value = selectedFile.name;
-//   }
-// };
-
-const filesNames = ref([]);
-
 const handleFileChange = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
@@ -94,7 +74,7 @@ const handleFileChange = async (event: Event) => {
     fileData.value.file = files;
     filesNames.value = files.map((file) => file.name);
     selectedFileTitle.value =
-      files.length > 1 ? `${files.length} photos selected` : files[0].name;
+      files.length > 1 ? `${files.length} files selected` : files[0].name;
 
     if (fromCamera.value) {
       // 🔧 Upload immediately if taken from camera
@@ -102,8 +82,6 @@ const handleFileChange = async (event: Event) => {
       await uploadFileHandler();
     }
   }
-
-  // Reset input so that same file can be selected again
   if (fileInput.value) fileInput.value.value = "";
 };
 
@@ -114,28 +92,14 @@ onMounted(() => {});
     is="form"
     :open="props.openFileModal"
     title="Add Attachment"
-    size="medium"
-    actions="right"
+    size="small"
+    actions="center"
     @submit.prevent="uploadFileHandler"
     @close="closeModalHandler"
   >
     <template #content>
       <div class="modal-form columns is-multiline">
-        <!-- <div class="column is-full">
-          <div class="field">
-            <label class="label">Title </label>
-            <div class="control">
-              <input
-                type="text"
-                required
-                class="input"
-                placeholder="Enter Title"
-                v-model="fileData.title"
-              />
-            </div>
-          </div>
-        </div> -->
-        <div class="field column is-half">
+        <div class="field column is-full is-justify-content-center">
           <VField grouped>
             <VControl>
               <div class="file">
@@ -153,7 +117,9 @@ onMounted(() => {});
                     </span>
                     <span class="file-label">
                       {{
-                        selectedFileTitle ? selectedFileTitle : "Choose a file…"
+                        selectedFileTitle
+                          ? selectedFileTitle
+                          : "Choose file(s)…"
                       }}
                     </span>
                   </span>
@@ -162,8 +128,8 @@ onMounted(() => {});
             </VControl>
           </VField>
         </div>
-        <div class="column is-full">
-          <p>Selected Photos</p>
+        <div v-if="filesNames.length" class="column is-full">
+          <p>Selected Files</p>
           <span v-for="file in filesNames"> {{ file }} <br /> </span>
         </div>
       </div>

@@ -299,6 +299,15 @@ export function formatTime(inputDate: any) {
   return date.toLocaleTimeString("en-US", options);
 }
 
+const getFileUploadingStatus = async (id: any) => {
+  try {
+    const resp = await api.get(`api/upload-status/${id}/`);
+    notyf.green(`res: ${resp.data.state}`);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const addOneDayToDate = (dateString: any) => {
   let date = new Date(dateString);
   date.setDate(date.getDate() + 1);

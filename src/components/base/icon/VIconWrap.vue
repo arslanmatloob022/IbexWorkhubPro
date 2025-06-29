@@ -1,31 +1,32 @@
 <script setup lang="ts">
-import { onceImageErrored } from '/@src/utils/via-placeholder'
+import { onceImageErrored } from "/@src/utils/via-placeholder";
 
-export type VIconWrapDark = '1' | '2' | '3' | '4' | '5' | '6'
-export type VIconWrapSize = 'small' | 'medium' | 'large'
+export type VIconWrapDark = "1" | "2" | "3" | "4" | "5" | "6";
+export type VIconWrapSize = "small" | "medium" | "large";
 export type VIconWrapColor =
-  | 'white'
-  | 'black'
-  | 'light'
-  | 'dark'
-  | 'primary'
-  | 'secondary'
-  | 'link'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'danger'
+  | "white"
+  | "black"
+  | "light"
+  | "dark"
+  | "primary"
+  | "secondary"
+  | "link"
+  | "info"
+  | "success"
+  | "warning"
+  | "danger";
 export interface VIconWrapProps {
-  icon?: string
-  picture?: string
-  color?: VIconWrapColor
-  size?: VIconWrapSize
-  dark?: VIconWrapDark
-  hasLargeIcon?: boolean
-  hasBackground?: boolean
-  placeholder?: boolean
-  darkPrimary?: boolean
-  darkCardBordered?: boolean
+  icon?: string;
+  picture?: string;
+  color?: VIconWrapColor;
+  size?: VIconWrapSize;
+  dark?: VIconWrapDark;
+  hasLargeIcon?: boolean;
+  hasBackground?: boolean;
+  placeholder?: boolean;
+  darkPrimary?: boolean;
+  darkCardBordered?: boolean;
+  squared?: boolean;
 }
 
 const props = withDefaults(defineProps<VIconWrapProps>(), {
@@ -33,12 +34,13 @@ const props = withDefaults(defineProps<VIconWrapProps>(), {
   picture: undefined,
   color: undefined,
   size: undefined,
-  dark: '3',
-})
+  dark: "3",
+  squared: false,
+});
 
 const isIconify = computed(() => {
-  return props.icon && props.icon.indexOf(':') !== -1
-})
+  return props.icon && props.icon.indexOf(":") !== -1;
+});
 </script>
 
 <template>
@@ -47,9 +49,16 @@ const isIconify = computed(() => {
     :class="[
       props.color && !props.hasBackground && `has-text-${props.color}`,
       props.color && props.hasBackground && `has-background-${props.color}`,
-      props.color && props.color !== 'white' && props.hasBackground && `has-text-white`,
-      props.color && props.color === 'white' && props.hasBackground && `has-text-black`,
+      props.color &&
+        props.color !== 'white' &&
+        props.hasBackground &&
+        `has-text-white`,
+      props.color &&
+        props.color === 'white' &&
+        props.hasBackground &&
+        `has-text-black`,
       props.size && `is-${props.size}`,
+      props.squared && 'is-squared',
       props.dark && !props.hasBackground && `is-dark-bg-${props.dark}`,
       props.darkPrimary && 'is-dark-primary',
       props.darkCardBordered && 'is-dark-card-bordered',
@@ -63,18 +72,14 @@ const isIconify = computed(() => {
       :src="props.picture"
       alt=""
       @error.once="onceImageErrored(32)"
-    >
+    />
     <i
       v-else-if="isIconify"
       aria-hidden="true"
       class="iconify"
       :data-icon="props.icon"
     />
-    <i
-      v-else-if="props.icon"
-      aria-hidden="true"
-      :class="props.icon"
-    />
+    <i v-else-if="props.icon" aria-hidden="true" :class="props.icon" />
     <slot name="after" />
   </div>
 </template>
@@ -97,6 +102,9 @@ const isIconify = computed(() => {
   &.has-large-icon {
     font-size: 1.3rem;
   }
+  &.is-squared {
+    border-radius: 8px !important;
+  }
 
   &.is-small {
     font-size: 0.9rem;
@@ -106,6 +114,9 @@ const isIconify = computed(() => {
 
     &.has-large-icon {
       font-size: 1rem;
+    }
+    &.is-squared {
+      border-radius: 6px !important;
     }
   }
 
@@ -118,6 +129,9 @@ const isIconify = computed(() => {
     &.has-large-icon {
       font-size: 1.8rem;
     }
+    &.is-squared {
+      border-radius: 8px !important;
+    }
   }
 
   &.is-large {
@@ -128,6 +142,9 @@ const isIconify = computed(() => {
 
     &.has-large-icon {
       font-size: 2.9rem;
+    }
+    &.is-squared {
+      border-radius: 12px !important;
     }
   }
 

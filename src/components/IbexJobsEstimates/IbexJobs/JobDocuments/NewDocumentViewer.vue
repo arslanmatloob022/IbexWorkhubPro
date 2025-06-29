@@ -16,7 +16,7 @@ const props = defineProps<{
 }>();
 
 const selectedFileToDelete = ref("");
-const objectsFiles = ref([]);
+const showDeleteIcon = ref(false);
 const documentToView = ref("");
 const openDocViewModal = ref(false);
 const documentTitle = ref("");
@@ -44,6 +44,7 @@ const getFilesIcons = {
   jpeg: "/icons/jpg-50.png",
   mp4: "/images/icons/files/video.svg",
 };
+
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
@@ -63,9 +64,13 @@ const openDeleteFileAlert = (id: any) => {
   };
 };
 
-const deleteFile = async () => {
+const deleteFile = async (id: any) => {
   try {
-    await api.delete(`/api/attachment/${selectedFileToDelete.value}/`);
+    await api.delete(
+      `/api/attachment/${
+        selectedFileToDelete.value ? selectedFileToDelete.value : id
+      }/`
+    );
     emits("updateOnSuccess", null);
     SweetAlertProps.value.isSweetAlertOpen = false;
     notyf.success("File deleted successfully");
@@ -74,12 +79,23 @@ const deleteFile = async () => {
   }
 };
 
+const showDeleteIconHandler = (id: any) => {
+  showDeleteIcon.value = id;
+};
+const hideDeleteIconHandler = () => {
+  showDeleteIcon.value = "";
+};
+
 onMounted(() => {});
 </script>
 
 <template>
   <div class="column is-2">
-    <a class="card-grid-item is-relative">
+    <a
+      @mouseover="showDeleteIconHandler(props.file.id)"
+      @mouseleave="hideDeleteIconHandler"
+      class="card-grid-item is-relative"
+    >
       <img
         v-if="
           props.file?.file_info?.type === 'png' ||
@@ -102,7 +118,7 @@ onMounted(() => {});
         class="card-grid-item-content is-flex is-align-items-center space-between"
       >
         <h3 @click="openDocViewModalHandler(props.file)" class="dark-inverted">
-          {{ props.file?.title }}
+          {{ props.file_info?.name }}
         </h3>
         <span>
           <span
@@ -111,14 +127,19 @@ onMounted(() => {});
             }}
             MB</span
           >
-          <!-- <i aria-hidden="true" class="fas fa-circle icon-separator" /> -->
-          <!-- <span>At:{{ formatDate(props.document.created_at) }}</span> -->
         </span>
+        <!--
+         @click="deleteFile(props.file?.id)"
+            @click="openDeleteFileAlert(props.file?.id)"
+        -->
         <VIconWrap
+          v-if="showDeleteIcon == props.file?.id"
+          squared
+          darkCardBordered
           style="position: absolute; top: 1%; right: 1%"
-          @click="openDeleteFileAlert(props.file?.id)"
           icon="fas fa-trash"
           color="danger"
+          @click="openDeleteFileAlert(props.file?.id)"
         >
         </VIconWrap>
       </div>
@@ -182,7 +203,8 @@ onMounted(() => {});
       display: block;
       border-radius: 12px;
       width: 100%;
-      height: 160px;
+      max-height: 160px;
+      min-height: 90px;
       object-fit: cover;
     }
 

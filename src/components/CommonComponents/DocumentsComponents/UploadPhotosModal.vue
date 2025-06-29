@@ -22,10 +22,20 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "close:ModalHandler", value: boolean): void;
   (e: "update:OnSuccess", value: null): void;
+  (e: "updateTask:OnSuccess", value: null): void;
 }>();
 
-const closeModalHandler = () => emit("close:ModalHandler", false);
-const updateOnSuccess = () => emit("update:OnSuccess", null);
+const closeModalHandler = () => {
+  emit("close:ModalHandler", false);
+};
+
+const updateTaskOnSuccess = (task: any) => {
+  emit("updateTask:OnSuccess", task);
+};
+
+const updateOnSuccess = () => {
+  emit("update:OnSuccess", null);
+};
 
 const fileData = ref({
   type: props.type,
@@ -53,6 +63,8 @@ const uploadFileHandler = async () => {
 
     notyf.success("File uploaded successfully!");
     updateOnSuccess();
+    updateTaskOnSuccess(response.data.task_id);
+
     closeModalHandler();
   } catch (err) {
     console.error(err);
@@ -110,8 +122,8 @@ const handleFileChange = async (event: Event) => {
     is="form"
     :open="props.openFileModal"
     title="Add Photos"
-    size="medium"
-    actions="right"
+    size="small"
+    actions="center"
     @submit.prevent="uploadFileHandler"
     @close="closeModalHandler"
   >
@@ -127,7 +139,7 @@ const handleFileChange = async (event: Event) => {
         />
 
         <!-- Upload from Disk -->
-        <div class="column is-12 is-flex">
+        <div class="column is-12 is-flex is-justify-content-center">
           <VField grouped>
             <VControl>
               <div class="file">
@@ -160,8 +172,8 @@ const handleFileChange = async (event: Event) => {
         </div>
 
         <!-- Take Photo -->
-        <div class="column is-full">
-          <p>Selected Photos</p>
+        <div v-if="filesNames.length" class="column is-full text-align-center">
+          <p>Selected Photos ({{ filesNames.length }})</p>
           <span v-for="file in filesNames"> {{ file }} <br /> </span>
         </div>
       </div>
