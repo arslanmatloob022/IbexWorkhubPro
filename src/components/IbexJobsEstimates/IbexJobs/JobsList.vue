@@ -243,8 +243,6 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-          <!-- </div> -->
-          <!-- <div class="column is-2"> -->
           <VDropdown title="Apply sorting" modern spaced>
             <template #content>
               <a @click="sortJobs('ascending')" class="dropdown-item is-media">
@@ -293,7 +291,7 @@ onMounted(() => {
           </VDropdown>
         </div>
 
-        <div class="column is-6">
+        <div class="column is-6 is-flex is-justify-content-end">
           <VButtons>
             <VButton
               @click="openLeadUpdateModal('')"

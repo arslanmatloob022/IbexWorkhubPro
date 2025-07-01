@@ -327,21 +327,31 @@ onMounted(() => {
           </VField>
         </div>
 
-        <div>
+        <div class="is-flex">
           <VButton
+            class="h-hidden-mobile"
             color="primary"
             @click="openLeadProposalModal = !openLeadProposalModal"
             icon="fas fa-plus"
             >Lead Proposal
           </VButton>
           <VButton
+            class="h-hidden-desktop"
+            color="primary"
+            @click="openLeadProposalModal = !openLeadProposalModal"
+          >
+            <i class="fas fa-plus"></i>
+          </VButton>
+
+          <VButton
             color="warning"
             class="ml-2"
             v-if="props.leadId"
             @click="openProposalGroupModalHandler()"
-            icon="fas fa-cogs"
-            >Proposals</VButton
           >
+            <i class="fas fa-cogs"></i>
+            <span class="h-hidden-mobile"> Proposals </span>
+          </VButton>
         </div>
       </div>
 
@@ -366,6 +376,12 @@ onMounted(() => {
                   @click="gotoDetail(item.id)"
                 >
                   <!-- <VAvatar :picture="item.picture" /> -->
+                  <VAvatar
+                    picture="/images/dummyShareProf/document.png
+                    "
+                    squared
+                    size="medium"
+                  />
                   <div v-tooltip.rounded.light="`${item.title}`">
                     <span class="item-name dark-inverted show-text-250">{{
                       item.title
@@ -387,9 +403,6 @@ onMounted(() => {
                     {{ getProposalTypeName[item.type] }}
                   </VTag>
                 </VFlexTableCell>
-                <!-- <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
-                <span class="light-text">{{ item.cost_items }}</span>
-              </VFlexTableCell> -->
                 <VFlexTableCell class="cu-pointer" @click="gotoDetail(item.id)">
                   <VTag
                     class="capitalized"

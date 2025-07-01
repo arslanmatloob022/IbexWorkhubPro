@@ -144,8 +144,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="CalendarStyling">
-    <div class="full-calendar-two">
+  <div class="main-div-foresee">
+    <div class="project-full-calendar-foresee">
       <FullCalendar :options="calendarOptions" ref="calendarRef">
         <template v-slot:eventContent="arg">
           <div style="height: 100%; position: relative">
@@ -190,18 +190,82 @@ onMounted(() => {
   </div>
 </template>
 <style lang="scss">
-.calendar-container {
+.main-div-foresee.fullscreen-sim {
   position: fixed;
   top: 0;
+  padding: 8px;
   left: 0;
-  min-width: 100%;
-  height: 100%;
-  z-index: 99;
-  padding: 6px;
+  width: 100vw;
+  height: 100vh;
+  background: #fff; /* or your desired color */
+  z-index: 9999;
   overflow: auto;
 }
+.is-dark {
+  .project-full-calendar-foresee {
+    border-color: var(--dark-sidebar-light-12);
+
+    table {
+      border-color: var(--dark-sidebar-light-12);
+    }
+
+    th {
+      background: var(--dark-light-4) !important;
+      border: none;
+      color: #f2f2f2 !important;
+    }
+
+    .fc .fc-timeline-slot-cushion {
+      color: var(--light-text) !important;
+    }
+    .fc-toolbar button {
+      background-color: var(--dark-sidebar-light-4);
+      color: #ffffff;
+    }
+
+    .fc-toolbar button:hover {
+      background-color: var(--dark);
+      color: #ffffff;
+    }
+    .fc-toolbar button:active {
+      background-color: var(--primary) !important;
+      color: #ffffff;
+    }
+
+    .fc-day-today {
+      background-color: var(--dark-sidebar-light-12) !important;
+      border: 2px solid var(--danger);
+    }
+
+    .fc-day-sat,
+    .fc-day-sun {
+      background-color: var(--dark-sidebar-light-12) !important;
+    }
+    .fc-event {
+      border-left: 6px solid #2b3041 !important;
+
+      background: #4ff1ae; /* fallback for old browsers */
+      background: -webkit-linear-gradient(
+        to left,
+        #2b3041,
+        #576d64
+      ); /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(
+        to left,
+        #576d64,
+        transparent
+      ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .event-title {
+        color: var(--dark-inverted);
+      }
+    }
+  }
+}
 /* Full Calendar Wrapper */
-.full-calendar-two {
+.project-full-calendar-foresee {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: transparent !important;
@@ -378,10 +442,42 @@ onMounted(() => {
   }
 }
 
-.full-calendar-two th {
+.project-full-calendar-foresee th {
   background: var(--primary) !important;
   color: #fff !important;
 }
+
+@media screen and (max-width: 724px) {
+  .project-full-calendar-foresee {
+    .fc-toolbar h2 {
+      font-size: 0.6rem !important;
+      font-weight: bold;
+      margin: 0;
+    }
+    .fc-toolbar {
+      display: flex;
+      margin-top: 8px;
+      padding: 4px;
+    }
+
+    .fc-toolbar button {
+      background-color: var(--dark);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 7px 7px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .fc-toolbar button:hover {
+      background-color: var(--dark);
+      color: #ffffff;
+    }
+  }
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

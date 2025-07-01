@@ -184,6 +184,11 @@ criteria."
                   class="cu-pointer"
                   :column="{ media: true, grow: true }"
                 >
+                  <VAvatar
+                    picture="/IbexImages/done-job-60.png"
+                    squared
+                    size="medium"
+                  />
                   <div>
                     <span class="item-name dark-inverted show-text-200">{{
                       item?.title ? item?.title : "N/A"

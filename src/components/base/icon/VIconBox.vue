@@ -11,6 +11,7 @@ export type VIconBoxColor =
   | "orange"
   | "green"
   | "pink"
+  | "dark"
   | "lime"
   | "red"
   | "blue";
@@ -101,9 +102,9 @@ const props = withDefaults(defineProps<VIconProps>(), {
   }
 
   &.is-medium {
-    height: 50px;
-    width: 50px;
-    min-width: 50px;
+    height: 38px;
+    width: 38px;
+    min-width: 38px;
 
     &.is-bordered {
       border-width: 1.6px;
@@ -113,14 +114,14 @@ const props = withDefaults(defineProps<VIconProps>(), {
     .fab,
     .far,
     .fal {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
 
     .lnil,
     .lnir,
     .fas,
     .fab {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
     }
 
     svg {
@@ -285,6 +286,21 @@ const props = withDefaults(defineProps<VIconProps>(), {
 
     svg {
       color: var(--success);
+    }
+  }
+  &.is-dark {
+    background: var(--dark-light-45);
+
+    &.is-bordered {
+      border-color: var(--dark);
+    }
+
+    i {
+      color: var(--dark);
+    }
+
+    svg {
+      color: var(--dark);
     }
   }
 

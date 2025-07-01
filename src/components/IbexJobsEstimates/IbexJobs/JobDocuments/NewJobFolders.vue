@@ -192,7 +192,7 @@ onMounted(() => {
         icon="fas fa-chevron-left"
       >
       </VButton>
-      <div>
+      <div class="h-hidden-mobile">
         <VButton
           v-if="!currentFolder"
           icon="fas fa-folder"
@@ -211,9 +211,6 @@ onMounted(() => {
           icon="fas fa-folder-open"
           >{{ currentFolder.title }}</VButton
         >
-        <!-- <VButton outlined light color="info">
-          Uploaded Files: ({{ uploadingState.result.length }})
-        </VButton> -->
       </div>
 
       <div class="buttons">
@@ -221,20 +218,25 @@ onMounted(() => {
           v-if="currentFolder"
           @click="openAddFileModal"
           color="primary"
-          light
           outlined
           raised
         >
           <span class="icon">
-            <i aria-hidden="true" class="fas fa-plus" />
+            <i aria-hidden="true" class="fas fa-plus h-hidden-mobile" />
+            <i
+              class="fas fa-file-medical h-hidden-desktop"
+              aria-hidden="true"
+            ></i>
           </span>
-          <span>{{ props.type == "photos" ? "Photos" : "File" }}</span>
+          <span class="h-hidden-mobile">{{
+            props.type == "photos" ? "Photos" : "File"
+          }}</span>
         </VButton>
         <VButton @click="openAddFolderModal" color="info" outlined raised>
           <span class="icon">
             <i aria-hidden="true" class="fas fa-folder-plus" />
           </span>
-          <span>Folder</span>
+          <span class="h-hidden-mobile">Folder</span>
         </VButton>
         <VButton
           v-if="currentFolder"

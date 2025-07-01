@@ -425,7 +425,7 @@ onMounted(async () => {
   >
     <div class="flex-list-toolbar">
       <form @submit.prevent="changeFilterHandler">
-        <div class="datatable-toolbar align-items-center">
+        <div class="datatable-toolbar align-items-center space-between">
           <VField elevated>
             <VControl icon="fas fa-search">
               <VInput
@@ -439,7 +439,7 @@ onMounted(async () => {
           </VField>
           <div v-if="loading" class="rota-loader"></div>
 
-          <div class="buttons is-flex align-items-center">
+          <div class="is-flex is-align-items-center">
             <VDropdown class="mr-1" title="Select project filter" right spaced>
               <template #content>
                 <a
@@ -519,9 +519,24 @@ onMounted(async () => {
               </template>
             </VDropdown>
 
-            <VButton elevated raised color="dark" @click="toggleFullScreen()">
+            <VIconBox
+              bordered
+              @click="toggleFullScreen()"
+              color="dark"
+              size="medium"
+              class="cu-pointer"
+            >
               <i :class="fullWidthView ? 'fa fa-compress' : 'fa fa-expand'"></i>
-            </VButton>
+            </VIconBox>
+            <!-- <VButton
+              elevated
+              raised
+              size="medium"
+              color="dark"
+              @click="toggleFullScreen()"
+            >
+              <i :class="fullWidthView ? 'fa fa-compress' : 'fa fa-expand'"></i>
+            </VButton> -->
           </div>
         </div>
       </form>

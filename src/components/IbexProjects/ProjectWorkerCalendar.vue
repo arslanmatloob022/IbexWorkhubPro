@@ -307,7 +307,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="main-div-worker">
     <form @submit.prevent="changeFilterHandler">
       <div class="datatable-toolbar">
         <VField elevated>
@@ -323,153 +323,98 @@ onMounted(async () => {
         </VField>
       </div>
     </form>
-    <FullCalendar :options="calendarOptions">
-      <template v-slot:eventContent="arg">
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-          "
-        >
-          <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
-            ({{ arg.event.extendedProps.projectInfo.title }})
-            {{ arg.event.title }}
-          </p>
-        </div>
-      </template>
-    </FullCalendar>
-
-    <!-- <UpdateTask
-      v-if="isTaskFormOpen"
-      :isOpen="isTaskFormOpen"
-      :taskId="editTaskId"
-      :projectID="projectID"
-      :startDate="startDate"
-      @update:OnSuccess="
-        () => {
-          getProjectHandler(), getTasksHandler();
-        }
-      "
-      @update:modalHandler="
-        () => {
-          isTaskFormOpen = false;
-          console.log('Falling in main');
-        }
-      "
-    /> -->
+    <div class="workers-task-calendar">
+      <FullCalendar :options="calendarOptions">
+        <template v-slot:eventContent="arg">
+          <div
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
+            <p style="font-weight: 500; margin-bottom: 0px; padding-left: 10px">
+              ({{ arg.event.extendedProps.projectInfo.title }})
+              {{ arg.event.title }}
+            </p>
+          </div>
+        </template>
+      </FullCalendar>
+    </div>
   </div>
 </template>
 <style lang="scss">
-.fc-event.fc-event-draggable {
-  margin-right: 1px;
-  border-radius: 4px;
-  border: none;
-  p {
-    color: #fff;
-  }
-}
-
-.fc-event {
-  margin-bottom: 6px !important;
-}
-</style>
-<style lang="scss" scoped>
-.fc-h-event {
-  border-width: thick !important;
-  border-radius: 2px !important;
-  margin-bottom: 10px !important;
-}
-
-.avatars {
-  display: flex;
-  list-style-type: none;
-  margin: auto;
-  padding: 0px;
-  flex-direction: row;
-}
-
-.avatars:hover .avatars__item {
-  margin-right: 10px;
-}
-
-.avatars__item {
-  background-color: #596376;
-  border: 1px solid white;
-  border-radius: 100%;
-  color: #ffffff;
-  display: block;
-  font-family: sans-serif;
-  font-size: 10px;
-  font-weight: 100;
-  height: 30px;
-  width: 30px;
-  line-height: 20px;
-  text-align: center;
-  transition: margin 0.1s ease-in-out;
-  overflow: hidden;
-  margin-left: -10px;
-  transition: all 0.4s ease-in-out;
-}
-
-.avatars__item > img {
-  width: 100%;
-}
-</style>
-<style lang="scss">
-.datatable-toolbar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-
-  &.is-reversed {
-    flex-direction: row-reverse;
-  }
-
-  .field {
-    margin-bottom: 0;
-
-    .control {
-      .button {
-        color: var(--light-text);
-
-        &:hover,
-        &:focus {
-          background: var(--primary);
-          border-color: var(--primary);
-          color: var(--primary--color-invert);
-        }
-      }
+@media screen and (max-width: 724px) {
+  .workers-task-calendar {
+    .fc-toolbar h2 {
+      font-size: 0.9rem !important;
+      font-weight: bold;
+      margin: 0;
     }
-  }
+    .fc-toolbar {
+      display: flex;
+      margin-top: 8px;
+      padding: 4px;
+    }
 
-  .buttons {
-    margin-left: auto;
-    margin-bottom: 0;
+    .fc-toolbar button {
+      background-color: var(--dark);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 7px 7px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-    .v-button {
-      margin-bottom: 0;
+    .fc-toolbar button:hover {
+      background-color: var(--dark);
+      color: #ffffff;
     }
   }
 }
 
 .is-dark {
-  .datatable-toolbar {
-    .field {
-      .control {
-        .button {
-          background: var(--dark-sidebar) !important;
-          color: var(--light-text);
+  .workers-task-calendar {
+    border-color: var(--dark-sidebar-light-12);
 
-          &:hover,
-          &:focus {
-            background: var(--primary) !important;
-            border-color: var(--primary) !important;
-            color: var(--smoke-white) !important;
-          }
-        }
-      }
+    table {
+      border-color: var(--dark-sidebar-light-12);
+    }
+
+    th {
+      background: var(--dark-light-4) !important;
+      border: none;
+      color: #f2f2f2 !important;
+    }
+
+    .fc .fc-timeline-slot-cushion {
+      color: var(--light-text) !important;
+    }
+    .fc-toolbar button {
+      background-color: var(--dark-sidebar-light-4);
+      color: #ffffff;
+    }
+
+    .fc-toolbar button:hover {
+      background-color: var(--dark);
+      color: #ffffff;
+    }
+    .fc-toolbar button:active {
+      background-color: var(--primary) !important;
+      color: #ffffff;
+    }
+
+    .fc-day-today {
+      background-color: var(--dark-sidebar-light-12) !important;
+      border: 2px solid var(--danger);
+    }
+
+    .fc-day-sat,
+    .fc-day-sun {
+      background-color: var(--dark-sidebar-light-12) !important;
     }
   }
 }
