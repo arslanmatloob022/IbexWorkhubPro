@@ -107,7 +107,7 @@ const markAsOption = ref([
   { value: "allowance", label: "Allowance" },
 ]);
 
-const addUpdateLeadHandler = async () => {
+const addUpdateCostItemHandler = async () => {
   try {
     isLoading.value = true;
     const formDataAPI = convertToFormData(costItem.value, []);
@@ -383,7 +383,7 @@ onMounted(async () => {
     :title="props.costMode == 'catalog' ? 'Update Catalog' : 'Cost Item '"
     size="xl"
     actions="right"
-    @submit.prevent="addUpdateLeadHandler"
+    @submit.prevent="addUpdateCostItemHandler"
     @close="closeModalHandler"
   >
     <template #content>

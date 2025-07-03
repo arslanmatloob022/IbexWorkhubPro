@@ -255,6 +255,7 @@ placeholder="Select an option"
           @click="showAddUpdateContactModal = !showAddUpdateContactModal"
           color="warning"
           icon="lnir lnir-alarm"
+          v-if="userSession.checkUserPermission('am_create_activity')"
         >
           Create Activity
         </VButton>
@@ -309,7 +310,11 @@ ${item.color}30
 `,
             }"
           >
-            <label class="h-toggle" @click="openCompleteActivityAlert(item)">
+            <label
+              v-if="userSession.checkUserPermission('am_update_activity')"
+              class="h-toggle"
+              @click="openCompleteActivityAlert(item)"
+            >
               <input type="checkbox" :checked="item.status == 'completed'" />
               <span class="toggler">
                 <span class="active">
@@ -346,6 +351,7 @@ ${item.color}30
             </div>
             <div class="buttons">
               <VButton
+                v-if="userSession.checkUserPermission('am_delete_activity')"
                 @click="deleteActivity(item.id)"
                 :loading="deleteLoading"
                 icon="feather:trash"
@@ -354,6 +360,7 @@ ${item.color}30
                 Delete
               </VButton>
               <button
+                v-if="userSession.checkUserPermission('am_update_activity')"
                 @click="openActivityModal(item.id)"
                 class="button v-button is-dark-outlined"
               >

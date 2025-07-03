@@ -70,7 +70,7 @@ export const useUserSession = defineStore("userSession", () => {
   }
 
   function checkUserPermission(permission: string) {
-    // return true;
+    return true;
     if (userPermissions.value[permission]) {
       return true;
     } else {

@@ -74,7 +74,7 @@ const leadsStatusFilters = ref([
 const columns = {
   username: {
     label: "Job",
-    grow: true,
+    grow: "lg",
   },
   location: {
     label: "Contractor/Client",
@@ -89,7 +89,83 @@ const columns = {
   },
 } as const;
 
-const inCompletedLeadsList = ref([]);
+const currentJobsList = ref([
+  {
+    id: "",
+    sales_people_info: [
+      {
+        id: "",
+        username: "",
+        last_name: "",
+        email: "",
+        role: "",
+        avatar: null,
+      },
+    ],
+    clientInfo: {
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: "",
+    },
+    created_by_info: null,
+    contractor_info: {
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: null,
+    },
+    managers_list: [
+      {
+        id: "",
+        username: "",
+        last_name: "",
+        email: "",
+        role: "",
+        avatar: "",
+      },
+    ],
+    title: "",
+    description: "",
+    image: "",
+    color: "",
+    startDate: "",
+    endDate: "",
+    status: "",
+    is_active: false,
+    address: "",
+    wifiAvaliabe: false,
+    parkingAvaliable: false,
+    property_features: null,
+    created: "",
+    uploaded_files: [],
+    leadStatus: "",
+    current_state: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    confidence: "",
+    sale_date: null,
+    estimated_from: null,
+    estimated_to: null,
+    tags: [],
+    sources: "",
+    project_type: null,
+    notes: "",
+    attach_mail: null,
+    latitude: 31.5440886,
+    longitude: 74.3839007,
+    client: "",
+    contractor: "",
+    created_by: null,
+    managers: [""],
+    sales_people: [],
+  },
+]);
 const getCompanyJobs = async () => {
   try {
     loading.value = true;
@@ -97,7 +173,7 @@ const getCompanyJobs = async () => {
     leadsList.value = response.data.filter(
       (item: any) => item.status == "completed"
     );
-    inCompletedLeadsList.value = response.data.filter(
+    currentJobsList.value = response.data.filter(
       (item: any) => item.status != "completed"
     );
   } catch (error: any) {
@@ -152,10 +228,10 @@ const openAddProposalModalHandler = (id: any) => {
 
 const filteredData = computed(() => {
   if (!filters.value) {
-    return inCompletedLeadsList.value;
+    return currentJobsList.value;
   } else {
     const filterRe = new RegExp(filters.value, "i");
-    return inCompletedLeadsList.value.filter((item: any) => {
+    return currentJobsList.value.filter((item: any) => {
       return (
         item.title?.match(filterRe) ||
         item.address?.match(filterRe) ||
@@ -245,7 +321,11 @@ onMounted(() => {
           </VField>
           <VDropdown title="Apply sorting" modern spaced>
             <template #content>
-              <a @click="sortJobs('ascending')" class="dropdown-item is-media">
+              <a
+                @click="sortJobs('ascending')"
+                class="dropdown-item is-media"
+                :class="{ 'is-active': selectedSortOption === 'ascending' }"
+              >
                 <div class="icon">
                   <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
                 </div>
@@ -256,7 +336,8 @@ onMounted(() => {
               </a>
               <a
                 @click="sortJobs('descending')"
-                class="dropdown-item is-media is-active"
+                class="dropdown-item is-media"
+                :class="{ 'is-active': selectedSortOption === 'descending' }"
               >
                 <div class="icon">
                   <i class="fas fa-sort-alpha-down-alt" aria-hidden="true"></i>
@@ -266,7 +347,11 @@ onMounted(() => {
                   <span>Alphabetical Descending Sorting</span>
                 </div>
               </a>
-              <a @click="sortJobs('new')" class="dropdown-item is-media">
+              <a
+                @click="sortJobs('new')"
+                class="dropdown-item is-media"
+                :class="{ 'is-active': selectedSortOption === 'new' }"
+              >
                 <div class="icon">
                   <i class="fas fa-sort-numeric-down" aria-hidden="true"></i>
                 </div>
@@ -275,7 +360,11 @@ onMounted(() => {
                   <span>Sort most recently created</span>
                 </div>
               </a>
-              <a @click="sortJobs('old')" class="dropdown-item is-media">
+              <a
+                @click="sortJobs('old')"
+                class="dropdown-item is-media"
+                :class="{ 'is-active': selectedSortOption === 'old' }"
+              >
                 <div class="icon">
                   <i
                     class="fas fa-sort-numeric-down-alt"
@@ -353,7 +442,7 @@ criteria."
                         }
                       "
                       class="cu-pointer"
-                      :column="{ media: true, grow: true }"
+                      :column="{ media: true, grow: 'lg' }"
                     >
                       <VAvatar
                         :picture="
@@ -363,9 +452,32 @@ criteria."
                         size="medium"
                       />
                       <div>
-                        <span class="item-name dark-inverted show-text-200">{{
-                          item.title ? item.title : "N/A"
-                        }}</span>
+                        <span
+                          class="item-name dark-inverted is-flex show-text-300"
+                          >{{
+                            item.contractor_info?.username
+                              ? item.contractor_info?.username
+                              : ""
+                          }}
+                          {{
+                            item.contractor_info?.last_name
+                              ? item.contractor_info?.last_name
+                              : ""
+                          }}
+                          {{
+                            item.clientInfo?.username
+                              ? item.clientInfo?.username
+                              : ""
+                          }}
+                          <span
+                            v-if="
+                              item.contractor_info?.username ||
+                              item.clientInfo?.username
+                            "
+                            >-
+                          </span>
+                          {{ item.title ? item.title : "N/A" }}</span
+                        >
                         <span class="item-meta show-text-200">
                           <span>{{ item.address ? item.address : "N/A" }}</span>
                         </span>

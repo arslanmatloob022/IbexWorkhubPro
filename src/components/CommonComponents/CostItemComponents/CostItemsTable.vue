@@ -133,6 +133,45 @@ const addUpdateProposalHandler = async () => {
     notyf.error(`Something went wrong, try again`);
   }
 };
+import { ref, nextTick } from "vue";
+
+const editingCell = ref<{ rowId: string; column: string } | null>(null);
+const editingValue = ref("");
+
+function startEditing(cost: any, column: string) {
+  const key = getColumnData[column] || column;
+  editingCell.value = { rowId: cost.id, column };
+  editingValue.value = cost[key] ?? ""; // Use ?? "" to avoid undefined
+  nextTick(() => {
+    const input = document.getElementById(`edit-input-${cost.id}-${column}`);
+    if (input) input.focus();
+  });
+}
+
+function saveEdit(cost: any, column: string) {
+  const key = getColumnData[column] || column;
+  cost[key] = editingValue.value;
+  editingCell.value = null;
+  console.log("Column", key, "cost", cost, "value", editingValue.value);
+  let setKey = key.toString();
+  let payload = { [setKey]: editingValue.value };
+  addUpdateCostItemHandler(cost.id, payload);
+}
+
+const addUpdateCostItemHandler = async (id: any = "", payload: any = {}) => {
+  try {
+    const response = await api.patch(`/api/cost/${id}/`, payload);
+    useProposal.getProposalDetail(props.proposalId);
+    notyf.success("Item updated successfully.");
+  } catch (error: any) {
+    notyf.error(` ${error}, New Worker`);
+  } finally {
+  }
+};
+
+function cancelEdit() {
+  editingCell.value = null;
+}
 
 watch(
   () => props.columnsToShow,
@@ -141,7 +180,7 @@ watch(
       addUpdateProposalHandler();
     }
   },
-  { deep: true } // Enable deep watching for nested objects/arrays
+  { deep: true }
 );
 
 onMounted(() => {});
@@ -170,9 +209,9 @@ onMounted(() => {});
             @dragover="handleDragOver"
             @dragenter="handleDragEnter"
             @dragleave="handleDragLeave"
-            @dblclick="openUpdateCostItem(cost, false)"
             class="draggable-item events"
           >
+            <!-- @dblclick="openUpdateCostItem(cost, false)" -->
             <td class="is-relative">
               <i
                 style="
@@ -189,39 +228,56 @@ onMounted(() => {});
                 aria-hidden="true"
               ></i>
             </td>
-            <td v-for="(column, index) in props.columnsToShow" :key="index">
-              <div
-                class="custom-description"
-                v-if="column === 'description'"
-                v-html="cost[getColumnData[column]]"
-              ></div>
-              <span v-else-if="column === 'unit_cost'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else-if="column === 'markup'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else-if="column === 'total_price'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else-if="column === 'builder_cost'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else-if="column === 'margin'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else-if="column === 'profit'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else-if="column === 'worker_cost'">
-                {{ formatAmount(cost[getColumnData[column]]) }}
-              </span>
-              <span v-else>
-                {{ cost[getColumnData[column]] }}
-              </span>
-              <span v-if="column === 'cost_code'">
-                {{ cost?.cost_code_info?.name }}
-              </span>
+            <td
+              v-for="(column, index) in props.columnsToShow"
+              :key="index"
+              @dblclick="startEditing(cost, column)"
+            >
+              <template
+                v-if="
+                  editingCell &&
+                  editingCell.rowId === cost.id &&
+                  editingCell.column === column
+                "
+              >
+                <input
+                  :id="`edit-input-${cost.id}-${column}`"
+                  v-model="editingValue"
+                  @keyup.enter="saveEdit(cost, column)"
+                  @keyup.esc="cancelEdit"
+                  class="input is-small"
+                  style="width: 100%"
+                />
+              </template>
+              <!-- Otherwise, show the normal cell content -->
+              <template v-else>
+                <div
+                  class="custom-description"
+                  v-if="column === 'description'"
+                  v-html="cost[getColumnData[column]]"
+                ></div>
+                <span
+                  v-else-if="
+                    [
+                      'unit_cost',
+                      'markup',
+                      'total_price',
+                      'builder_cost',
+                      'margin',
+                      'profit',
+                      'worker_cost',
+                    ].includes(column)
+                  "
+                >
+                  {{ formatAmount(cost[getColumnData[column]]) }}
+                </span>
+                <span v-else>
+                  {{ cost[getColumnData[column]] }}
+                </span>
+                <span v-if="column === 'cost_code'">
+                  {{ cost?.cost_code_info?.name }}
+                </span>
+              </template>
             </td>
 
             <td>
@@ -234,26 +290,6 @@ onMounted(() => {});
                 style="z-index: 99"
               >
                 <template #content="{ close }">
-                  <!-- <a
-                    role="menuitem"
-                    href="#"
-                    class="dropdown-item is-media"
-                    @click.prevent="
-                      () => {
-                        openUpdateCostItem(cost, true);
-                        close();
-                      }
-                    "
-                  >
-                    <div class="icon">
-                      <i aria-hidden="true" class="lnil lnil-eye" />
-                    </div>
-                    <div class="meta">
-                      <span>View</span>
-                      <span>View user details</span>
-                    </div>
-                  </a> -->
-
                   <a
                     role="menuitem"
                     href="#"

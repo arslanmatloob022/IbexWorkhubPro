@@ -226,7 +226,7 @@ onMounted(() => {
                 </div>
               </div>
 
-              <VBlock
+              <!-- <VBlock
                 title="Last Schedule Sent"
                 :subtitle="
                   dashboardStats.last_mail_sent
@@ -250,7 +250,7 @@ onMounted(() => {
                     Send Schedule
                   </VButton>
                 </template>
-              </VBlock>
+              </VBlock> -->
             </div>
           </div>
         </div>

@@ -4,7 +4,9 @@ import { usePanels } from "/@src/stores/panels";
 import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useCompany } from "/@src/stores/company";
 import { useNotyf } from "/@src/composable/useNotyf";
+import { useApi } from "/@src/composable/useAPI";
 
+const api = useApi();
 const notyf = useNotyf();
 const company = useCompany();
 type TabId = "todo" | "activity" | "schedule";
@@ -18,6 +20,20 @@ const toggleSwitch = () => {
       localStorage.getItem("isScheduleMode") == "true" ? "On" : "Off"
     }`
   );
+};
+const loading = ref(false);
+const sendTasksMailToAllWorker = () => {
+  try {
+    loading.value = true;
+    const resp = api.post(`/api/task/worker-mail/`, {
+      worker: "all",
+    });
+    notyf.success("Email has been sent to all workers");
+    loading.value = false;
+  } catch (err) {
+    console.log(err);
+    notyf.error("Something went wrong, try again after refresh.");
+  }
 };
 const panels = usePanels();
 const activeTab = ref<TabId>("todo");
@@ -369,6 +385,7 @@ const activeTab = ref<TabId>("todo");
                   alt=""
                   @error.once="onceImageErrored(150)"
                 /> -->
+
                 <div class="meta">
                   <VField class="m-0">
                     <VControl>
@@ -394,6 +411,37 @@ const activeTab = ref<TabId>("todo");
                     data-icon="feather:arrow-left"
                   />
                 </a> -->
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-inner">
+                <div class="meta">
+                  <VField class="m-0">
+                    <VBlock
+                      title="Mail Schedules"
+                      subtitle="Send main to workers"
+                    >
+                      <template #icon>
+                        <VIconBox color="success" rounded>
+                          <VIcon icon="lucide:clock" />
+                        </VIconBox>
+                      </template>
+                      <template #action>
+                        <VButton
+                          class="ml-4"
+                          @click="sendTasksMailToAllWorker"
+                          color="dark"
+                          rounded
+                          :loading="loading"
+                          elevated
+                        >
+                          Send
+                        </VButton>
+                      </template>
+                    </VBlock>
+                  </VField>
+                </div>
               </div>
             </div>
           </div>
