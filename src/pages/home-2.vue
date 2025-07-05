@@ -23,7 +23,7 @@ useHead({
                   <!-- <video autoplay="autoplay" muted="muted" loop="loop" class="center-image" style="width: 100%; height: 100%;object-fit: cover;border-radius: 20px;">
                     <source src="https://earnflex-static.s3.eu-west-2.amazonaws.com/Videos/Corporate_video.mp4" type="video/mp4" />
                   </video> -->
-                  <img
+                  <!-- <img
                     class="light-image-block-l center-image"
                     src="/images/home-page/1.png"
                     alt=""
@@ -32,7 +32,7 @@ useHead({
                     class="dark-image-block-l center-image"
                     src="/images/home-page/1.png"
                     alt=""
-                  />
+                  /> -->
                 </div>
                 <h2 class="title is-2 mt-4 mb-4" style="text-align: center">
                   Features In
@@ -45,7 +45,7 @@ useHead({
                     gap: 20px;
                   "
                 >
-                  <img
+                  <!-- <img
                     src="/images/home-page/company-1.webp"
                     alt=""
                     srcset=""
@@ -74,7 +74,7 @@ useHead({
                     alt=""
                     srcset=""
                     class="featured-image"
-                  />
+                  /> -->
                 </div>
               </div>
               <!-- <div class="hero-mockup-gradient" /> -->

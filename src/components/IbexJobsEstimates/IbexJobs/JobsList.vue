@@ -75,14 +75,18 @@ const openLeadModal = ref(false);
 
 const columns = {
   username: {
-    label: "Job",
-    grow: "lg",
-  },
-  location: {
-    label: "Contractor/Client",
+    label: "Contractor / Client",
     grow: true,
   },
-  contacts: "Date Created",
+  location: {
+    label: "Job",
+    grow: true,
+  },
+  contacts: {
+    label: "Date Created",
+    grow: true,
+  },
+
   status: "Status",
   industry: "Manager",
   actions: {
@@ -467,7 +471,7 @@ onMounted(() => {
             </template>
           </VDropdown>
           <VField
-            class="h-hidden-mobile"
+            class="h-hidden-mobile ml-2"
             style="min-width: 200px"
             v-slot="{ id }"
           >
@@ -488,7 +492,7 @@ onMounted(() => {
                     class="multiselect-single-label"
                   >
                     <VAvatar
-                      size="small"
+                      size="xs"
                       squared
                       class="mr-2"
                       :picture="value.icon"
@@ -613,35 +617,23 @@ criteria."
                         }
                       "
                       class="cu-pointer"
-                      :column="{ media: true, grow: 'lg' }"
+                      :column="{ media: true, grow: true }"
                     >
+                      <i
+                        v-if="!item.contractor_info?.avatar"
+                        class="fas fa-hospital-user image fa-2x light-text"
+                        aria-hidden="true"
+                      ></i>
                       <VAvatar
+                        v-else
                         :picture="
-                          item.image ? item.image : '/IbexImages/home-icon.png'
+                          item.contractor_info?.avatar
+                            ? item.contractor_info?.avatar
+                            : '/IbexImages/home-icon.png'
                         "
                         squared
                         size="medium"
                       />
-                      <div>
-                        <span
-                          class="item-name dark-inverted is-flex show-text-300"
-                        >
-                          {{ item.title ? item.title : "N/A" }}</span
-                        >
-                        <span class="item-meta show-text-200">
-                          <span>{{ item.address ? item.address : "N/A" }}</span>
-                        </span>
-                      </div>
-                    </VFlexTableCell>
-                    <VFlexTableCell
-                      @click="
-                        () => {
-                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
-                        }
-                      "
-                      class="cu-pointer"
-                      :column="{ media: true, grow: true }"
-                    >
                       <div v-if="item.clientInfo" class="show-text-200">
                         <span class="item-name">{{
                           item.clientInfo?.username
@@ -671,6 +663,26 @@ criteria."
                         </span>
                       </div>
                     </VFlexTableCell>
+                    <VFlexTableCell
+                      @click="
+                        () => {
+                          router.push(`/sidebar/dashboard/jobs/${item.id}`);
+                        }
+                      "
+                      class="cu-pointer"
+                      :column="{ media: true, grow: true }"
+                    >
+                      <div>
+                        <span
+                          class="item-name dark-inverted is-flex show-text-300"
+                        >
+                          {{ item.title ? item.title : "N/A" }}</span
+                        >
+                        <span class="item-meta show-text-200">
+                          <span>{{ item.address ? item.address : "N/A" }}</span>
+                        </span>
+                      </div>
+                    </VFlexTableCell>
 
                     <VFlexTableCell
                       @click="
@@ -679,7 +691,7 @@ criteria."
                         }
                       "
                       class="cu-pointer"
-                      :column="{ media: true }"
+                      :column="{ media: true, grow: true }"
                     >
                       <div>
                         <span class="item-name dark-inverted">{{
