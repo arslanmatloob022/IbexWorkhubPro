@@ -319,29 +319,8 @@ onMounted(() => {
                       size="medium"
                     />
                     <div>
-                      <span class="item-name dark-inverted"
-                        >{{
-                          item.contractor_info?.username
-                            ? item.contractor_info?.username
-                            : ""
-                        }}
-                        {{
-                          item.contractor_info?.last_name
-                            ? item.contractor_info?.last_name
-                            : ""
-                        }}
-                        {{
-                          item.clientInfo?.username
-                            ? item.clientInfo?.username
-                            : ""
-                        }}
-                        <span
-                          v-if="
-                            item.contractor_info?.username ||
-                            item.clientInfo?.username
-                          "
-                          >-</span
-                        >{{ item.title ? item.title : "N/A" }}</span
+                      <span class="item-name dark-inverted">
+                        {{ item.title ? item.title : "N/A" }}</span
                       >
                       <span class="item-meta show-text-200">
                         <span>{{ item.address ? item.address : "N/A" }}</span>

@@ -221,6 +221,57 @@ const deleteLeadHandler = async () => {
   }
 };
 
+const contractorsList = ref([
+  {
+    id: "bc199abb-e8f3-4074-91c1-a73c182de6aa",
+    active_project: 0,
+    completed_project: 1,
+    cancelled_project: 0,
+    pending_project: 0,
+    password:
+      "pbkdf2_sha256$260000$OczZJ7bosNcSEPl14SwE2W$BE95gFMgOF4gKAvgE5PIfMbSmRXSrPjn0+Th1ox5lOQ=",
+    last_login: null,
+    date_joined: "2024-05-23T10:14:39.803183Z",
+    email: "ibexbuilderstudios@gmail.com",
+    role: "contractor",
+    avatar: null,
+    is_active: true,
+    phoneNumber: "23984729370",
+    username: "Patrick",
+    last_name: "",
+    is_sentMail: false,
+    supplier: null,
+  },
+]);
+
+const selectedContractorId = ref("");
+const contractorOptions = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const getContractorsHandler = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get("/api/users/by-role-option/contractor/");
+    contractorsList.value = response.data;
+    contractorOptions.value = response.data?.map((item: any) => {
+      return {
+        value: item.id,
+        name: `${item.username} ${item.last_name ? item.last_name : ""}`,
+        icon: item.avatar,
+      };
+    });
+    console.log("data", contractorsList.value);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 const openAddProposalModalHandler = (id: any) => {
   selectedLeadId.value = id;
   openLeadProposalModal.value = !openLeadProposalModal.value;
@@ -237,7 +288,10 @@ const filteredData = computed(() => {
         item.address?.match(filterRe) ||
         item.clientInfo?.username?.match(filterRe) ||
         item.clientInfo?.last_name?.match(filterRe) ||
-        item.clientInfo?.username?.match(filterRe) ||
+        item.clientInfo?.email?.match(filterRe) ||
+        item.contractor_info?.username?.match(filterRe) ||
+        item.contractor_info?.last_name?.match(filterRe) ||
+        item.contractor_info?.email?.match(filterRe) ||
         item.city?.match(filterRe) ||
         item.created_at?.match(filterRe)
       );
@@ -281,26 +335,9 @@ const secondFiltered = computed(() => {
   }
 });
 
-const completedLeads = computed(() => {
-  if (!filters.value) {
-    return leadsList.value;
-  } else {
-    const filterRe = new RegExp(filters.value, "i");
-    return leadsList.value.filter((item: any) => {
-      return (
-        item.title?.match(filterRe) ||
-        item.address?.match(filterRe) ||
-        item.clientInfo?.username?.match(filterRe) ||
-        item.clientInfo?.last_name?.match(filterRe) ||
-        item.clientInfo?.username?.match(filterRe) ||
-        item.city?.match(filterRe) ||
-        item.created_at?.match(filterRe)
-      );
-    });
-  }
-});
 onMounted(() => {
   getCompanyJobs();
+  getContractorsHandler();
 });
 </script>
 
@@ -317,6 +354,31 @@ onMounted(() => {
                 class="input custom-text-filter"
                 placeholder="Search..."
               />
+            </VControl>
+          </VField>
+          <VField style="min-width: 200px; height: 44px" v-slot="{ id }">
+            <VControl>
+              <Multiselect
+                v-model="selectedContractorId"
+                :attrs="{ id }"
+                placeholder="Select a contractor"
+                label="name"
+                :options="contractorOptions"
+                :searchable="true"
+                track-by="name"
+                :max-height="145"
+              >
+                <template #singlelabel="{ value }">
+                  <div class="multiselect-single-label">
+                    <img class="select-label-icon" :src="value.icon" alt="" />
+                    {{ value.name }}
+                  </div>
+                </template>
+                <template #option="{ option }">
+                  <img class="select-option-icon" :src="option.icon" alt="" />
+                  {{ option.name }}
+                </template>
+              </Multiselect>
             </VControl>
           </VField>
           <VDropdown title="Apply sorting" modern spaced>
@@ -454,28 +516,7 @@ criteria."
                       <div>
                         <span
                           class="item-name dark-inverted is-flex show-text-300"
-                          >{{
-                            item.contractor_info?.username
-                              ? item.contractor_info?.username
-                              : ""
-                          }}
-                          {{
-                            item.contractor_info?.last_name
-                              ? item.contractor_info?.last_name
-                              : ""
-                          }}
-                          {{
-                            item.clientInfo?.username
-                              ? item.clientInfo?.username
-                              : ""
-                          }}
-                          <span
-                            v-if="
-                              item.contractor_info?.username ||
-                              item.clientInfo?.username
-                            "
-                            >-
-                          </span>
+                        >
                           {{ item.title ? item.title : "N/A" }}</span
                         >
                         <span class="item-meta show-text-200">

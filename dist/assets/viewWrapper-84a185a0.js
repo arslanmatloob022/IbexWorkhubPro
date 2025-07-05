@@ -1,1 +1,0 @@
-import{a7 as e,r as s,k as a,ah as t,ai as o}from"./index-ebe3ec19.js";const u=e("viewWrapper",(()=>{const e=s(!1),u=s(!1),i=s("Welcome");let n;return{isPushed:e,isPushedBlock:u,pageTitle:i,setPushed:function(s){e.value=s},setPushedBlock:function(e){u.value=e},setPageTitle:function(e){n&&(n(),n=void 0),a(e)||"function"==typeof e?n=t((()=>{i.value=o(e)})):i.value=e}}}));export{u};

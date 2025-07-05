@@ -16,7 +16,7 @@ const previousItemIndex = ref(0);
 const selectedCostItem = ref("");
 const previewCostItems = ref(false);
 const loading = ref(false);
-
+const editor = shallowRef<any>();
 const props = defineProps<{
   columnsToShow?: any;
   itemsList?: any;
@@ -29,7 +29,17 @@ const SweetAlertProps = ref({
   isSweetAlertOpen: false,
   btntext: "text",
 });
+const CKEditor = defineAsyncComponent(() =>
+  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
+);
 
+const editorConfig = {
+  fontFamily: {
+    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
+  },
+  height: "400px",
+  minHeight: "400px",
+};
 const handleDragStart = (id: string) => {
   dragItem.value = id;
   console.log("Drag started for ID:", id);
@@ -148,6 +158,11 @@ function startEditing(cost: any, column: string) {
   });
 }
 
+function onCKEditorReady(editorInstance: any, cost: any, column: any) {
+  editorInstance.editing.view.document.on("blur", () => {
+    saveEdit(cost, column);
+  });
+}
 function saveEdit(cost: any, column: string) {
   const key = getColumnData[column] || column;
   cost[key] = editingValue.value;
@@ -183,7 +198,11 @@ watch(
   { deep: true }
 );
 
-onMounted(() => {});
+onMounted(async () => {
+  editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
+    (m) => m.default
+  );
+});
 </script>
 
 <template>
@@ -228,6 +247,9 @@ onMounted(() => {});
                 aria-hidden="true"
               ></i>
             </td>
+            <!-- ================================
+             ======================================
+             ====================================== -->
             <td
               v-for="(column, index) in props.columnsToShow"
               :key="index"
@@ -240,11 +262,23 @@ onMounted(() => {});
                   editingCell.column === column
                 "
               >
+                <CKEditor
+                  v-if="editor && column === 'description'"
+                  :id="`edit-input-${cost.id}-${column}`"
+                  v-model="editingValue"
+                  :editor="editor"
+                  :config="editorConfig"
+                  @keyup.enter="saveEdit(cost, column)"
+                  @keyup.esc="cancelEdit"
+                  @ready="onCKEditorReady($event, cost, column)"
+                />
                 <input
+                  v-else
                   :id="`edit-input-${cost.id}-${column}`"
                   v-model="editingValue"
                   @keyup.enter="saveEdit(cost, column)"
                   @keyup.esc="cancelEdit"
+                  @blur="saveEdit(cost, column)"
                   class="input is-small"
                   style="width: 100%"
                 />
