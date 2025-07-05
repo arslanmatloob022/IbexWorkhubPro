@@ -58,18 +58,20 @@ const leadsList = ref({
   sales_people: [],
 });
 
-const page = ref(42);
+const selectedSortOption = ref("");
+const route = useRoute();
+const selectedContractorId = ref("");
+const contractorOptions = ref([
+  {
+    value: "",
+    name: "",
+    icon: "",
+  },
+]);
+const page = ref(1);
 const filters = ref("");
-const statusFilter = ref("");
 const openLeadProposalModal = ref(false);
 const openLeadModal = ref(false);
-const users = listData.users as UserData[];
-const leadsStatusFilters = ref([
-  { value: "Open", label: "Open" },
-  { value: "Sold", label: "Sold" },
-  { value: "Lost", label: "Lost" },
-  { value: "onHold", label: "On hold" },
-]);
 
 const columns = {
   username: {
@@ -88,7 +90,28 @@ const columns = {
     align: "end",
   },
 } as const;
-
+const contractorsList = ref([
+  {
+    id: "bc199abb-e8f3-4074-91c1-a73c182de6aa",
+    active_project: 0,
+    completed_project: 1,
+    cancelled_project: 0,
+    pending_project: 0,
+    password:
+      "pbkdf2_sha256$260000$OczZJ7bosNcSEPl14SwE2W$BE95gFMgOF4gKAvgE5PIfMbSmRXSrPjn0+Th1ox5lOQ=",
+    last_login: null,
+    date_joined: "2024-05-23T10:14:39.803183Z",
+    email: "ibexbuilderstudios@gmail.com",
+    role: "contractor",
+    avatar: null,
+    is_active: true,
+    phoneNumber: "23984729370",
+    username: "Patrick",
+    last_name: "",
+    is_sentMail: false,
+    supplier: null,
+  },
+]);
 const currentJobsList = ref([
   {
     id: "",
@@ -166,35 +189,28 @@ const currentJobsList = ref([
     sales_people: [],
   },
 ]);
-const isPaginated = ref(false);
-const getCompanyJobs = async () => {
-  try {
-    loading.value = true;
-    const response = await api.get("/api/project/project-jobs/");
-    leadsList.value = response.data.filter(
-      (item: any) => item.status == "completed"
-    );
-    currentJobsList.value = response.data.filter(
-      (item: any) => item.status != "completed"
-    );
-  } catch (error: any) {
-    notyf.error(` ${error}, Lead`);
-  } finally {
-    loading.value = false;
-  }
-};
-
+const isPaginated = ref(true);
 const selectedLeadId = ref("");
+const itemsPerPage = ref(20);
+const jobsData = ref({
+  count: 40,
+  next: "https://api.ibexworkhub.com/api/project/project-jobs/?is-paginated=true&page=2&page_size=10",
+  previous: null,
+  results: [],
+});
+
 const openLeadUpdateModal = (id: any) => {
   selectedLeadId.value = id;
   openLeadModal.value = true;
 };
+
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
   isSweetAlertOpen: false,
   btntext: "text",
 });
+
 const openLeadDeleteAlert = (id: any) => {
   selectedLeadId.value = id;
   SweetAlertProps.value = {
@@ -222,37 +238,6 @@ const deleteLeadHandler = async () => {
   }
 };
 
-const contractorsList = ref([
-  {
-    id: "bc199abb-e8f3-4074-91c1-a73c182de6aa",
-    active_project: 0,
-    completed_project: 1,
-    cancelled_project: 0,
-    pending_project: 0,
-    password:
-      "pbkdf2_sha256$260000$OczZJ7bosNcSEPl14SwE2W$BE95gFMgOF4gKAvgE5PIfMbSmRXSrPjn0+Th1ox5lOQ=",
-    last_login: null,
-    date_joined: "2024-05-23T10:14:39.803183Z",
-    email: "ibexbuilderstudios@gmail.com",
-    role: "contractor",
-    avatar: null,
-    is_active: true,
-    phoneNumber: "23984729370",
-    username: "Patrick",
-    last_name: "",
-    is_sentMail: false,
-    supplier: null,
-  },
-]);
-
-const selectedContractorId = ref("");
-const contractorOptions = ref([
-  {
-    value: "",
-    name: "",
-    icon: "",
-  },
-]);
 const getContractorsHandler = async () => {
   try {
     loading.value = true;
@@ -265,7 +250,12 @@ const getContractorsHandler = async () => {
         icon: item.avatar,
       };
     });
-    console.log("data", contractorsList.value);
+    contractorOptions.value.unshift({
+      value: "",
+      name: "All",
+      icon: "",
+    });
+    selectedContractorId.value = "";
   } catch (err) {
     console.log(err);
   } finally {
@@ -278,35 +268,94 @@ const openAddProposalModalHandler = (id: any) => {
   openLeadProposalModal.value = !openLeadProposalModal.value;
 };
 
-const filteredData = computed(() => {
-  if (!filters.value) {
-    return currentJobsList.value;
-  } else {
-    const filterRe = new RegExp(filters.value, "i");
-    return currentJobsList.value.filter((item: any) => {
-      return (
-        item.title?.match(filterRe) ||
-        item.address?.match(filterRe) ||
-        item.clientInfo?.username?.match(filterRe) ||
-        item.clientInfo?.last_name?.match(filterRe) ||
-        item.clientInfo?.email?.match(filterRe) ||
-        item.contractor_info?.username?.match(filterRe) ||
-        item.contractor_info?.last_name?.match(filterRe) ||
-        item.contractor_info?.email?.match(filterRe) ||
-        item.city?.match(filterRe) ||
-        item.created_at?.match(filterRe)
-      );
-    });
-  }
-});
-
-const selectedSortOption = ref("");
-
 const sortJobs = (type: string = "") => {
   selectedSortOption.value = type;
 };
 
+const getCompanyJobs = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(
+      `/api/project/project-jobs/?is-paginated=${isPaginated.value}&page=${
+        page.value
+      }&page_size=${itemsPerPage.value}&search=${filters.value}&contractor=${
+        selectedContractorId.value ? selectedContractorId.value : ""
+      }`
+    );
+    jobsData.value = response.data;
+    leadsList.value = response.data?.results?.filter(
+      (item: any) => item.status == "completed"
+    );
+    currentJobsList.value = response.data?.results?.filter(
+      (item: any) => item.status != "completed"
+    );
+  } catch (error: any) {
+    notyf.error(` ${error}, Lead`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+watch(
+  () => selectedContractorId.value,
+  (newVal) => {
+    if (newVal) {
+      page.value = 1;
+      itemsPerPage.value = jobsData.value.count;
+      getCompanyJobs();
+    } else {
+      page.value = 1;
+      itemsPerPage.value = 20;
+      getCompanyJobs();
+    }
+  }
+);
+watch(
+  () => filters.value,
+  (newVal) => {
+    if (!newVal) {
+      getCompanyJobs();
+    }
+  }
+);
+
+watch(
+  () => route.query.page,
+  (newVal) => {
+    page.value = route.query.page ?? 1;
+    getCompanyJobs();
+  }
+);
+
+watch(
+  () => page.value,
+  (newVal) => {
+    router.push({
+      query: {
+        ...route.query,
+        page: newVal,
+      },
+    });
+  }
+);
+
+const filteredData = computed(() => {
+  return currentJobsList.value;
+});
+
+const currentPage = computed(() => {
+  let index: any = route.query.page as string;
+  if (index == undefined || index == "undefined") {
+    index = 1;
+  } else {
+    index = route.query.page as string;
+  }
+  return Number.parseInt(route.query.page as string) || 1;
+});
+
 const secondFiltered = computed(() => {
+  // return filteredData.value;
+
   let data = filteredData.value || [];
   if (!selectedSortOption.value) {
     return filteredData.value;
@@ -344,16 +393,16 @@ onMounted(() => {
 
 <template>
   <div>
-    <PlaceloadV1 v-if="loading" />
-    <div v-else>
+    <div>
       <div class="list-flex-toolbar columns is-multiline">
-        <div class="column is-6 is-flex">
+        <div class="column is-6 is-flex is-align-items-center">
           <VField>
             <VControl icon="feather:search">
               <input
                 v-model="filters"
                 class="input custom-text-filter"
-                placeholder="Search..."
+                placeholder="Type and press enter..."
+                @keyup.enter="getCompanyJobs"
               />
             </VControl>
           </VField>
@@ -417,7 +466,57 @@ onMounted(() => {
               </a>
             </template>
           </VDropdown>
-          <VField style="min-width: 200px; height: 44px" v-slot="{ id }">
+          <VField
+            class="h-hidden-mobile"
+            style="min-width: 200px"
+            v-slot="{ id }"
+          >
+            <VControl>
+              <Multiselect
+                v-model="selectedContractorId"
+                :attrs="{ id }"
+                placeholder="Select a contractor"
+                label="name"
+                :options="contractorOptions"
+                :searchable="true"
+                track-by="name"
+                :max-height="145"
+              >
+                <template #singlelabel="{ value }">
+                  <div
+                    v-if="selectedContractorId"
+                    class="multiselect-single-label"
+                  >
+                    <VAvatar
+                      size="small"
+                      squared
+                      class="mr-2"
+                      :picture="value.icon"
+                    />
+                    {{ value.name }}
+                  </div>
+                </template>
+                <template #option="{ option }">
+                  <VAvatar
+                    size="small"
+                    squared
+                    class="mr-2"
+                    :picture="option.icon"
+                  />
+                  <!-- <img class="select-option-icon" :src="option.icon" alt="" /> -->
+                  {{ option.name }}
+                </template>
+              </Multiselect>
+            </VControl>
+          </VField>
+        </div>
+
+        <div class="column is-6 is-flex is-justify-content-end">
+          <VField
+            class="smart-search-dropdown h-hidden-desktop"
+            style="min-width: 180px; height: 44px"
+            v-slot="{ id }"
+          >
             <VControl>
               <Multiselect
                 v-model="selectedContractorId"
@@ -431,20 +530,28 @@ onMounted(() => {
               >
                 <template #singlelabel="{ value }">
                   <div class="multiselect-single-label">
-                    <img class="select-label-icon" :src="value.icon" alt="" />
+                    <VAvatar
+                      size="small"
+                      squared
+                      class="mr-2"
+                      :picture="value.icon"
+                    />
                     {{ value.name }}
                   </div>
                 </template>
                 <template #option="{ option }">
-                  <img class="select-option-icon" :src="option.icon" alt="" />
+                  <VAvatar
+                    size="small"
+                    squared
+                    class="mr-2"
+                    :picture="option.icon"
+                  />
+                  <!-- <img class="select-option-icon" :src="option.icon" alt="" /> -->
                   {{ option.name }}
                 </template>
               </Multiselect>
             </VControl>
           </VField>
-        </div>
-
-        <div class="column is-6 is-flex is-justify-content-end">
           <VButtons>
             <VButton
               @click="openLeadUpdateModal('')"
@@ -457,8 +564,8 @@ onMounted(() => {
           </VButtons>
         </div>
       </div>
-
-      <div class="page-content-inner">
+      <PlaceloadNoButtonV1 v-if="loading" />
+      <div v-else class="page-content-inner">
         <div class="flex-list-wrapper flex-list-v1">
           <div class="columns is-multiline">
             <div class="column is-3"></div>
@@ -706,13 +813,21 @@ criteria."
               </template>
             </VFlexTable>
             <VFlexPagination
+              v-if="jobsData.count > itemsPerPage"
+              :item-per-page="itemsPerPage"
+              v-model="currentPage"
+              :total-items="jobsData.count"
+              :current-page="currentPage"
+              :max-links-displayed="5"
+            />
+            <!-- <VFlexPagination
               v-if="secondFiltered?.length > 5"
               v-model:current-page="page"
               :item-per-page="10"
               :total-items="80"
               :max-links-displayed="7"
               no-router
-            />
+            /> -->
           </div>
         </div>
       </div>

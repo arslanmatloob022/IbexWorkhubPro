@@ -480,6 +480,7 @@ declare module 'vue' {
     PlaceloadAvatarSizeDocumentation: typeof import('./../documentation/placeload-avatar/placeload-avatar-size-documentation.md')['default']
     PlaceloadAvatarWrapDocumentation: typeof import('./../documentation/placeload-avatar/placeload-avatar-wrap-documentation.md')['default']
     PlaceloadBaseDocumentation: typeof import('./../documentation/placeload/placeload-base-documentation.md')['default']
+    PlaceloadNoButtonV1: typeof import('./../src/components/pages/layouts/placeload/PlaceloadNoButtonV1.vue')['default']
     PlaceloadPropsDocumentation: typeof import('./../documentation/placeload/placeload-props-documentation.md')['default']
     PlaceloadSizeDocumentation: typeof import('./../documentation/placeload/placeload-size-documentation.md')['default']
     PlaceloadTextBaseDocumentation: typeof import('./../documentation/placeload-text/placeload-text-base-documentation.md')['default']

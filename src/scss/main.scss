@@ -659,7 +659,7 @@ SCSS Imports
 .smart-search-dropdown {
   .placement-wrapper {
     width: 100%;
-    height: 4rem;
+    height: 4rem !important;
     background: #f3f1f1;
     border-radius: 0.8rem;
     display: flex;
@@ -710,7 +710,7 @@ SCSS Imports
     border-radius: 0.5rem;
   }
 
-  .option-ddiv {
+  .option-div {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
@@ -757,7 +757,7 @@ SCSS Imports
     border-radius: 0.8rem;
     margin-bottom: -1.5rem;
     box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
-    min-height: 160px !important;
+    min-height: 190px !important;
   }
 
   .multiselect .multiselect-caret {
