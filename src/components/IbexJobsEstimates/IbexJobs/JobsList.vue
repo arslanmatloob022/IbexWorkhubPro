@@ -166,6 +166,7 @@ const currentJobsList = ref([
     sales_people: [],
   },
 ]);
+const isPaginated = ref(false);
 const getCompanyJobs = async () => {
   try {
     loading.value = true;
@@ -356,31 +357,7 @@ onMounted(() => {
               />
             </VControl>
           </VField>
-          <VField style="min-width: 200px; height: 44px" v-slot="{ id }">
-            <VControl>
-              <Multiselect
-                v-model="selectedContractorId"
-                :attrs="{ id }"
-                placeholder="Select a contractor"
-                label="name"
-                :options="contractorOptions"
-                :searchable="true"
-                track-by="name"
-                :max-height="145"
-              >
-                <template #singlelabel="{ value }">
-                  <div class="multiselect-single-label">
-                    <img class="select-label-icon" :src="value.icon" alt="" />
-                    {{ value.name }}
-                  </div>
-                </template>
-                <template #option="{ option }">
-                  <img class="select-option-icon" :src="option.icon" alt="" />
-                  {{ option.name }}
-                </template>
-              </Multiselect>
-            </VControl>
-          </VField>
+
           <VDropdown title="Apply sorting" modern spaced>
             <template #content>
               <a
@@ -440,6 +417,31 @@ onMounted(() => {
               </a>
             </template>
           </VDropdown>
+          <VField style="min-width: 200px; height: 44px" v-slot="{ id }">
+            <VControl>
+              <Multiselect
+                v-model="selectedContractorId"
+                :attrs="{ id }"
+                placeholder="Select a contractor"
+                label="name"
+                :options="contractorOptions"
+                :searchable="true"
+                track-by="name"
+                :max-height="145"
+              >
+                <template #singlelabel="{ value }">
+                  <div class="multiselect-single-label">
+                    <img class="select-label-icon" :src="value.icon" alt="" />
+                    {{ value.name }}
+                  </div>
+                </template>
+                <template #option="{ option }">
+                  <img class="select-option-icon" :src="option.icon" alt="" />
+                  {{ option.name }}
+                </template>
+              </Multiselect>
+            </VControl>
+          </VField>
         </div>
 
         <div class="column is-6 is-flex is-justify-content-end">

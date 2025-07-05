@@ -360,7 +360,7 @@ onMounted(async () => {
     (m) => m.default
   );
   if (props.previousItemIndex) {
-    costItem.value.previousItemIndex = 0;
+    costItem.value.previousItemIndex = props.previousItemIndex;
     // props.previousItemIndex
   }
   if (props.costItemId) {
