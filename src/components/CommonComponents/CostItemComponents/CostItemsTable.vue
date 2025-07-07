@@ -9,6 +9,8 @@ import { formatAmount } from "/@src/composable/useSupportElement";
 const api = useApi();
 const dragItem = ref("");
 const addCostItemModal = ref(false);
+const selectedIndex = ref(0);
+const addSectionModal = ref(false);
 const useProposal = useProposalStore();
 const notyf = useNotyf();
 const proposalId = ref("");
@@ -124,8 +126,8 @@ const openProposalCostItems = (cost: any) => {
   addCostItemModal.value = !addCostItemModal.value;
 };
 
-const getProposalCostItems = () => {
-  useProposal.getProposalCostItems(proposalId.value);
+const getProposalCostItems = (id: any) => {
+  useProposal.getProposalCostItems(id ? id : proposalId.value);
 };
 
 const addUpdateProposalHandler = async () => {
@@ -144,6 +146,7 @@ const addUpdateProposalHandler = async () => {
   }
 };
 import { ref, nextTick } from "vue";
+import Id from "/@src/pages/sidebar/client/projects/[id].vue";
 
 const editingCell = ref<{ rowId: string; column: string } | null>(null);
 const editingValue = ref("");
@@ -184,6 +187,26 @@ const addUpdateCostItemHandler = async (id: any = "", payload: any = {}) => {
   }
 };
 
+const addBlankLineItem = async (index: any) => {
+  try {
+    const resp = await api.post(`/api/cost/add-empty-item/`, {
+      proposal: props.proposalId,
+      previousItemIndex: index,
+      is_empty: true,
+    });
+    notyf.success("Blank line added successfully!");
+    getProposalCostItems(props.proposalId);
+  } catch (err) {
+    console.log(err);
+    notyf.error("Something went wrong, try again");
+  }
+};
+
+const openAddSectionModal = (index: any) => {
+  selectedIndex.value = index;
+  addSectionModal.value = !addSectionModal.value;
+};
+
 function cancelEdit() {
   editingCell.value = null;
 }
@@ -199,6 +222,7 @@ watch(
 );
 
 onMounted(async () => {
+  proposalId.value = props.proposalId;
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
@@ -231,6 +255,7 @@ onMounted(async () => {
             class="draggable-item events"
           >
             <!-- @dblclick="openUpdateCostItem(cost, false)" -->
+
             <td class="is-relative">
               <i
                 style="
@@ -238,12 +263,41 @@ onMounted(async () => {
                   bottom: -7px;
                   left: 1px;
                   cursor: pointer;
-                  z-index: 99;
+                  z-index: 9;
+                  font-weight: 600;
+                  font-size: 15px;
+                  color: var(--primary);
+                "
+                @click="openProposalCostItems(cost)"
+                class="fas fa-plus-circle"
+                aria-hidden="true"
+              ></i>
+              <i
+                style="
+                  position: absolute;
+                  bottom: -7px;
+                  left: 19px;
+                  cursor: pointer;
+                  z-index: 9;
                   font-weight: 600;
                   font-size: 14px;
                 "
-                @click="openProposalCostItems(cost)"
-                class="lnir lnir-circle-plus info-text"
+                @click="openAddSectionModal(cost.index)"
+                class="fas fa-plus-circle danger-text"
+                aria-hidden="true"
+              ></i>
+              <i
+                style="
+                  position: absolute;
+                  bottom: -7px;
+                  left: 36px;
+                  cursor: pointer;
+                  z-index: 9;
+                  font-weight: 600;
+                  font-size: 14px;
+                "
+                @click="addBlankLineItem(cost.index)"
+                class="lnir lnir-circle-plus dark-text"
                 aria-hidden="true"
               ></i>
             </td>
@@ -285,33 +339,41 @@ onMounted(async () => {
               </template>
               <!-- Otherwise, show the normal cell content -->
               <template v-else>
-                <div
-                  class="custom-description"
-                  v-if="column === 'description'"
-                  v-html="cost[getColumnData[column]]"
-                ></div>
-                <span
-                  v-else-if="
-                    [
-                      'unit_cost',
-                      'markup',
-                      'total_price',
-                      'builder_cost',
-                      'margin',
-                      'profit',
-                      'worker_cost',
-                    ].includes(column)
-                  "
-                >
-                  {{ formatAmount(cost[getColumnData[column]]) }}
-                </span>
-                <span v-else>
-                  {{ cost[getColumnData[column]] }}
-                </span>
-                <span v-if="column === 'cost_code'">
-                  {{ cost?.cost_code_info?.name }}
-                </span>
+                <template v-if="!cost.is_empty">
+                  <div
+                    class="custom-description"
+                    v-if="column === 'description'"
+                    v-html="cost[getColumnData[column]]"
+                  ></div>
+                  <span
+                    v-else-if="
+                      [
+                        'unit_cost',
+                        'markup',
+                        'total_price',
+                        'builder_cost',
+                        'margin',
+                        'profit',
+                        'worker_cost',
+                      ].includes(column)
+                    "
+                  >
+                    {{ formatAmount(cost[getColumnData[column]]) }}
+                  </span>
+                  <span v-else>
+                    {{ cost[getColumnData[column]] }}
+                  </span>
+                  <span v-if="column === 'cost_code'">
+                    {{ cost?.cost_code_info?.name }}
+                  </span>
+                </template>
+                <template v-else>
+                  <span v-if="column === 'title'">
+                    {{ cost?.title }}
+                  </span>
+                </template>
               </template>
+              <!-- </template> -->
             </td>
 
             <td>
@@ -381,6 +443,16 @@ onMounted(async () => {
       :onConfirm="deleteCostItemHandler"
       :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
     />
+    <AddSectionLineModal
+      v-if="addSectionModal"
+      :costItemModal="addSectionModal"
+      :proposalId="props.proposalId"
+      :previousItemIndex="selectedIndex"
+      @update:modalHandler="addSectionModal = false"
+      @update:OnSuccess="getProposalCostItems(props.proposalId)"
+    >
+    </AddSectionLineModal>
+
     <EstimateCostItemModal
       v-if="addCostItemModal"
       :costItemModal="addCostItemModal"
@@ -392,7 +464,7 @@ onMounted(async () => {
         addCostItemModal = false;
         selectedCostItem = '';
       "
-      @update:OnSuccess="getProposalCostItems"
+      @update:OnSuccess="getProposalCostItems(props.proposalId)"
     >
     </EstimateCostItemModal>
   </div>

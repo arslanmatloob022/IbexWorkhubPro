@@ -653,7 +653,7 @@ onMounted(async () => {
     <div class="column is-12">
       <WorksheetItems
         :proposalData="leadProposalFormData"
-        :proposalId="leadProposalFormData.id"
+        :proposalId="route.params.id"
       />
     </div>
 

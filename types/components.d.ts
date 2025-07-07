@@ -32,6 +32,7 @@ declare module 'vue' {
     AddProgressModal: typeof import('./../src/components/IbexProjects/Modals/AddProgressModal.vue')['default']
     AddReference: typeof import('./../src/components/pages/AddReference.vue')['default']
     AddRotaModal: typeof import('./../src/components/pages/networks/rota/AddRotaModal.vue')['default']
+    AddSectionLineModal: typeof import('./../src/components/CommonComponents/AddSectionLineModal.vue')['default']
     AddTeamMember: typeof import('./../src/components/pages/networks/team-members/AddTeamMember.vue')['default']
     AddUpdateContactModal: typeof import('./../src/components/CommonComponents/AddUpdateContactModal.vue')['default']
     AddUpdateModuleModal: typeof import('./../src/components/IbexSettings/RolesAndPermissions/AddUpdateModuleModal.vue')['default']

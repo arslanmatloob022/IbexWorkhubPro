@@ -49,12 +49,10 @@ const openDeleteAlert = (id: any) => {
 const getProjectHandler = async () => {
   try {
     loading.value = true;
-    const response = await api.get("/api/project/project-jobs/", {});
+    const response = await api.get("/api/project/project-completed/", {});
     let data = response.data;
 
-    projects.value = data.filter((project) => {
-      return project.status == "completed";
-    });
+    projects.value = data;
   } catch (err) {
     console.log(err);
   } finally {

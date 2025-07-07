@@ -10,6 +10,7 @@ const notyf = useNotyf();
 const editor = shallowRef<any>();
 const proposalStore = useProposalStore();
 const addCostItemModal = ref(false);
+const addSectionModal = ref(false);
 const showDropdown = ref(false);
 
 const emit = defineEmits<{
@@ -73,6 +74,25 @@ const addUpdateProposalHandler = async () => {
   }
 };
 
+const addBlankLineItem = async () => {
+  try {
+    const resp = await api.post(`/api/cost/add-empty-item/`, {
+      proposal: props.proposalId,
+      previousItemIndex: proposalStore.proposalCostItems.length
+        ? proposalStore.proposalCostItems[
+            proposalStore.proposalCostItems.length - 1
+          ].index
+        : 0,
+      is_empty: true,
+    });
+    notyf.success("Blank line added successfully!");
+    getProposalCostItems();
+  } catch (err) {
+    console.log(err);
+    notyf.error("Something went wrong, try again");
+  }
+};
+
 watch(
   () => selectedColumnsToShow.value,
   (newVal, oldVal) => {
@@ -124,12 +144,31 @@ onUnmounted(() => {
           >
           <VButton
             size="small"
-            light
-            outlined
+            icon="fas fa-plus"
             color="primary"
             @click="addCostItemModal = !addCostItemModal"
           >
-            Add Item</VButton
+            Cost Item</VButton
+          >
+          <VButton
+            size="small"
+            class="ml-1"
+            icon="fas fa-plus"
+            color="danger"
+            @click="addSectionModal = !addSectionModal"
+          >
+            Section</VButton
+          >
+          <VButton
+            @click="addBlankLineItem()"
+            size="small"
+            light
+            outlined
+            class="ml-1"
+            color="dark"
+            icon="fas fa-plus"
+          >
+            Blank Line</VButton
           >
         </div>
       </div>
@@ -269,6 +308,23 @@ onUnmounted(() => {
         </div>
       </TransitionGroup>
     </div>
+
+    <AddSectionLineModal
+      v-if="addSectionModal"
+      :costItemModal="addSectionModal"
+      :proposalId="props.proposalId"
+      :previousItemIndex="
+        proposalStore.proposalCostItems.length
+          ? proposalStore.proposalCostItems[
+              proposalStore.proposalCostItems.length - 1
+            ].index
+          : 0
+      "
+      @update:modalHandler="addSectionModal = false"
+      @update:OnSuccess="getProposalCostItems"
+    >
+    </AddSectionLineModal>
+
     <EstimateCostItemModal
       v-if="addCostItemModal"
       :costItemModal="addCostItemModal"

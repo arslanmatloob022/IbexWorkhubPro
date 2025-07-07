@@ -14,6 +14,7 @@ export type VButtonColor =
   | "warning"
   | "danger"
   | "white"
+  | "purple"
   | "dark"
   | "light";
 export type VButtonDark = "1" | "2" | "3" | "4" | "5" | "6";
@@ -62,13 +63,14 @@ export default defineComponent({
             "success",
             "warning",
             "danger",
+            "purple",
             "white",
             "dark",
             "light",
           ].indexOf(value) === -1
         ) {
           console.warn(
-            `VButton: invalid "${value}" color. Should be primary, info, success, warning, danger, dark, light, white or undefined`
+            `VButton: invalid "${value}" color. Should be primary, info, success, warning, danger, purple, dark, light, white or undefined`
           );
           return false;
         }
@@ -315,6 +317,7 @@ export default defineComponent({
         .is-info,
         .is-warning,
         .is-danger,
+        .is-purple,
         .is-light,
         .is-white
       ) {
@@ -391,6 +394,16 @@ export default defineComponent({
         box-shadow: var(--danger-box-shadow);
       }
     }
+    &.is-purple {
+      &.is-raised:hover {
+        opacity: 0.9;
+        box-shadow: 0 0 0 4px #8168b1;
+      }
+
+      &.is-elevated {
+        box-shadow: 0 0 0 4px #8168b1;
+      }
+    }
 
     &.is-lower {
       text-transform: none !important;
@@ -431,14 +444,14 @@ export default defineComponent({
     transition: all 0.3s; // transition-all test
 
     &.is-purple {
-      background: var(--primary);
-      border-color: var(--primary);
+      background: var(--purple) !important;
+      border-color: var(--purple) !important;
       color: var(--smoke-white);
 
       &:hover,
       &:focus {
         opacity: 0.95;
-        box-shadow: var(--primary-box-shadow);
+        box-shadow: 0 0 0 4px #8168b1;
         color: var(--smoke-white) !important;
       }
     }
@@ -477,6 +490,7 @@ export default defineComponent({
         .is-info,
         .is-warning,
         .is-danger,
+        .is-purple,
         .is-light,
         .is-white
       ) {
@@ -536,6 +550,42 @@ export default defineComponent({
       }
     }
 
+    &.is-purple {
+      border-color: var(--purple);
+      background: var(--purple);
+
+      &.is-raised:hover {
+        box-shadow: var(--purple-box-shadow) !important;
+      }
+
+      &.is-elevated {
+        box-shadow: var(--purple-box-shadow) !important;
+      }
+
+      &.is-outlined {
+        background: transparent;
+        border-color: var(--purple) !important;
+        color: #8168b1 !important;
+
+        &:hover,
+        &:focus {
+          background: var(--purple) !important;
+          border-color: var(--purple) !important;
+          color: var(--purple) !important;
+        }
+      }
+
+      &.is-light {
+        border: none;
+        background: var(--dark-sidebar-light-10) !important;
+        color: var(--primary-light-20) !important;
+
+        &:hover {
+          background: var(--dark-sidebar-light-16) !important;
+        }
+      }
+    }
+
     &.is-info {
       &.is-light {
         background: var(--dark-sidebar-light-10) !important;
@@ -579,6 +629,16 @@ export default defineComponent({
         }
       }
     }
+    &.is-purple {
+      &.is-light {
+        background: var(--dark-sidebar-light-10) !important;
+        color: #8268b1bb !important;
+
+        &:hover {
+          background: var(--dark-sidebar-light-16) !important;
+        }
+      }
+    }
 
     &.is-white {
       background: var(--dark-sidebar-light-6) !important;
@@ -606,6 +666,7 @@ export default defineComponent({
         .is-info,
         .is-warning,
         .is-danger,
+        .is-purple,
         .is-light,
         .is-white
       ) {
@@ -622,6 +683,11 @@ export default defineComponent({
     &.is-primary {
       border-color: var(--primary);
       background: var(--primary);
+    }
+
+    &.is-purple {
+      border-color: var(--purple);
+      background: var(--purple);
     }
 
     &.is-white {
