@@ -368,12 +368,11 @@ onMounted(async () => {
                   </span>
                 </template>
                 <template v-else>
-                  <span v-if="column === 'title'">
-                    {{ cost?.title }}
+                  <span v-if="column === 'description'">
+                    {{ cost.title ? cost.title : cost.description }}
                   </span>
                 </template>
               </template>
-              <!-- </template> -->
             </td>
 
             <td>

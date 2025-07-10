@@ -294,43 +294,46 @@ onMounted(() => {});
                     :key="cost.id"
                   >
                     <td v-for="(column, key) in props.columnsToShow" :key="key">
-                      <div
-                        class="custom-description"
-                        v-if="column === 'description'"
-                        v-html="cost[getColumnData[column]]"
-                      ></div>
-                      <span v-else-if="column === 'cost_code'">
-                        {{ cost?.cost_code_info?.name }}
-                      </span>
-                      <span v-else-if="column === 'unit_cost'">
-                        {{ formatCurrency(cost?.unit_cost) }}
-                      </span>
-                      <span v-else-if="column === 'margin'">
-                        {{ formatCurrency(cost?.margin) }}
-                      </span>
-                      <span v-else-if="column === 'markup'">
-                        {{ formatCurrency(cost?.markup) }}
-                      </span>
-                      <span v-else-if="column === 'builder_cost'">
-                        {{ formatCurrency(cost?.builder_cost) }}
-                      </span>
-                      <span v-else-if="column === 'total_price'">
-                        {{ formatCurrency(cost?.total_price) }}
-                      </span>
-                      <span v-else-if="column === 'profit'">
-                        {{ formatCurrency(cost?.profit) }}
-                      </span>
-                      <span v-else-if="column === 'group_amount'">
-                        {{ formatCurrency(cost?.group_amount) }}
-                      </span>
-                      <!-- <span v-else-if="column === 'unit'">
-                        {{ getUnitsLabel(cost?.unit) }}
-                      </span> -->
+                      <template v-if="!cost.is_empty">
+                        <div
+                          class="custom-description"
+                          v-if="column === 'description'"
+                          v-html="cost[getColumnData[column]]"
+                        ></div>
+                        <span v-else-if="column === 'cost_code'">
+                          {{ cost?.cost_code_info?.name }}
+                        </span>
+                        <span v-else-if="column === 'unit_cost'">
+                          {{ formatCurrency(cost?.unit_cost) }}
+                        </span>
+                        <span v-else-if="column === 'margin'">
+                          {{ formatCurrency(cost?.margin) }}
+                        </span>
+                        <span v-else-if="column === 'markup'">
+                          {{ formatCurrency(cost?.markup) }}
+                        </span>
+                        <span v-else-if="column === 'builder_cost'">
+                          {{ formatCurrency(cost?.builder_cost) }}
+                        </span>
+                        <span v-else-if="column === 'total_price'">
+                          {{ formatCurrency(cost?.total_price) }}
+                        </span>
+                        <span v-else-if="column === 'profit'">
+                          {{ formatCurrency(cost?.profit) }}
+                        </span>
+                        <span v-else-if="column === 'group_amount'">
+                          {{ formatCurrency(cost?.group_amount) }}
+                        </span>
 
-                      <span v-else>
-                        {{ cost[getColumnData[column]] }}
-                      </span>
-                      <!-- {{ cost[getColumnData[column]] }} -->
+                        <span v-else>
+                          {{ cost[getColumnData[column]] }}
+                        </span>
+                      </template>
+                      <template v-else>
+                        <span v-if="column === 'description'">
+                          {{ cost.title ? cost.title : cost.description }}
+                        </span>
+                      </template>
                     </td>
                   </tr>
                 </tbody>

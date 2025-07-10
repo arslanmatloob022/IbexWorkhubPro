@@ -54,28 +54,11 @@ interface item {
   proposal: string | undefined;
 }
 
-const costItem = ref<item>({
+const costItem = ref({
   previousItemIndex: 0,
   index: 0,
-  id: "",
-  type: "",
-  total_price: 0,
-  cost_code: "",
-  cost_type: "",
-  builder_cost: 0,
-  internal_notes: "",
-  mark_as: "",
-  state: "",
   title: "",
   description: "",
-  quantity: 0,
-  unit: "",
-  unit_cost: 0,
-  markup: 0,
-  margin: 0,
-  profit: 0,
-  worker_cost: 0.0,
-  group: "",
   catalog: false,
   is_empty: true,
   proposal: props.proposalId,
@@ -173,12 +156,12 @@ onMounted(async () => {
     <template #content>
       <div class="modal-form columns is-multiline">
         <div class="field column is-12 mb-0">
-          <label>Title: </label>
+          <label>Section Title: </label>
           <div class="control">
             <input
               type="text"
               name="firstName"
-              v-model="costItem.title"
+              v-model="costItem.description"
               required
               class="input is-primary-focus is-primary-focus"
               placeholder="Section Title"
