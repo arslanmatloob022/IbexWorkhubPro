@@ -12,7 +12,29 @@ const emits = defineEmits<{
 }>();
 
 const props = defineProps<{
-  file?: {};
+  file?: {
+    id: "";
+    uploaded_by_info: {
+      id: "";
+      username: "";
+      last_name: "";
+      email: "";
+      role: "";
+      avatar: "";
+    };
+    file_info: {
+      url: "";
+      name: "";
+      type: "";
+      size: 0.0;
+    };
+    file: "";
+    type: "";
+    object: "";
+    created_at: "";
+    title: "";
+    uploaded_by: "";
+  };
 }>();
 
 const selectedFileToDelete = ref("");
@@ -117,8 +139,12 @@ onMounted(() => {});
       <div
         class="card-grid-item-content is-flex is-align-items-center space-between"
       >
-        <h3 @click="openDocViewModalHandler(props.file)" class="dark-inverted">
-          {{ props.file_info?.name }}
+        <h3
+          @click="openDocViewModalHandler(props.file)"
+          v-tooltip="`${props.file?.file_info?.name}`"
+          class="dark-inverted show-text-100"
+        >
+          {{ props.file?.file_info?.name }}
         </h3>
         <span>
           <span

@@ -317,7 +317,7 @@ watch(
 watch(
   () => filters.value,
   (newVal) => {
-    if (!newVal) {
+    if (newVal) {
       getCompanyJobs();
     }
   }
