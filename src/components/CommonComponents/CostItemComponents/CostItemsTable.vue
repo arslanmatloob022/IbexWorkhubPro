@@ -585,6 +585,8 @@ p {
 .datatable-table {
   border: 1px solid var(--fade-grey);
   border-collapse: collapse;
+  background: transparent !important;
+  background-color: transparent !important;
   border-radius: 0.75rem;
 
   th {
@@ -604,7 +606,7 @@ p {
   td {
     font-family: var(--font);
     vertical-align: middle;
-    background-color: #fff;
+    background-color: transparent !important;
     padding: 12px 20px;
     color: #333333;
     border-bottom: 1px solid var(--fade-grey);
@@ -618,6 +620,17 @@ p {
 
     &.datatables-empty {
       opacity: 0;
+    }
+  }
+
+  tbody {
+    tr {
+      background-color: transparent !important;
+      background: transparent !important;
+      td {
+        background-color: transparent !important;
+        background: transparent !important;
+      }
     }
   }
 
@@ -772,7 +785,11 @@ p {
     td {
       border-color: var(--dark-sidebar-light-12);
       color: var(--dark-dark-text);
-      background-color: #fff;
+      // background-color: #fff;
+    }
+    tbody tr {
+      background-color: transparent !important;
+      background: transparent !important;
     }
 
     .drinks-icon {

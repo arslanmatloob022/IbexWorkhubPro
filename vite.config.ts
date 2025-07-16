@@ -15,7 +15,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import purgecss from "rollup-plugin-purgecss";
 import UnheadVite from "@unhead/addons/vite";
 import { unheadVueComposablesImports } from "@unhead/vue";
-
+import VueDevTools from "vite-plugin-vue-devtools";
 // local vite plugin
 import { VitePluginVueroDoc } from "./vite-plugin-vuero-doc";
 import { VitePluginPurgeComments } from "./vite-plugin-purge-comments";
@@ -156,6 +156,7 @@ export default defineConfig({
      *
      * @see https://github.com/vitejs/vite/tree/main/packages/plugin-vue
      */
+    VueDevTools(),
     Vue({
       include: [/\.vue$/],
       script: {

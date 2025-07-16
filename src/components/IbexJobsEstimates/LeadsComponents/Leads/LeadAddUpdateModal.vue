@@ -145,7 +145,7 @@ const leadFormData = ref<leadData>({
   title: "",
   address: "",
   leadStatus: "open",
-  current_state: "",
+  current_state: "lead",
   city: "",
   state: "",
   status: "",
@@ -201,6 +201,7 @@ const addUpdateLeadHandler = async (loading: number = 0) => {
     leadFormData.value.notes = leadNotes.value;
     leadFormData.value.tags = JSON.stringify(tagsValue.value);
     const formDataAPI = convertToFormData(leadFormData.value, ["image"]);
+    // formDataAPI.append("current_state", "lead");
     if (!leadFormData.value.client) {
       formDataAPI.append("client", "");
     }

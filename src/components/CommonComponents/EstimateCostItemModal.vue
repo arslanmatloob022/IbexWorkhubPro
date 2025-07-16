@@ -347,14 +347,18 @@ const getCataLogItemDetail = async () => {
   }
 };
 watch(selectedCataLog, (oldVal, newVal) => {
-  let list = assumeList.value;
+  const list = assumeList.value;
   const matchedItem = list.find((item) => item.id == selectedCataLog.value);
 
   if (matchedItem) {
-    const { id, proposal_id, ...newObj } = matchedItem;
-    costItem.value = newObj;
+    const { id, proposal_id, ...rest } = matchedItem;
+    costItem.value = {
+      ...rest,
+      is_catalog: false, // 👈 override value
+    };
   }
 });
+
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
