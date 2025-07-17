@@ -443,7 +443,15 @@ onUnmounted(() => {
                 color="primary"
                 class="mt-5"
                 icon="fas fa-file-import"
-                @click="openTemplate = !openTemplate"
+                @click="
+                  () => {
+                    if (leadProposalFormData.project || props.leadId) {
+                      openTemplate = !openTemplate;
+                    } else {
+                      notyf.error('Please select a lead first');
+                    }
+                  }
+                "
                 style="width: 100%"
                 >Templates</VButton
               >

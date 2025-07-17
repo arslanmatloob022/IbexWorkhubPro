@@ -1,1 +1,0 @@
-import{a7 as e,r as n}from"./index-8e34bc27.js";const o=e("sidebar",(()=>{const e=n("none");return{active:e,toggle:function(n){e.value===n?e.value="none":e.value=n},setActive:function(n){e.value=n},close:function(){e.value="none"}}}));export{o as u};
