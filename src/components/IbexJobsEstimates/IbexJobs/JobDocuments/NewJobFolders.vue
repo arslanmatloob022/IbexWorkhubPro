@@ -164,10 +164,12 @@ let uploadingState = ref({
 const getFileUploadingStatus = async (id: any) => {
   try {
     const resp = await api.get(`api/upload-status/${id}/`);
-    notyf.info("Your files will be uploaded soon.");
-    setTimeout(() => {
+    if (resp.data.state == "SUCCESS") {
+      notyf.info("Your files will be uploaded soon.");
       fetchFolderContents(selectedObject.value);
-    }, 90000);
+    } else {
+      getFileUploadingStatus(id);
+    }
   } catch (err) {
     console.log(err);
   }

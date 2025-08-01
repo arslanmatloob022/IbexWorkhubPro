@@ -68,6 +68,9 @@ const uploadFileHandler = async () => {
     closeModalHandler();
   } catch (err) {
     console.error(err);
+    notyf.error(
+      "The selected files are too large. Please try again with fewer or smaller files."
+    );
   } finally {
     loading.value = false;
   }

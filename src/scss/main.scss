@@ -70,7 +70,9 @@ SCSS Imports
     background-position: left;
   }
 }
-
+.bg-transparent {
+  background-color: transparent !important;
+}
 .position-relative {
   position: relative;
 }

@@ -236,7 +236,9 @@ onUnmounted(() => {
             :proposalId="props.proposalId"
             :proposalData="props.leadProposalModal"
           />
-          <div class="card column is-12 mt-3 is-flex space-between">
+          <div
+            class="card bg-transparent column is-12 mt-3 is-flex space-between"
+          >
             <VButton
               size="small"
               light

@@ -379,7 +379,7 @@ onMounted(async () => {
 <template>
   <div class="modal-form columns is-multiline">
     <div
-      class="column is-12 is-flex space-between align-items-center bg-grey mx-3"
+      class="column is-12 is-flex space-between align-items-center bg-transparent mx-3"
     >
       <div class="is-flex">
         <VSnack

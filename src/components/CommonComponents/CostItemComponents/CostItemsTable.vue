@@ -104,6 +104,7 @@ const deleteCostItemHandler = async () => {
   try {
     loading.value = true;
     const response = await api.delete(`/api/cost/${selectedCostItem.value}/`);
+    selectedCostItem.value = "";
     getProposalCostItems();
     SweetAlertProps.value.isSweetAlertOpen = false;
     notyf.success("Cost item deleted");
