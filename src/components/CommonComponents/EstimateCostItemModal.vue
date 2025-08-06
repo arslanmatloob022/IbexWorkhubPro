@@ -111,7 +111,7 @@ const addUpdateCostItemHandler = async () => {
   try {
     isLoading.value = true;
     const formDataAPI = convertToFormData(costItem.value, []);
-    if (props.proposalId !== null && props.proposalId !== undefined) {
+    if (props.proposalId) {
       formDataAPI.append("proposal", props.proposalId.toString());
     }
     if (props.costItemId) {
@@ -138,12 +138,6 @@ const addUpdateCostItemHandler = async () => {
         //   object_id: response.data[0],
         // });
       }
-      // CreateActivityLog({
-      //   message: `Cost Item Create`,
-      //   action: "CREATE",
-      //   performedOnName: "Cost",
-      //   object_id: response.data[0],
-      // });
       useProposal.getProposalDetail(props.proposalId);
     }
     closeModalHandler();
@@ -184,14 +178,6 @@ const totalPrice = computed(() => {
   return Number.isFinite(value) ? Number(value.toFixed(2)) : 0;
 });
 
-// Extract markup and margin dynamically
-const calculatedMarkup = computed(() => {
-  return ((totalPrice.value - builderPrice.value) / builderPrice.value) * 100;
-});
-
-const calculatedMargin = computed(() => {
-  return ((totalPrice.value - builderPrice.value) / totalPrice.value) * 100;
-});
 const CKEditor = defineAsyncComponent(() =>
   import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
 );
@@ -203,13 +189,14 @@ const editorConfig = {
   height: "400px",
   minHeight: "400px",
 };
+
 const loading = ref(false);
 const getCostItemDetail = async () => {
   try {
     loading.value = true;
     const response = await api.get(`/api/cost/${props.costItemId}/`);
     costItem.value = response.data;
-    getMatchingCostCode();
+    // getMatchingCostCode();
   } catch (err) {
     console.log(err);
   } finally {
@@ -256,6 +243,9 @@ watch(
         console.warn("No matching item found for cost_code:", newVal);
       }
     }
+  },
+  {
+    immediate: false,
   }
 );
 
@@ -346,18 +336,19 @@ const getCataLogItemDetail = async () => {
     loading.value = false;
   }
 };
-watch(selectedCataLog, (oldVal, newVal) => {
-  const list = assumeList.value;
-  const matchedItem = list.find((item) => item.id == selectedCataLog.value);
 
-  if (matchedItem) {
-    const { id, proposal_id, ...rest } = matchedItem;
-    costItem.value = {
-      ...rest,
-      is_catalog: false, // 👈 override value
-    };
-  }
-});
+// watch(selectedCataLog, (oldVal, newVal) => {
+//   const list = assumeList.value;
+//   const matchedItem = list.find((item) => item.id == selectedCataLog.value);
+
+//   if (matchedItem) {
+//     const { id, proposal_id, ...rest } = matchedItem;
+//     costItem.value = {
+//       ...rest,
+//       is_catalog: false, // 👈 override value
+//     };
+//   }
+// });
 
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
@@ -365,18 +356,13 @@ onMounted(async () => {
   );
   if (props.previousItemIndex) {
     costItem.value.previousItemIndex = props.previousItemIndex;
-    // props.previousItemIndex
   }
   if (props.costItemId) {
     getCostItemDetail();
   }
   getUnits();
   getCostCodesHandler();
-  // useCostCodes.getCostCodesHandler();
   getCataLogItemDetail();
-  // if () {
-  // getMatchingCostCode();
-  // }
   getCostTypes();
 });
 </script>

@@ -20,38 +20,17 @@ const emit = defineEmits<{
 const centeredActionsOpen = ref(false);
 
 const props = defineProps<{
-  leadProposalModal?: boolean;
   proposalId?: string;
   proposalData?: any;
 }>();
 
-function DataURIToBlob(dataURI: string) {
-  const splitDataURI = dataURI.split(",");
-  const byteString =
-    splitDataURI[0].indexOf("base64") >= 0
-      ? atob(splitDataURI[1])
-      : decodeURI(splitDataURI[1]);
-  const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
-  const ia = new Uint8Array(byteString.length);
-  for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-  return new Blob([ia], { type: mimeString });
-}
 const tab = ref<"worksheet" | "format" | "preview">("worksheet");
-const CKEditor = defineAsyncComponent(() =>
-  import("@ckeditor/ckeditor5-vue").then((m) => m.default.component)
-);
-
-const editorConfig = {
-  fontFamily: {
-    options: ['"Montserrat", sans-serif', '"Roboto", sans-serif'],
-  },
-  height: "400px",
-  minHeight: "400px",
-};
 
 const getProposalCostItems = async () => {
   try {
     proposalStore.getProposalCostItems(props.proposalId);
+    emit("update:OnSuccess", null);
+    // notyf.green("calling in sheet");
   } catch (err) {
     console.log(err);
   } finally {
@@ -129,6 +108,7 @@ onUnmounted(() => {
             v-if="props.proposalData?.proposalAmount"
             class="title is-6 mt-5 mr-3"
           >
+            <!-- {{ props.proposalData }} -->
             Total Amount:
             {{ formatAmount(props.proposalData?.proposalAmount) }}
           </h1>
@@ -172,27 +152,27 @@ onUnmounted(() => {
           >
         </div>
       </div>
-      <TransitionGroup class="fade-slow" name="fade-slow">
-        <div v-if="showDropdown" class="column is-12">
-          <VField
-            v-slot="{ id }"
-            label="Choose what to show to lead"
-            class="column is-12"
-          >
-            <VControl>
-              <Multiselect
-                v-model="selectedColumnsToShow"
-                :attrs="{ id }"
-                mode="tags"
-                :searchable="true"
-                :create-tag="true"
-                :options="columnsTitle"
-                placeholder="Add columns"
-              />
-            </VControl>
-          </VField>
-        </div>
-      </TransitionGroup>
+      <!-- <TransitionGroup class="fade-slow" name="fade-slow"> -->
+      <div v-if="showDropdown" class="column is-12">
+        <VField
+          v-slot="{ id }"
+          label="Choose what to show to lead"
+          class="column is-12"
+        >
+          <VControl>
+            <Multiselect
+              v-model="selectedColumnsToShow"
+              :attrs="{ id }"
+              mode="tags"
+              :searchable="true"
+              :create-tag="true"
+              :options="columnsTitle"
+              placeholder="Add columns"
+            />
+          </VControl>
+        </VField>
+      </div>
+      <!-- </TransitionGroup> -->
       <div class="tabs-wrapper column is-12 m-0">
         <div class="tabs-inner mt-4">
           <div class="tabs is-boxed">
@@ -229,86 +209,73 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <TransitionGroup class="fade-slow" name="slide-x">
-        <div v-if="tab === 'worksheet'" class="column is-12">
-          <CostItemsTable
-            :columnsToShow="selectedColumnsToShow"
-            :proposalId="props.proposalId"
-            :proposalData="props.leadProposalModal"
-          />
-          <div
-            class="card bg-transparent column is-12 mt-3 is-flex space-between"
+      <!-- <TransitionGroup class="fade-slow" name="slide-x"> -->
+      <div v-if="tab === 'worksheet'" class="column is-12">
+        <CostItemsTable
+          :columnsToShow="selectedColumnsToShow"
+          :proposalId="props.proposalId"
+          :proposalData="props.proposalData"
+          @update:onsuccess="
+            () => {
+              emit('update:OnSuccess', null);
+              // notyf.success('calling');
+            }
+          "
+        />
+        <div
+          class="card bg-transparent column is-12 mt-3 is-flex space-between"
+        >
+          <VButton
+            size="small"
+            light
+            outlined
+            color="primary"
+            @click="addCostItemModal = !addCostItemModal"
           >
-            <VButton
-              size="small"
-              light
-              outlined
-              color="primary"
-              @click="addCostItemModal = !addCostItemModal"
+            Add Item</VButton
+          >
+          <div>
+            Total Amount:
+            <h1
+              v-if="props.proposalData?.proposalAmount"
+              class="title is-6 ml-2"
             >
-              Add Item</VButton
-            >
-            <div>
-              Total Amount:
-              <h1
-                v-if="props.proposalData?.proposalAmount"
-                class="title is-6 ml-2"
-              >
-                {{ formatAmount(props.proposalData?.proposalAmount) }}
-              </h1>
-            </div>
+              {{ formatAmount(props.proposalData?.proposalAmount) }}
+            </h1>
           </div>
         </div>
-      </TransitionGroup>
+      </div>
+      <!-- </TransitionGroup> -->
 
-      <TransitionGroup class="fade-slow" name="slide-x">
-        <div v-if="tab === 'format'" class="column is-12">
-          <!-- <div class="columns is-multiline">
-            <VField
-              v-slot="{ id }"
-              label="Choose what to show to lead"
-              class="column is-12"
-            >
-              <VControl>
-                <Multiselect
-                  v-model="selectedColumnsToShow"
-                  :attrs="{ id }"
-                  mode="tags"
-                  :searchable="true"
-                  :create-tag="true"
-                  :options="columnsTitle"
-                  placeholder="Add tags"
-                />
-              </VControl>
-            </VField>
-          </div> -->
-          <VCard class="columns is-multiline m-0">
-            <div class="column is-12" style="text-align: center">
-              <h1 class="title is-4">Connect your clients to their projects</h1>
-              <h1 class="title is-5">
-                Create a client contact and assign them to jobs and lead
-                opportunities effortlessly.
-              </h1>
-            </div>
-            <div class="column is-12">
-              <CostItemsTable
-                :columnsToShow="selectedColumnsToShow"
-                :proposalId="props.proposalId"
-              />
-            </div>
-          </VCard>
-        </div>
-      </TransitionGroup>
+      <!-- <TransitionGroup class="fade-slow" name="slide-x"> -->
+      <div v-if="tab === 'format'" class="column is-12">
+        <VCard class="columns is-multiline m-0">
+          <div class="column is-12" style="text-align: center">
+            <h1 class="title is-4">Connect your clients to their projects</h1>
+            <h1 class="title is-5">
+              Create a client contact and assign them to jobs and lead
+              opportunities effortlessly.
+            </h1>
+          </div>
+          <div class="column is-12">
+            <CostItemsTable
+              :columnsToShow="selectedColumnsToShow"
+              :proposalId="props.proposalId"
+            />
+          </div>
+        </VCard>
+      </div>
+      <!-- </TransitionGroup> -->
 
-      <TransitionGroup class="fade-slow" name="slide-x">
-        <div v-if="tab === 'preview'" class="column is-12">
-          <ProposalPreview
-            :proposalData="props.proposalData"
-            :proposalId="props.proposalId"
-            :columnsToShow="selectedColumnsToShow"
-          />
-        </div>
-      </TransitionGroup>
+      <!-- <TransitionGroup class="fade-slow" name="slide-x"> -->
+      <div v-if="tab === 'preview'" class="column is-12">
+        <ProposalPreview
+          :proposalData="props.proposalData"
+          :proposalId="props.proposalId"
+          :columnsToShow="selectedColumnsToShow"
+        />
+      </div>
+      <!-- </TransitionGroup> -->
     </div>
 
     <AddSectionLineModal

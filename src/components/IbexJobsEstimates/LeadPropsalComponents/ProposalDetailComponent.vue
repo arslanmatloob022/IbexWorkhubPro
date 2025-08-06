@@ -21,135 +21,165 @@ const router = useRouter();
 const openCreateTemplate = ref(false);
 const openEstimatesModal = ref(false);
 const selectedProposalsIds = ref([]);
-const proposalData = ref({
-  id: "6514840e-97e7-443c-b383-0b1368aee7ba",
+interface UserInfo {
+  id: string;
+  username: string;
+  last_name: string;
+  email: string;
+  role: string;
+  avatar: string | null;
+}
+
+interface ClientInfo extends UserInfo {}
+interface ContractorInfo extends UserInfo {}
+interface ManagerInfo extends UserInfo {}
+
+interface JobInfo {
+  id: string;
+  sales_people_info: UserInfo[];
+  clientInfo: ClientInfo;
+  created_by_info: UserInfo | null;
+  contractor_info: ContractorInfo;
+  managers_list: ManagerInfo[];
+  title: string;
+  description: string;
+  image: string;
+  color: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  is_active: boolean;
+  address: string;
+  wifiAvaliabe: boolean;
+  parkingAvaliable: boolean;
+  property_features: any;
+  created: string;
+  uploaded_files: any[];
+  leadStatus: string;
+  current_state: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  confidence: string;
+  sale_date: string | null;
+  estimated_from: string | null;
+  estimated_to: string | null;
+  tags: string[];
+  sources: string | null;
+  project_type: string | null;
+  notes: string;
+  attach_mail: string | null;
+  latitude: number;
+  longitude: number;
+  client: string;
+  contractor: string;
+  created_by: string | null;
+  managers: string[];
+  sales_people: string[];
+}
+
+interface ProposalData {
+  id: string;
+  jobInfo: JobInfo;
+  proposalAmount: number;
+  cost_items: number;
+  title: string;
+  approval_deadline: string;
+  internal_notes: string;
+  introductory_text: string | null;
+  closing_text: string | null;
+  payment_status: string;
+  type: string;
+  status: string;
+  columns_to_show: string[];
+  client_note: string | null;
+  created_at: string;
+  updated_at: string;
+  is_task_created: boolean;
+  is_template: boolean;
+  job: string | null;
+  project: string;
+}
+
+const proposalData = ref<ProposalData>({
+  id: "",
   jobInfo: {
-    id: "1be101da-7a93-43af-b3e3-d1ca908aa2c9",
-    sales_people_info: [
-      {
-        id: "085f43b6-e869-495e-a712-781324ecc497",
-        username: "Arslan",
-        last_name: "Matloob",
-        email: "raoarslan263@gmail.com",
-        role: "admin",
-        avatar: null,
-      },
-      {
-        id: "709ef38f-b1e3-48f2-8cd9-5a8e3e0c9a1b",
-        username: "APIs",
-        last_name: "Dev",
-        email: "api@dev.com",
-        role: "admin",
-        avatar: null,
-      },
-      {
-        id: "0feda007-d8a0-4b96-acb7-d7763614854e",
-        username: "Test &",
-        last_name: "Dev",
-        email: "test@dev.com",
-        role: "admin",
-        avatar:
-          "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/Screenshot_from_2025-01-17_15-14-32.png",
-      },
-    ],
+    id: "",
+    sales_people_info: [],
     clientInfo: {
-      id: "5989539e-7914-47de-b29f-6009df3887da",
-      username: "Client",
-      last_name: "Test",
-      email: "testclient@ibex.com",
-      role: "client",
-      avatar:
-        "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/Untitled_design.png",
+      id: "",
+      username: "",
+      last_name: "",
+      email: "",
+      role: "",
+      avatar: null,
     },
     created_by_info: null,
     contractor_info: {
-      id: "4a097ddf-49cd-4274-9db9-c17de02f7847",
-      username: "Leighton Cash",
+      id: "",
+      username: "",
       last_name: "",
-      email: "lc@ibex.com",
-      role: "contractor",
+      email: "",
+      role: "",
       avatar: null,
     },
-    managers_list: [
-      {
-        id: "0d8a9a08-b932-463c-8795-5bd290f88c1a",
-        username: "Test",
-        last_name: "Manager",
-        email: "raoarslanmatloob@gmail.com",
-        role: "manager",
-        avatar:
-          "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/users_avatars/not-available_j5Ubfud.png",
-      },
-    ],
-    title: "HENNING (Test Arslan)",
+    managers_list: [],
+    title: "",
     description: "",
-    image:
-      "https://ibex-documents.s3.us-east-2.amazonaws.com/public/static/projects_images/powerpoint.png",
-    color: "#2c3e50",
-    startDate: "2025-03-03",
-    endDate: "2025-03-08",
-    status: "completed",
+    image: "",
+    color: "",
+    startDate: "",
+    endDate: "",
+    status: "",
     is_active: false,
-    address: "Lahore, 54000, Pakistan",
+    address: "",
     wifiAvaliabe: false,
     parkingAvaliable: false,
     property_features: null,
-    created: "2025-02-20T14:42:53.915448-05:00",
+    created: "",
     uploaded_files: [],
-    leadStatus: "open",
-    current_state: "job",
-    city: "Lahore",
-    state: "Punjab",
-    zip_code: "54000",
-    confidence: "0.00",
+    leadStatus: "",
+    current_state: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    confidence: "",
     sale_date: null,
     estimated_from: null,
     estimated_to: null,
-    tags: ["Lead", "Floor Work", "Tile Work", "Carpenter"],
-    sources: "Contact Form",
+    tags: [],
+    sources: "",
     project_type: null,
-    notes:
-      "<p>We’re excited to have you on board as our <strong>Marketing Expert and Social Media Manager</strong>. Looking forward to your <i>creativity</i>, <i>insights</i>, and the amazing work ahead. Here's to filling the gap with the perfect fit—we're glad you're here!</p>",
+    notes: "",
     attach_mail: null,
-    latitude: 31.5440886,
-    longitude: 74.3839007,
-    client: "5989539e-7914-47de-b29f-6009df3887da",
-    contractor: "4a097ddf-49cd-4274-9db9-c17de02f7847",
+    latitude: 0.0,
+    longitude: 0.0,
+    client: "",
+    contractor: "",
     created_by: null,
-    managers: ["0d8a9a08-b932-463c-8795-5bd290f88c1a"],
-    sales_people: [
-      "085f43b6-e869-495e-a712-781324ecc497",
-      "709ef38f-b1e3-48f2-8cd9-5a8e3e0c9a1b",
-      "0feda007-d8a0-4b96-acb7-d7763614854e",
-    ],
+    managers: [],
+    sales_people: [],
   },
   proposalAmount: 0,
   cost_items: 0,
-  title: "Test propoosal",
-  approval_deadline: "2025-04-30",
-  internal_notes: "Internal notes",
+  title: "",
+  approval_deadline: "",
+  internal_notes: "",
   introductory_text: null,
   closing_text: null,
-  payment_status: "Pending",
-  type: "draft",
-  status: "pending",
-  columns_to_show: [
-    "title",
-    "cost_code",
-    "description",
-    "quantity",
-    "unit_cost",
-    "unit",
-    "total_price",
-  ],
+  payment_status: "",
+  type: "",
+  status: "",
+  columns_to_show: [],
   client_note: null,
-  created_at: "2025-05-05T12:45:39.264071-04:00",
-  updated_at: "2025-05-23T13:57:27.955954-04:00",
+  created_at: "",
+  updated_at: "",
   is_task_created: false,
   is_template: false,
   job: null,
-  project: "1be101da-7a93-43af-b3e3-d1ca908aa2c9",
+  project: "",
 });
+
 const openCreateTasksModal = ref(false);
 const selectedProposalId = ref("");
 const loading = ref(false);
@@ -249,11 +279,11 @@ const leadProposalFormData = ref({
 
 const getProposalDetail = async () => {
   try {
+    // notyf.blue("calling in detail");
     const response = await api.get(
       `/api/lead-proposal/${route.params.id}/detail/`
     );
     leadProposalFormData.value = response.data;
-    useProposal.getProposalCostItems(route.params.id);
   } catch (err) {
     console.log(err);
   } finally {
@@ -287,6 +317,7 @@ const DeleteProposalHandler = async () => {
     loading.value = false;
   }
 };
+
 const openProposalAlert = (status: any) => {
   selectedStatus.value = status;
   SweetAlertProps.value = {
@@ -333,18 +364,6 @@ const updateProposal = async (payload: any) => {
   }
 };
 const openLeadProposalModal = ref(false);
-function DataURIToBlob(dataURI: string) {
-  const splitDataURI = dataURI.split(",");
-  const byteString =
-    splitDataURI[0].indexOf("base64") >= 0
-      ? atob(splitDataURI[1])
-      : decodeURI(splitDataURI[1]);
-  const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
-  const ia = new Uint8Array(byteString.length);
-  for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-  return new Blob([ia], { type: mimeString });
-}
-
 const openSendProposalModalHandler = () => {
   proposalData.value = useProposal.leadProposalFormData;
   selectedProposalsIds.value.push(useProposal.leadProposalFormData);
@@ -363,7 +382,7 @@ const openEstimateFileModalHandler = () => {
 const getProposalDetailItem = () => {
   if (props.proposalId || route.params.id) {
     getProposalDetail();
-    useProposal.getProposalDetail(props.proposalId || route.params.id);
+    // useProposal.getProposalDetail(props.proposalId || route.params.id);
   }
 };
 
@@ -377,351 +396,351 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="modal-form columns is-multiline">
-    <div
-      class="column is-12 is-flex space-between align-items-center bg-transparent mx-3"
-    >
-      <div class="is-flex">
-        <VSnack
-          v-if="leadProposalFormData.is_task_created"
-          title="Calendar Tasks Created "
-          white
-          class="ml-2"
-          color="info"
-          icon="fas fa-calendar-check"
-        >
-        </VSnack>
-        <VButton
-          @click="openProposalAlert('approved')"
-          size="small"
-          v-if="leadProposalFormData.status != 'approved'"
-          class="ml-2"
-          light
-          outlined
-          color="info"
-          raised
-        >
-          Approve Proposal
-        </VButton>
-        <VButton
-          v-else
-          light
-          size="small"
-          color="primary"
-          class="ml-1 mt-1"
-          icon="fas fa-check-circle"
-        >
-          Approved
-        </VButton>
-        <VButton
-          size="small"
-          class="mr-2"
-          light
-          outlined
-          color="success"
-          raised
-          @click="openCreateTasksModalHandler(route.params.id)"
-          v-if="
-            !leadProposalFormData.is_task_created &&
-            leadProposalFormData.status == 'approved'
-          "
-        >
-          Generate Tasks
-        </VButton>
-      </div>
-      <div class="is-flex">
-        <div
-          v-if="fileLoading2 || fileLoading == 3"
-          class="rounded-loader mr-2"
-        ></div>
-
-        <VButton
-          size="small"
-          class="mr-2"
-          v-tooltip.rounded.dark.bottom="`Update Proposal`"
-          outlined
-          color="info"
-          raised
-          @click="openLeadProposalModal = true"
-        >
-          <i class="fas fa-pen" aria-hidden="true"></i>
-        </VButton>
-
-        <VButton
-          size="small"
-          class="mr-2"
-          v-tooltip.rounded.dark.bottom="`Upload File To Create Estimates`"
-          outlined
-          color="dark"
-          raised
-          @click="openEstimateFileModalHandler"
-        >
-          <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
-        </VButton>
-
-        <VButton
-          size="small"
-          class="mr-2"
-          light
-          v-tooltip.rounded.primary.bottom="`Create Template Of This Proposal`"
-          outlined
-          @click="openCreateTemplate = !openCreateTemplate"
-          color="primary"
-          raised
-        >
-          <i class="fas fa-copy"> </i>
-        </VButton>
-
-        <VButton
-          size="small"
-          class="mr-2"
-          light
-          v-tooltip.rounded.warning.bottom="`Attach in email`"
-          outlined
-          @click="openSendProposalModalHandler"
-          color="warning"
-          raised
-        >
-          <i class="fas fa-envelope"> </i>
-        </VButton>
-        <VButton
-          size="small"
-          outlined
-          light
-          class="mr-2"
-          v-tooltip.rounded.info.bottom="`Download Proposal As PDF`"
-          @click="downloadProposalPdf(leadProposalFormData)"
-          color="info"
-          raised
-        >
-          <i class="fas fa-cloud-download-alt" aria-hidden="true"></i>
-        </VButton>
-        <VButton
-          size="small"
-          class="mr-2"
-          light
-          v-tooltip.rounded.danger.bottom="`Delete Proposal`"
-          outlined
-          @click="openProposalDeleteAlert(leadProposalFormData.id)"
-          color="danger"
-          raised
-        >
-          <i class="fas fa-trash" />
-        </VButton>
-      </div>
-    </div>
-    <div
-      v-if="
-        leadProposalFormData.client_note &&
-        leadProposalFormData.status == 'review'
-      "
-      class="column is-12"
-    >
-      <VMessage color="warning">
-        {{ leadProposalFormData.client_note }}</VMessage
+  <div>
+    <div class="modal-form columns is-multiline">
+      <div
+        class="column is-12 is-flex space-between align-items-center bg-transparent mx-3"
       >
-    </div>
-    <div class="field column is-6 mb-0">
-      <label>Title: *</label>
-      <div class="control">
-        <input
-          type="text"
-          name="firstName"
-          v-model="leadProposalFormData.title"
-          required
-          disabled
-          class="input is-primary-focus is-primary-focus"
-          placeholder="Proposal Title"
-        />
-      </div>
-    </div>
-    <div class="column is-6">
-      <VField class="m-0 p-0" label="Type">
-        <VControl>
-          <VRadio
-            v-model="leadProposalFormData.type"
-            value="proposal"
-            label="Proposal"
-            name="solid_squared_radio"
-            color="primary"
-            square
-            @update:model-value="updateProposal({ type: 'proposal' })"
-            solid
-          />
-
-          <VRadio
-            v-model="leadProposalFormData.type"
-            value="change_order"
-            @update:model-value="updateProposal({ type: 'change_order' })"
-            label="Change Order"
-            name="solid_squared_radio"
+        <div class="is-flex">
+          <VSnack
+            v-if="leadProposalFormData.is_task_created"
+            title="Calendar Tasks Created "
+            white
+            class="ml-2"
             color="info"
-            square
-            solid
-          />
+            icon="fas fa-calendar-check"
+          >
+          </VSnack>
+          <VButton
+            @click="openProposalAlert('approved')"
+            size="small"
+            v-if="leadProposalFormData.status != 'approved'"
+            class="ml-2"
+            light
+            outlined
+            color="info"
+            raised
+          >
+            Approve Proposal
+          </VButton>
+          <VButton
+            v-else
+            light
+            size="small"
+            color="primary"
+            class="ml-1 mt-1"
+            icon="fas fa-check-circle"
+          >
+            Approved
+          </VButton>
+          <VButton
+            size="small"
+            class="mr-2"
+            light
+            outlined
+            color="success"
+            raised
+            @click="openCreateTasksModalHandler(route.params.id)"
+            v-if="
+              !leadProposalFormData.is_task_created &&
+              leadProposalFormData.status == 'approved'
+            "
+          >
+            Generate Tasks
+          </VButton>
+        </div>
+        <div class="is-flex">
+          <div
+            v-if="fileLoading2 || fileLoading == 3"
+            class="rounded-loader mr-2"
+          ></div>
 
-          <VRadio
-            v-model="leadProposalFormData.type"
-            value="draft"
-            label="Draft"
-            @update:model-value="updateProposal({ type: 'draft' })"
-            name="solid_squared_radio"
+          <VButton
+            size="small"
+            class="mr-2"
+            v-tooltip.rounded.dark.bottom="`Update Proposal`"
+            outlined
+            color="info"
+            raised
+            @click="openLeadProposalModal = true"
+          >
+            <i class="fas fa-pen" aria-hidden="true"></i>
+          </VButton>
+
+          <VButton
+            size="small"
+            class="mr-2"
+            v-tooltip.rounded.dark.bottom="`Upload File To Create Estimates`"
+            outlined
+            color="dark"
+            raised
+            @click="openEstimateFileModalHandler"
+          >
+            <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+          </VButton>
+
+          <VButton
+            size="small"
+            class="mr-2"
+            light
+            v-tooltip.rounded.primary.bottom="
+              `Create Template Of This Proposal`
+            "
+            outlined
+            @click="openCreateTemplate = !openCreateTemplate"
+            color="primary"
+            raised
+          >
+            <i class="fas fa-copy"> </i>
+          </VButton>
+
+          <VButton
+            size="small"
+            class="mr-2"
+            light
+            v-tooltip.rounded.warning.bottom="`Attach in email`"
+            outlined
+            @click="openSendProposalModalHandler"
             color="warning"
-            square
-            solid
-          />
-        </VControl>
-      </VField>
-    </div>
-    <div class="field column is-6">
-      <label>Approval Deadline *</label>
-      <div class="control">
-        <input
-          type="date"
-          name="firstName"
-          v-model="leadProposalFormData.approval_deadline"
-          disabled
-          class="input is-primary-focus is-primary-focus"
-          placeholder="Proposal Approval deadline"
-        />
+            raised
+          >
+            <i class="fas fa-envelope"> </i>
+          </VButton>
+          <VButton
+            size="small"
+            outlined
+            light
+            class="mr-2"
+            v-tooltip.rounded.info.bottom="`Download Proposal As PDF`"
+            @click="downloadProposalPdf(leadProposalFormData)"
+            color="info"
+            raised
+          >
+            <i class="fas fa-cloud-download-alt" aria-hidden="true"></i>
+          </VButton>
+          <VButton
+            size="small"
+            class="mr-2"
+            light
+            v-tooltip.rounded.danger.bottom="`Delete Proposal`"
+            outlined
+            @click="openProposalDeleteAlert(leadProposalFormData.id)"
+            color="danger"
+            raised
+          >
+            <i class="fas fa-trash" />
+          </VButton>
+        </div>
       </div>
-    </div>
-    <div class="field column is-6">
-      <label>Attachments</label>
-      <VField grouped>
-        <VControl>
-          <div class="file">
-            <label class="file-label">
-              <input class="file-input" type="file" name="resume" />
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-cloud-upload-alt" />
-                </span>
-                <span class="file-label"> Choose a file… </span>
-              </span>
-            </label>
-          </div>
-        </VControl>
-      </VField>
-    </div>
-    <div class="field column is-12">
-      <VCollapse
-        :items="data"
-        with-chevron
-        style="border-radius: 14px"
-        class="m-3"
+      <div
+        v-if="
+          leadProposalFormData.client_note &&
+          leadProposalFormData.status == 'review'
+        "
+        class="column is-12"
       >
-        <template #collapse-item-content="item">
-          <div class="body-inner-content">
-            <div class="field columns is-multiline mb-0">
-              <div class="field column is-11 mb-0">
-                <label for="" class="label">Internal Notes</label>
-                <VField>
-                  <VControl>
-                    <VTextarea
-                      v-model="leadProposalFormData.internalNotes"
-                      rows="4"
-                      placeholder="Internal notes..."
-                    />
-                  </VControl>
-                </VField>
-              </div>
-              <div class="field column is-11 mb-0">
-                <label for="" class="label">Introductory Text</label>
+        <VMessage color="warning">
+          {{ leadProposalFormData.client_note }}</VMessage
+        >
+      </div>
+      <div class="field column is-6 mb-0">
+        <label>Title: *</label>
+        <div class="control">
+          <input
+            type="text"
+            name="firstName"
+            v-model="leadProposalFormData.title"
+            required
+            disabled
+            class="input is-primary-focus is-primary-focus"
+            placeholder="Proposal Title"
+          />
+        </div>
+      </div>
+      <div class="column is-6">
+        <VField class="m-0 p-0" label="Type">
+          <VControl>
+            <VRadio
+              v-model="leadProposalFormData.type"
+              value="proposal"
+              label="Proposal"
+              name="solid_squared_radio"
+              color="primary"
+              square
+              @update:model-value="updateProposal({ type: 'proposal' })"
+              solid
+            />
 
-                <CKEditor
-                  v-if="editor"
-                  v-model="leadProposalFormData.introductoryText"
-                  :editor="editor"
-                  :config="editorConfig"
-                />
-              </div>
-              <div class="field column is-11 mb-0">
-                <label for="" class="label">Closing Text</label>
-                <CKEditor
-                  v-if="editor"
-                  v-model="leadProposalFormData.closingText"
-                  :editor="editor"
-                  :config="editorConfig"
-                />
+            <VRadio
+              v-model="leadProposalFormData.type"
+              value="change_order"
+              @update:model-value="updateProposal({ type: 'change_order' })"
+              label="Change Order"
+              name="solid_squared_radio"
+              color="info"
+              square
+              solid
+            />
+
+            <VRadio
+              v-model="leadProposalFormData.type"
+              value="draft"
+              label="Draft"
+              @update:model-value="updateProposal({ type: 'draft' })"
+              name="solid_squared_radio"
+              color="warning"
+              square
+              solid
+            />
+          </VControl>
+        </VField>
+      </div>
+      <div class="field column is-6">
+        <label>Approval Deadline *</label>
+        <div class="control">
+          <input
+            type="date"
+            name="firstName"
+            v-model="leadProposalFormData.approval_deadline"
+            disabled
+            class="input is-primary-focus is-primary-focus"
+            placeholder="Proposal Approval deadline"
+          />
+        </div>
+      </div>
+      <div class="field column is-6">
+        <label>Attachments</label>
+        <VField grouped>
+          <VControl>
+            <div class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" name="resume" />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-cloud-upload-alt" />
+                  </span>
+                  <span class="file-label"> Choose a file… </span>
+                </span>
+              </label>
+            </div>
+          </VControl>
+        </VField>
+      </div>
+      <div class="field column is-12 m-3">
+        <VCollapse :items="data" with-chevron>
+          <template #collapse-item-content="item">
+            <div class="body-inner-content">
+              <div class="field columns is-multiline mb-0">
+                <div class="field column is-11 mb-0">
+                  <label for="" class="label">Internal Notes</label>
+                  <VField>
+                    <VControl>
+                      <VTextarea
+                        v-model="leadProposalFormData.internalNotes"
+                        rows="4"
+                        placeholder="Internal notes..."
+                      />
+                    </VControl>
+                  </VField>
+                </div>
+                <div class="field column is-11 mb-0">
+                  <label for="" class="label">Introductory Text</label>
+
+                  <CKEditor
+                    v-if="editor"
+                    v-model="leadProposalFormData.introductoryText"
+                    :editor="editor"
+                    :config="editorConfig"
+                  />
+                </div>
+                <div class="field column is-11 mb-0">
+                  <label for="" class="label">Closing Text</label>
+                  <CKEditor
+                    v-if="editor"
+                    v-model="leadProposalFormData.closingText"
+                    :editor="editor"
+                    :config="editorConfig"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </template>
-      </VCollapse>
-    </div>
-    <div class="column is-12">
-      <WorksheetItems
-        :proposalData="leadProposalFormData"
-        :proposalId="route.params.id"
+          </template>
+        </VCollapse>
+      </div>
+      <div class="column is-12">
+        <WorksheetItems
+          :proposalData="leadProposalFormData"
+          :proposalId="route.params.id"
+          @update:OnSuccess="getProposalDetail"
+        />
+      </div>
+
+      <SweetAlert
+        v-if="SweetAlertProps.isSweetAlertOpen"
+        :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
+        :title="SweetAlertProps.title"
+        :subtitle="SweetAlertProps.subtitle"
+        :btntext="SweetAlertProps.btntext"
+        :onConfirm="updateProposalStatus"
+        :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+      />
+      <SweetAlert
+        v-if="DeleteSweetAlertProps.isSweetAlertOpen"
+        :isSweetAlertOpen="DeleteSweetAlertProps.isSweetAlertOpen"
+        :title="DeleteSweetAlertProps.title"
+        :subtitle="DeleteSweetAlertProps.subtitle"
+        :btntext="DeleteSweetAlertProps.btntext"
+        :onConfirm="DeleteProposalHandler"
+        :onCancel="() => (DeleteSweetAlertProps.isSweetAlertOpen = false)"
+      />
+      <CreateProposalTasksModal
+        v-if="openCreateTasksModal"
+        :createProposalTasksModal="openCreateTasksModal"
+        :proposalId="selectedProposalId"
+        @closeModalHandler="openCreateTasksModal = false"
+      />
+      <SendProposalEmailModal
+        v-if="openSendProposalModal"
+        :proposalSenderModal="openSendProposalModal"
+        :selectedProposalsIds="selectedProposalsIds"
+        :proposalData="proposalData"
+        @update:modalHandler="
+          openSendProposalModal = false;
+          selectedProposalsIds = [];
+        "
       />
     </div>
-
-    <SweetAlert
-      v-if="SweetAlertProps.isSweetAlertOpen"
-      :isSweetAlertOpen="SweetAlertProps.isSweetAlertOpen"
-      :title="SweetAlertProps.title"
-      :subtitle="SweetAlertProps.subtitle"
-      :btntext="SweetAlertProps.btntext"
-      :onConfirm="updateProposalStatus"
-      :onCancel="() => (SweetAlertProps.isSweetAlertOpen = false)"
+    <UploadEstimateFileModal
+      v-if="openEstimatesModal"
+      :openEstimatesModal="openEstimatesModal"
+      :proposalId="route.params.id"
+      @close:ModalHandler="openEstimatesModal = false"
+      @update:OnSuccess="getProposalDetailItem"
     />
-    <SweetAlert
-      v-if="DeleteSweetAlertProps.isSweetAlertOpen"
-      :isSweetAlertOpen="DeleteSweetAlertProps.isSweetAlertOpen"
-      :title="DeleteSweetAlertProps.title"
-      :subtitle="DeleteSweetAlertProps.subtitle"
-      :btntext="DeleteSweetAlertProps.btntext"
-      :onConfirm="DeleteProposalHandler"
-      :onCancel="() => (DeleteSweetAlertProps.isSweetAlertOpen = false)"
-    />
-    <CreateProposalTasksModal
-      v-if="openCreateTasksModal"
-      :createProposalTasksModal="openCreateTasksModal"
-      :proposalId="selectedProposalId"
-      @closeModalHandler="openCreateTasksModal = false"
-    />
-    <SendProposalEmailModal
-      v-if="openSendProposalModal"
-      :proposalSenderModal="openSendProposalModal"
-      :selectedProposalsIds="selectedProposalsIds"
-      :proposalData="proposalData"
-      @update:modalHandler="
-        openSendProposalModal = false;
-        selectedProposalsIds = [];
+    <CreateTemplateModal
+      v-if="openCreateTemplate"
+      :proposalId="route.params.id"
+      :openCreateTemplate="openCreateTemplate"
+      @update:OnSuccess="
+        () => {
+          props.proposalId || route.params.id ? getProposalDetail() : '';
+        }
       "
+      @update:modalHandler="openCreateTemplate = false"
+    ></CreateTemplateModal>
+    <LeadProposalModal
+      v-if="openLeadProposalModal"
+      :leadId="proposalData.project"
+      :proposalId="route.params.id"
+      :leadProposalModal="openLeadProposalModal"
+      :getLeadsList="false"
+      @update:modalHandler="
+        () => {
+          getProposalDetailItem();
+          openLeadProposalModal = false;
+        }
+      "
+      @clearProposalId="selectedProposalId = ''"
     />
   </div>
-  <UploadEstimateFileModal
-    v-if="openEstimatesModal"
-    :openEstimatesModal="openEstimatesModal"
-    :proposalId="route.params.id"
-    @close:ModalHandler="openEstimatesModal = false"
-    @update:OnSuccess="getProposalDetailItem"
-  />
-  <CreateTemplateModal
-    v-if="openCreateTemplate"
-    :proposalId="route.params.id"
-    :openCreateTemplate="openCreateTemplate"
-    @update:OnSuccess="
-      () => {
-        props.proposalId || route.params.id ? getProposalDetail() : '';
-      }
-    "
-    @update:modalHandler="openCreateTemplate = false"
-  ></CreateTemplateModal>
-  <LeadProposalModal
-    v-if="openLeadProposalModal"
-    :leadId="proposalData.project"
-    :proposalId="route.params.id"
-    :leadProposalModal="openLeadProposalModal"
-    :getLeadsList="false"
-    @update:modalHandler="
-      () => {
-        getProposalDetailItem();
-        openLeadProposalModal = false;
-      }
-    "
-    @clearProposalId="selectedProposalId = ''"
-  />
 </template>

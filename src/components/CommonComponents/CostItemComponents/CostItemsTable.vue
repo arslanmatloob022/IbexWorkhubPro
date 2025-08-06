@@ -25,6 +25,10 @@ const props = defineProps<{
   proposalId?: any;
 }>();
 
+const emits = defineEmits<{
+  (e: "update:onsuccess", value: null): void;
+}>();
+
 const SweetAlertProps = ref({
   title: "",
   subtitle: "test",
@@ -105,7 +109,8 @@ const deleteCostItemHandler = async () => {
     loading.value = true;
     const response = await api.delete(`/api/cost/${selectedCostItem.value}/`);
     selectedCostItem.value = "";
-    getProposalCostItems();
+    emits("update:onsuccess", null);
+    getProposalCostItems(props.proposalId);
     SweetAlertProps.value.isSweetAlertOpen = false;
     notyf.success("Cost item deleted");
   } catch (Err) {
@@ -128,6 +133,7 @@ const openProposalCostItems = (cost: any) => {
 };
 
 const getProposalCostItems = (id: any) => {
+  emits("update:onsuccess", null);
   useProposal.getProposalCostItems(id ? id : proposalId.value);
 };
 
@@ -147,7 +153,6 @@ const addUpdateProposalHandler = async () => {
   }
 };
 import { ref, nextTick } from "vue";
-import Id from "/@src/pages/sidebar/client/projects/[id].vue";
 
 const editingCell = ref<{ rowId: string; column: string } | null>(null);
 const editingValue = ref("");
@@ -180,7 +185,9 @@ function saveEdit(cost: any, column: string) {
 const addUpdateCostItemHandler = async (id: any = "", payload: any = {}) => {
   try {
     const response = await api.patch(`/api/cost/${id}/`, payload);
-    useProposal.getProposalDetail(props.proposalId);
+    emits("update:onsuccess", null);
+    // useProposal.getProposalDetail(props.proposalId);
+    getProposalCostItems(props.proposalId);
     notyf.success("Item updated successfully.");
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);
@@ -211,6 +218,26 @@ const openAddSectionModal = (index: any) => {
 function cancelEdit() {
   editingCell.value = null;
 }
+const costCodesList = ref([]);
+const getCostCodesHandler = async () => {
+  try {
+    const response = await api.get(`/api/cost-code/`);
+    costCodesList.value = response.data.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.name,
+        labour_cost: item.labour_cost,
+        unit_cost: item.unit_cost ?? 0.0,
+        worker_cost: item.worker_cost ?? 0.0,
+        unit: item.unit ?? "--",
+      };
+    });
+    // getMatchingCostCode();
+  } catch (err) {
+    console.log(err);
+  } finally {
+  }
+};
 
 watch(
   () => props.columnsToShow,
@@ -227,6 +254,7 @@ onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
     (m) => m.default
   );
+  getCostCodesHandler();
 });
 </script>
 
@@ -327,6 +355,31 @@ onMounted(async () => {
                   @keyup.esc="cancelEdit"
                   @ready="onCKEditorReady($event, cost, column)"
                 />
+                <VField
+                  v-else-if="column === 'cost_code'"
+                  v-slot="{ id }"
+                  style="min-width: 120px; z-index: 9999"
+                >
+                  <VControl>
+                    <Multiselect
+                      required
+                      v-model="editingValue"
+                      :attrs="{ id }"
+                      :searchable="true"
+                      :options="costCodesList"
+                      @keyup.enter="saveEdit(cost, column)"
+                      @keyup.esc="cancelEdit"
+                      placeholder="Select a cost code"
+                      @blur="saveEdit(cost, column)"
+                      @update:modelValue="
+                        (val) => {
+                          editingValue = val;
+                          saveEdit(cost, column);
+                        }
+                      "
+                    />
+                  </VControl>
+                </VField>
                 <input
                   v-else
                   :id="`edit-input-${cost.id}-${column}`"
