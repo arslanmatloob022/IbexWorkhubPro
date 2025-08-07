@@ -239,6 +239,30 @@ const getCostCodesHandler = async () => {
   }
 };
 
+const costUnitsList = ref([
+  {
+    id: "",
+    title: "",
+    value: "",
+    description: "",
+    is_active: true,
+    created_at: "",
+    updated_at: "",
+  },
+]);
+
+const getUnits = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get(`/api/units/`);
+    costUnitsList.value = response.data;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 watch(
   () => props.columnsToShow,
   (newVal, oldVal) => {
@@ -255,6 +279,7 @@ onMounted(async () => {
     (m) => m.default
   );
   getCostCodesHandler();
+  getUnits();
 });
 </script>
 
@@ -378,6 +403,29 @@ onMounted(async () => {
                         }
                       "
                     />
+                  </VControl>
+                </VField>
+                <VField v-else-if="column === 'unit'" addons>
+                  <VControl expanded>
+                    <VSelect
+                      @keyup.enter="saveEdit(cost, column)"
+                      @keyup.esc="cancelEdit"
+                      @update:modelValue="
+                        (val) => {
+                          editingValue = val;
+                          saveEdit(cost, column);
+                        }
+                      "
+                      v-model="editingValue"
+                    >
+                      <VOption value="" disabled> Select Unit </VOption>
+                      <VOption
+                        v-for="item in costUnitsList"
+                        :value="item.value"
+                      >
+                        {{ item.title }} ({{ item.value }})
+                      </VOption>
+                    </VSelect>
                   </VControl>
                 </VField>
                 <input
