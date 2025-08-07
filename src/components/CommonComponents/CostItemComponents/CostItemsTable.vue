@@ -186,8 +186,8 @@ const addUpdateCostItemHandler = async (id: any = "", payload: any = {}) => {
   try {
     const response = await api.patch(`/api/cost/${id}/`, payload);
     emits("update:onsuccess", null);
-    // useProposal.getProposalDetail(props.proposalId);
     getProposalCostItems(props.proposalId);
+    useProposal.getProposalCostItems(props.proposalId);
     notyf.success("Item updated successfully.");
   } catch (error: any) {
     notyf.error(` ${error}, New Worker`);

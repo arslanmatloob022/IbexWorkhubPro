@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { files } from "/@src/data/layouts/tile-grid-v2";
-import { onceImageErrored } from "/@src/utils/via-placeholder";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import JobFolders from "./JobDocuments/JobFolders.vue";
 
 const notyf = useNotyf();
 const api = useApi();
@@ -13,14 +11,11 @@ const props = defineProps<{
 }>();
 
 const filters = ref("");
-const valueSingle = ref(0);
 const selectedType = ref("");
 const tab = ref("contracts");
 const openFileModal = ref(false);
 const mergedProposalsList = ref([]);
 const mainTab = ref("documents");
-const photoTab = ref("site_visits");
-const videoTab = ref("job_videos");
 
 const filteredData = computed(() => {
   if (!filters.value) {
@@ -178,30 +173,6 @@ onMounted(() => {
 
     <div v-if="mainTab == 'documents'">
       <NewJobFolders type="documents" :objectId="props.leadId" />
-      <div class="tile-grid tile-grid-v2">
-        <!--List Empty Search Placeholder -->
-        <VPlaceholderPage
-          :class="[filteredData.length !== 0 && 'is-hidden']"
-          title="We couldn't find any matching results."
-          subtitle="Too bad. Looks like we couldn't find any matching results for the
-          search terms you've entered. Please try different search terms or
-          criteria."
-          larger
-        >
-          <template #image>
-            <img
-              class="light-image"
-              src="/@src/assets/illustrations/placeholders/search-4.svg"
-              alt=""
-            />
-            <img
-              class="dark-image"
-              src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-              alt=""
-            />
-          </template>
-        </VPlaceholderPage>
-      </div>
     </div>
 
     <div v-if="mainTab == 'photos'">

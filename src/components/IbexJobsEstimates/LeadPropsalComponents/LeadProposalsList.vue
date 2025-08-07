@@ -207,6 +207,18 @@ const getCompanyProposalList = () => {
   }
 };
 
+const duplicateProposal = async (id: any) => {
+  try {
+    const resp = await api.post(`/api/lead-proposal/${id}/duplicate/`, {
+      project: props.leadId,
+    });
+    notyf.purple("Proposal duplicated successfully");
+    getLeadProposals();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const statusFilter = ref("");
 const sortProposalsOptions = ref([
   {
@@ -485,19 +497,19 @@ onMounted(() => {
                         </div>
                       </a>
 
-                      <!-- <a
-                      role="menuitem"
-                      @click="openCostItemModal(item.id)"
-                      class="dropdown-item is-media"
-                    >
-                      <div class="icon">
-                        <i aria-hidden="true" class="lnil lnil-add-files" />
-                      </div>
-                      <div class="meta">
-                        <span>Add Cost Item</span>
-                        <span>Add a new cost item</span>
-                      </div>
-                    </a> -->
+                      <a
+                        role="menuitem"
+                        @click="duplicateProposal(item.id)"
+                        class="dropdown-item is-media"
+                      >
+                        <div class="icon">
+                          <i class="lnir lnir-copy" aria-hidden="true"></i>
+                        </div>
+                        <div class="meta">
+                          <span>Duplicate </span>
+                          <span>Duplicate the proposal</span>
+                        </div>
+                      </a>
 
                       <hr class="dropdown-divider" />
 

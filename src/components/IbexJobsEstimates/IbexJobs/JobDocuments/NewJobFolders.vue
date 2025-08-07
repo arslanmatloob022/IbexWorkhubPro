@@ -269,7 +269,7 @@ onMounted(() => {
 
       <!-- Folders -->
       <div class="card-grid card-grid-v4">
-        <TransitionGroup name="list" tag="div" class="columns is-multiline">
+        <div class="columns is-multiline">
           <div
             v-if="folders.length"
             v-for="folder in folders"
@@ -290,7 +290,7 @@ onMounted(() => {
             :file="file"
             @updateOnSuccess="getFolderContent"
           />
-        </TransitionGroup>
+        </div>
       </div>
 
       <div

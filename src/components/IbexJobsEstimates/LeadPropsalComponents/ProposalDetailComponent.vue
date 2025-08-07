@@ -455,7 +455,7 @@ onMounted(async () => {
             class="rounded-loader mr-2"
           ></div>
 
-          <VButton
+          <!-- <VButton
             size="small"
             class="mr-2"
             v-tooltip.rounded.dark.bottom="`Update Proposal`"
@@ -465,7 +465,7 @@ onMounted(async () => {
             @click="openLeadProposalModal = true"
           >
             <i class="fas fa-pen" aria-hidden="true"></i>
-          </VButton>
+          </VButton> -->
 
           <VButton
             size="small"
@@ -549,12 +549,15 @@ onMounted(async () => {
           <input
             type="text"
             name="firstName"
+            @keyup.prevent.enter="
+              updateProposal({ title: leadProposalFormData.title })
+            "
             v-model="leadProposalFormData.title"
             required
-            disabled
             class="input is-primary-focus is-primary-focus"
             placeholder="Proposal Title"
           />
+          <!-- @blur="updateProposal({ title: leadProposalFormData.title })" -->
         </div>
       </div>
       <div class="column is-6">
@@ -602,7 +605,11 @@ onMounted(async () => {
             type="date"
             name="firstName"
             v-model="leadProposalFormData.approval_deadline"
-            disabled
+            @change="
+              updateProposal({
+                approval_deadline: leadProposalFormData.approval_deadline,
+              })
+            "
             class="input is-primary-focus is-primary-focus"
             placeholder="Proposal Approval deadline"
           />
@@ -669,6 +676,7 @@ onMounted(async () => {
       </div>
       <div class="column is-12">
         <WorksheetItems
+          v-if="leadProposalFormData"
           :proposalData="leadProposalFormData"
           :proposalId="route.params.id"
           @update:OnSuccess="getProposalDetail"
