@@ -209,6 +209,7 @@ const getCompanyProposalList = () => {
 
 const duplicateProposal = async (id: any) => {
   try {
+    // /api/lead-proposal/d91e51f7-fd0d-4385-b79e-6480d907f35c/duplicate/
     const resp = await api.post(`/api/lead-proposal/${id}/duplicate/`, {
       project: props.leadId,
     });

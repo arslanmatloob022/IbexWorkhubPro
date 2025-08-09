@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import {
-  selectedColumnsToShow,
   getColumnName,
   getColumnData,
 } from "/@src/components/CommonComponents/CostItemComponents/costItems";
@@ -11,7 +10,8 @@ import {
   fileLoading,
 } from "../../proposalsComponents";
 import { useCompany } from "/@src/stores/company";
-
+import { columnsTitle } from "/@src/components/CommonComponents/CostItemComponents/costItems";
+import draggable from "vuedraggable";
 const company = useCompany();
 const props = defineProps<{
   columnsToShow?: any;
@@ -21,6 +21,7 @@ const props = defineProps<{
 const useProposal = useProposalStore();
 const openSendProposalModal = ref(false);
 const columnsToShow = ref([]);
+const selectedColumnsToShow = ref([]);
 const selectedProposalsIds = ref([]);
 const proposalFormData = ref({});
 const openSendProposalModalHandler = () => {
@@ -30,9 +31,29 @@ const openSendProposalModalHandler = () => {
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
-// const priceElement = document.querySelector(".price");
-// priceElement.textContent = formatCurrency(parseFloat(priceElement.textContent));
+const draggingIndex = ref<number | null>(null);
+const dragOverIndex = ref<number | null>(null);
+function onDragStart(index: number) {
+  draggingIndex.value = index;
+}
 
+function onDragOver(index: number) {
+  dragOverIndex.value = index;
+}
+
+function onDrop(targetIndex: number) {
+  if (draggingIndex.value === null || draggingIndex.value === targetIndex)
+    return;
+  const moved = selectedColumnsToShow.value.splice(draggingIndex.value, 1)[0];
+  selectedColumnsToShow.value.splice(targetIndex, 0, moved);
+  draggingIndex.value = null;
+  dragOverIndex.value = null;
+}
+
+function onDragEnd() {
+  draggingIndex.value = null;
+  dragOverIndex.value = null; // Reset
+}
 function formatCurrency(amount: any) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -46,18 +67,64 @@ const getProposalType = ref({
   draft: "Draft",
 });
 
-onMounted(() => {});
+onMounted(() => {
+  selectedColumnsToShow.value = props.columnsToShow;
+});
 </script>
 
 <template>
   <div class="columns is-multiline">
-    <div class="column is-9">
+    <div class="column is-6">
       <h1 class="title is-5 m-1 p-0">Preview Lead Proposal</h1>
       <p class="m-1">
         Below is a preview of the proposal that will be sent as a link to the
         email addresses on this client contact. The proposal can be accessed
         through the link while it is Released.
       </p>
+    </div>
+    <div class="column is-6">
+      <VField
+        v-slot="{ id }"
+        label="Choose what to show to lead"
+        class="column is-12"
+      >
+        <VControl>
+          <Multiselect
+            v-model="selectedColumnsToShow"
+            :attrs="{ id }"
+            mode="tags"
+            :searchable="true"
+            :create-tag="true"
+            :options="columnsTitle"
+            placeholder="Add columns"
+          />
+        </VControl>
+      </VField>
+    </div>
+    <div class="column is-12 is-flex is-justify-content-center">
+      <div class="field">
+        <label for=""> Manage order of columns by dragging them</label>
+        <div class="d-flex">
+          <VTag
+            v-for="(column, index) in selectedColumnsToShow"
+            :key="column"
+            class="capitalized ml-1"
+            color="info"
+            outlined
+            draggable="true"
+            @dragstart="onDragStart(index)"
+            @dragover.prevent="onDragOver(index)"
+            @drop="onDrop(index)"
+            @dragend="onDragEnd"
+            :class="{
+              dragging: draggingIndex === index,
+              'drag-over': dragOverIndex === index,
+            }"
+          >
+            {{ column }}
+          </VTag>
+        </div>
+      </div>
     </div>
     <!-- <div class="column is-4">
       <h1 class="subtitle is-5 is-bold">Layout Options</h1>
@@ -166,7 +233,12 @@ onMounted(() => {});
               <a
                 v-else
                 class="action"
-                @click="printPDF(useProposal.leadProposalFormData?.id)"
+                @click="
+                  printPDF(
+                    useProposal.leadProposalFormData?.id,
+                    selectedColumnsToShow
+                  )
+                "
               >
                 <i
                   aria-hidden="true"
@@ -187,7 +259,12 @@ onMounted(() => {});
               <a
                 v-else
                 class="action"
-                @click="downloadProposalPdf(useProposal.leadProposalFormData)"
+                @click="
+                  downloadProposalPdf(
+                    useProposal.leadProposalFormData,
+                    selectedColumnsToShow
+                  )
+                "
               >
                 <i
                   aria-hidden="true"
@@ -282,7 +359,7 @@ onMounted(() => {});
               <table class="responsive-table">
                 <thead>
                   <th
-                    v-for="(column, index) in props.columnsToShow"
+                    v-for="(column, index) in selectedColumnsToShow"
                     :key="index"
                   >
                     {{ getColumnName[column] }}
@@ -293,7 +370,10 @@ onMounted(() => {});
                     v-for="(cost, index) in useProposal.proposalCostItems"
                     :key="cost.id"
                   >
-                    <td v-for="(column, key) in props.columnsToShow" :key="key">
+                    <td
+                      v-for="(column, key) in selectedColumnsToShow"
+                      :key="key"
+                    >
                       <template v-if="!cost.is_empty">
                         <div
                           class="custom-description"
@@ -392,6 +472,15 @@ onMounted(() => {});
 
 <style lang="scss" scoped>
 @import "/@src/scss/abstracts/all";
+.dragging {
+  opacity: 0.5;
+  border: 1px dashed #007bff !important;
+}
+.drag-over {
+  border: 2px dashed #c5401f !important;
+  color: #c5401f !important;
+  background: #c3d3eb;
+}
 .custom-description {
   color: #000000 !important;
 

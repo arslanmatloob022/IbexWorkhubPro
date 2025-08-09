@@ -21,11 +21,15 @@ export const createProposalTasks = async (startDate: any, proposalId: any) => {
   }
 };
 
-export const downloadProposalPdf = async (proposal: any) => {
+export const downloadProposalPdf = async (proposal: any, columns: any = []) => {
   try {
     fileLoading.value = 3;
+    let formattedColumns = [];
+
     const response = await api.get(
-      `/api/lead-proposal/${proposal.id}/download/`,
+      `/api/lead-proposal/${
+        proposal.id
+      }/download/?columns_to_show=${JSON.stringify(columns)}`,
       {
         responseType: "blob",
       }
@@ -45,13 +49,15 @@ export const downloadProposalPdf = async (proposal: any) => {
   }
 };
 
-export const printPDF = async (proposalId: any) => {
+export const printPDF = async (proposalId: any, columns: any = []) => {
   try {
     fileLoading.value = 1;
 
     // Fetch the PDF as a blob
     const response = await api.get(
-      `/api/lead-proposal/${proposalId}/download/`,
+      `/api/lead-proposal/${proposalId}/download/?columns_to_show=${JSON.stringify(
+        columns
+      )}`,
       {
         responseType: "blob", // Ensure response is a binary PDF
       }
