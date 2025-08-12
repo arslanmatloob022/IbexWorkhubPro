@@ -98,6 +98,7 @@ onMounted(() => {
         <div v-if="tab == 'personal'" class="column is-12">
           <div class="columns is-multiline">
             <div class="column is-8">
+              <!-- <AddBlogItem /> -->
               <div class="profile-card">
                 <div class="profile-card-section">
                   <div class="section-title">

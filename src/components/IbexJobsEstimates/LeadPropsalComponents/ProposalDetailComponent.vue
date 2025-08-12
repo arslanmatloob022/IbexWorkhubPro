@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import axios from "axios";
 import { useApi } from "/@src/composable/useAPI";
 import { useNotyf } from "/@src/composable/useNotyf";
-import { convertToFormData } from "/@src/composable/useSupportElement";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
 import { downloadProposalPdf, fileLoading } from "../proposalsComponents";
-import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
 import { useDropdown } from "/@src/composable/useDropdown";
 import { useCostCodeStore } from "/@src/stores/LeadEstimatesStore/costCodeStore";
 
@@ -512,7 +509,7 @@ onMounted(async () => {
             light
             class="mr-2"
             v-tooltip.rounded.info.bottom="`Download Proposal As PDF`"
-            @click="downloadProposalPdf(leadProposalFormData)"
+            @click="downloadProposalPdf(leadProposalFormData, [])"
             color="info"
             raised
           >

@@ -23,6 +23,7 @@ declare module 'vue' {
     ActiveProjectsChart: typeof import('./../src/components/pages/networks/Charts/ActiveProjectsChart.vue')['default']
     ActivityPanel: typeof import('./../src/components/partials/panels/ActivityPanel.vue')['default']
     ActivityViewModal: typeof import('./../src/components/IbexJobsEstimates/IbexJobs/JobComponents/ActivityViewModal.vue')['default']
+    AddBlogItem: typeof import('./../src/components/TekvionSystems/AddBlogItem.vue')['default']
     AddCompany: typeof import('./../src/components/pages/networks/companies/AddCompany.vue')['default']
     AddCostTypeModal: typeof import('./../src/components/IbexSettings/SettingsModals/AddCostTypeModal.vue')['default']
     AddEditPartners: typeof import('./../src/components/pages/networks/Service-Partners/AddEditPartners.vue')['default']
