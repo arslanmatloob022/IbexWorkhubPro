@@ -72,15 +72,15 @@ const addBlankLineItem = async () => {
   }
 };
 
-watch(
-  () => selectedColumnsToShow.value,
-  (newVal, oldVal) => {
-    if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-      addUpdateProposalHandler();
-    }
-  },
-  { deep: true } // Enable deep watching for nested objects/arrays
-);
+// watch(
+//   () => selectedColumnsToShow.value,
+//   (newVal, oldVal) => {
+//     if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+//       addUpdateProposalHandler();
+//     }
+//   },
+//   { deep: true } // Enable deep watching for nested objects/arrays
+// );
 
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
@@ -162,6 +162,7 @@ onUnmounted(() => {
           <VControl>
             <Multiselect
               v-model="selectedColumnsToShow"
+              @update:model-value="addUpdateProposalHandler"
               :attrs="{ id }"
               mode="tags"
               :searchable="true"
