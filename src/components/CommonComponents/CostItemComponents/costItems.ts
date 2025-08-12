@@ -8,6 +8,16 @@ export const selectedColumnsToShow = ref([
   "total_price",
 ]);
 
+export const selectedColumnsToPrint = ref([
+  "title",
+  "cost_code",
+  "description",
+  "quantity",
+  "unit_cost",
+  "unit",
+  "total_price",
+]);
+
 export const columnsTitle = [
   { value: "title", label: "Title" },
   { value: "description", label: "Description" },

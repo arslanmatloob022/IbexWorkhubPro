@@ -263,15 +263,15 @@ const getUnits = async () => {
   }
 };
 
-watch(
-  () => props.columnsToShow,
-  (newVal, oldVal) => {
-    if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-      addUpdateProposalHandler();
-    }
-  },
-  { deep: true }
-);
+// watch(
+//   () => props.columnsToShow,
+//   (newVal, oldVal) => {
+//     if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+//       addUpdateProposalHandler();
+//     }
+//   },
+//   { deep: true }
+// );
 
 onMounted(async () => {
   proposalId.value = props.proposalId;

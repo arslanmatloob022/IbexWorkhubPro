@@ -8,7 +8,10 @@ import {
 } from "/@src/composable/useSupportElement";
 import { useUserSession } from "/@src/stores/userSession";
 import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore";
-import { selectedColumnsToShow } from "../../CommonComponents/CostItemComponents/costItems";
+import {
+  selectedColumnsToPrint,
+  selectedColumnsToShow,
+} from "../../CommonComponents/CostItemComponents/costItems";
 import ckeditor from "/@src/pages/elements/addons/ckeditor.vue";
 import CKE from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -89,6 +92,7 @@ interface leadProposalData {
   attachments: [];
   is_template: boolean;
   columns_to_show: [];
+  columns_to_print: [];
   payment_status: string;
   worksheetItems: item[];
   type: string;
@@ -112,6 +116,7 @@ const leadProposalFormData = ref<leadProposalData>({
   is_template: false,
   attachments: [],
   columns_to_show: <any>[],
+  columns_to_print: <any>[],
   status: "",
   created_at: "",
   updated_at: "",
@@ -130,7 +135,9 @@ const addUpdateProposalHandler = async (closeModal: boolean = false) => {
     leadProposalFormData.value.columns_to_show = JSON.stringify(
       selectedColumnsToShow.value
     );
-
+    leadProposalFormData.value.columns_to_print = JSON.stringify(
+      selectedColumnsToPrint.value
+    );
     const formDataAPI = convertToFormData(leadProposalFormData.value, []);
     if (props.proposalId || leadProposalFormData.value.id) {
       const response = await api.patch(
@@ -183,6 +190,7 @@ const getProposalDetail = async () => {
     const response = await api.get(`/api/lead-proposal/${props.proposalId}/`);
     leadProposalFormData.value = response.data;
     selectedColumnsToShow.value = response.data.columns_to_show;
+    selectedColumnsToPrint.value = response.data.columns_to_print;
   } catch (err) {
     console.log(err);
   } finally {
