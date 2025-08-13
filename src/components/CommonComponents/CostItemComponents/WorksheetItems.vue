@@ -72,15 +72,29 @@ const addBlankLineItem = async () => {
   }
 };
 
-// watch(
-//   () => selectedColumnsToShow.value,
-//   (newVal, oldVal) => {
-//     if (newVal && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-//       addUpdateProposalHandler();
-//     }
-//   },
-//   { deep: true } // Enable deep watching for nested objects/arrays
-// );
+const draggingIndex = ref<number | null>(null);
+const dragOverIndex = ref<number | null>(null);
+
+function onDragStart(index: number) {
+  draggingIndex.value = index;
+}
+
+function onDragOver(index: number) {
+  dragOverIndex.value = index;
+}
+function onDragEnd() {
+  draggingIndex.value = null;
+  dragOverIndex.value = null; // Reset
+}
+function onDrop(targetIndex: number) {
+  if (draggingIndex.value === null || draggingIndex.value === targetIndex)
+    return;
+  const moved = selectedColumnsToShow.value.splice(draggingIndex.value, 1)[0];
+  selectedColumnsToShow.value.splice(targetIndex, 0, moved);
+  addUpdateProposalHandler();
+  draggingIndex.value = null;
+  dragOverIndex.value = null;
+}
 
 onMounted(async () => {
   editor.value = await import("@ckeditor/ckeditor5-build-classic").then(
@@ -153,7 +167,32 @@ onUnmounted(() => {
         </div>
       </div>
       <!-- <TransitionGroup class="fade-slow" name="fade-slow"> -->
-      <div v-if="showDropdown" class="column is-12">
+      <div v-if="showDropdown" class="column is-6">
+        <div class="field">
+          <label for=""> Manage order of columns by dragging them</label>
+          <div class="d-flex mt-3">
+            <VTag
+              v-for="(column, index) in selectedColumnsToShow"
+              :key="column"
+              class="capitalized ml-1"
+              color="dark"
+              outlined
+              draggable="true"
+              @dragstart="onDragStart(index)"
+              @dragover.prevent="onDragOver(index)"
+              @drop="onDrop(index)"
+              @dragend="onDragEnd"
+              :class="{
+                dragging: draggingIndex === index,
+                'drag-over': dragOverIndex === index,
+              }"
+            >
+              {{ column }}
+            </VTag>
+          </div>
+        </div>
+      </div>
+      <div v-if="showDropdown" class="column is-6">
         <VField
           v-slot="{ id }"
           label="Choose what to show to lead"
@@ -319,3 +358,23 @@ onUnmounted(() => {
     </CostByCatalog>
   </div>
 </template>
+<style lang="scss" scoped>
+.dragging {
+  opacity: 0.5;
+  border: 1px dashed #007bff !important;
+}
+.drag-over {
+  border: 2px dashed #c5401f !important;
+  color: #c5401f !important;
+  background: #c3d3eb;
+}
+.custom-description {
+  color: #000000 !important;
+
+  ::v-deep p {
+    color: var(--dark-text) !important;
+    font-style: normal !important;
+    font-family: var(--font) !important;
+  }
+}
+</style>

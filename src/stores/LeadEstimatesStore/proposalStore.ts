@@ -101,6 +101,7 @@ export const useProposalStore = defineStore("useProposal", () => {
     type: string;
     status: string;
     columns_to_show: string[];
+    columns_to_print: string[];
     created_at: string;
     updated_at: string;
     job: string;
@@ -163,6 +164,7 @@ export const useProposalStore = defineStore("useProposal", () => {
     type: "",
     status: "",
     columns_to_show: [],
+    columns_to_print: [],
     created_at: "",
     updated_at: "",
     job: "",

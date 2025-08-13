@@ -3,6 +3,7 @@ import { useProposalStore } from "/@src/stores/LeadEstimatesStore/proposalStore"
 import {
   getColumnName,
   getColumnData,
+  selectedColumnsToPrint,
 } from "/@src/components/CommonComponents/CostItemComponents/costItems";
 import {
   downloadProposalPdf,
@@ -11,19 +12,27 @@ import {
 } from "../../proposalsComponents";
 import { useCompany } from "/@src/stores/company";
 import { columnsTitle } from "/@src/components/CommonComponents/CostItemComponents/costItems";
-import draggable from "vuedraggable";
+import { useNotyf } from "/@src/composable/useNotyf";
+import { useApi } from "/@src/composable/useAPI";
+
+const useProposal = useProposalStore();
 const company = useCompany();
+const notyf = useNotyf();
+const api = useApi();
+
 const props = defineProps<{
   columnsToShow?: any;
   proposalData?: any;
 }>();
 
-const useProposal = useProposalStore();
 const openSendProposalModal = ref(false);
 const columnsToShow = ref([]);
-const selectedColumnsToShow = ref([]);
+const selectedColumnsPrint = ref([]);
 const selectedProposalsIds = ref([]);
 const proposalFormData = ref({});
+const draggingIndex = ref<number | null>(null);
+const dragOverIndex = ref<number | null>(null);
+
 const openSendProposalModalHandler = () => {
   selectedProposalsIds.value.push(props.proposalData);
   proposalFormData.value = props.proposalData;
@@ -31,8 +40,6 @@ const openSendProposalModalHandler = () => {
   openSendProposalModal.value = !openSendProposalModal.value;
 };
 
-const draggingIndex = ref<number | null>(null);
-const dragOverIndex = ref<number | null>(null);
 function onDragStart(index: number) {
   draggingIndex.value = index;
 }
@@ -44,11 +51,35 @@ function onDragOver(index: number) {
 function onDrop(targetIndex: number) {
   if (draggingIndex.value === null || draggingIndex.value === targetIndex)
     return;
-  const moved = selectedColumnsToShow.value.splice(draggingIndex.value, 1)[0];
-  selectedColumnsToShow.value.splice(targetIndex, 0, moved);
+  const moved = selectedColumnsPrint.value.splice(draggingIndex.value, 1)[0];
+  selectedColumnsPrint.value.splice(targetIndex, 0, moved);
   draggingIndex.value = null;
   dragOverIndex.value = null;
 }
+
+const addUpdateProposalHandler = async () => {
+  try {
+    const response = await api.patch(
+      `/api/lead-proposal/${props.proposalData.id}/`,
+      {
+        columns_to_print: JSON.stringify(selectedColumnsPrint.value),
+      }
+    );
+    useProposal.getProposalDetail(props.proposalData.id);
+  } catch (error: any) {
+    notyf.error(`Something went wrong, try again`);
+  }
+};
+
+watch(
+  () => selectedColumnsPrint.value,
+  (newVal, oldVAl) => {
+    if (newVal) {
+      addUpdateProposalHandler();
+    }
+  },
+  { deep: true, immediate: false }
+);
 
 function onDragEnd() {
   draggingIndex.value = null;
@@ -68,7 +99,13 @@ const getProposalType = ref({
 });
 
 onMounted(() => {
-  selectedColumnsToShow.value = props.columnsToShow;
+  if (!useProposal.leadProposalFormData?.columns_to_print?.length) {
+    selectedColumnsPrint.value = selectedColumnsToPrint.value;
+    addUpdateProposalHandler();
+  } else {
+    selectedColumnsPrint.value =
+      useProposal.leadProposalFormData?.columns_to_print;
+  }
 });
 </script>
 
@@ -89,8 +126,9 @@ onMounted(() => {
         class="column is-12"
       >
         <VControl>
+          <!-- @change="addUpdateProposalHandler" -->
           <Multiselect
-            v-model="selectedColumnsToShow"
+            v-model="selectedColumnsPrint"
             :attrs="{ id }"
             mode="tags"
             :searchable="true"
@@ -106,7 +144,7 @@ onMounted(() => {
         <label for=""> Manage order of columns by dragging them</label>
         <div class="d-flex">
           <VTag
-            v-for="(column, index) in selectedColumnsToShow"
+            v-for="(column, index) in selectedColumnsPrint"
             :key="column"
             class="capitalized ml-1"
             color="info"
@@ -236,7 +274,7 @@ onMounted(() => {
                 @click="
                   printPDF(
                     useProposal.leadProposalFormData?.id,
-                    selectedColumnsToShow
+                    selectedColumnsPrint
                   )
                 "
               >
@@ -262,7 +300,7 @@ onMounted(() => {
                 @click="
                   downloadProposalPdf(
                     useProposal.leadProposalFormData,
-                    selectedColumnsToShow
+                    selectedColumnsPrint
                   )
                 "
               >
@@ -359,7 +397,7 @@ onMounted(() => {
               <table class="responsive-table">
                 <thead>
                   <th
-                    v-for="(column, index) in selectedColumnsToShow"
+                    v-for="(column, index) in selectedColumnsPrint"
                     :key="index"
                   >
                     {{ getColumnName[column] }}
@@ -371,7 +409,7 @@ onMounted(() => {
                     :key="cost.id"
                   >
                     <td
-                      v-for="(column, key) in selectedColumnsToShow"
+                      v-for="(column, key) in selectedColumnsPrint"
                       :key="key"
                     >
                       <template v-if="!cost.is_empty">
