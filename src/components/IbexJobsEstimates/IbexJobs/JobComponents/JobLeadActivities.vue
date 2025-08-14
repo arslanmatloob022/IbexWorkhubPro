@@ -219,18 +219,19 @@ onMounted(() => {
 <template>
   <PlaceloadV3 v-if="loading" />
   <div v-else>
-    <div class="card-grid-toolbar">
-      <VControl icon="feather:search">
-        <input
-          v-model="searchQuery"
-          class="input custom-text-filter"
-          placeholder="Search..."
-        />
-      </VControl>
-
-      <div class="buttons">
-        <!-- {{ valueSingle }} -->
-        <VField>
+    <div class="card-grid-toolbar columns is-multiline">
+      <div class="column is-4 is-flex">
+        <!-- <div class="columns is-multiline"> -->
+        <VField style="min-width: 170px">
+          <VControl icon="feather:search">
+            <input
+              v-model="searchQuery"
+              class="input custom-text-filter"
+              placeholder="Search..."
+            />
+          </VControl>
+        </VField>
+        <VField style="min-width: 170px">
           <VControl>
             <VSelect v-model="valueSingle" required>
               <VOption value="">All</VOption>
@@ -240,17 +241,10 @@ onMounted(() => {
             </VSelect>
           </VControl>
         </VField>
-
-        <!-- <VField class="h-hidden-mobile">
-<VControl>
-<Multiselect
-v-model="valueSingle"
-:options="optionsSingle"
-:max-height="145"
-placeholder="Select an option"
-/>
-</VControl>
-</VField> -->
+        <!-- </div> -->
+      </div>
+      <div class="column is-4"></div>
+      <div class="column is-4 is-flex is-justify-content-end">
         <VButton
           @click="showAddUpdateContactModal = !showAddUpdateContactModal"
           color="warning"

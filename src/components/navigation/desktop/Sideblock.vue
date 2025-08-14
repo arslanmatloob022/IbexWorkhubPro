@@ -573,6 +573,8 @@ const themeClasses = computed(() => {
 html:not(.is-dark) {
   .sidebar-block {
     &.is-colored {
+      // background: var(--primary);
+      // box-shadow: var(--primary-box-shadow);
       background: color-mix(in oklab, var(--dark), black 12%) !important;
       border-color: color-mix(in oklab, var(--dark), white 5%) !important;
 

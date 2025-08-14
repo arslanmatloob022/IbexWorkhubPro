@@ -545,119 +545,6 @@ SCSS Imports
   }
 }
 
-.lengthy-smart-search-dropdown {
-  .placement-wrapper {
-    width: 100%;
-    height: 4rem;
-    background: #f3f1f1;
-    border-radius: 0.8rem;
-    display: flex;
-    align-items: start;
-    padding: 0.5rem 0.5rem;
-    flex-direction: column;
-    gap: 0rem;
-    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-  }
-
-  .first-span {
-    margin-left: 1rem;
-    // font-weight: 500;
-    font-size: 1.1rem;
-    color: #444;
-    transform: translateY(0.5rem);
-  }
-
-  .multi-select {
-    height: 55px;
-    border-radius: 1rem;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    width: 100%;
-  }
-
-  .value-image {
-    width: 30px;
-    border-radius: 0.5rem;
-  }
-
-  .options-div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .option-cdiv {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .option-image {
-    width: 40px;
-    border-radius: 0.5rem;
-  }
-
-  .option-ddiv {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .option-span {
-    color: #444;
-    font-size: 1.2rem;
-    font-weight: 500;
-  }
-
-  .mail-span {
-    color: #666;
-    font-size: 1rem;
-
-    .email-span {
-      color: #444;
-    }
-  }
-
-  .placement-wrapper:hover {
-    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2);
-  }
-
-  .sitejob-space {
-    margin-top: -1rem;
-  }
-
-  .lg-multiselect {
-    .multiselect-dropdown {
-      max-height: 200px !important;
-    }
-  }
-
-  .placement-wrapper
-    > .multiselect
-    > .multiselect-wrapper
-    > .multiselect-search {
-    background: transparent;
-    outline: none;
-  }
-
-  .placement-wrapper > .multiselect > .multiselect-dropdown {
-    border-radius: 0.8rem;
-    margin-bottom: -1.5rem;
-    box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
-    min-height: 320px !important;
-  }
-
-  .multiselect .multiselect-caret {
-    width: 1.3rem;
-    height: 1.3rem;
-    border-radius: 0.3rem;
-    cursor: pointer;
-    background: #666;
-  }
-}
-
 .flex-grid {
   display: flex;
   flex-wrap: wrap;
@@ -777,64 +664,6 @@ SCSS Imports
   }
 }
 
-// apply on alll input fields =================================================
-.cu-all-input {
-  /* General input styles */
-  input {
-    border-radius: 15px !important;
-    background-color: #fcfcfc;
-    border: 1px solid var(--border) !important;
-    padding-left: 24px !important;
-  }
-
-  /* Specific styles for color input fields */
-  input[type="color"] {
-    padding: 0;
-    border-radius: 15px;
-    /* Makes the color picker circular */
-    border: 2px solid #ccc;
-    /* Custom border */
-    background-color: #fff;
-    /* Background color */
-    cursor: pointer;
-    /* Changes cursor to pointer */
-  }
-
-  textarea {
-    border-radius: 15px !important;
-    background-color: #fcfcfc;
-    border: 1px solid var(--border) !important;
-    padding: 16px 20px !important;
-  }
-
-  select {
-    border-radius: 15px !important;
-    background-color: #fcfcfc;
-    border: 1px solid var(--border) !important;
-    height: 45px;
-    padding-left: 36px !important;
-    padding-right: 20px !important;
-  }
-
-  .control {
-    .has-icon {
-      input {
-        padding: 23px 20px !important;
-        padding-inline-start: 38px !important;
-      }
-    }
-
-    input {
-      padding: 23px 20px !important;
-      padding-inline-start: 18px !important;
-    }
-
-    .form-icon {
-      height: 47px !important;
-    }
-  }
-}
-
 .is-dark {
   .cu-all-input {
     input {
@@ -845,9 +674,6 @@ SCSS Imports
       background-color: var(--dark-sidebar-light-2) !important;
     }
   }
-}
-
-.cus-tag-button {
 }
 
 // =====================================================================================

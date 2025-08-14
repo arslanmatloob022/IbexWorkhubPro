@@ -156,6 +156,7 @@ export const routerLinks = ref([
       },
     ],
   },
+
   {
     title: "Company Settings",
     icon: "lnir lnir-cogs",
@@ -167,10 +168,10 @@ export const routerLinks = ref([
     tabKey: "company_settings",
     children: [
       {
-        title: "Settings",
+        title: "General",
         icon: "lnir lnir-cog",
         class: "is-submenu",
-        route: "/sidebar/dashboard/company-settings",
+        route: "/sidebar/dashboard/company-settings/?setting-tab=general",
         tabKey: "cs_settings",
       },
       {
@@ -187,6 +188,20 @@ export const routerLinks = ref([
       //   route: "/sidebar/files-permission",
       // },
     ],
+  },
+  //   general
+  // costCodes
+  // units
+  // types
+  // permissions
+  // logs
+  {
+    title: "Templates & Catalogs",
+    icon: "lnir lnir-files",
+    class: "single-link",
+    linkType: "single",
+    route: "/sidebar/dashboard/proposal-templates",
+    tabKey: "cs_templates_and_catalogs",
   },
   {
     title: "Profile",

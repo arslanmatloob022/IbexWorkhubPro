@@ -215,7 +215,7 @@ onMounted(() => {
     <div v-else>
       <div class="list-flex-toolbar columns is-multiline">
         <div class="column is-6 is-flex">
-          <VField>
+          <VField style="min-width: 130px">
             <VControl icon="feather:search">
               <input
                 v-model="filters"
@@ -238,27 +238,24 @@ onMounted(() => {
               </a>
             </template>
           </VDropdown>
-
-          <!-- <VField style="min-width: 120px">
-            <VControl class="has-icons-left" icon="fas fa-globe">
-              <VSelect v-model="statusFilter">
-                <VOption value=""> All </VOption>
-                <VOption v-for="link in leadsStatusFilters" :value="link.value">
-                  {{ link.label }}
-                </VOption>
-              </VSelect>
-            </VControl>
-          </VField> -->
         </div>
         <div class="column is-6 is-flex is-justify-content-end">
           <VButtons>
             <VButton
+              class="h-hidden-mobile"
               @click="openLeadUpdateModal('')"
               color="primary"
               icon="fas fa-plus"
-              elevated
             >
               Lead Opportunity
+            </VButton>
+            <VButton
+              class="h-hidden-desktop h-hidden-tablet-p"
+              @click="openLeadUpdateModal('')"
+              color="primary"
+              icon="fas fa-plus"
+            >
+              Lead
             </VButton>
           </VButtons>
         </div>
@@ -319,7 +316,7 @@ onMounted(() => {
                       size="medium"
                     />
                     <div>
-                      <span class="item-name dark-inverted">
+                      <span class="item-name dark-inverted show-text-200">
                         {{ item.title ? item.title : "N/A" }}</span
                       >
                       <span class="item-meta show-text-200">

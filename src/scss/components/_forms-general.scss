@@ -320,6 +320,7 @@ select {
 }
 
 .select select {
+  height: 38px !important;
   &:focus-visible {
     outline-offset: var(--accessibility-focus-outline-offset);
     outline-width: var(--accessibility-focus-outline-width);
@@ -772,6 +773,7 @@ select {
     }
 
     select {
+      height: 52px !important;
       background-color: var(--dark-sidebar-light-10);
       border-color: var(--dark-sidebar-light-12) !important;
       color: var(--dark-dark-text);

@@ -16,7 +16,7 @@ useHead({
     <!-- <LeadProposalsList :allProposal="true" /> -->
     <div class="tabs-wrapper">
       <div class="tabs-inner">
-        <div class="tabs">
+        <div class="tabs is-boxed">
           <ul>
             <li
               :class="[
